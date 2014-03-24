@@ -4,7 +4,7 @@ process = cms.Process("test")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 # List (1 of 4?) of NeutrinoGun samples (i.e. background rate)
 from SLHCUpgradeSimulations.L1TrackTriggerObjects.minBiasFiles_p1_cfi import *

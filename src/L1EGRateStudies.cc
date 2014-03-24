@@ -169,7 +169,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
          for(int j=0; j<cut_steps; j++) {
             double ecal_isolation_cut = ecal_isolation_cut_min+(ecal_isolation_cut_max-ecal_isolation_cut_min)*j/(cut_steps-1);
             std::stringstream name;
-            name << "crystalEG_efficiency_hovere" << i << "_iso" << j;
+            name << "crystalEG_efficiency_hovere" << i << "_iso" << j << "_pt";
             std::stringstream title;
             title << "Crystal-level EG Trigger (hovere "  << hovere_cut << ", iso " << ecal_isolation_cut << ");Gen. pT (GeV);Efficiency";
             histograms[i*cut_steps+j] = fs->make<TH1F>(name.str().c_str(), title.str().c_str(), nHistBins, histLow, histHigh);
@@ -180,7 +180,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
             eta_histograms[i*cut_steps+j] = fs->make<TH1F>(name.str().c_str(), title.str().c_str(), nHistBins, histetaLow, histetaHigh);
          }
       }
-      oldEGalg_efficiency_hist = fs->make<TH1F>("oldEG_efficiency", "Old EG Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
+      oldEGalg_efficiency_hist = fs->make<TH1F>("oldEG_efficiency_pt", "Old EG Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       oldEGalg_efficiency_eta_hist = fs->make<TH1F>("oldEG_efficiency_eta", "Old EG Trigger;Gen. #eta;Efficiency", nHistBins, histetaLow, histetaHigh);
 
       // We don't want to save these, we'll just be dividing by them after looping through all events
@@ -304,8 +304,8 @@ L1EGRateStudies::endJob()
       // Divide through by the denominator histogram
       oldEGalg_efficiency_hist->Divide(efficiency_denominator_hist);
       oldEGalg_efficiency_eta_hist->Divide(efficiency_denominator_eta_hist);
-      for(auto it=histograms.begin(); it!=histograms.end(); it++) {
-         (*it)->Divide(efficiency_denominator_hist);
+      for(auto& h : histograms) {
+         h->Divide(efficiency_denominator_hist);
       }
       for(auto it=eta_histograms.begin(); it!=eta_histograms.end(); it++) {
          (*it)->Divide(efficiency_denominator_eta_hist);
