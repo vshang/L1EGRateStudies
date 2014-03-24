@@ -1,4 +1,5 @@
 // This macro is to be run using `root -q -b drawRateEff.C+`
+// Note: the ./plots/ directory must exist!
 
 // rootools can be found in ~nsmith/src/rootools
 // It's just a small collection of useful utilities
@@ -17,9 +18,11 @@ void setLegStyle(TLegend * leg) {
    leg->SetFillStyle(0);
 }
 
-void drawNewOld(std::vector<TH1F*> newHists, TH1F * oldHist, TCanvas * c) {
+void drawNewOld(std::vector<TH1F*> newHists, TH1F * oldHist, TCanvas * c, double ymax) {
+   oldHist->SetLineColor(kRed);
+   oldHist->SetMaximum(ymax);
+   oldHist->SetTitle("EG Rates");
    for ( auto newHist : newHists ) {
-      oldHist->SetLineColor(kRed);
       oldHist->Draw();
       newHist->Draw("same");
       TLegend *leg = new TLegend(0.4,0.8,0.9,0.9);
@@ -48,14 +51,14 @@ void drawRateEff() {
    c->SetLogy(1);
    c->SetGridx(1);
    c->SetGridy(1);
-   drawNewOld(newAlgRateHists, oldAlgRateHist, c);
+   drawNewOld(newAlgRateHists, oldAlgRateHist, c, 40000.);
 
    auto effHistKeys = rootools::getKeysofClass(eff, "analyzer", "TH1F");
    auto newAlgEtaEffHists = rootools::loadObjectsMatchingPattern<TH1F>(effHistKeys, "crystalEG*_eta");
    auto newAlgPtEffHists = rootools::loadObjectsMatchingPattern<TH1F>(effHistKeys, "crystalEG*_pt");
-   auto oldAlgEtaHist = (TH1F *) eff->Get("analyzer/oldEG_eff_eta");
-   auto oldAlgPtHist = (TH1F *) eff->Get("analyzer/oldEG_eff_pt");
+   auto oldAlgEtaHist = (TH1F *) eff->Get("analyzer/oldEG_efficiency_eta");
+   auto oldAlgPtHist = (TH1F *) eff->Get("analyzer/oldEG_efficiency_pt");
    c->SetLogy(0);
-   drawNewOld(newAlgEtaEffHists, oldAlgEtaHist, c);
-   drawNewOld(newAlgPtEffHists, oldAlgPtHist, c);
+   drawNewOld(newAlgEtaEffHists, oldAlgEtaHist, c, 1.2);
+   drawNewOld(newAlgPtEffHists, oldAlgPtHist, c, 1.2);
 }
