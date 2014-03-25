@@ -114,7 +114,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       edm::Handle<reco::GenParticleCollection> genParticleHandle;
       reco::GenParticleCollection genParticles;
       
-      int nHistBins;
+      int nHistBins, nHistEtaBins;
       double histLow;
       double histHigh;
       double histetaLow;
@@ -147,6 +147,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    ecal_isolation_cut_max(iConfig.getUntrackedParameter<double>("ecal_isolation_cut_max", 4.)),
    cut_steps(iConfig.getUntrackedParameter<int>("cut_steps", 4)),
    nHistBins(iConfig.getUntrackedParameter<int>("histogramBinCount", 95)),
+   nHistEtaBins(iConfig.getUntrackedParameter<int>("histogramEtaBinCount", 20)),
    histLow(iConfig.getUntrackedParameter<double>("histogramRangeLow", 4.5)),
    histHigh(iConfig.getUntrackedParameter<double>("histogramRangeHigh", 99.5)),
    histetaLow(iConfig.getUntrackedParameter<double>("histogramRangeetaLow", -2.5)),
@@ -177,11 +178,11 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
             name << "crystalEG_efficiency_hovere" << i << "_iso" << j << "_eta";
             title.str("");
             title << "Crystal-level EG Trigger (hovere "  << hovere_cut << ", iso " << ecal_isolation_cut << ");Gen. #eta;Efficiency";
-            eta_histograms[i*cut_steps+j] = fs->make<TH1F>(name.str().c_str(), title.str().c_str(), nHistBins, histetaLow, histetaHigh);
+            eta_histograms[i*cut_steps+j] = fs->make<TH1F>(name.str().c_str(), title.str().c_str(), nHistEtaBins, histetaLow, histetaHigh);
          }
       }
       oldEGalg_efficiency_hist = fs->make<TH1F>("oldEG_efficiency_pt", "Old EG Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
-      oldEGalg_efficiency_eta_hist = fs->make<TH1F>("oldEG_efficiency_eta", "Old EG Trigger;Gen. #eta;Efficiency", nHistBins, histetaLow, histetaHigh);
+      oldEGalg_efficiency_eta_hist = fs->make<TH1F>("oldEG_efficiency_eta", "Old EG Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
 
       // We don't want to save these, we'll just be dividing by them after looping through all events
       efficiency_denominator_hist = new TH1F("gen_pt", "Old EG Trigger;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
