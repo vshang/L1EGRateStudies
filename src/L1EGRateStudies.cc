@@ -34,7 +34,7 @@
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "TH1.h"
 
-
+#include "DataFormats/Math/interface/deltaR.h"
 #include "DataFormats/Candidate/interface/Candidate.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
@@ -90,7 +90,8 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       // -- user functions
       void integrateDown(TH1F *);
       const l1slhc::L1EGCrystalCluster * findHighestPtCluster(const l1slhc::L1EGCrystalClusterCollection&, double, double) const;
-      bool checkDeltaR(const reco::Candidate::PolarLorentzVector&, const reco::Candidate::PolarLorentzVector&, double) const;
+      inline double deltaR(const reco::Candidate::PolarLorentzVector& a, const reco::Candidate::PolarLorentzVector& b){return reco::deltaR(a,b);};
+      double deltaR(const l1slhc::L1EGCrystalCluster& a, const reco::Candidate::PolarLorentzVector& b); 
       
       // ----------member data ---------------------------
       bool doEfficiencyCalc;
@@ -121,10 +122,12 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       double histetaHigh;
       std::vector<TH1F *> histograms;
       std::vector<TH1F *> eta_histograms;
+      std::vector<TH1F *> deltaR_histograms;
       TH1F * efficiency_denominator_hist;
       TH1F * efficiency_denominator_eta_hist;
       TH1F * oldEGalg_efficiency_hist;
       TH1F * oldEGalg_efficiency_eta_hist;
+      TH1F * oldEGalg_deltaR_hist;
       TH1F * oldEGalg_rate_hist;
 };
 
@@ -164,6 +167,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    histograms.resize(cut_steps*cut_steps);
    if ( doEfficiencyCalc ) {
       eta_histograms.resize(cut_steps*cut_steps);
+      deltaR_histograms.resize(cut_steps*cut_steps);
       // We want to plot efficiency vs. pt and eta, for various hovere and isolation cuts
       for(int i=0; i<cut_steps; i++) {
          double hovere_cut = hovere_cut_min+(hovere_cut_max-hovere_cut_min)*i/(cut_steps-1);
@@ -179,14 +183,20 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
             title.str("");
             title << "Crystal-level EG Trigger (hovere "  << hovere_cut << ", iso " << ecal_isolation_cut << ");Gen. #eta;Efficiency";
             eta_histograms[i*cut_steps+j] = fs->make<TH1F>(name.str().c_str(), title.str().c_str(), nHistEtaBins, histetaLow, histetaHigh);
+            name.str("");
+            name << "crystalEG_deltaR_hovere" << i << "_iso" << j;
+            title.str("");
+            title << "Crystal-level EG Trigger (hovere "  << hovere_cut << ", iso " << ecal_isolation_cut << ");#Delta R (Gen-Reco);Counts";
+            deltaR_histograms[i*cut_steps+j] = fs->make<TH1F>(name.str().c_str(), title.str().c_str(), 100, -0.1, 0.1);
          }
       }
       oldEGalg_efficiency_hist = fs->make<TH1F>("oldEG_efficiency_pt", "Old EG Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       oldEGalg_efficiency_eta_hist = fs->make<TH1F>("oldEG_efficiency_eta", "Old EG Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
+      oldEGalg_deltaR_hist = fs->make<TH1F>("oldEG_deltaR", "Old EG Trigger;#Delta R (Gen-Reco);Counts", 100, -0.1, 0.1);
 
       // We don't want to save these, we'll just be dividing by them after looping through all events
       efficiency_denominator_hist = new TH1F("gen_pt", "Old EG Trigger;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
-      efficiency_denominator_eta_hist = new TH1F("gen_eta", "Old EG Trigger;Gen. #eta; Counts", nHistBins, histetaLow, histetaHigh);
+      efficiency_denominator_eta_hist = new TH1F("gen_eta", "Old EG Trigger;Gen. #eta; Counts", nHistEtaBins, histetaLow, histetaHigh);
    } else {
       // Just want rates as a function of pt, again for various cuts
       for(int i=0; i<cut_steps; i++) {
@@ -258,19 +268,20 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          for(int j=0; j<cut_steps; j++) {
             double ecal_isolation_cut = ecal_isolation_cut_min+(ecal_isolation_cut_max-ecal_isolation_cut_min)*j/(cut_steps-1);
             auto highestCluster = findHighestPtCluster(crystalClusters, hovere_cut, ecal_isolation_cut);
-            reco::Candidate::PolarLorentzVector clusterP4(highestCluster->et, highestCluster->eta, highestCluster->phi, 0.);
             if ( highestCluster->hovere < hovere_cut 
                   && highestCluster->ECALiso < ecal_isolation_cut 
-                  && checkDeltaR(clusterP4, genParticles[0].polarP4(), 0.1) ) {
+                  && deltaR(*highestCluster, genParticles[0].polarP4()) < 0.1 ) {
                histograms[i*cut_steps+j]->Fill(genParticles[0].pt());
                eta_histograms[i*cut_steps+j]->Fill(genParticles[0].eta());
+               deltaR_histograms[i*cut_steps+j]->Fill(deltaR(*highestCluster, genParticles[0].polarP4()));
             }
          }
       }
       
-      if ( checkDeltaR(highestEGCandidate->polarP4(), genParticles[0].polarP4(), 0.1) ) {
+      if ( deltaR(highestEGCandidate->polarP4(), genParticles[0].polarP4()) < 0.1 ) {
          oldEGalg_efficiency_hist->Fill(genParticles[0].pt());
          oldEGalg_efficiency_eta_hist->Fill(genParticles[0].eta());
+         oldEGalg_deltaR_hist->Fill(deltaR(highestEGCandidate->polarP4(), genParticles[0].polarP4()));
       }
    } else {
       // Fill rate histograms
@@ -286,6 +297,27 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          }
       }
       oldEGalg_rate_hist->Fill(highestEGCandidate->pt());
+   }
+
+   // List clusters that did not pass the old algorithm
+   auto highestCluster = findHighestPtCluster(crystalClusters, hovere_cut_min, ecal_isolation_cut_min);
+   auto oldEGP4 = highestEGCandidate->polarP4();
+   if ( highestCluster->et > 40. ) {
+      // Show the highest pt Cluster
+      double dr = deltaR(*highestCluster, oldEGP4);
+      // To be proper, we should use edm::LogInfo("L1EGRateStudies") << "stuff";
+      // But this will do for temporary stuff...
+      std::cout << "High-pt fake (run,lumi,evt) = (" << iEvent.run() << "," << iEvent.luminosityBlock() << "," << iEvent.id().event() << std::endl;
+      std::cout << "\tpt = " << highestCluster->et << ", old EG Candidate pt = " << highestEGCandidate->pt() << ", deltaR = " << dr << std::endl;
+
+      // List the closest clusters to the old EG candidate
+      std::cout << "\t---List of clusters close to the old EG Candidate:" << std::endl;
+      std::sort(begin(crystalClusters), end(crystalClusters), [&](const l1slhc::L1EGCrystalCluster& a, const l1slhc::L1EGCrystalCluster& b){
+         return deltaR(a,oldEGP4) < deltaR(b,oldEGP4);
+         });
+      for(auto cluster : crystalClusters) {
+         std::cout << "\tCluster pt = " << cluster.et << ", eta = " << cluster.eta << ", phi = " << cluster.phi << ", deltaR = " << deltaR(cluster, oldEGP4) << ", hovere = " << cluster.hovere << ", iso = " << cluster.ECALiso << std::endl;
+      }
    }
 }
 
@@ -389,11 +421,11 @@ L1EGRateStudies::findHighestPtCluster(const l1slhc::L1EGCrystalClusterCollection
    return &(*ptr);
 }
 
-bool 
-L1EGRateStudies::checkDeltaR(const reco::Candidate::PolarLorentzVector& a, const reco::Candidate::PolarLorentzVector& b, double radius) const {
-   double deta = a.eta() - b.eta();
-   double dphi = a.phi() - b.phi();
-   return sqrt(pow(deta,2)+pow(dphi,2)) < radius;
+// Wrapper since L1EGCrystalCluster does not implement the required eta() and phi() getter methods.
+double
+L1EGRateStudies::deltaR(const l1slhc::L1EGCrystalCluster& a, const reco::Candidate::PolarLorentzVector& b) {
+   reco::Candidate::PolarLorentzVector clusterP4(a.et, a.eta, a.phi, 0.);
+   return deltaR(clusterP4, b);
 }
 
 //define this as a plug-in

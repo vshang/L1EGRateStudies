@@ -3,6 +3,19 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("test")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
+process.MessageLogger.categories = cms.untracked.vstring('L1EGRateStudies', 'FwkReport')
+#process.MessageLogger.cout = cms.untracked.PSet(
+#   threshold = cms.untracked.string('INFO'),
+#   default = cms.untracked.PSet(
+#      limit = cms.untracked.int32(0)
+#   ),
+#   L1EGRateStudies = cms.untracked.PSet(
+#      limit = cms.untracked.int32(100)
+#   )
+#)
+process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
+   reportEvery = cms.untracked.int32(500)
+)
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
@@ -96,9 +109,15 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
 # Sacha's cluster trigger (hovere < 1, isolation < 2)
 #   L1EGammaInputTag = cms.InputTag("L1EGammaCrystalsProducer","EGammaCrystal"),
    L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer","EGCrystalCluster"),
-# this just normalizes the histograms to 30kHz rate 
 # use this when running over single particle gun sources
-   doEfficiencyCalc = cms.untracked.bool(False)
+   doEfficiencyCalc = cms.untracked.bool(False),
+   hovere_cut_min = cms.untracked.double(0.2),
+   hovere_cut_max = cms.untracked.double(1.4),
+   ecal_isolation_cut_min = cms.untracked.double(0.5),
+   ecal_isolation_cut_max = cms.untracked.double(2),
+   cut_steps = cms.untracked.int32(4),
+   histogramBinCount = cms.untracked.int32(19),
+   histogramEtaBinCount = cms.untracked.int32(20)
 )
 
 process.panalyzer = cms.Path(process.analyzer)
