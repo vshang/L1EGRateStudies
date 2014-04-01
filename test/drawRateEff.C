@@ -20,7 +20,8 @@ void setLegStyle(TLegend * leg) {
 
 void drawNewOld(std::vector<TH1F*> newHists, TH1F * oldHist, TCanvas * c, double ymax) {
    oldHist->SetLineColor(kRed);
-   oldHist->SetMaximum(ymax);
+   if ( ymax != 0. )
+      oldHist->SetMaximum(ymax);
    std::string oldTitle = oldHist->GetTitle();
    oldHist->SetTitle("EG Rates");
    for ( auto newHist : newHists ) {
@@ -85,11 +86,14 @@ void drawRateEff() {
    auto effHistKeys = rootools::getKeysofClass(eff, "analyzer", "TH1F");
    auto newAlgEtaEffHists = rootools::loadObjectsMatchingPattern<TH1F>(effHistKeys, "crystalEG*_eta");
    auto newAlgPtEffHists = rootools::loadObjectsMatchingPattern<TH1F>(effHistKeys, "crystalEG*_pt");
+   auto newAlgDRHists = rootools::loadObjectsMatchingPattern<TH1F>(effHistKeys, "crystalEG_deltaR*");
    auto oldAlgEtaHist = (TH1F *) eff->Get("analyzer/oldEG_efficiency_eta");
    auto oldAlgPtHist = (TH1F *) eff->Get("analyzer/oldEG_efficiency_pt");
+   auto oldAlgDRHist = (TH1F *) eff->Get("analyzer/oldEG_deltaR");
    c->SetLogy(0);
    drawNewOld(newAlgEtaEffHists, oldAlgEtaHist, c, 1.2);
    drawNewOld(newAlgPtEffHists, oldAlgPtHist, c, 1.2);
+   drawNewOld(newAlgDRHists, oldAlgDRHist, c, 0.);
 
    std::vector<TH1F*> selectedEtaEffHists{oldAlgEtaHist, newAlgEtaEffHists[0], newAlgEtaEffHists[3], newAlgEtaEffHists[12], newAlgEtaEffHists[15]};
    drawSame(selectedEtaEffHists, c, 1.2, "crystalEG_efficiency_variouscuts_eta.png");

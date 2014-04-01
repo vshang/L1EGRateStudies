@@ -192,7 +192,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       }
       oldEGalg_efficiency_hist = fs->make<TH1F>("oldEG_efficiency_pt", "Old EG Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       oldEGalg_efficiency_eta_hist = fs->make<TH1F>("oldEG_efficiency_eta", "Old EG Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
-      oldEGalg_deltaR_hist = fs->make<TH1F>("oldEG_deltaR", "Old EG Trigger;#Delta R (Gen-Reco);Counts", 100, -0.1, 0.1);
+      oldEGalg_deltaR_hist = fs->make<TH1F>("oldEG_deltaR", "Old EG Trigger;#Delta R (Gen-Reco);Counts", 50, 0., 0.1);
 
       // We don't want to save these, we'll just be dividing by them after looping through all events
       efficiency_denominator_hist = new TH1F("gen_pt", "Old EG Trigger;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
@@ -302,7 +302,8 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    // List clusters that did not pass the old algorithm
    auto highestCluster = findHighestPtCluster(crystalClusters, hovere_cut_min, ecal_isolation_cut_min);
    auto oldEGP4 = highestEGCandidate->polarP4();
-   if ( highestCluster->et > 40. ) {
+   // Don't do this if we are looking at real electrons!
+   if ( !doEfficiencyCalc && highestCluster->et > 40. ) {
       // Show the highest pt Cluster
       double dr = deltaR(*highestCluster, oldEGP4);
       // To be proper, we should use edm::LogInfo("L1EGRateStudies") << "stuff";
