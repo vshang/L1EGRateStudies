@@ -89,7 +89,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
 
       // -- user functions
       void integrateDown(TH1F *);
-      const l1slhc::L1EGCrystalCluster * findHighestPtCluster(const l1slhc::L1EGCrystalClusterCollection&, double, double) const;
+      const l1slhc::L1EGCrystalCluster * findHighestPtCluster(const l1slhc::L1EGCrystalClusterCollection&) const;
       inline double deltaR(const reco::Candidate::PolarLorentzVector& a, const reco::Candidate::PolarLorentzVector& b){return reco::deltaR(a,b);};
       double deltaR(const l1slhc::L1EGCrystalCluster& a, const reco::Candidate::PolarLorentzVector& b); 
       
@@ -129,6 +129,12 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       TH1F * oldEGalg_efficiency_eta_hist;
       TH1F * oldEGalg_deltaR_hist;
       TH1F * oldEGalg_rate_hist;
+
+      // hovere and iso distributions
+      TH1F * hovere_hist;
+      TH1F * ecalIso_hist;
+
+      // todo: (pt_reco-pt_gen)/pt_gen plot
 };
 
 //
@@ -192,7 +198,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       }
       oldEGalg_efficiency_hist = fs->make<TH1F>("oldEG_efficiency_pt", "Old EG Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       oldEGalg_efficiency_eta_hist = fs->make<TH1F>("oldEG_efficiency_eta", "Old EG Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
-      oldEGalg_deltaR_hist = fs->make<TH1F>("oldEG_deltaR", "Old EG Trigger;#Delta R (Gen-Reco);Counts", 50, 0., 0.1);
+      oldEGalg_deltaR_hist = fs->make<TH1F>("oldEG_deltaR", "Old EG Trigger;#Delta R (Gen-Reco);Counts", 30, 0., 0.1);
 
       // We don't want to save these, we'll just be dividing by them after looping through all events
       efficiency_denominator_hist = new TH1F("gen_pt", "Old EG Trigger;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
@@ -212,6 +218,8 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       }
       oldEGalg_rate_hist = fs->make<TH1F>("oldEG_rate" , "EG Rates;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
    }
+   hovere_hist = fs->make<TH1F>("hovere" , "EG H/E distribution;HCal energy / ECal energy;Counts", 30, 0, 5); 
+   ecalIso_hist = fs->make<TH1F>("ecalIso" , "EG ECal Isolation distribution;ECal Isolation;Counts", 30, 0, 5);
 }
 
 
@@ -254,12 +262,12 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          highestEGCandidate = &(*it);
       }
    }
+   auto highestCluster = findHighestPtCluster(crystalClusters);
    
    if ( doEfficiencyCalc ) {
       // Only one electron is produced in singleElectron files
       // we look for that electron in the reconstructed data within some deltaR cut, 
       // and if we find it, it goes in the numerator
-      reco::GenParticle trueElectron = genParticles[0];
       efficiency_denominator_hist->Fill(genParticles[0].pt());
       efficiency_denominator_eta_hist->Fill(genParticles[0].eta());
 
@@ -267,7 +275,6 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          double hovere_cut = hovere_cut_min+(hovere_cut_max-hovere_cut_min)*i/(cut_steps-1);
          for(int j=0; j<cut_steps; j++) {
             double ecal_isolation_cut = ecal_isolation_cut_min+(ecal_isolation_cut_max-ecal_isolation_cut_min)*j/(cut_steps-1);
-            auto highestCluster = findHighestPtCluster(crystalClusters, hovere_cut, ecal_isolation_cut);
             if ( highestCluster->hovere < hovere_cut 
                   && highestCluster->ECALiso < ecal_isolation_cut 
                   && deltaR(*highestCluster, genParticles[0].polarP4()) < 0.1 ) {
@@ -276,6 +283,12 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                deltaR_histograms[i*cut_steps+j]->Fill(deltaR(*highestCluster, genParticles[0].polarP4()));
             }
          }
+      }
+
+      // while doing efficiencies, we match up to generated electron
+      if ( deltaR(*highestCluster, genParticles[0].polarP4()) < 0.1 ) {
+         hovere_hist->Fill(highestCluster->hovere);
+         ecalIso_hist->Fill(highestCluster->ECALiso);
       }
       
       if ( deltaR(highestEGCandidate->polarP4(), genParticles[0].polarP4()) < 0.1 ) {
@@ -289,7 +302,6 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          double hovere_cut = hovere_cut_min+(hovere_cut_max-hovere_cut_min)*i/(cut_steps-1);
          for(int j=0; j<cut_steps; j++) {
             double ecal_isolation_cut = ecal_isolation_cut_min+(ecal_isolation_cut_max-ecal_isolation_cut_min)*j/(cut_steps-1);
-            auto highestCluster = findHighestPtCluster(crystalClusters, hovere_cut, ecal_isolation_cut);
             if ( highestCluster->hovere < hovere_cut 
                   && highestCluster->ECALiso < ecal_isolation_cut ) {
                histograms[i*cut_steps+j]->Fill(highestCluster->et);
@@ -297,10 +309,13 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          }
       }
       oldEGalg_rate_hist->Fill(highestEGCandidate->pt());
+      hovere_hist->Fill(highestCluster->hovere);
+      ecalIso_hist->Fill(highestCluster->ECALiso);
    }
 
+   // --- Debug crap below
+
    // List clusters that did not pass the old algorithm
-   auto highestCluster = findHighestPtCluster(crystalClusters, hovere_cut_min, ecal_isolation_cut_min);
    auto oldEGP4 = highestEGCandidate->polarP4();
    // Don't do this if we are looking at real electrons!
    if ( !doEfficiencyCalc && highestCluster->et > 40. ) {
@@ -318,6 +333,17 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          });
       for(auto cluster : crystalClusters) {
          std::cout << "\tCluster pt = " << cluster.et << ", eta = " << cluster.eta << ", phi = " << cluster.phi << ", deltaR = " << deltaR(cluster, oldEGP4) << ", hovere = " << cluster.hovere << ", iso = " << cluster.ECALiso << std::endl;
+      }
+   }
+   else if ( doEfficiencyCalc ) {
+      // is the closest object the generated e?
+      std::sort(begin(crystalClusters), end(crystalClusters), [&](const l1slhc::L1EGCrystalCluster& a, const l1slhc::L1EGCrystalCluster& b){
+         return deltaR(a,genParticles[0].polarP4()) < deltaR(b,genParticles[0].polarP4());
+         });
+      for(auto cluster : crystalClusters) {
+         if ( cluster.et == highestCluster->et )
+            std::cout << "\x1B[32m"; // green hilight
+         std::cout << "\tCluster pt = " << cluster.et << ", eta = " << cluster.eta << ", phi = " << cluster.phi << ", deltaR = " << deltaR(cluster,genParticles[0].polarP4()) << ", hovere = " << cluster.hovere << ", iso = " << cluster.ECALiso << "\x1B[0m" << std::endl;
       }
    }
 }
@@ -410,7 +436,7 @@ L1EGRateStudies::integrateDown(TH1F * hist) {
 }
 
 const l1slhc::L1EGCrystalCluster * 
-L1EGRateStudies::findHighestPtCluster(const l1slhc::L1EGCrystalClusterCollection& clusters, double hovere_cut, double iso_cut) const {
+L1EGRateStudies::findHighestPtCluster(const l1slhc::L1EGCrystalClusterCollection& clusters) const {
    double maxpt = -1.;
    auto ptr = clusters.begin();
    for(auto it=clusters.begin(); it != clusters.end(); it++) {
