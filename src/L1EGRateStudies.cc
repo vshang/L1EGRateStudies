@@ -136,6 +136,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
 
       // (pt_reco-pt_gen)/pt_gen plot
       TH1F * reco_gen_pt_hist;
+      TH1F * oldAlg_reco_gen_pt_hist;
 };
 
 //
@@ -201,6 +202,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       oldEGalg_efficiency_eta_hist = fs->make<TH1F>("oldEG_efficiency_eta", "Old EG Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
       oldEGalg_deltaR_hist = fs->make<TH1F>("oldEG_deltaR", "Old EG Trigger;#Delta R (Gen-Reco);Counts", 30, 0., 0.1);
       reco_gen_pt_hist = fs->make<TH1F>("reco_gen_pt" , "EG relative momentum error;(pT_{reco}-pT_{gen})/pT_{gen};Counts", 40, -0.2, 0.2); 
+      oldAlg_reco_gen_pt_hist = fs->make<TH1F>("oldAlg_reco_gen_pt" , "Old EG relative momentum error;(pT_{reco}-pT_{gen})/pT_{gen};Counts", 40, -0.2, 0.2); 
 
       // We don't want to save these, we'll just be dividing by them after looping through all events
       efficiency_denominator_hist = new TH1F("gen_pt", "Old EG Trigger;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
@@ -298,6 +300,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          oldEGalg_efficiency_hist->Fill(genParticles[0].pt());
          oldEGalg_efficiency_eta_hist->Fill(genParticles[0].eta());
          oldEGalg_deltaR_hist->Fill(deltaR(highestEGCandidate->polarP4(), genParticles[0].polarP4()));
+         oldAlg_reco_gen_pt_hist->Fill( (highestEGCandidate->pt() - genParticles[0].pt())/genParticles[0].pt() );
       }
    } else {
       // Fill rate histograms
