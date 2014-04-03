@@ -134,7 +134,8 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       TH1F * hovere_hist;
       TH1F * ecalIso_hist;
 
-      // todo: (pt_reco-pt_gen)/pt_gen plot
+      // (pt_reco-pt_gen)/pt_gen plot
+      TH1F * reco_gen_pt_hist;
 };
 
 //
@@ -199,6 +200,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       oldEGalg_efficiency_hist = fs->make<TH1F>("oldEG_efficiency_pt", "Old EG Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       oldEGalg_efficiency_eta_hist = fs->make<TH1F>("oldEG_efficiency_eta", "Old EG Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
       oldEGalg_deltaR_hist = fs->make<TH1F>("oldEG_deltaR", "Old EG Trigger;#Delta R (Gen-Reco);Counts", 30, 0., 0.1);
+      reco_gen_pt_hist = fs->make<TH1F>("reco_gen_pt" , "EG relative momentum error;(pT_{reco}-pT_{gen})/pT_{gen};Counts", 40, -0.2, 0.2); 
 
       // We don't want to save these, we'll just be dividing by them after looping through all events
       efficiency_denominator_hist = new TH1F("gen_pt", "Old EG Trigger;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
@@ -289,6 +291,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       if ( deltaR(*highestCluster, genParticles[0].polarP4()) < 0.1 ) {
          hovere_hist->Fill(highestCluster->hovere);
          ecalIso_hist->Fill(highestCluster->ECALiso);
+         reco_gen_pt_hist->Fill( (highestCluster->et - genParticles[0].pt())/genParticles[0].pt() );
       }
       
       if ( deltaR(highestEGCandidate->polarP4(), genParticles[0].polarP4()) < 0.1 ) {
