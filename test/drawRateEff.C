@@ -4,10 +4,14 @@
 // rootools can be found in ~nsmith/src/rootools
 // It's just a small collection of useful utilities
 #include "rootools.h"
+
+#include <memory>
 #include "TCanvas.h"
 #include "TH1F.h"
 #include "TLegend.h"
 #include "TStyle.h"
+#include "TGraph.h"
+#include "TMultiGraph.h"
 
 void setLegStyle(TLegend * leg) {
    leg->SetBorderSize(0);
@@ -19,27 +23,37 @@ void setLegStyle(TLegend * leg) {
 }
 
 void drawNewOld(std::vector<TH1F*> newHists, TH1F * oldHist, TCanvas * c, double ymax) {
-   oldHist->SetLineColor(kRed);
-   if ( c->GetLogy() == 0 ) // linear
-      oldHist->SetMinimum(0.);
-   if ( ymax != 0. )
-      oldHist->SetMaximum(ymax);
+   c->Clear();
+   TGraph * oldGraph = new TGraph((TH1 *) oldHist);
+   oldGraph->SetLineColor(kRed);
+   oldGraph->SetMarkerColor(kRed);
+   oldGraph->SetMarkerStyle(20);
    std::string oldTitle = oldHist->GetTitle();
-   oldHist->SetTitle("EG Rates");
+
+   TMultiGraph mg("mg", "EG Rates");
+   mg.Add(oldGraph);
    for ( auto newHist : newHists ) {
-      oldHist->Draw();
-      newHist->Draw("same");
-      TLegend *leg = new TLegend(0.4,0.8,0.9,0.9);
+      auto g = new TGraph((TH1 *) newHist);
+      g->SetMarkerStyle(21);
+      mg.Add(g);
+      mg.Draw("apl");
+      if ( c->GetLogy() == 0 ) // linear
+         mg.SetMinimum(0.);
+      if ( ymax != 0. )
+         mg.SetMaximum(ymax);
+      TLegend *leg = new TLegend(0.5,0.8,0.9,0.9);
       setLegStyle(leg);
-      leg->AddEntry(oldHist, "Old L2 Algorithm","l");
-      leg->AddEntry(newHist, newHist->GetTitle(),"l");
+      leg->AddEntry(oldGraph, "Old L2 Algorithm","lp");
+      leg->AddEntry(newHist, newHist->GetTitle(),"lp");
       leg->Draw("same");
+      mg.GetXaxis()->SetTitle(oldHist->GetXaxis()->GetTitle());
+      mg.GetYaxis()->SetTitle(oldHist->GetYaxis()->GetTitle());
 
       c->Print(("plots/"+std::string(newHist->GetName())+".png").c_str());
       delete leg;
+      mg.RecursiveRemove(g);
+      delete g;
    }
-   // Fix our title mangling
-   oldHist->SetTitle(oldTitle.c_str());
 }
 
 void drawSame(std::vector<TH1F*> hists, TCanvas * c, double ymax, std::string name) {
@@ -95,8 +109,9 @@ void drawRateEff() {
    auto oldAlgDRHist = (TH1F *) eff->Get("analyzer/oldEG_deltaR");
    c->SetLogy(0);
    drawNewOld(newAlgEtaEffHists, oldAlgEtaHist, c, 1.2);
+   rootools::drawMulti({oldAlgEtaHist, newAlgEtaEffHists[10]}, c, "EG efficiencies", "plots/crystalEG_efficiency_tgraph_eta.png", {.5,.7,.9,.9});
    drawNewOld(newAlgPtEffHists, oldAlgPtHist, c, 1.2);
-   drawNewOld(newAlgDRHists, oldAlgDRHist, c, 50.);
+   drawNewOld(newAlgDRHists, oldAlgDRHist, c, 80.);
 
    std::vector<TH1F*> selectedEtaEffHists{oldAlgEtaHist, newAlgEtaEffHists[0], newAlgEtaEffHists[3], newAlgEtaEffHists[12], newAlgEtaEffHists[15]};
    rootools::drawMulti(selectedEtaEffHists, c, "EG Efficiencies", "plots/crystalEG_efficiency_variouscuts_eta.png", {0.5, 0.7, 0.9, 0.9});
@@ -104,4 +119,30 @@ void drawRateEff() {
    rootools::drawMulti(selectedPtEffHists, c, "EG Efficiencies", "plots/crystalEG_efficiency_variouscuts_pt.png", {0.5, 0.7, 0.9, 0.9});
    std::vector<TH1F*> selectedDRHists{oldAlgDRHist, newAlgDRHists[0], newAlgDRHists[3], newAlgDRHists[12], newAlgDRHists[15]};
    rootools::drawMulti(selectedDRHists, c, "EG single-electron reconstruction", "plots/crystalEG_deltaR_variouscuts.png", {0.5, 0.7, 0.9, 0.9});
+
+   auto recoGenPtHist = (TH1F *) eff->Get("analyzer/reco_gen_pt");
+   recoGenPtHist->Draw();
+   c->Print("plots/reco_gen_pt.png");
+
+   c->Clear();
+   c->SetCanvasSize(1000,500);
+   c->Divide(2,1);
+   auto hovereHist = (TH1F *) eff->Get("analyzer/hovere");
+   auto hovereHistFake = (TH1F *) rates->Get("analyzer/hovere");
+   hovereHistFake->SetLineColor(kRed);
+   c->cd(1);
+   hovereHist->Draw();
+   hovereHistFake->Draw("same");
+   auto ecalIsoHist = (TH1F *) eff->Get("analyzer/ecalIso");
+   auto ecalIsoHistFake = (TH1F *) rates->Get("analyzer/ecalIso");
+   ecalIsoHistFake->SetLineColor(kRed);
+   c->cd(2);
+   ecalIsoHist->Draw();
+   ecalIsoHistFake->Draw("same");
+   TLegend * l = new TLegend(0.5,0.8,0.9,0.9);
+   setLegStyle(l);
+   l->AddEntry(ecalIsoHist, "True electron distribution", "l");
+   l->AddEntry(ecalIsoHistFake, "Background distribution", "l");
+   l->Draw("same");
+   c->Print("plots/crystalEG_hovere_isolation_distributions.png");
 }
