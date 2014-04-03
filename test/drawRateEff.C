@@ -20,6 +20,8 @@ void setLegStyle(TLegend * leg) {
 
 void drawNewOld(std::vector<TH1F*> newHists, TH1F * oldHist, TCanvas * c, double ymax) {
    oldHist->SetLineColor(kRed);
+   if ( c->GetLogy() == 0 ) // linear
+      oldHist->SetMinimum(0.);
    if ( ymax != 0. )
       oldHist->SetMaximum(ymax);
    std::string oldTitle = oldHist->GetTitle();
@@ -42,7 +44,8 @@ void drawNewOld(std::vector<TH1F*> newHists, TH1F * oldHist, TCanvas * c, double
 
 void drawSame(std::vector<TH1F*> hists, TCanvas * c, double ymax, std::string name) {
    std::vector<int> colors { kRed, kGreen, kBlue, kBlack, kGray };
-   hists[0]->SetMaximum(ymax);
+   if ( ymax != 0. )
+      hists[0]->SetMaximum(ymax);
    std::string h0t = hists[0]->GetTitle();
    hists[0]->SetTitle("EG Rates");
    TLegend *leg = new TLegend(0.5,0.7,0.9,0.9);
@@ -81,7 +84,7 @@ void drawRateEff() {
    drawNewOld(newAlgRateHists, oldAlgRateHist, c, 40000.);
    // Draw several cuts on same plot (the four corners in search space)
    std::vector<TH1F*> selectedHists{oldAlgRateHist, newAlgRateHists[0], newAlgRateHists[3], newAlgRateHists[12], newAlgRateHists[15]};
-   drawSame(selectedHists, c, 40000., "crystalEG_rate_variouscuts.png");
+   rootools::drawMulti(selectedHists, c, "EG Fake Rates", "plots/crystalEG_rate_variouscuts.png", {0.5, 0.7, 0.9, 0.9});
 
    auto effHistKeys = rootools::getKeysofClass(eff, "analyzer", "TH1F");
    auto newAlgEtaEffHists = rootools::loadObjectsMatchingPattern<TH1F>(effHistKeys, "crystalEG*_eta");
@@ -93,10 +96,12 @@ void drawRateEff() {
    c->SetLogy(0);
    drawNewOld(newAlgEtaEffHists, oldAlgEtaHist, c, 1.2);
    drawNewOld(newAlgPtEffHists, oldAlgPtHist, c, 1.2);
-   drawNewOld(newAlgDRHists, oldAlgDRHist, c, 0.);
+   drawNewOld(newAlgDRHists, oldAlgDRHist, c, 50.);
 
    std::vector<TH1F*> selectedEtaEffHists{oldAlgEtaHist, newAlgEtaEffHists[0], newAlgEtaEffHists[3], newAlgEtaEffHists[12], newAlgEtaEffHists[15]};
-   drawSame(selectedEtaEffHists, c, 1.2, "crystalEG_efficiency_variouscuts_eta.png");
+   rootools::drawMulti(selectedEtaEffHists, c, "EG Efficiencies", "plots/crystalEG_efficiency_variouscuts_eta.png", {0.5, 0.7, 0.9, 0.9});
    std::vector<TH1F*> selectedPtEffHists{oldAlgPtHist, newAlgPtEffHists[0], newAlgPtEffHists[3], newAlgPtEffHists[12], newAlgPtEffHists[15]};
-   drawSame(selectedPtEffHists, c, 1.2, "crystalEG_efficiency_variouscuts_pt.png");
+   rootools::drawMulti(selectedPtEffHists, c, "EG Efficiencies", "plots/crystalEG_efficiency_variouscuts_pt.png", {0.5, 0.7, 0.9, 0.9});
+   std::vector<TH1F*> selectedDRHists{oldAlgDRHist, newAlgDRHists[0], newAlgDRHists[3], newAlgDRHists[12], newAlgDRHists[15]};
+   rootools::drawMulti(selectedDRHists, c, "EG single-electron reconstruction", "plots/crystalEG_deltaR_variouscuts.png", {0.5, 0.7, 0.9, 0.9});
 }

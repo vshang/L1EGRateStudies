@@ -194,7 +194,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
             name << "crystalEG_deltaR_hovere" << i << "_iso" << j;
             title.str("");
             title << "Crystal-level EG Trigger (hovere "  << hovere_cut << ", iso " << ecal_isolation_cut << ");#Delta R (Gen-Reco);Counts";
-            deltaR_histograms[i*cut_steps+j] = fs->make<TH1F>(name.str().c_str(), title.str().c_str(), 100, -0.1, 0.1);
+            deltaR_histograms[i*cut_steps+j] = fs->make<TH1F>(name.str().c_str(), title.str().c_str(), 30, 0, 0.1);
          }
       }
       oldEGalg_efficiency_hist = fs->make<TH1F>("oldEG_efficiency_pt", "Old EG Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
@@ -220,8 +220,8 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       }
       oldEGalg_rate_hist = fs->make<TH1F>("oldEG_rate" , "EG Rates;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
    }
-   hovere_hist = fs->make<TH1F>("hovere" , "EG H/E distribution;HCal energy / ECal energy;Counts", 30, 0, 5); 
-   ecalIso_hist = fs->make<TH1F>("ecalIso" , "EG ECal Isolation distribution;ECal Isolation;Counts", 30, 0, 5);
+   hovere_hist = fs->make<TH1F>("hovere" , "EG H/E distribution;HCal energy / ECal energy;Counts", 30, 0, 4); 
+   ecalIso_hist = fs->make<TH1F>("ecalIso" , "EG ECal Isolation distribution;ECal Isolation;Counts", 30, 0, 4);
 }
 
 
