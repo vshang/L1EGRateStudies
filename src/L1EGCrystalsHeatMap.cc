@@ -139,7 +139,7 @@ L1EGCrystalsHeatMap::L1EGCrystalsHeatMap(const edm::ParameterSet& iConfig)
    DEBUG = iConfig.getParameter<bool>("DEBUG");
    
    edm::Service<TFileService> fs;
-   heatmap = fs->make<TH2F>("heatmap", "Heatmap;d#eta;d#phi", 50, -0.3, 0.3, 50, -0.3, 0.3);
+   heatmap = fs->make<TH2F>("heatmap", "Heatmap;d#eta;d#phi", 21, -0.175-0.0175/2, 0.175+0.0175/2, 21, -0.175-0.0175/2, 0.175+0.0175/2);
 }
 
 
@@ -258,102 +258,24 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    edm::Handle<reco::GenParticleCollection> genParticleHandle;
    iEvent.getByLabel("genParticles", genParticleHandle);
    reco::GenParticleCollection genParticles = *genParticleHandle.product();
-   float Etmax = 0 ;
-   while( Etmax != 2.)
+   double dRmin = 999.;
+   auto centerhit = std::begin(ecalhits);
+   for(auto ecalhit=std::begin(ecalhits); ecalhit!=std::end(ecalhits); ecalhit++)
    {
-      Etmax = 2. ;
-      auto centerhit = std::begin(ecalhits);
-      for(auto ecalhit=std::begin(ecalhits); ecalhit!=std::end(ecalhits); ecalhit++)
+      reco::Candidate::PolarLorentzVector hitP4(ecalhit->et, ecalhit->eta, ecalhit->phi, 0.);
+      if ( reco::deltaR(hitP4, genParticles[0].polarP4()) < dRmin )
       {
-         if( !ecalhit->marked && ecalhit->et > Etmax)
-         {
-            Etmax = ecalhit->et;
-            centerhit = ecalhit;
-         }
-      } 
-
-      if( Etmax != 2. )
-      {
-         float Total_E = 0;
-         float Weightedx = 0;
-         float Weightedy = 0;
-         float Weightedz = 0;
-         for(auto ecalhit : ecalhits)
-         {
-            if ( !ecalhit.marked && fabs(centerhit->eta-ecalhit.eta) < 0.08 && fabs(centerhit->phi-ecalhit.phi) < 0.1 )
-            {
-               Total_E = Total_E + ecalhit.e ;
-               Weightedx = Weightedx + ecalhit.x*ecalhit.e;
-               Weightedy = Weightedy + ecalhit.y*ecalhit.e;
-               Weightedz = Weightedz + ecalhit.z*ecalhit.e;
-               ecalhit.marked = true;
-            }
-         }
-         l1slhc::L1EGCrystalClusterTest cluster;
-         cluster.e = Total_E ;
-         cluster.x = Weightedx/Total_E ;
-         cluster.y = Weightedy/Total_E ;
-         cluster.z = Weightedz/Total_E ;
-         TVector3 tmp(cluster.x,cluster.y,cluster.z) ;
-         cluster.phi = tmp.Phi() ;
-         cluster.eta = tmp.PseudoRapidity() ;
-         cluster.et = Total_E*sin(tmp.Theta()) ;
-         if (DEBUG) {
-            std::cout << " clusters " << Total_E << " et " << cluster.et << " phi " << cluster.phi << " eta " << cluster.eta <<  std::endl ;
-         }
-
-         // calculate isolation and pileup-corrected et (where is this defined?)
-         Total_E = 0. ;
-         Weightedx = 0 ;
-         Weightedy = 0 ;
-         Weightedz = 0 ;
-         double isoSum = 0;
-         for(auto ecalhit : ecalhits)
-         {
-            if ( !ecalhit.marked && ecalhit.et > 0.05 && fabs(centerhit->eta-ecalhit.eta) < 0.25 && fabs(centerhit->phi-ecalhit.phi) < 0.25 )
-            {
-               TVector3 tmp(ecalhit.x,ecalhit.y,ecalhit.z);
-               isoSum += ecalhit.e*sin(tmp.Theta());
-            }
-            if ( !ecalhit.marked && ecalhit.et > 0.05 && ecalhit.et < 5. && fabs(centerhit->eta-ecalhit.eta) < 0.12 && fabs(centerhit->phi-ecalhit.phi) < 1. )
-            {
-               Total_E = Total_E + ecalhit.e ;
-               Weightedx = Weightedx + ecalhit.x*ecalhit.e;
-               Weightedy = Weightedy + ecalhit.y*ecalhit.e;
-               Weightedz = Weightedz + ecalhit.z*ecalhit.e;
-            }
-         }
-         cluster.ECALiso = isoSum/cluster.et ;
-
-         TVector3 tmp1(Weightedx/Total_E,Weightedy/Total_E,Weightedz/Total_E) ;
-         cluster.ECALetPUcorr = cluster.et-Total_E*sin(tmp1.Theta())/19. ;
-
-         // calculate hovere
-         Total_E = 0 ;
-         for(auto hcalhit : hcalhits)
-         {
-            if ( fabs(centerhit->eta-hcalhit.eta) < 0.15 && fabs(centerhit->phi-hcalhit.phi) < 0.15 )
-            {
-               Total_E = Total_E + hcalhit.e ;
-            }
-         }
-         cluster.hovere = Total_E/cluster.e ;
-         
-         reco::Candidate::PolarLorentzVector clusterP4(cluster.et, cluster.eta, cluster.phi, 0.);
-         if ( reco::deltaR(clusterP4, genParticles[0].polarP4()) < 0.1 && cluster.et > genParticles[0].pt()/2 ) {
-            // quite likely that this is the electron
-            
-            for(auto ecalhit : ecalhits)
-            {
-               if ( fabs(centerhit->eta-ecalhit.eta) < 0.08 && fabs(centerhit->phi-ecalhit.phi) < 0.1 )
-               {
-                  heatmap->Fill(ecalhit.eta, ecalhit.phi);
-               }
-            }
-         }
+         dRmin = reco::deltaR(hitP4, genParticles[0].polarP4());
+         centerhit = ecalhit;
       }
    }
-   
+   for(auto ecalhit : ecalhits)
+   {
+      if ( fabs(centerhit->eta-ecalhit.eta) < 0.2 && fabs(centerhit->phi-ecalhit.phi) < 0.2 )
+      {
+         heatmap->Fill(ecalhit.eta-centerhit->eta, ecalhit.phi-centerhit->phi, ecalhit.e);
+      }
+   }
 }
 
 // ------------ method called once each job just before starting event loop  ------------
