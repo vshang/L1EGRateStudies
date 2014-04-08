@@ -123,11 +123,15 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       std::vector<TH1F *> histograms;
       std::vector<TH1F *> eta_histograms;
       std::vector<TH1F *> deltaR_histograms;
+      std::vector<TH1F *> deta_histograms;
+      std::vector<TH1F *> dphi_histograms;
       TH1F * efficiency_denominator_hist;
       TH1F * efficiency_denominator_eta_hist;
       TH1F * oldEGalg_efficiency_hist;
       TH1F * oldEGalg_efficiency_eta_hist;
       TH1F * oldEGalg_deltaR_hist;
+      TH1F * oldEGalg_deta_hist;
+      TH1F * oldEGalg_dphi_hist;
       TH1F * oldEGalg_rate_hist;
 
       // hovere and iso distributions
@@ -176,31 +180,50 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    if ( doEfficiencyCalc ) {
       eta_histograms.resize(cut_steps*cut_steps);
       deltaR_histograms.resize(cut_steps*cut_steps);
+      deta_histograms.resize(cut_steps*cut_steps);
+      dphi_histograms.resize(cut_steps*cut_steps);
       // We want to plot efficiency vs. pt and eta, for various hovere and isolation cuts
       for(int i=0; i<cut_steps; i++) {
          double hovere_cut = hovere_cut_min+(hovere_cut_max-hovere_cut_min)*i/(cut_steps-1);
          for(int j=0; j<cut_steps; j++) {
             double ecal_isolation_cut = ecal_isolation_cut_min+(ecal_isolation_cut_max-ecal_isolation_cut_min)*j/(cut_steps-1);
             std::stringstream name;
+            // efficiency
             name << "crystalEG_efficiency_hovere" << i << "_iso" << j << "_pt";
             std::stringstream title;
             title << "Crystal-level EG Trigger (hovere "  << hovere_cut << ", iso " << ecal_isolation_cut << ");Gen. pT (GeV);Efficiency";
             histograms[i*cut_steps+j] = fs->make<TH1F>(name.str().c_str(), title.str().c_str(), nHistBins, histLow, histHigh);
+            // hovere
             name.str("");
             name << "crystalEG_efficiency_hovere" << i << "_iso" << j << "_eta";
             title.str("");
             title << "Crystal-level EG Trigger (hovere "  << hovere_cut << ", iso " << ecal_isolation_cut << ");Gen. #eta;Efficiency";
             eta_histograms[i*cut_steps+j] = fs->make<TH1F>(name.str().c_str(), title.str().c_str(), nHistEtaBins, histetaLow, histetaHigh);
+            // deltaR
             name.str("");
             name << "crystalEG_deltaR_hovere" << i << "_iso" << j;
             title.str("");
             title << "Crystal-level EG Trigger (hovere "  << hovere_cut << ", iso " << ecal_isolation_cut << ");#Delta R (Gen-Reco);Counts";
             deltaR_histograms[i*cut_steps+j] = fs->make<TH1F>(name.str().c_str(), title.str().c_str(), 30, 0, 0.1);
+            // deta
+            name.str("");
+            name << "crystalEG_deta_hovere" << i << "_iso" << j;
+            title.str("");
+            title << "Crystal-level EG Trigger (hovere "  << hovere_cut << ", iso " << ecal_isolation_cut << ");d#eta (Gen-Reco);Counts";
+            deta_histograms[i*cut_steps+j] = fs->make<TH1F>(name.str().c_str(), title.str().c_str(), 50, -0.1, 0.1);
+            // dphi
+            name.str("");
+            name << "crystalEG_dphi_hovere" << i << "_iso" << j;
+            title.str("");
+            title << "Crystal-level EG Trigger (hovere "  << hovere_cut << ", iso " << ecal_isolation_cut << ");d#phi (Gen-Reco);Counts";
+            dphi_histograms[i*cut_steps+j] = fs->make<TH1F>(name.str().c_str(), title.str().c_str(), 50, -0.1, 0.1);
          }
       }
       oldEGalg_efficiency_hist = fs->make<TH1F>("oldEG_efficiency_pt", "Old EG Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       oldEGalg_efficiency_eta_hist = fs->make<TH1F>("oldEG_efficiency_eta", "Old EG Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
       oldEGalg_deltaR_hist = fs->make<TH1F>("oldEG_deltaR", "Old EG Trigger;#Delta R (Gen-Reco);Counts", 30, 0., 0.1);
+      oldEGalg_deta_hist = fs->make<TH1F>("oldEG_deta", "Old EG Trigger;d#eta (Gen-Reco);Counts", 50, -0.1, 0.1);
+      oldEGalg_dphi_hist = fs->make<TH1F>("oldEG_dphi", "Old EG Trigger;d#phi (Gen-Reco);Counts", 50, -0.1, 0.1);
       reco_gen_pt_hist = fs->make<TH1F>("reco_gen_pt" , "EG relative momentum error;(pT_{reco}-pT_{gen})/pT_{gen};Counts", 40, -0.2, 0.2); 
       oldAlg_reco_gen_pt_hist = fs->make<TH1F>("oldAlg_reco_gen_pt" , "Old EG relative momentum error;(pT_{reco}-pT_{gen})/pT_{gen};Counts", 40, -0.2, 0.2); 
 
@@ -285,6 +308,8 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                histograms[i*cut_steps+j]->Fill(genParticles[0].pt());
                eta_histograms[i*cut_steps+j]->Fill(genParticles[0].eta());
                deltaR_histograms[i*cut_steps+j]->Fill(deltaR(*highestCluster, genParticles[0].polarP4()));
+               deta_histograms[i*cut_steps+j]->Fill(genParticles[0].eta()-highestCluster->eta);
+               dphi_histograms[i*cut_steps+j]->Fill(genParticles[0].phi()-highestCluster->phi);
             }
          }
       }
@@ -300,6 +325,8 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          oldEGalg_efficiency_hist->Fill(genParticles[0].pt());
          oldEGalg_efficiency_eta_hist->Fill(genParticles[0].eta());
          oldEGalg_deltaR_hist->Fill(deltaR(highestEGCandidate->polarP4(), genParticles[0].polarP4()));
+         oldEGalg_deta_hist->Fill(genParticles[0].eta()-highestEGCandidate->eta());
+         oldEGalg_dphi_hist->Fill(genParticles[0].phi()-highestEGCandidate->phi());
          oldAlg_reco_gen_pt_hist->Fill( (highestEGCandidate->pt() - genParticles[0].pt())/genParticles[0].pt() );
       }
    } else {
