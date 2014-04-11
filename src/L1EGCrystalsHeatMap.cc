@@ -73,6 +73,9 @@
 #include "TH2.h"
 #include "TVector3.h"
 
+//
+// Define some structs
+//
 namespace l1slhc {
    class L1EGCrystalClusterTest {
       public:
@@ -119,6 +122,39 @@ class L1EGCrystalsHeatMap : public edm::EDAnalyzer {
       bool DEBUG;
       int nEvents = 0;
       std::vector<TH2F*> heatmaps;
+      std::vector<int> heatmap_nevents;
+      class EcalHit{
+         public:
+            EBDetId id;
+            GlobalPoint position;
+            double energy=0.;
+            inline double pt(){return energy*cos(position.theta());};
+            inline double deta(EcalHit& other){return position.eta() - other.position.eta();};
+            int dieta(EcalHit& other){
+               // int indices do not contain zero
+               // Logic from EBDetId::distanceEta() without the abs()
+               if (id.ieta() * other.id.ieta() > 0)
+                  return id.ieta()-other.id.ieta();
+               return id.ieta()-other.id.ieta()-1;
+            };
+            inline double dphi(EcalHit& other){return reco::deltaPhi(position.phi(), other.position.phi());};
+            inline int diphi(EcalHit& other){
+               // Logic from EBDetId::distancePhi() without the abs()
+               int PI = 180;
+               int  result = id.iphi() - other.id.iphi();
+               while  (result > PI)    result -= 2*PI;
+               while  (result <= -PI)  result += 2*PI;
+               return result;
+            };
+            bool operator==(EcalHit& other) {
+               if ( id == other.id &&
+                  position == other.position &&
+                  energy == other.energy ) {
+                  return true;
+               }
+               return false;
+            };
+      };
 };
 
 //
@@ -139,13 +175,15 @@ L1EGCrystalsHeatMap::L1EGCrystalsHeatMap(const edm::ParameterSet& iConfig)
    edm::Service<TFileService> fs;
 
    heatmaps.resize(5);
+   heatmap_nevents.resize(5);
    for(int i=0; i<5; i++) {
       double ptlow = i*10;
       double pthigh = (i+1)*10;
       std::string name = "heatmap_pt"+std::to_string(i);
       std::stringstream title;
-      title << "Single-electron pt Heatmap (" << ptlow << "<pt<" << pthigh << ");d#eta;d#phi";
-      heatmaps[i] = fs->make<TH2F>(name.c_str(), title.str().c_str(), 21, -0.175-0.0175/2, 0.175+0.0175/2, 21, -0.175-0.0175/2, 0.175+0.0175/2);
+      title << "Single-electron pt Heatmap (" << ptlow << "<pt<" << pthigh << ");d#eta (int.);d#phi (int.)";
+      heatmaps[i] = fs->make<TH2F>(name.c_str(), title.str().c_str(), 21, -11, 11, 21, -11, 11);
+      heatmap_nevents[i] = 0;
    }
 }
 
@@ -182,14 +220,14 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    }
    nEvents++;
 
-   std::vector<l1slhc::L1EGCrystalClusterTest> ecalhits;
+   std::vector<EcalHit> ecalhits;
    std::vector<l1slhc::L1EGCrystalClusterTest> hcalhits;
 
    // Retrieve the SimHits.
    // Sasha's FAMOS :
    // edm::Handle<edm::PCaloHitContainer> pcalohits;
    // iEvent.getByLabel("famosSimHits","EcalHitsEB",pcalohits);
-   // using RecHits :
+   // using RecHits (https://cmssdt.cern.ch/SDT/doxygen/CMSSW_6_1_2_SLHC6/doc/html/d8/dc9/classEcalRecHit.html)
    edm::Handle<EcalRecHitCollection> pcalohits;
    iEvent.getByLabel("ecalRecHit","EcalRecHitsEB",pcalohits);
    // Geant's pcaloHits :
@@ -200,21 +238,13 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    {
       if(hit.energy() > 0.2)
       {
-         EBDetId EBid = EBDetId(hit.id()) ;
          auto cell = myGeometry.getEcalBarrelGeometry()->getGeometry(hit.id());
-         double theta =  cell->getPosition().theta() ;
-         double phi =  cell->getPosition().phi() ;
-         double eta = -1.*log(tan(theta/2.)) ;
-         l1slhc::L1EGCrystalClusterTest cluster_hit;
-         cluster_hit.et = (hit.energy())*sin(theta) ;
-         cluster_hit.eta = eta ;
-         cluster_hit.phi = phi ;
-         cluster_hit.e = hit.energy() ;
-         cluster_hit.x = cell->getPosition().x() ;
-         cluster_hit.y = cell->getPosition().y() ;
-         cluster_hit.z = cell->getPosition().z() ;
-         ecalhits.push_back(cluster_hit);
-         if (DEBUG) std::cout << " EB Hits " <<  hit.energy() <<  " phi " << phi << " eta " << eta << " eta1 " << EBid.ieta() << " theta " << theta << std::endl;
+         EcalHit ehit;
+         ehit.id = hit.id();
+         ehit.position = cell->getPosition();
+         ehit.energy = hit.energy();
+         ecalhits.push_back(ehit);
+         //std::cout << " EB Hits " <<  hit.energy() <<  " iphi " << hit.id.iphi() << " ieta " << hit.id.ieta() << " eta " << ehit.position.eta() << std::endl;
       }
    }
 
@@ -239,8 +269,7 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
       }
    }
    
-   // Find a cluster that 
-   // matches to gen particle
+   // Get generated electron
    edm::Handle<reco::GenParticleCollection> genParticleHandle;
    iEvent.getByLabel("genParticles", genParticleHandle);
    reco::GenParticleCollection genParticles = *genParticleHandle.product();
@@ -249,40 +278,55 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
       nEvents--;
       return;
    }
+   
+   // Find closest crystal
    double dRmin = 999.;
-   auto centerhit = std::begin(ecalhits);
-   for(auto ecalhit=std::begin(ecalhits); ecalhit!=std::end(ecalhits); ecalhit++)
+   EcalHit centerhit;
+   for(auto ecalhit : ecalhits)
    {
-      reco::Candidate::PolarLorentzVector hitP4(ecalhit->et, ecalhit->eta, ecalhit->phi, 0.);
-      if ( reco::deltaR(hitP4, genParticles[0].polarP4()) < dRmin )
+      if ( reco::deltaR(ecalhit.position, genParticles[0].polarP4()) < dRmin )
       {
-         dRmin = reco::deltaR(hitP4, genParticles[0].polarP4());
+         dRmin = reco::deltaR(ecalhit.position, genParticles[0].polarP4());
          centerhit = ecalhit;
       }
    }
-   std::vector<l1slhc::L1EGCrystalClusterTest> cluster;
-   for(auto ecalhit : ecalhits)
+
+   // Make heatmap
+   for(int i=0; i<5; i++)
    {
-      if ( fabs(centerhit->eta-ecalhit.eta) < 0.08 && fabs(reco::deltaPhi(centerhit->phi,ecalhit.phi)) < 0.1 ) {
-         cluster.push_back(ecalhit);
-      }
-      if ( fabs(centerhit->eta-ecalhit.eta) < 0.2 && fabs(reco::deltaPhi(centerhit->phi,ecalhit.phi)) < 0.2 )
+      double ptlow = i*10;
+      double pthigh = (i+1)*10;
+      if ( genParticles[0].pt() > ptlow && genParticles[0].pt() <= pthigh )
       {
-         for(int i=0; i<5; i++) {
-            double ptlow = i*10;
-            double pthigh = (i+1)*10;
-            if ( genParticles[0].pt() > ptlow && genParticles[0].pt() <= pthigh ) {
-               heatmaps[i]->Fill(ecalhit.eta-centerhit->eta, reco::deltaPhi(ecalhit.phi,centerhit->phi), ecalhit.et);
+         heatmap_nevents[i]++;
+         for(auto ecalhit : ecalhits)
+         {
+            if ( fabs(ecalhit.deta(centerhit)) < 0.2 && fabs(ecalhit.dphi(centerhit)) < 0.2 )
+            {
+               heatmaps[i]->Fill(ecalhit.dieta(centerhit), ecalhit.diphi(centerhit), ecalhit.pt());
             }
          }
       }
    }
-   std::sort(std::begin(cluster), std::end(cluster), [](l1slhc::L1EGCrystalClusterTest a, l1slhc::L1EGCrystalClusterTest b){return a.et > b.et;});
+   
+   // Make a cluster
+   std::vector<EcalHit> cluster;
+   for(auto ecalhit : ecalhits)
+   {
+      if ( fabs(ecalhit.deta(centerhit)) < 0.08 && fabs(ecalhit.dphi(centerhit)) < 0.1 )
+      {
+         cluster.push_back(ecalhit);
+      }
+   }
+   
+   // Print cluster
+   std::sort(std::begin(cluster), std::end(cluster), [](EcalHit a, EcalHit b){return a.pt() > b.pt();});
    std::cout << "Cluster around genParticle with pT=" << genParticles[0].pt() << ", eta=" << genParticles[0].eta() << ", phi=" << genParticles[0].phi() << std::endl;
-   for(auto hit : cluster) {
-      if ( hit.et == centerhit->et && hit.eta == centerhit->eta )
+   for(auto hit : cluster)
+   {
+      if ( hit == centerhit )
          std::cout << "\x1B[32m"; // green hilight
-      std::cout << "\tCrystal pt=" << hit.et << ", eta=" << hit.eta << ", phi=" << hit.phi << "\x1B[0m" << std::endl;
+      std::cout << "\tCrystal (" << hit.dieta(centerhit) << "," << hit.diphi(centerhit) << ") pt=" << hit.pt() << ", eta=" << hit.position.eta() << ", phi=" << hit.position.phi() << "\x1B[0m" << std::endl;
    }
 }
 
@@ -296,8 +340,10 @@ L1EGCrystalsHeatMap::beginJob()
 void 
 L1EGCrystalsHeatMap::endJob() 
 {
-   for(auto hm : heatmaps) {
-      hm->Scale(1./nEvents);
+   for(int i=0; i<5; i++)
+   {
+      if ( heatmap_nevents[i] > 0 )
+         heatmaps[i]->Scale(1./heatmap_nevents[i]);
    }
 }
 
