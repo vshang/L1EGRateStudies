@@ -128,7 +128,7 @@ class L1EGCrystalsHeatMap : public edm::EDAnalyzer {
             EBDetId id;
             GlobalPoint position;
             double energy=0.;
-            inline double pt(){return energy*cos(position.theta());};
+            inline double pt(){return energy*sin(position.theta());};
             inline double deta(EcalHit& other){return position.eta() - other.position.eta();};
             int dieta(EcalHit& other){
                // int indices do not contain zero
@@ -148,8 +148,8 @@ class L1EGCrystalsHeatMap : public edm::EDAnalyzer {
             };
             bool operator==(EcalHit& other) {
                if ( id == other.id &&
-                  position == other.position &&
-                  energy == other.energy ) {
+                    position == other.position &&
+                    energy == other.energy ) {
                   return true;
                }
                return false;
@@ -291,7 +291,7 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
       }
    }
 
-   // Make heatmap
+   // Fill heatmap
    for(int i=0; i<5; i++)
    {
       double ptlow = i*10;
@@ -313,7 +313,7 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    std::vector<EcalHit> cluster;
    for(auto ecalhit : ecalhits)
    {
-      if ( fabs(ecalhit.deta(centerhit)) < 0.08 && fabs(ecalhit.dphi(centerhit)) < 0.1 )
+      if ( fabs(ecalhit.dieta(centerhit)) < 3 && fabs(ecalhit.diphi(centerhit)) < 5 )
       {
          cluster.push_back(ecalhit);
       }
@@ -340,6 +340,7 @@ L1EGCrystalsHeatMap::beginJob()
 void 
 L1EGCrystalsHeatMap::endJob() 
 {
+   // Scale heatmaps by # events added
    for(int i=0; i<5; i++)
    {
       if ( heatmap_nevents[i] > 0 )
