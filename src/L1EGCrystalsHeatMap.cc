@@ -273,7 +273,7 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    edm::Handle<reco::GenParticleCollection> genParticleHandle;
    iEvent.getByLabel("genParticles", genParticleHandle);
    reco::GenParticleCollection genParticles = *genParticleHandle.product();
-   if ( fabs(genParticles[0].eta()) > 1.46 ) {
+   if ( fabs(genParticles[0].eta()) > 1.479 ) {
       // Don't consider generated electrons in the endcap
       nEvents--;
       return;
@@ -343,6 +343,7 @@ L1EGCrystalsHeatMap::endJob()
    // Scale heatmaps by # events added
    for(int i=0; i<5; i++)
    {
+      std::cout << "Heatmap " << i << " has " << heatmap_nevents[i] << " events." << std::endl;
       if ( heatmap_nevents[i] > 0 )
          heatmaps[i]->Scale(1./heatmap_nevents[i]);
    }
