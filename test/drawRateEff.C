@@ -8,6 +8,7 @@
 #include <memory>
 #include "TCanvas.h"
 #include "TH1F.h"
+#include "TH2F.h"
 #include "TLegend.h"
 #include "TStyle.h"
 #include "TGraph.h"
@@ -23,7 +24,7 @@ void setLegStyle(TLegend * leg) {
    leg->SetFillStyle(0);
 }
 
-void drawNewOld(std::vector<TH1F*> newHists, TH1F * oldHist, TCanvas * c, double ymax) {
+void drawNewOld(std::vector<TH1F*> newHists, TH1F * oldHist, TCanvas * c, double ymax, double xmax = 0.) {
    c->Clear();
    TGraph * oldGraph = new TGraph((TH1 *) oldHist);
    oldGraph->SetLineColor(kRed);
@@ -131,14 +132,24 @@ void drawRateEff() {
    auto newAlgEtaEffHists = rootools::loadObjectsMatchingPattern<TH1F>(effHistKeys, "crystalEG*_eta");
    auto newAlgPtEffHists = rootools::loadObjectsMatchingPattern<TH1F>(effHistKeys, "crystalEG*_pt");
    auto newAlgDRHists = rootools::loadObjectsMatchingPattern<TH1F>(effHistKeys, "crystalEG_deltaR*");
+   auto newAlgDEtaHists = rootools::loadObjectsMatchingPattern<TH1F>(effHistKeys, "crystalEG_deta*");
+   auto newAlgDPhiHists = rootools::loadObjectsMatchingPattern<TH1F>(effHistKeys, "crystalEG_dphi*");
    auto oldAlgEtaHist = (TH1F *) eff->Get("analyzer/oldEG_efficiency_eta");
    auto oldAlgPtHist = (TH1F *) eff->Get("analyzer/oldEG_efficiency_pt");
    auto oldAlgDRHist = (TH1F *) eff->Get("analyzer/oldEG_deltaR");
+   auto oldAlgDEtaHist = (TH1F *) eff->Get("analyzer/oldEG_deta");
+   auto oldAlgDPhiHist = (TH1F *) eff->Get("analyzer/oldEG_dphi");
    c->SetLogy(0);
    drawNewOld(newAlgEtaEffHists, oldAlgEtaHist, c, 1.2);
    rootools::drawMulti({oldAlgEtaHist, newAlgEtaEffHists[10]}, c, "EG efficiencies", "plots/crystalEG_efficiency_tgraph_eta.png", {.5,.7,.9,.9});
-   drawNewOld(newAlgPtEffHists, oldAlgPtHist, c, 1.2);
+   for(auto hist : newAlgPtEffHists)
+   {
+      hist->GetXaxis()->SetRange(0, 10);
+   }
+   drawNewOld(newAlgPtEffHists, oldAlgPtHist, c, 1.2, 50.);
    drawNewOldHist(newAlgDRHists, oldAlgDRHist, c, 80.);
+   drawNewOldHist(newAlgDEtaHists, oldAlgDEtaHist, c, 0.);
+   drawNewOldHist(newAlgDPhiHists, oldAlgDPhiHist, c, 0.);
 
    std::vector<TH1F*> selectedEtaEffHists{oldAlgEtaHist, newAlgEtaEffHists[0], newAlgEtaEffHists[3], newAlgEtaEffHists[12], newAlgEtaEffHists[15]};
    rootools::drawMulti(selectedEtaEffHists, c, "EG Efficiencies", "plots/crystalEG_efficiency_variouscuts_eta.png", {0.5, 0.7, 0.9, 0.9});
@@ -147,18 +158,21 @@ void drawRateEff() {
    std::vector<TH1F*> selectedDRHists{oldAlgDRHist, newAlgDRHists[0], newAlgDRHists[3], newAlgDRHists[12], newAlgDRHists[15]};
    rootools::drawMulti(selectedDRHists, c, "EG single-electron reconstruction", "plots/crystalEG_deltaR_variouscuts.png", {0.5, 0.7, 0.9, 0.9});
 
-   auto recoGenPtHist = (TH1F *) eff->Get("analyzer/reco_gen_pt");
-   auto oldAlgrecoGenPtHist = (TH1F *) eff->Get("analyzer/oldAlg_reco_gen_pt");
+   c->Clear();
+   c->SetCanvasSize(1000,500);
+   c->Divide(2,1);
+   auto recoGenPtHist = (TH2F *) eff->Get("analyzer/reco_gen_pt");
+   auto oldAlgrecoGenPtHist = (TH2F *) eff->Get("analyzer/oldAlg_reco_gen_pt");
    recoGenPtHist->SetMaximum(50);
+   oldAlgrecoGenPtHist->SetMaximum(50);
    oldAlgrecoGenPtHist->SetLineColor(kRed);
-   recoGenPtHist->Draw();
-   oldAlgrecoGenPtHist->Draw("same");
-   auto leg = c->BuildLegend(0.5,0.8,0.9,0.9);
-   setLegStyle(leg);
+   c->cd(1);
+   recoGenPtHist->Draw("colz");
+   c->cd(2);
+   oldAlgrecoGenPtHist->Draw("colz");
    c->Print("plots/reco_gen_pt.png");
 
    c->Clear();
-   c->SetCanvasSize(1000,500);
    c->Divide(2,1);
    auto hovereHist = (TH1F *) eff->Get("analyzer/hovere");
    auto hovereHistFake = (TH1F *) rates->Get("analyzer/hovere");

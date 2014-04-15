@@ -33,6 +33,7 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "TH1.h"
+#include "TH2.h"
 
 #include "DataFormats/Math/interface/deltaR.h"
 #include "DataFormats/Candidate/interface/Candidate.h"
@@ -139,8 +140,8 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       TH1F * ecalIso_hist;
 
       // (pt_reco-pt_gen)/pt_gen plot
-      TH1F * reco_gen_pt_hist;
-      TH1F * oldAlg_reco_gen_pt_hist;
+      TH2F * reco_gen_pt_hist;
+      TH2F * oldAlg_reco_gen_pt_hist;
 };
 
 //
@@ -161,10 +162,10 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    ecal_isolation_cut_min(iConfig.getUntrackedParameter<double>("ecal_isolation_cut_min", 1.)),
    ecal_isolation_cut_max(iConfig.getUntrackedParameter<double>("ecal_isolation_cut_max", 4.)),
    cut_steps(iConfig.getUntrackedParameter<int>("cut_steps", 4)),
-   nHistBins(iConfig.getUntrackedParameter<int>("histogramBinCount", 95)),
+   nHistBins(iConfig.getUntrackedParameter<int>("histogramBinCount", 10)),
    nHistEtaBins(iConfig.getUntrackedParameter<int>("histogramEtaBinCount", 20)),
-   histLow(iConfig.getUntrackedParameter<double>("histogramRangeLow", 4.5)),
-   histHigh(iConfig.getUntrackedParameter<double>("histogramRangeHigh", 99.5)),
+   histLow(iConfig.getUntrackedParameter<double>("histogramRangeLow", 0.)),
+   histHigh(iConfig.getUntrackedParameter<double>("histogramRangeHigh", 50.)),
    histetaLow(iConfig.getUntrackedParameter<double>("histogramRangeetaLow", -2.5)),
    histetaHigh(iConfig.getUntrackedParameter<double>("histogramRangeetaHigh", 2.5))
 {
@@ -224,8 +225,8 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       oldEGalg_deltaR_hist = fs->make<TH1F>("oldEG_deltaR", "Old EG Trigger;#Delta R (Gen-Reco);Counts", 30, 0., 0.1);
       oldEGalg_deta_hist = fs->make<TH1F>("oldEG_deta", "Old EG Trigger;d#eta (Gen-Reco);Counts", 50, -0.1, 0.1);
       oldEGalg_dphi_hist = fs->make<TH1F>("oldEG_dphi", "Old EG Trigger;d#phi (Gen-Reco);Counts", 50, -0.1, 0.1);
-      reco_gen_pt_hist = fs->make<TH1F>("reco_gen_pt" , "EG relative momentum error;(pT_{reco}-pT_{gen})/pT_{gen};Counts", 40, -0.2, 0.2); 
-      oldAlg_reco_gen_pt_hist = fs->make<TH1F>("oldAlg_reco_gen_pt" , "Old EG relative momentum error;(pT_{reco}-pT_{gen})/pT_{gen};Counts", 40, -0.2, 0.2); 
+      reco_gen_pt_hist = fs->make<TH2F>("reco_gen_pt" , "EG relative momentum error;pT_{gen};(pT_{reco}-pT_{gen})/pT_{gen};Counts", 40, 0., 50., 40, -0.3, 0.3); 
+      oldAlg_reco_gen_pt_hist = fs->make<TH2F>("oldAlg_reco_gen_pt" , "Old EG relative momentum error;pT_{gen};(pT_{reco}-pT_{gen})/pT_{gen};Counts", 40, 0., 50., 40, -0.3, 0.3); 
 
       // We don't want to save these, we'll just be dividing by them after looping through all events
       efficiency_denominator_hist = new TH1F("gen_pt", "Old EG Trigger;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
@@ -295,6 +296,12 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       // Only one electron is produced in singleElectron files
       // we look for that electron in the reconstructed data within some deltaR cut, 
       // and if we find it, it goes in the numerator
+      // but only if in the barrel!
+      if ( fabs(genParticles[0].eta()) > 1.479 )
+      {
+         eventCount--;
+         return;
+      }
       efficiency_denominator_hist->Fill(genParticles[0].pt());
       efficiency_denominator_eta_hist->Fill(genParticles[0].eta());
 
@@ -318,7 +325,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       if ( deltaR(*highestCluster, genParticles[0].polarP4()) < 0.1 ) {
          hovere_hist->Fill(highestCluster->hovere);
          ecalIso_hist->Fill(highestCluster->ECALiso);
-         reco_gen_pt_hist->Fill( (highestCluster->et - genParticles[0].pt())/genParticles[0].pt() );
+         reco_gen_pt_hist->Fill( genParticles[0].pt(), (highestCluster->et - genParticles[0].pt())/genParticles[0].pt() );
       }
       
       if ( deltaR(highestEGCandidate->polarP4(), genParticles[0].polarP4()) < 0.1 ) {
@@ -327,7 +334,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          oldEGalg_deltaR_hist->Fill(deltaR(highestEGCandidate->polarP4(), genParticles[0].polarP4()));
          oldEGalg_deta_hist->Fill(genParticles[0].eta()-highestEGCandidate->eta());
          oldEGalg_dphi_hist->Fill(genParticles[0].phi()-highestEGCandidate->phi());
-         oldAlg_reco_gen_pt_hist->Fill( (highestEGCandidate->pt() - genParticles[0].pt())/genParticles[0].pt() );
+         oldAlg_reco_gen_pt_hist->Fill( genParticles[0].pt(), (highestEGCandidate->pt() - genParticles[0].pt())/genParticles[0].pt() );
       }
    } else {
       // Fill rate histograms
@@ -341,7 +348,11 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             }
          }
       }
-      oldEGalg_rate_hist->Fill(highestEGCandidate->pt());
+      // Don't fill old alg. plots if in barrel
+      if ( fabs(highestEGCandidate->eta()) < 1.479 )
+      {
+         oldEGalg_rate_hist->Fill(highestEGCandidate->pt());
+      }
       hovere_hist->Fill(highestCluster->hovere);
       ecalIso_hist->Fill(highestCluster->ECALiso);
    }
