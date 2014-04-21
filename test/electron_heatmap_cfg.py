@@ -54,7 +54,8 @@ process.reconstruction_step = cms.Path( process.calolocalreco )
 
 
 process.analyzer = cms.EDAnalyzer('L1EGCrystalsHeatMap',
-   DEBUG = cms.bool(False)
+   DEBUG = cms.untracked.bool(False),
+   range = cms.untracked.int32(20)
 )
 
 process.panalyzer = cms.Path(process.analyzer)

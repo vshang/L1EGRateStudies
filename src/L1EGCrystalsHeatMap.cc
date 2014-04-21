@@ -119,6 +119,7 @@ class L1EGCrystalsHeatMap : public edm::EDAnalyzer {
 
       // ----------member data ---------------------------
       CaloGeometryHelper myGeometry;
+      int range;
       bool DEBUG;
       int nEvents = 0;
       std::vector<TH2F*> heatmaps;
@@ -168,9 +169,10 @@ class L1EGCrystalsHeatMap : public edm::EDAnalyzer {
 //
 // constructors and destructor
 //
-L1EGCrystalsHeatMap::L1EGCrystalsHeatMap(const edm::ParameterSet& iConfig)
+L1EGCrystalsHeatMap::L1EGCrystalsHeatMap(const edm::ParameterSet& iConfig):
+   range(iConfig.getUntrackedParameter<int>("range", 10)),
+   DEBUG(iConfig.getUntrackedParameter<bool>("DEBUG", false))
 {
-   DEBUG = iConfig.getParameter<bool>("DEBUG");
    
    edm::Service<TFileService> fs;
 
@@ -182,7 +184,7 @@ L1EGCrystalsHeatMap::L1EGCrystalsHeatMap(const edm::ParameterSet& iConfig)
       std::string name = "heatmap_pt"+std::to_string(i);
       std::stringstream title;
       title << "Single-electron pt Heatmap (" << ptlow << "<pt<" << pthigh << ");d#eta (int.);d#phi (int.)";
-      heatmaps[i] = fs->make<TH2F>(name.c_str(), title.str().c_str(), 21, -11, 11, 21, -11, 11);
+      heatmaps[i] = fs->make<TH2F>(name.c_str(), title.str().c_str(), 2*range+1, -range-.5, range+.5, 2*range+1, -range-.5, range+.5);
       heatmap_nevents[i] = 0;
    }
 }
@@ -301,7 +303,7 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
          heatmap_nevents[i]++;
          for(auto ecalhit : ecalhits)
          {
-            if ( fabs(ecalhit.deta(centerhit)) < 0.2 && fabs(ecalhit.dphi(centerhit)) < 0.2 )
+            if ( abs(ecalhit.dieta(centerhit)) <= range && abs(ecalhit.diphi(centerhit)) <= range )
             {
                heatmaps[i]->Fill(ecalhit.dieta(centerhit), ecalhit.diphi(centerhit), ecalhit.pt());
             }
