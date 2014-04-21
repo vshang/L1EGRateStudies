@@ -12,6 +12,7 @@
 #include "TLegend.h"
 #include "TStyle.h"
 #include "TGraph.h"
+#include "TGraphErrors.h"
 #include "TMultiGraph.h"
 #include "TPaveStats.h"
 
@@ -26,7 +27,7 @@ void setLegStyle(TLegend * leg) {
 
 void drawNewOld(std::vector<TH1F*> newHists, TH1F * oldHist, TCanvas * c, double ymax, double xmax = 0.) {
    c->Clear();
-   TGraph * oldGraph = new TGraph((TH1 *) oldHist);
+   auto oldGraph = new TGraph((TH1 *) oldHist);
    oldGraph->SetLineColor(kRed);
    oldGraph->SetMarkerColor(kRed);
    oldGraph->SetMarkerStyle(20);
