@@ -67,8 +67,8 @@ process.L1CaloTowerProducer.HCALDigis =  cms.InputTag("valHcalTriggerPrimitiveDi
 	# first you need the ECAL RecHIts :
 process.reconstruction_step = cms.Path( process.calolocalreco )
 
-process.L1EGammaCrystalsProducer = cms.EDProducer("L1EGCrystalClusterProducer",
-   DEBUG = cms.bool(False)
+process.L1EGammaCrystalsProducer = cms.EDProducer("L1EGCrystalClusterProducerTest",
+   DEBUG = cms.untracked.bool(False)
 )
 process.pSasha = cms.Path( process.L1EGammaCrystalsProducer )
 

@@ -171,6 +171,8 @@ void  L1EGCrystalClusterProducerTest::produce(edm::Event& iEvent, const edm::Eve
       }
       // If we are less than 1GeV or out of hits (i.e. when centerhit is default constructed) we stop
       if ( centerhit.pt() <= 1. ) break;
+      if ( DEBUG ) std::cout << "-------------------------------------" << std::endl;
+      if ( DEBUG ) std::cout << "New cluster: center crystal pt = " << centerhit.pt() << std::endl;
       
       // Find the energy-weighted average position,
       //   calculate isolation parameter,
@@ -182,21 +184,24 @@ void  L1EGCrystalClusterProducerTest::produce(edm::Event& iEvent, const edm::Eve
       float ECalPileUpEnergy = 0.;
       for(auto& hit : ecalhits)
       {
-         if ( !hit.stale && abs(hit.dieta(centerhit)) < 2 && abs(hit.dieta(centerhit)) < 3 )
+         if ( !hit.stale && abs(hit.dieta(centerhit)) < 2 && abs(hit.diphi(centerhit)) < 3 )
          {
             weightedPosition += hit.position*hit.energy;
             totalEnergy += hit.energy;
             hit.stale = true;
+            if ( DEBUG && hit == centerhit )
+               std::cout << "\x1B[32m"; // green hilight
+            if ( DEBUG ) std::cout << "\tCrystal (" << hit.dieta(centerhit) << "," << hit.diphi(centerhit) << ") pt=" << hit.pt() << ", eta=" << hit.position.eta() << ", phi=" << hit.position.phi() << "\x1B[0m" << std::endl;
          }
          // Isolation and pileup must not use hits used in a cluster
          // We also cut out low pt noise
          if ( !hit.stale && hit.pt() > 0.05 )
          {
-            if ( abs(hit.dieta(centerhit)) < 14 && abs(hit.dieta(centerhit)) < 14 )
+            if ( abs(hit.dieta(centerhit)) < 14 && abs(hit.diphi(centerhit)) < 14 )
             {
                ECalIsolation += hit.pt();
             }
-            if ( hit.pt() < 5. && abs(hit.dieta(centerhit)) < 7 && abs(hit.dieta(centerhit)) < 57 )
+            if ( hit.pt() < 5. && abs(hit.dieta(centerhit)) < 7 && abs(hit.diphi(centerhit)) < 57 )
             {
                ECalPileUpEnergy += hit.energy;
                ECalPileUpVector += hit.position;
@@ -208,6 +213,10 @@ void  L1EGCrystalClusterProducerTest::produce(edm::Event& iEvent, const edm::Eve
       ECalIsolation /= totalPt;
       float totalPtPUcorr = totalPt - ECalPileUpEnergy*sin(ECalPileUpVector.theta())/19.;
 
+      if ( DEBUG ) std::cout << "Weighted position eta = " << weightedPosition.eta() << ", phi = " << weightedPosition.phi() << std::endl;
+      if ( DEBUG ) std::cout << "Total energy = " << totalEnergy << ", total pt = " << totalPt << std::endl;
+      if ( DEBUG ) std::cout << "Isolation: " << ECalIsolation << std::endl;
+
       // Calculate H/E
       float hcalEnergy = 0.;
       for(const auto& hit : hcalhits)
@@ -218,6 +227,8 @@ void  L1EGCrystalClusterProducerTest::produce(edm::Event& iEvent, const edm::Eve
          }
       }
       float hovere = hcalEnergy/totalEnergy;
+
+      if ( DEBUG ) std::cout << "H/E: " << hovere << std::endl;
       
       // Form a l1slhc::L1EGCrystalCluster
       l1slhc::L1EGCrystalCluster cluster;
