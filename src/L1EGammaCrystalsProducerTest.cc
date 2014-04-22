@@ -29,7 +29,6 @@
 #include "SimDataFormats/SLHC/interface/L1EGCrystalCluster.h"
 #include "Geometry/CaloTopology/interface/CaloTopology.h"
 
-//here
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "Geometry/CommonDetUnit/interface/GeomDet.h"
@@ -38,288 +37,218 @@
 #include "DataFormats/HcalDetId/interface/HcalSubdetector.h"
 #include "DataFormats/HcalDetId/interface/HcalDetId.h"
 
-
 #include "DataFormats/HcalRecHit/interface/HcalRecHitCollections.h"
 #include "DataFormats/HcalRecHit/interface/HcalSourcePositionData.h"
 
-
-// Numbering scheme
 #include "Geometry/Records/interface/IdealGeometryRecord.h"
-#include <TVector3.h>
-
 
 class L1EGCrystalClusterProducerTest : public edm::EDProducer {
-public:
+   public:
+      explicit L1EGCrystalClusterProducerTest(const edm::ParameterSet&);
 
-   explicit L1EGCrystalClusterProducerTest(const edm::ParameterSet&);
+   private:
+      virtual void produce(edm::Event&, const edm::EventSetup&);
+      virtual void beginRun(edm::Run const&, edm::EventSetup const&);
 
-private:
-   virtual void produce(edm::Event&, const edm::EventSetup&);
-   unsigned int getMatchedClusterIndex(l1slhc::L1EGCrystalCluster& egxtals, float& eta, float& phi, float& dr_min);
-
-   CaloGeometryHelper myGeometry;
-
-   l1slhc::L1EGCrystalCluster ecalhits[100000] ;
-
-   l1slhc::L1EGCrystalCluster hcalhits[100000] ;
-
-   l1slhc::L1EGCrystalCluster clusters ;
-
-   bool First = true ;
-   bool DEBUG;
+      CaloGeometryHelper geometryHelper;
+      bool DEBUG;
+      class SimpleCaloHit
+      {
+         public:
+            EBDetId id;
+            GlobalVector position; // As opposed to GlobalPoint
+            float energy=0.;
+            bool stale=false; // Hits become stale once used in clustering algorithm to prevent overlap in clusters
+            
+         // tool functions
+            inline float pt(){return (position.mag2()>0) ? energy*sin(position.theta()) : 0.;};
+            inline float deta(SimpleCaloHit& other){return position.eta() - other.position.eta();};
+            int dieta(SimpleCaloHit& other)
+            {
+               // int indices do not contain zero
+               // Logic from EBDetId::distanceEta() without the abs()
+               if (id.ieta() * other.id.ieta() > 0)
+                  return id.ieta()-other.id.ieta();
+               return id.ieta()-other.id.ieta()-1;
+            };
+            inline float dphi(SimpleCaloHit& other){return reco::deltaPhi(position.phi(), other.position.phi());};
+            int diphi(SimpleCaloHit& other)
+            {
+               // Logic from EBDetId::distancePhi() without the abs()
+               int PI = 180;
+               int  result = id.iphi() - other.id.iphi();
+               while  (result > PI)    result -= 2*PI;
+               while  (result <= -PI)  result += 2*PI;
+               return result;
+            };
+            bool operator==(SimpleCaloHit& other)
+            {
+               if ( id == other.id &&
+                    position == other.position &&
+                    energy == other.energy
+                  ) return true;
+                  
+               return false;
+            };
+      };
 };
 
-namespace objects_ordering {
-   class L1EmETComparator {
-   public:
-      bool operator()(const l1extra::L1EmParticle a, const l1extra::L1EmParticle b) const {
-         double et_a = 0.0;
-         double et_b = 0.0;
-         if (cosh(a.eta()) > 0.0) et_a = a.energy()/cosh(a.eta());
-         if (cosh(b.eta()) > 0.0) et_b = b.energy()/cosh(b.eta());
-
-         return et_a > et_b;
-      }
-   };
-   class ClusterETComparator {
-   public:
-      bool operator()(const l1slhc::L1EGCrystalCluster a, const l1slhc::L1EGCrystalCluster b) const {
-         return a.et > b.et;
-      }
-   };
-}
-
-L1EGCrystalClusterProducerTest::L1EGCrystalClusterProducerTest(const edm::ParameterSet& iConfig) 
+L1EGCrystalClusterProducerTest::L1EGCrystalClusterProducerTest(const edm::ParameterSet& iConfig) :
+   DEBUG(iConfig.getUntrackedParameter<bool>("DEBUG", false))
 {
-   produces<l1slhc::L1EGCrystalClusterCollection>( "EGCrystalCluster" ) ;
-   produces < l1extra::L1EmParticleCollection > ( "EGammaCrystal" );
-
-   DEBUG = iConfig.getParameter<bool>("DEBUG");
+   produces<l1slhc::L1EGCrystalClusterCollection>("EGCrystalCluster");
+   produces<l1extra::L1EmParticleCollection>("EGammaCrystal");
 }
 
 void  L1EGCrystalClusterProducerTest::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-
-   if (DEBUG)  std::cout << " enter in produce " << std::endl ;
-
-   if (First) {
-      edm::ESHandle<CaloTopology> theCaloTopology;
-      iSetup.get<CaloTopologyRecord>().get(theCaloTopology);       
-      edm::ESHandle<CaloGeometry> pG;
-      iSetup.get<CaloGeometryRecord>().get(pG);     
-      // Setup the tools
-      double bField000 = 4.;
-      myGeometry.setupGeometry(*pG);
-      myGeometry.setupTopology(*theCaloTopology);
-      myGeometry.initialize(bField000);
-      First = false ;
-   }
-
-   std::auto_ptr<l1slhc::L1EGCrystalClusterCollection> trigCrystalClusters (new l1slhc::L1EGCrystalClusterCollection()) ;
-
-   std::auto_ptr < l1extra::L1EmParticleCollection > l1EGammaCrystal( new l1extra::L1EmParticleCollection );
-
-   // Retrieve the SimHits.
-   int nHits = 0 ;
-   // Sasha's FAMOS :
-   //edm::Handle<edm::PCaloHitContainer> pcalohits;
-   //iEvent.getByLabel("famosSimHits","EcalHitsEB",pcalohits);
-   // using RecHits :
+   std::vector<SimpleCaloHit> ecalhits;
+   std::vector<SimpleCaloHit> hcalhits;
+   
+   // Retrieve the ecal barrel hits
+   // using RecHits (https://cmssdt.cern.ch/SDT/doxygen/CMSSW_6_1_2_SLHC6/doc/html/d8/dc9/classEcalRecHit.html)
    edm::Handle<EcalRecHitCollection> pcalohits;
    iEvent.getByLabel("ecalRecHit","EcalRecHitsEB",pcalohits);
-   // Geant's pcaloHits :
-   //// edm::Handle<edm::PCaloHitContainer> pcalohits;
-   //// iEvent.getByLabel("g4SimHits","EcalHitsEB",pcalohits);
-
-   std::vector<float> simHitsBarrel;
-   simHitsBarrel.resize(62000,0.);
-   //// edm::PCaloHitContainer::const_iterator it=pcalohits.product()->begin();
-   //// edm::PCaloHitContainer::const_iterator itend=pcalohits.product()->end();
-   EcalRecHitCollection::const_iterator it=pcalohits.product()->begin();
-   EcalRecHitCollection::const_iterator itend=pcalohits.product()->end();
-
-   for(;it!=itend;++it)
+   for(auto hit : *pcalohits.product())
    {
-      simHitsBarrel[EBDetId(it->id()).hashedIndex()]+=it->energy();
-      if(it->energy() > 0.2)
+      if(hit.energy() > 0.2)
       {
-         EBDetId EBid = EBDetId(it->id()) ;
-         double theta =  myGeometry.getEcalBarrelGeometry()->getGeometry(it->id())->getPosition().theta() ;
-         double phi =  myGeometry.getEcalBarrelGeometry()->getGeometry(it->id())->getPosition().phi() ;
-         double eta = -1.*log(tan(theta/2.)) ;
-         ecalhits[nHits].et = (it->energy())*sin(theta) ;
-         ecalhits[nHits].eta = eta ;
-         ecalhits[nHits].phi = phi ;
-         ecalhits[nHits].e = (it->energy()) ;
-         ecalhits[nHits].x = myGeometry.getEcalBarrelGeometry()->getGeometry(it->id())->getPosition().x() ;
-         ecalhits[nHits].y = myGeometry.getEcalBarrelGeometry()->getGeometry(it->id())->getPosition().y() ;
-         ecalhits[nHits].z = myGeometry.getEcalBarrelGeometry()->getGeometry(it->id())->getPosition().z() ;
-         nHits++ ;
-         if (DEBUG) std::cout << " EB Hits " <<  it->energy() <<  " phi " << phi << " eta " << eta << " eta1 " << EBid.ieta() << " theta " << theta << std::endl;
-      }
-   }
-   std::vector<float> simHitsEndcap;
-   simHitsEndcap.resize(20000,0.);
-   //iEvent.getByLabel("famosSimHits","EcalHitsEE",pcalohits);
-   iEvent.getByLabel("ecalRecHit","EcalRecHitsEE",pcalohits);
-   //// iEvent.getByLabel("g4SimHits","EcalHitsEE",pcalohits);
-   it=pcalohits.product()->begin();
-   itend=pcalohits.product()->end();
-   for(;it!=itend;++it)
-   {
-      simHitsEndcap[EEDetId(it->id()).hashedIndex()]+=it->energy();
-      if(it->energy() > 0.2)
-      {
-         double theta =  myGeometry.getEcalEndcapGeometry()->getGeometry(it->id())->getPosition().theta() ;
-         double phi =  myGeometry.getEcalEndcapGeometry()->getGeometry(it->id())->getPosition().phi() ;
-         double eta = -1.*log(tan(theta/2.)) ;
-         ecalhits[nHits].et = (it->energy())*sin(theta) ;
-         ecalhits[nHits].eta = eta ;
-         ecalhits[nHits].phi = phi ;
-         ecalhits[nHits].e = (it->energy()) ;
-         ecalhits[nHits].x = myGeometry.getEcalEndcapGeometry()->getGeometry(it->id())->getPosition().x() ;
-         ecalhits[nHits].y = myGeometry.getEcalEndcapGeometry()->getGeometry(it->id())->getPosition().y() ;
-         ecalhits[nHits].z = myGeometry.getEcalEndcapGeometry()->getGeometry(it->id())->getPosition().z() ;
-         nHits++ ;
-         if (DEBUG) std::cout << " EE Hits " << " energy " << it->energy() << " phi " << phi << " eta " << eta <<  std::endl;
+         auto cell = geometryHelper.getEcalBarrelGeometry()->getGeometry(hit.id());
+         SimpleCaloHit ehit;
+         ehit.id = hit.id();
+         // So, apparently there are (at least) two competing basic vector classes being tossed around in
+         // cmssw, the calorimeter geometry package likes to use "DataFormats/GeometryVector/interface/GlobalPoint.h"
+         // while "DataFormats/Math/interface/Point3D.h" also contains a competing definition of GlobalPoint.  Oh well...
+         ehit.position = GlobalVector(cell->getPosition().x(), cell->getPosition().y(), cell->getPosition().z());
+         ehit.energy = hit.energy();
+         ecalhits.push_back(ehit);
       }
    }
 
-   edm::ESHandle<CaloGeometry> pG1;
-   iSetup.get<CaloGeometryRecord>().get(pG1);
-   const CaloGeometry* geometry = pG1.product();
-
-   int nHitsHCAL = 0 ;
-
+   // Retrive hcal hits
    edm::Handle<HBHERecHitCollection> hbhecoll;
    iEvent.getByLabel("hbheprereco", hbhecoll);
-
-   for (HBHERecHitCollection::const_iterator j=hbhecoll->begin(); j != hbhecoll->end(); j++) {
-      HcalDetId cell(j->id());
-      const CaloCellGeometry* cellGeometry = geometry->getSubdetectorGeometry(cell)->getGeometry(cell);
-      if ( j->energy() > 0.1 )
-      {
-         hcalhits[nHitsHCAL].e = (j->energy()) ;      
-         hcalhits[nHitsHCAL].eta = cellGeometry->getPosition().eta() ;
-         hcalhits[nHitsHCAL].phi = cellGeometry->getPosition().phi() ;
-         if(DEBUG && hcalhits[nHitsHCAL].e > 10) std::cout << " id " << cell << " Energy " << j->energy() << " eta " << hcalhits[nHitsHCAL].eta << " phi " << hcalhits[nHitsHCAL].phi <<  std::endl ;
-      }
-      nHitsHCAL++ ;
-   }
-
-
-   float Etmax = 0 ;
-   while( Etmax != 2.)
+   for (auto hit : *hbhecoll.product())
    {
-      Etmax = 2. ;
-      int   centerId = 0 ;
-      for(int k=0; k<nHits; k++)
+      if ( hit.energy() > 0.1 )
       {
-         //	  if(ecalhits[k].e > Emax)
-         if(ecalhits[k].et > Etmax)
-         {
-            Etmax = ecalhits[k].et ;
-            centerId = k ;
-         }
-      } 
-
-      if( Etmax != 2. )
-      {
-         float Total_E = ecalhits[centerId].e ;
-         // std::cout << " E center " << ecalhits[centerId].e << " phi " << ecalhits[centerId].phi << " eta " << ecalhits[centerId].eta <<  std::endl ;
-         float Weightedx = ecalhits[centerId].x*ecalhits[centerId].e ;
-         float Weightedy = ecalhits[centerId].y*ecalhits[centerId].e ;
-         float Weightedz = ecalhits[centerId].z*ecalhits[centerId].e ;
-         for(int k=0; k<nHits; k++)
-         {
-            if ( k != centerId && fabs(ecalhits[centerId].eta-ecalhits[k].eta) < 0.08 && fabs(ecalhits[centerId].phi-ecalhits[k].phi) < 0.1 )
-            {
-               // std::cout << " E to add " << ecalhits[k].e << " phi " << ecalhits[k].phi << " eta " << ecalhits[k].eta <<  std::endl ;
-               Total_E = Total_E + ecalhits[k].e ;
-               Weightedx = Weightedx + ecalhits[k].x*ecalhits[k].e;
-               Weightedy = Weightedy + ecalhits[k].y*ecalhits[k].e;
-               Weightedz = Weightedz + ecalhits[k].z*ecalhits[k].e;
-               TVector3 tmp1(ecalhits[k].x,ecalhits[k].y,ecalhits[k].z) ;
-               // std::cout << " tmp1 " << " phi " << tmp1.Phi() << " eta " << tmp1.PseudoRapidity() <<  std::endl ;
-               ecalhits[k].et = 0 ;
-            }
-         }
-         ecalhits[centerId].et = 0 ;
-         clusters.e = Total_E ;
-         clusters.x = Weightedx/Total_E ;
-         clusters.y = Weightedy/Total_E ;
-         clusters.z = Weightedz/Total_E ;
-         TVector3 tmp(clusters.x,clusters.y,clusters.z) ;
-         clusters.phi = tmp.Phi() ;
-         clusters.eta = tmp.PseudoRapidity() ;
-         clusters.et = Total_E*sin(tmp.Theta()) ;
-         if (DEBUG) {
-            std::cout << " clusters " << Total_E << " et " << clusters.et << " phi " << clusters.phi << " eta " << clusters.eta <<  std::endl ;
-         }
-
-
-         Total_E = 0. ;
-         Weightedx = 0 ;
-         Weightedy = 0 ;
-         Weightedz = 0 ;
-         double isoSum = 0;
-         for(int k=0; k<nHits; k++)
-         {
-            if ( ecalhits[k].et > 0.05 && fabs(ecalhits[centerId].eta-ecalhits[k].eta) < 0.25 && fabs(ecalhits[centerId].phi-ecalhits[k].phi) < 0.25 )
-            {
-               TVector3 tmp(ecalhits[k].x,ecalhits[k].y,ecalhits[k].z);
-               isoSum += ecalhits[k].e*sin(tmp.Theta());
-            }
-            if ( ecalhits[k].et > 0.05 && ecalhits[k].et < 5. && fabs(ecalhits[centerId].eta-ecalhits[k].eta) < 0.12 && fabs(ecalhits[centerId].phi-ecalhits[k].phi) < 1. )
-            {
-               Total_E = Total_E + ecalhits[k].e ;
-               Weightedx = Weightedx + ecalhits[k].x*ecalhits[k].e;
-               Weightedy = Weightedy + ecalhits[k].y*ecalhits[k].e;
-               Weightedz = Weightedz + ecalhits[k].z*ecalhits[k].e;
-            }
-         }
-         clusters.ECALiso = isoSum/clusters.et ;
-
-         TVector3 tmp1(Weightedx/Total_E,Weightedy/Total_E,Weightedz/Total_E) ;
-         clusters.ECALetPUcorr = clusters.et-Total_E*sin(tmp1.Theta())/19. ;
-
-         
-         Total_E = 0 ;
-         
-         for(int k=0; k<nHitsHCAL; k++)
-         {
-            if ( fabs(ecalhits[centerId].eta-hcalhits[k].eta) < 0.15 && fabs(ecalhits[centerId].phi-hcalhits[k].phi) < 0.15 )
-            {
-               Total_E = Total_E + hcalhits[k].e ;
-            }
-         }
-
-
-         clusters.hovere = Total_E/clusters.e ;
-
-         
-         trigCrystalClusters->push_back(clusters) ;
-
-         if (clusters.hovere < 1. && clusters.ECALiso < 2.){
-            reco::Candidate::PolarLorentzVector p4(clusters.et, clusters.eta, clusters.phi, 0.);
-            edm::Ref< L1GctEmCandCollection > ref();
-            l1EGammaCrystal->push_back(l1extra::L1EmParticle( p4,edm::Ref< L1GctEmCandCollection >(),0) );
-            // l1EGammaCrystal->push_back(l1extra::L1EmParticle( p4));
-            // std::cout << " Put in a cluster " << std::endl ;
-         }
+         auto cell = geometryHelper.getHcalGeometry()->getGeometry(hit.id());
+         SimpleCaloHit hhit;
+         hhit.id = hit.id();
+         hhit.position = GlobalVector(cell->getPosition().x(), cell->getPosition().y(), cell->getPosition().z());
+         hhit.energy = hit.energy();
+         hcalhits.push_back(hhit);
       }
    }
 
-   if (DEBUG) {
-      std::cout << " writing in " << trigCrystalClusters->size() <<   std::endl ;
-      for (size_t i = 0; i < trigCrystalClusters->size(); ++i) {
-         std::cout << "hovere of cluster # " << i << " is " << trigCrystalClusters->at(i).hovere << std::endl;
+   // Cluster containters
+   std::auto_ptr<l1slhc::L1EGCrystalClusterCollection> trigCrystalClusters (new l1slhc::L1EGCrystalClusterCollection );
+   std::auto_ptr<l1extra::L1EmParticleCollection> l1EGammaCrystal( new l1extra::L1EmParticleCollection );
+   
+   // Clustering algorithm
+   // Start by sorting hits by pt (descending order)
+   std::sort(std::begin(ecalhits), std::end(ecalhits), [](SimpleCaloHit a, SimpleCaloHit b){return a.pt() > b.pt();});
+   while(true)
+   {
+      // Find highest pt hit (that's not already used)
+      SimpleCaloHit centerhit;
+      for(auto hit : ecalhits)
+      {
+         if ( !hit.stale )
+         {
+            centerhit = hit;
+            break;
+         }
+      }
+      // If we are less than 1GeV or out of hits (i.e. when centerhit is default constructed) we stop
+      if ( centerhit.pt() <= 1. ) break;
+      
+      // Find the energy-weighted average position,
+      //   calculate isolation parameter,
+      //   and calculate pileup-corrected pt
+      GlobalVector weightedPosition;
+      GlobalVector ECalPileUpVector;
+      float totalEnergy = 0.;
+      float ECalIsolation = 0.;
+      float ECalPileUpEnergy = 0.;
+      for(auto hit : ecalhits)
+      {
+         if ( !hit.stale && abs(hit.dieta(centerhit)) < 2 && abs(hit.dieta(centerhit)) < 3 )
+         {
+            weightedPosition += hit.position*hit.energy;
+            totalEnergy += hit.energy;
+            hit.stale = true;
+         }
+         // Isolation and pileup must not use hits used in a cluster
+         // We also cut out low pt noise
+         if ( !hit.stale && hit.pt() > 0.05 )
+         {
+            if ( abs(hit.dieta(centerhit)) < 14 && abs(hit.dieta(centerhit)) < 14 )
+            {
+               ECalIsolation += hit.pt();
+            }
+            if ( hit.pt() < 5. && abs(hit.dieta(centerhit)) < 7 && abs(hit.dieta(centerhit)) < 57 )
+            {
+               ECalPileUpEnergy += hit.energy;
+               ECalPileUpVector += hit.position;
+            }
+         }
+      }
+      weightedPosition /= totalEnergy;
+      float totalPt = totalEnergy*sin(weightedPosition.theta());
+      ECalIsolation /= totalPt;
+      float totalPtPUcorr = totalPt - ECalPileUpEnergy*sin(ECalPileUpVector.theta())/19.;
+
+      // Calculate H/E
+      float hcalEnergy = 0.;
+      for(auto hit : hcalhits)
+      {
+         if ( fabs(hit.deta(centerhit)) < 0.15 && fabs(hit.dphi(centerhit)) < 0.15 )
+         {
+            hcalEnergy += hit.energy;
+         }
+      }
+      float hovere = hcalEnergy/totalEnergy;
+      
+      // Form a l1slhc::L1EGCrystalCluster
+      l1slhc::L1EGCrystalCluster cluster;
+      cluster.et = totalPt;
+      cluster.eta = weightedPosition.eta();
+      cluster.phi = weightedPosition.phi();
+      cluster.ieta = centerhit.id.ieta();
+      cluster.iphi = centerhit.id.iphi();
+      cluster.e = totalEnergy;
+      cluster.x = weightedPosition.x();
+      cluster.y = weightedPosition.y();
+      cluster.z = weightedPosition.z();
+      cluster.hovere = hovere;
+      cluster.ECALiso = ECalIsolation;
+      cluster.ECALetPUcorr = totalPtPUcorr;
+
+      trigCrystalClusters->push_back(cluster);
+
+      if ( cluster.hovere < 1. && cluster.ECALiso < 2. ){
+         reco::Candidate::PolarLorentzVector p4(cluster.et, cluster.eta, cluster.phi, 0.);
+         l1EGammaCrystal->push_back(l1extra::L1EmParticle(p4, edm::Ref<L1GctEmCandCollection>(), 0));
       }
    }
 
    iEvent.put(trigCrystalClusters,"EGCrystalCluster");
    iEvent.put(l1EGammaCrystal, "EGammaCrystal" );
+}
 
+// ------------ method called when starting to processes a run  ------------
+void 
+L1EGCrystalClusterProducerTest::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
+{
+   edm::ESHandle<CaloTopology> theCaloTopology;
+   iSetup.get<CaloTopologyRecord>().get(theCaloTopology);
+   edm::ESHandle<CaloGeometry> pG;
+   iSetup.get<CaloGeometryRecord>().get(pG);
+   double bField000 = 4.;
+   geometryHelper.setupGeometry(*pG);
+   geometryHelper.setupTopology(*theCaloTopology);
+   geometryHelper.initialize(bField000);
 }
 
 DEFINE_FWK_MODULE(L1EGCrystalClusterProducerTest);

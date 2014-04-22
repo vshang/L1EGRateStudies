@@ -112,34 +112,37 @@ class L1EGCrystalsHeatMap : public edm::EDAnalyzer {
       virtual void analyze(const edm::Event&, const edm::EventSetup&);
       virtual void endJob() ;
 
-      //virtual void beginRun(edm::Run const&, edm::EventSetup const&);
+      virtual void beginRun(edm::Run const&, edm::EventSetup const&);
       //virtual void endRun(edm::Run const&, edm::EventSetup const&);
       //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
       //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
 
       // ----------member data ---------------------------
-      CaloGeometryHelper myGeometry;
+      CaloGeometryHelper geometryHelper;
       int range;
       bool DEBUG;
       int nEvents = 0;
       std::vector<TH2F*> heatmaps;
       std::vector<int> heatmap_nevents;
-      class EcalHit{
+      class SimpleCaloHit
+      {
          public:
             EBDetId id;
             GlobalPoint position;
             double energy=0.;
             inline double pt(){return energy*sin(position.theta());};
-            inline double deta(EcalHit& other){return position.eta() - other.position.eta();};
-            int dieta(EcalHit& other){
+            inline double deta(SimpleCaloHit& other){return position.eta() - other.position.eta();};
+            int dieta(SimpleCaloHit& other)
+            {
                // int indices do not contain zero
                // Logic from EBDetId::distanceEta() without the abs()
                if (id.ieta() * other.id.ieta() > 0)
                   return id.ieta()-other.id.ieta();
                return id.ieta()-other.id.ieta()-1;
             };
-            inline double dphi(EcalHit& other){return reco::deltaPhi(position.phi(), other.position.phi());};
-            inline int diphi(EcalHit& other){
+            inline double dphi(SimpleCaloHit& other){return reco::deltaPhi(position.phi(), other.position.phi());};
+            inline int diphi(SimpleCaloHit& other)
+            {
                // Logic from EBDetId::distancePhi() without the abs()
                int PI = 180;
                int  result = id.iphi() - other.id.iphi();
@@ -147,12 +150,13 @@ class L1EGCrystalsHeatMap : public edm::EDAnalyzer {
                while  (result <= -PI)  result += 2*PI;
                return result;
             };
-            bool operator==(EcalHit& other) {
+            bool operator==(SimpleCaloHit& other)
+            {
                if ( id == other.id &&
                     position == other.position &&
-                    energy == other.energy ) {
-                  return true;
-               }
+                    energy == other.energy
+                  ) return true;
+                  
                return false;
             };
       };
@@ -208,66 +212,42 @@ void
 L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
-   
-   if (nEvents == 0) {
-      edm::ESHandle<CaloTopology> theCaloTopology;
-      iSetup.get<CaloTopologyRecord>().get(theCaloTopology);       
-      edm::ESHandle<CaloGeometry> pG;
-      iSetup.get<CaloGeometryRecord>().get(pG);     
-      // Setup the tools
-      double bField000 = 4.;
-      myGeometry.setupGeometry(*pG);
-      myGeometry.setupTopology(*theCaloTopology);
-      myGeometry.initialize(bField000);
-   }
+
    nEvents++;
 
-   std::vector<EcalHit> ecalhits;
-   std::vector<l1slhc::L1EGCrystalClusterTest> hcalhits;
+   std::vector<SimpleCaloHit> ecalhits;
+   std::vector<SimpleCaloHit> hcalhits;
 
-   // Retrieve the SimHits.
-   // Sasha's FAMOS :
-   // edm::Handle<edm::PCaloHitContainer> pcalohits;
-   // iEvent.getByLabel("famosSimHits","EcalHitsEB",pcalohits);
+   // Retrieve the ecal barrel hits
    // using RecHits (https://cmssdt.cern.ch/SDT/doxygen/CMSSW_6_1_2_SLHC6/doc/html/d8/dc9/classEcalRecHit.html)
    edm::Handle<EcalRecHitCollection> pcalohits;
    iEvent.getByLabel("ecalRecHit","EcalRecHitsEB",pcalohits);
-   // Geant's pcaloHits :
-   // edm::Handle<edm::PCaloHitContainer> pcalohits;
-   // iEvent.getByLabel("g4SimHits","EcalHitsEB",pcalohits);
-
    for(auto hit : *pcalohits.product())
    {
       if(hit.energy() > 0.2)
       {
-         auto cell = myGeometry.getEcalBarrelGeometry()->getGeometry(hit.id());
-         EcalHit ehit;
+         auto cell = geometryHelper.getEcalBarrelGeometry()->getGeometry(hit.id());
+         SimpleCaloHit ehit;
          ehit.id = hit.id();
          ehit.position = cell->getPosition();
          ehit.energy = hit.energy();
          ecalhits.push_back(ehit);
-         //std::cout << " EB Hits " <<  hit.energy() <<  " iphi " << hit.id.iphi() << " ieta " << hit.id.ieta() << " eta " << ehit.position.eta() << std::endl;
       }
    }
 
-   edm::ESHandle<CaloGeometry> pG1;
-   iSetup.get<CaloGeometryRecord>().get(pG1);
-   const CaloGeometry* geometry = pG1.product();
-
+   // Retrive hcal hits
    edm::Handle<HBHERecHitCollection> hbhecoll;
    iEvent.getByLabel("hbheprereco", hbhecoll);
-
-   for (HBHERecHitCollection::const_iterator j=hbhecoll->begin(); j != hbhecoll->end(); j++) {
-      HcalDetId cell(j->id());
-      const CaloCellGeometry* cellGeometry = geometry->getSubdetectorGeometry(cell)->getGeometry(cell);
-      if ( j->energy() > 0.1 )
+   for (auto hit : *hbhecoll.product())
+   {
+      if ( hit.energy() > 0.1 )
       {
-         l1slhc::L1EGCrystalClusterTest cluster_hit;
-         cluster_hit.e = (j->energy()) ;      
-         cluster_hit.eta = cellGeometry->getPosition().eta() ;
-         cluster_hit.phi = cellGeometry->getPosition().phi() ;
-         hcalhits.push_back(cluster_hit);
-         if(DEBUG && cluster_hit.e > 10) std::cout << " id " << cell << " Energy " << j->energy() << " eta " << cluster_hit.eta << " phi " << cluster_hit.phi <<  std::endl ;
+         auto cell = geometryHelper.getHcalGeometry()->getGeometry(hit.id());
+         SimpleCaloHit hhit;
+         hhit.id = hit.id();
+         hhit.position = cell->getPosition();
+         hhit.energy = hit.energy();
+         ecalhits.push_back(hhit);
       }
    }
    
@@ -283,7 +263,7 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    
    // Find closest crystal
    double dRmin = 999.;
-   EcalHit centerhit;
+   SimpleCaloHit centerhit;
    for(auto ecalhit : ecalhits)
    {
       if ( reco::deltaR(ecalhit.position, genParticles[0].polarP4()) < dRmin )
@@ -312,7 +292,7 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    }
    
    // Make a cluster
-   std::vector<EcalHit> cluster;
+   std::vector<SimpleCaloHit> cluster;
    for(auto ecalhit : ecalhits)
    {
       if ( fabs(ecalhit.dieta(centerhit)) < 3 && fabs(ecalhit.diphi(centerhit)) < 5 )
@@ -322,7 +302,7 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    }
    
    // Print cluster
-   std::sort(std::begin(cluster), std::end(cluster), [](EcalHit a, EcalHit b){return a.pt() > b.pt();});
+   std::sort(std::begin(cluster), std::end(cluster), [](SimpleCaloHit a, SimpleCaloHit b){return a.pt() > b.pt();});
    std::cout << "Cluster around genParticle with pT=" << genParticles[0].pt() << ", eta=" << genParticles[0].eta() << ", phi=" << genParticles[0].phi() << std::endl;
    for(auto hit : cluster)
    {
@@ -352,12 +332,19 @@ L1EGCrystalsHeatMap::endJob()
 }
 
 // ------------ method called when starting to processes a run  ------------
-/*
 void 
-L1EGCrystalsHeatMap::beginRun(edm::Run const&, edm::EventSetup const&)
+L1EGCrystalsHeatMap::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
 {
+   edm::ESHandle<CaloTopology> theCaloTopology;
+   iSetup.get<CaloTopologyRecord>().get(theCaloTopology);
+   edm::ESHandle<CaloGeometry> pG;
+   iSetup.get<CaloGeometryRecord>().get(pG);
+   double bField000 = 4.;
+   geometryHelper.setupGeometry(*pG);
+   geometryHelper.setupTopology(*theCaloTopology);
+   geometryHelper.initialize(bField000);
 }
-*/
+
 
 // ------------ method called when ending the processing of a run  ------------
 /*
