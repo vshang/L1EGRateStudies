@@ -112,7 +112,7 @@ class L1EGCrystalsHeatMap : public edm::EDAnalyzer {
       virtual void analyze(const edm::Event&, const edm::EventSetup&);
       virtual void endJob() ;
 
-      virtual void beginRun(edm::Run const&, edm::EventSetup const&);
+      //virtual void beginRun(edm::Run const&, edm::EventSetup const&);
       //virtual void endRun(edm::Run const&, edm::EventSetup const&);
       //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
       //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
@@ -213,6 +213,17 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 {
    using namespace edm;
 
+   if ( geometryHelper.getEcalBarrelGeometry() == nullptr )
+   {
+      edm::ESHandle<CaloTopology> theCaloTopology;
+      iSetup.get<CaloTopologyRecord>().get(theCaloTopology);
+      edm::ESHandle<CaloGeometry> pG;
+      iSetup.get<CaloGeometryRecord>().get(pG);
+      double bField000 = 4.;
+      geometryHelper.setupGeometry(*pG);
+      geometryHelper.setupTopology(*theCaloTopology);
+      geometryHelper.initialize(bField000);
+   }
    nEvents++;
 
    std::vector<SimpleCaloHit> ecalhits;
@@ -332,18 +343,12 @@ L1EGCrystalsHeatMap::endJob()
 }
 
 // ------------ method called when starting to processes a run  ------------
+/*
 void 
 L1EGCrystalsHeatMap::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
 {
-   edm::ESHandle<CaloTopology> theCaloTopology;
-   iSetup.get<CaloTopologyRecord>().get(theCaloTopology);
-   edm::ESHandle<CaloGeometry> pG;
-   iSetup.get<CaloGeometryRecord>().get(pG);
-   double bField000 = 4.;
-   geometryHelper.setupGeometry(*pG);
-   geometryHelper.setupTopology(*theCaloTopology);
-   geometryHelper.initialize(bField000);
 }
+*/
 
 
 // ------------ method called when ending the processing of a run  ------------

@@ -61,9 +61,9 @@ class L1EGCrystalClusterProducerTest : public edm::EDProducer {
             bool stale=false; // Hits become stale once used in clustering algorithm to prevent overlap in clusters
             
          // tool functions
-            inline float pt(){return (position.mag2()>0) ? energy*sin(position.theta()) : 0.;};
-            inline float deta(SimpleCaloHit& other){return position.eta() - other.position.eta();};
-            int dieta(SimpleCaloHit& other)
+            inline float pt() const{return (position.mag2()>0) ? energy*sin(position.theta()) : 0.;};
+            inline float deta(SimpleCaloHit& other) const{return position.eta() - other.position.eta();};
+            int dieta(SimpleCaloHit& other) const
             {
                // int indices do not contain zero
                // Logic from EBDetId::distanceEta() without the abs()
@@ -71,8 +71,8 @@ class L1EGCrystalClusterProducerTest : public edm::EDProducer {
                   return id.ieta()-other.id.ieta();
                return id.ieta()-other.id.ieta()-1;
             };
-            inline float dphi(SimpleCaloHit& other){return reco::deltaPhi(position.phi(), other.position.phi());};
-            int diphi(SimpleCaloHit& other)
+            inline float dphi(SimpleCaloHit& other) const{return reco::deltaPhi(position.phi(), other.position.phi());};
+            int diphi(SimpleCaloHit& other) const
             {
                // Logic from EBDetId::distancePhi() without the abs()
                int PI = 180;
@@ -81,7 +81,7 @@ class L1EGCrystalClusterProducerTest : public edm::EDProducer {
                while  (result <= -PI)  result += 2*PI;
                return result;
             };
-            bool operator==(SimpleCaloHit& other)
+            bool operator==(SimpleCaloHit& other) const
             {
                if ( id == other.id &&
                     position == other.position &&
@@ -102,6 +102,18 @@ L1EGCrystalClusterProducerTest::L1EGCrystalClusterProducerTest(const edm::Parame
 
 void  L1EGCrystalClusterProducerTest::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+   if ( geometryHelper.getEcalBarrelGeometry() == nullptr )
+   {
+      edm::ESHandle<CaloTopology> theCaloTopology;
+      iSetup.get<CaloTopologyRecord>().get(theCaloTopology);
+      edm::ESHandle<CaloGeometry> pG;
+      iSetup.get<CaloGeometryRecord>().get(pG);
+      double bField000 = 4.;
+      geometryHelper.setupGeometry(*pG);
+      geometryHelper.setupTopology(*theCaloTopology);
+      geometryHelper.initialize(bField000);
+   }
+   
    std::vector<SimpleCaloHit> ecalhits;
    std::vector<SimpleCaloHit> hcalhits;
    
@@ -146,18 +158,15 @@ void  L1EGCrystalClusterProducerTest::produce(edm::Event& iEvent, const edm::Eve
    std::auto_ptr<l1extra::L1EmParticleCollection> l1EGammaCrystal( new l1extra::L1EmParticleCollection );
    
    // Clustering algorithm
-   // Start by sorting hits by pt (descending order)
-   std::sort(std::begin(ecalhits), std::end(ecalhits), [](SimpleCaloHit a, SimpleCaloHit b){return a.pt() > b.pt();});
    while(true)
    {
       // Find highest pt hit (that's not already used)
       SimpleCaloHit centerhit;
-      for(auto hit : ecalhits)
+      for(const auto& hit : ecalhits)
       {
-         if ( !hit.stale )
+         if ( !hit.stale && hit.pt() > centerhit.pt() )
          {
             centerhit = hit;
-            break;
          }
       }
       // If we are less than 1GeV or out of hits (i.e. when centerhit is default constructed) we stop
@@ -171,7 +180,7 @@ void  L1EGCrystalClusterProducerTest::produce(edm::Event& iEvent, const edm::Eve
       float totalEnergy = 0.;
       float ECalIsolation = 0.;
       float ECalPileUpEnergy = 0.;
-      for(auto hit : ecalhits)
+      for(auto& hit : ecalhits)
       {
          if ( !hit.stale && abs(hit.dieta(centerhit)) < 2 && abs(hit.dieta(centerhit)) < 3 )
          {
@@ -201,7 +210,7 @@ void  L1EGCrystalClusterProducerTest::produce(edm::Event& iEvent, const edm::Eve
 
       // Calculate H/E
       float hcalEnergy = 0.;
-      for(auto hit : hcalhits)
+      for(const auto& hit : hcalhits)
       {
          if ( fabs(hit.deta(centerhit)) < 0.15 && fabs(hit.dphi(centerhit)) < 0.15 )
          {
@@ -227,7 +236,8 @@ void  L1EGCrystalClusterProducerTest::produce(edm::Event& iEvent, const edm::Eve
 
       trigCrystalClusters->push_back(cluster);
 
-      if ( cluster.hovere < 1. && cluster.ECALiso < 2. ){
+      if ( cluster.hovere < 1. && cluster.ECALiso < 2. )
+      {
          reco::Candidate::PolarLorentzVector p4(cluster.et, cluster.eta, cluster.phi, 0.);
          l1EGammaCrystal->push_back(l1extra::L1EmParticle(p4, edm::Ref<L1GctEmCandCollection>(), 0));
       }
@@ -241,14 +251,7 @@ void  L1EGCrystalClusterProducerTest::produce(edm::Event& iEvent, const edm::Eve
 void 
 L1EGCrystalClusterProducerTest::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
 {
-   edm::ESHandle<CaloTopology> theCaloTopology;
-   iSetup.get<CaloTopologyRecord>().get(theCaloTopology);
-   edm::ESHandle<CaloGeometry> pG;
-   iSetup.get<CaloGeometryRecord>().get(pG);
-   double bField000 = 4.;
-   geometryHelper.setupGeometry(*pG);
-   geometryHelper.setupTopology(*theCaloTopology);
-   geometryHelper.initialize(bField000);
+   std::cout << "Apparently beginRun() never gets called?!?!?!" << std::endl;
 }
 
 DEFINE_FWK_MODULE(L1EGCrystalClusterProducerTest);
