@@ -173,24 +173,28 @@ void drawRateEff() {
    oldAlgrecoGenPtHist->Draw("colz");
    c->Print("plots/reco_gen_pt.png");
 
-   c->Clear();
-   c->Divide(2,1);
-   auto hovereHist = (TH1F *) eff->Get("analyzer/hovere");
-   auto hovereHistFake = (TH1F *) rates->Get("analyzer/hovere");
-   hovereHistFake->SetLineColor(kRed);
-   c->cd(1);
-   hovereHist->Draw();
-   hovereHistFake->Draw("same");
-   auto ecalIsoHist = (TH1F *) eff->Get("analyzer/ecalIso");
-   auto ecalIsoHistFake = (TH1F *) rates->Get("analyzer/ecalIso");
-   ecalIsoHistFake->SetLineColor(kRed);
-   c->cd(2);
-   ecalIsoHist->Draw();
-   ecalIsoHistFake->Draw("same");
-   TLegend * l = new TLegend(0.5,0.8,0.9,0.9);
-   setLegStyle(l);
-   l->AddEntry(ecalIsoHist, "True electron distribution", "l");
-   l->AddEntry(ecalIsoHistFake, "Background distribution", "l");
-   l->Draw("same");
-   c->Print("plots/crystalEG_hovere_isolation_distributions.png");
+   std::vector<std::string> pts {"lowpt", "medpt", "highpt"};
+   for(auto pt : pts)
+   {
+      auto hovereHist = (TH1F *) eff->Get(("analyzer/hovere_"+pt).c_str());
+      auto hovereHistFake = (TH1F *) rates->Get(("analyzer/hovere_"+pt).c_str());
+      auto ecalIsoHist = (TH1F *) eff->Get(("analyzer/ecalIso_"+pt).c_str());
+      auto ecalIsoHistFake = (TH1F *) rates->Get(("analyzer/ecalIso_"+pt).c_str());
+      c->Clear();
+      c->Divide(2,1);
+      hovereHistFake->SetLineColor(kRed);
+      c->cd(1);
+      hovereHist->Draw();
+      hovereHistFake->Draw("same");
+      ecalIsoHistFake->SetLineColor(kRed);
+      c->cd(2);
+      ecalIsoHist->Draw();
+      ecalIsoHistFake->Draw("same");
+      TLegend * l = new TLegend(0.5,0.8,0.9,0.9);
+      setLegStyle(l);
+      l->AddEntry(ecalIsoHist, "True electron distribution", "l");
+      l->AddEntry(ecalIsoHistFake, "Background distribution", "l");
+      l->Draw("same");
+      c->Print(("plots/crystalEG_hovere_isolation_distributions_"+pt+".png").c_str());
+   }
 }

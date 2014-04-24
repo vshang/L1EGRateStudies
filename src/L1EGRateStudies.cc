@@ -91,7 +91,8 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       // -- user functions
       void integrateDown(TH1F *);
       inline double deltaR(const reco::Candidate::PolarLorentzVector& a, const reco::Candidate::PolarLorentzVector& b){return reco::deltaR(a,b);};
-      double deltaR(const l1slhc::L1EGCrystalCluster& a, const reco::Candidate::PolarLorentzVector& b); 
+      double deltaR(const l1slhc::L1EGCrystalCluster& a, const reco::Candidate::PolarLorentzVector& b);
+      void fillhovere_isolation_hists(const l1slhc::L1EGCrystalCluster& cluster);
       
       // ----------member data ---------------------------
       bool doEfficiencyCalc;
@@ -137,8 +138,12 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       TH1F * oldEGalg_rate_hist;
 
       // hovere and iso distributions
-      TH1F * hovere_hist;
-      TH1F * ecalIso_hist;
+      TH1F * hovere_hist_lowpt;
+      TH1F * hovere_hist_medpt;
+      TH1F * hovere_hist_highpt;
+      TH1F * ecalIso_hist_lowpt;
+      TH1F * ecalIso_hist_medpt;
+      TH1F * ecalIso_hist_highpt;
 
       // (pt_reco-pt_gen)/pt_gen plot
       TH2F * reco_gen_pt_hist;
@@ -256,8 +261,12 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       }
       oldEGalg_rate_hist = fs->make<TH1F>("oldEG_rate" , "EG Rates;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
    }
-   hovere_hist = fs->make<TH1F>("hovere" , "EG H/E distribution;HCal energy / ECal energy;Counts", 30, 0, 4); 
-   ecalIso_hist = fs->make<TH1F>("ecalIso" , "EG ECal Isolation distribution;ECal Isolation;Counts", 30, 0, 4);
+   hovere_hist_lowpt = fs->make<TH1F>("hovere_lowpt" , "EG H/E distribution (0<pT<15);HCal energy / ECal energy;Counts", 30, 0, 4); 
+   hovere_hist_medpt = fs->make<TH1F>("hovere_medpt" , "EG H/E distribution (15<pT<35);HCal energy / ECal energy;Counts", 30, 0, 4); 
+   hovere_hist_highpt = fs->make<TH1F>("hovere_highpt" , "EG H/E distribution (35<pT<50);HCal energy / ECal energy;Counts", 30, 0, 4); 
+   ecalIso_hist_lowpt = fs->make<TH1F>("ecalIso_lowpt" , "EG ECal Isolation distribution (0<pT<15);ECal Isolation;Counts", 30, 0, 4);
+   ecalIso_hist_medpt = fs->make<TH1F>("ecalIso_medpt" , "EG ECal Isolation distribution (15<pT<35);ECal Isolation;Counts", 30, 0, 4);
+   ecalIso_hist_highpt = fs->make<TH1F>("ecalIso_highpt" , "EG ECal Isolation distribution (35<pT<50);ECal Isolation;Counts", 30, 0, 4);
 }
 
 
@@ -343,8 +352,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          if ( deltaR(cluster, genParticles[0].polarP4()) < genMatchDeltaRcut
               && fabs(cluster.et-genParticles[0].pt())/genParticles[0].pt() < genMatchRelPtcut)
          {
-            hovere_hist->Fill(cluster.hovere);
-            ecalIso_hist->Fill(cluster.ECALiso);
+            fillhovere_isolation_hists(cluster);
             reco_gen_pt_hist->Fill( genParticles[0].pt(), (cluster.et - genParticles[0].pt())/genParticles[0].pt() );
             break;
          }
@@ -391,8 +399,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       {
          oldEGalg_rate_hist->Fill(highestEGCandidate.pt());
       }
-      hovere_hist->Fill(highestCluster.hovere);
-      ecalIso_hist->Fill(highestCluster.ECALiso);
+      fillhovere_isolation_hists(highestCluster);
    }
 }
 
@@ -495,6 +502,25 @@ double
 L1EGRateStudies::deltaR(const l1slhc::L1EGCrystalCluster& a, const reco::Candidate::PolarLorentzVector& b) {
    reco::Candidate::PolarLorentzVector clusterP4(a.et, a.eta, a.phi, 0.);
    return deltaR(clusterP4, b);
+}
+
+void
+L1EGRateStudies::fillhovere_isolation_hists(const l1slhc::L1EGCrystalCluster& cluster) {
+   if ( cluster.et < 15. )
+   {
+      hovere_hist_lowpt->Fill(cluster.hovere);
+      ecalIso_hist_lowpt->Fill(cluster.ECALiso);
+   }
+   else if ( cluster.et > 15. && cluster.et < 35. )
+   {
+      hovere_hist_medpt->Fill(cluster.hovere);
+      ecalIso_hist_medpt->Fill(cluster.ECALiso);
+   }
+   else if ( cluster.et > 35. && cluster.et < 50. )
+   {
+      hovere_hist_highpt->Fill(cluster.hovere);
+      ecalIso_hist_highpt->Fill(cluster.ECALiso);
+   }
 }
 
 //define this as a plug-in
