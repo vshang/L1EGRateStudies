@@ -184,12 +184,28 @@ void drawRateEff() {
       c->Divide(2,1);
       hovereHistFake->SetLineColor(kRed);
       c->cd(1);
-      hovereHist->Draw();
-      hovereHistFake->Draw("same");
+      if ( hovereHist->GetMaximum() > hovereHistFake->GetMaximum() )
+      {
+         hovereHist->Draw();
+         hovereHistFake->Draw("same");
+      }
+      else
+      {
+         hovereHistFake->Draw();
+         hovereHist->Draw("same");
+      }
       ecalIsoHistFake->SetLineColor(kRed);
       c->cd(2);
-      ecalIsoHist->Draw();
-      ecalIsoHistFake->Draw("same");
+      if ( ecalIsoHist->GetMaximum() > ecalIsoHistFake->GetMaximum() )
+      {
+         ecalIsoHist->Draw();
+         ecalIsoHistFake->Draw("same");
+      }
+      else
+      {
+         ecalIsoHistFake->Draw();
+         ecalIsoHist->Draw("same");
+      }
       TLegend * l = new TLegend(0.5,0.8,0.9,0.9);
       setLegStyle(l);
       l->AddEntry(ecalIsoHist, "True electron distribution", "l");
