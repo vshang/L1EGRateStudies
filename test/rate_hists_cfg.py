@@ -4,20 +4,11 @@ process = cms.Process("test")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.categories = cms.untracked.vstring('L1EGRateStudies', 'FwkReport')
-#process.MessageLogger.cout = cms.untracked.PSet(
-#   threshold = cms.untracked.string('INFO'),
-#   default = cms.untracked.PSet(
-#      limit = cms.untracked.int32(0)
-#   ),
-#   L1EGRateStudies = cms.untracked.PSet(
-#      limit = cms.untracked.int32(100)
-#   )
-#)
 process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
    reportEvery = cms.untracked.int32(500)
 )
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(40000) )
 
 # List (1 of 4?) of NeutrinoGun samples (i.e. background rate)
 from SLHCUpgradeSimulations.L1TrackTriggerObjects.minBiasFiles_p1_cfi import *
@@ -116,7 +107,9 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    ecal_isolation_cut_min = cms.untracked.double(1),
    ecal_isolation_cut_max = cms.untracked.double(4),
    cut_steps = cms.untracked.int32(4),
-   histogramBinCount = cms.untracked.int32(19),
+   histogramBinCount = cms.untracked.int32(20),
+   histogramRangeLow = cms.untracked.double(0),
+   histogramRangeHigh = cms.untracked.double(50),
    histogramEtaBinCount = cms.untracked.int32(20)
 )
 

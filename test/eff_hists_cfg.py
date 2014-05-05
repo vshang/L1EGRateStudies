@@ -3,8 +3,12 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("test")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
+process.MessageLogger.categories = cms.untracked.vstring('L1EGRateStudies', 'FwkReport')
+process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
+   reportEvery = cms.untracked.int32(500)
+)
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(40000) )
 
 # Single electron (for efficiency)
 from SLHCUpgradeSimulations.L1TrackTriggerObjects.singleElectronFiles_cfi import *
@@ -106,6 +110,9 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    ecal_isolation_cut_min = cms.untracked.double(1),
    ecal_isolation_cut_max = cms.untracked.double(4),
    cut_steps = cms.untracked.int32(4),
+   histogramBinCount = cms.untracked.int32(20),
+   histogramRangeLow = cms.untracked.double(0),
+   histogramRangeHigh = cms.untracked.double(50),
    histogramEtaBinCount = cms.untracked.int32(20),
    genMatchDeltaRcut = cms.untracked.double(0.1),
    genMatchRelPtcut = cms.untracked.double(1.)
