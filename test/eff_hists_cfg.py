@@ -90,6 +90,14 @@ process.l1ExtraCrystalProducer = cms.EDProducer("L1ExtraCrystalPosition",
 )
 process.egcrystal_producer = cms.Path(process.l1ExtraCrystalProducer)
 
+
+# ----------------------------------------------------------------------------------------------
+# 
+# Do offline reconstruction step to get cluster pt
+
+process.load('RecoEcal.Configuration.RecoEcal_cff')
+process.ecalClusters = cms.Path(process.ecalClustersNoPFBox)
+
 # ----------------------------------------------------------------------------------------------
 # 
 # Analyzer starts here
@@ -105,6 +113,7 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
 # this just normalizes the histograms to 30kHz rate 
 # use this when running over single particle gun sources
    doEfficiencyCalc = cms.untracked.bool(True),
+   useOfflineClusters = cms.untracked.bool(True),
    hovere_cut_min = cms.untracked.double(1),
    hovere_cut_max = cms.untracked.double(4),
    ecal_isolation_cut_min = cms.untracked.double(1),
