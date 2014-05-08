@@ -61,24 +61,39 @@ void drawNewOld(std::vector<TH1F*> newHists, TH1F * oldHist, TCanvas * c, double
 
 void drawNewOldHist(std::vector<TH1F*> newHists, TH1F * oldHist, TCanvas * c, double ymax) {
    oldHist->SetLineColor(kRed);
-   if ( c->GetLogy() == 0 ) // linear
-      oldHist->SetMinimum(0.);
-   if ( ymax != 0. )
-      oldHist->SetMaximum(ymax);
-   c->Clear();
    std::string oldTitle = oldHist->GetTitle();
-   oldHist->SetTitle("EG Rates");
+   oldHist->SetTitle(c->GetTitle());
+   c->Clear();
    for ( auto newHist : newHists ) {
-      oldHist->Draw();
-      newHist->Draw("same");
+      std::string newTitle = newHist->GetTitle();
+      newHist->SetTitle(c->GetTitle());
+      if ( oldHist->GetMaximum() > newHist->GetMaximum() )
+      {
+         if ( c->GetLogy() == 0 ) // linear
+            oldHist->SetMinimum(0.);
+         if ( ymax != 0. )
+            oldHist->SetMaximum(ymax);
+         oldHist->Draw();
+         newHist->Draw("same");
+      }
+      else
+      {
+         if ( c->GetLogy() == 0 ) // linear
+            newHist->SetMinimum(0.);
+         if ( ymax != 0. )
+            newHist->SetMaximum(ymax);
+         newHist->Draw();
+         oldHist->Draw("same");
+      }
       TLegend *leg = new TLegend(0.4,0.8,0.9,0.9);
       setLegStyle(leg);
       leg->AddEntry(oldHist, "Old L2 Algorithm","l");
-      leg->AddEntry(newHist, newHist->GetTitle(),"l");
+      leg->AddEntry(newHist, newTitle.c_str(),"l");
       leg->Draw("same");
                   
       c->Print(("plots/"+std::string(newHist->GetName())+".png").c_str());
       delete leg;
+      newHist->SetTitle(newTitle.c_str());
    }
    // Fix our title mangling
    oldHist->SetTitle(oldTitle.c_str());
@@ -148,8 +163,11 @@ void drawRateEff() {
       hist->GetXaxis()->SetRange(0, 10);
    }
    drawNewOld(newAlgPtEffHists, oldAlgPtHist, c, 1.2, 50.);
-   drawNewOldHist(newAlgDRHists, oldAlgDRHist, c, 80.);
+   c->SetTitle("#Delta R Distribution Comparison");
+   drawNewOldHist(newAlgDRHists, oldAlgDRHist, c, 0.);
+   c->SetTitle("d#eta Distribution Comparison");
    drawNewOldHist(newAlgDEtaHists, oldAlgDEtaHist, c, 0.);
+   c->SetTitle("d#phi Distribution Comparison");
    drawNewOldHist(newAlgDPhiHists, oldAlgDPhiHist, c, 0.);
 
    std::vector<TH1F*> selectedEtaEffHists{oldAlgEtaHist, newAlgEtaEffHists[0], newAlgEtaEffHists[3], newAlgEtaEffHists[12], newAlgEtaEffHists[15]};
