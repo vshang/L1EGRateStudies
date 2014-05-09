@@ -1,5 +1,22 @@
-// A.Savin University of Wisconsin, Version 1.0 //
-// A.Savin University of Wisconsin, Version 2.0 //
+// -*- C++ -*-
+//
+// Package:    L1CaloTrigger
+// Class:      L1EGammaCrystalsProducer
+// 
+/**\class L1EGammaCrystalsProducer L1EGammaCrystalsProducer.cc SLHCUpgradeSimulations/L1CaloTrigger/plugin/L1EGammaCrystalsProducer.cc
+
+ Description: Produces crystal clusters using crystal-level information
+
+ Implementation:
+     [Notes on implementation]
+*/
+//
+// Original Author:  Nick Smith, Alexander Savin
+//         Created:  Tue Apr 22 2014
+// $Id$
+//
+//
+
 
 #include "SimDataFormats/Track/interface/SimTrackContainer.h"
 #include "DataFormats/L1Trigger/interface/L1EmParticle.h"
@@ -52,19 +69,22 @@ class L1EGCrystalClusterProducerTest : public edm::EDProducer {
 
       CaloGeometryHelper geometryHelper;
       bool DEBUG;
+      bool useECalEndcap;
       class SimpleCaloHit
       {
          public:
             EBDetId id;
-            GlobalVector position; // As opposed to GlobalPoint
+            GlobalVector position; // As opposed to GlobalPoint, so we can add them (for weighted average)
             float energy=0.;
             bool stale=false; // Hits become stale once used in clustering algorithm to prevent overlap in clusters
+            bool isEndcapHit=false; // If using endcap, we won't be using integer crystal indices
             
          // tool functions
             inline float pt() const{return (position.mag2()>0) ? energy*sin(position.theta()) : 0.;};
             inline float deta(SimpleCaloHit& other) const{return position.eta() - other.position.eta();};
             int dieta(SimpleCaloHit& other) const
             {
+               if ( isEndcapHit || other.isEndcapHit ) return 9999; // We shouldn't compare integer indices in endcap, the map is not linear
                // int indices do not contain zero
                // Logic from EBDetId::distanceEta() without the abs()
                if (id.ieta() * other.id.ieta() > 0)
@@ -74,6 +94,7 @@ class L1EGCrystalClusterProducerTest : public edm::EDProducer {
             inline float dphi(SimpleCaloHit& other) const{return reco::deltaPhi(position.phi(), other.position.phi());};
             int diphi(SimpleCaloHit& other) const
             {
+               if ( isEndcapHit || other.isEndcapHit ) return 9999; // We shouldn't compare integer indices in endcap, the map is not linear
                // Logic from EBDetId::distancePhi() without the abs()
                int PI = 180;
                int  result = id.iphi() - other.id.iphi();
@@ -81,11 +102,18 @@ class L1EGCrystalClusterProducerTest : public edm::EDProducer {
                while  (result <= -PI)  result += 2*PI;
                return result;
             };
+            float distanceTo(SimpleCaloHit& other) const
+            {
+               // Treat position as a point, measure 3D distance
+               // This is used for endcap hits, where we don't have a rectangular mapping
+               return (position-other.position).mag();
+            };
             bool operator==(SimpleCaloHit& other) const
             {
                if ( id == other.id &&
                     position == other.position &&
-                    energy == other.energy
+                    energy == other.energy &&
+                    isEndcapHit == other.isEndcapHit
                   ) return true;
                   
                return false;
@@ -94,7 +122,8 @@ class L1EGCrystalClusterProducerTest : public edm::EDProducer {
 };
 
 L1EGCrystalClusterProducerTest::L1EGCrystalClusterProducerTest(const edm::ParameterSet& iConfig) :
-   DEBUG(iConfig.getUntrackedParameter<bool>("DEBUG", false))
+   DEBUG(iConfig.getUntrackedParameter<bool>("DEBUG", false)),
+   useECalEndcap(iConfig.getUntrackedParameter<bool>("useECalEndcap", false))
 {
    produces<l1slhc::L1EGCrystalClusterCollection>("EGCrystalCluster");
    produces<l1extra::L1EmParticleCollection>("EGammaCrystal");
@@ -134,6 +163,28 @@ void  L1EGCrystalClusterProducerTest::produce(edm::Event& iEvent, const edm::Eve
          ehit.position = GlobalVector(cell->getPosition().x(), cell->getPosition().y(), cell->getPosition().z());
          ehit.energy = hit.energy();
          ecalhits.push_back(ehit);
+      }
+   }
+   
+   if ( useECalEndcap )
+   {
+      // Retrieve the ecal endcap hits
+      // using RecHits (https://cmssdt.cern.ch/SDT/doxygen/CMSSW_6_1_2_SLHC6/doc/html/d8/dc9/classEcalRecHit.html)
+      edm::Handle<EcalRecHitCollection> pcalohitsEndcap;
+      iEvent.getByLabel("ecalRecHit","EcalRecHitsEE",pcalohitsEndcap);
+      for(auto hit : *pcalohitsEndcap.product())
+      {
+         if(hit.energy() > 0.2)
+         {
+            auto cell = geometryHelper.getEcalEndcapGeometry()->getGeometry(hit.id());
+            SimpleCaloHit ehit;
+            // endcap cell ids won't have any relation to barrel hits
+            ehit.id = hit.id();
+            ehit.position = GlobalVector(cell->getPosition().x(), cell->getPosition().y(), cell->getPosition().z());
+            ehit.energy = hit.energy();
+            ehit.isEndcapHit = true;
+            ecalhits.push_back(ehit);
+         }
       }
    }
 
@@ -184,24 +235,38 @@ void  L1EGCrystalClusterProducerTest::produce(edm::Event& iEvent, const edm::Eve
       float ECalPileUpEnergy = 0.;
       for(auto& hit : ecalhits)
       {
-         if ( !hit.stale && abs(hit.dieta(centerhit)) < 2 && abs(hit.diphi(centerhit)) < 3 )
+         if ( !hit.stale && 
+               (   (!centerhit.isEndcapHit && abs(hit.dieta(centerhit)) < 2 && abs(hit.diphi(centerhit)) < 3) 
+                || (centerhit.isEndcapHit && hit.distanceTo(centerhit) < 3.5*1.41 ) )) // endcap crystals are 30mm on a side, 3.5*sqrt(2) cm radius should enclose 3x3
          {
             weightedPosition += hit.position*hit.energy;
             totalEnergy += hit.energy;
             hit.stale = true;
             if ( DEBUG && hit == centerhit )
                std::cout << "\x1B[32m"; // green hilight
-            if ( DEBUG ) std::cout << "\tCrystal (" << hit.dieta(centerhit) << "," << hit.diphi(centerhit) << ") pt=" << hit.pt() << ", eta=" << hit.position.eta() << ", phi=" << hit.position.phi() << "\x1B[0m" << std::endl;
+            if ( DEBUG && hit.isEndcapHit ) std::cout << 
+               "\tCrystal pt=" << hit.pt() << 
+               ", eta=" << hit.position.eta() << 
+               ", phi=" << hit.position.phi() << "\x1B[0m" << std::endl;
+            else if ( DEBUG ) std::cout << 
+               "\tCrystal (" << hit.dieta(centerhit) << "," << hit.diphi(centerhit) << 
+               ") pt=" << hit.pt() << 
+               ", eta=" << hit.position.eta() << 
+               ", phi=" << hit.position.phi() << "\x1B[0m" << std::endl;
          }
          // Isolation and pileup must not use hits used in a cluster
          // We also cut out low pt noise
+         // As for the endcap hits, well, as far as this algorithm is concerned, caveat emptor...
          if ( !hit.stale && hit.pt() > 0.05 )
          {
-            if ( abs(hit.dieta(centerhit)) < 14 && abs(hit.diphi(centerhit)) < 14 )
+            if (    (!centerhit.isEndcapHit && abs(hit.dieta(centerhit)) < 14 && abs(hit.diphi(centerhit)) < 14) 
+                 || (centerhit.isEndcapHit && hit.distanceTo(centerhit) < 42. ))
             {
                ECalIsolation += hit.pt();
             }
-            if ( hit.pt() < 5. && abs(hit.dieta(centerhit)) < 7 && abs(hit.diphi(centerhit)) < 57 )
+            if ( hit.pt() < 5. &&
+                 (   (!centerhit.isEndcapHit && abs(hit.dieta(centerhit)) < 7 && abs(hit.diphi(centerhit)) < 57 )
+                  || (centerhit.isEndcapHit && hit.distanceTo(centerhit) < 50.) ))
             {
                ECalPileUpEnergy += hit.energy;
                ECalPileUpVector += hit.position;
@@ -247,7 +312,8 @@ void  L1EGCrystalClusterProducerTest::produce(edm::Event& iEvent, const edm::Eve
 
       trigCrystalClusters->push_back(cluster);
 
-      if ( cluster.hovere < 1. && cluster.ECALiso < 2. )
+      // Save clusters with some cuts
+      if ( cluster.hovere < 2. && cluster.ECALiso < 3. )
       {
          reco::Candidate::PolarLorentzVector p4(cluster.et, cluster.eta, cluster.phi, 0.);
          l1EGammaCrystal->push_back(l1extra::L1EmParticle(p4, edm::Ref<L1GctEmCandCollection>(), 0));
