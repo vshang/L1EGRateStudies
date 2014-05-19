@@ -377,10 +377,6 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    }
    else // !doEfficiencyCalc
    {
-      // List is sorted by pt
-      auto& highestCluster = crystalClusters[0];
-      auto& highestEGCandidate = eGammaCollection[0];
-      
       // Fill rate histograms
       for(int i=0; i<cut_steps; i++)
       {
@@ -388,21 +384,27 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          for(int j=0; j<cut_steps; j++)
          {
             double ecal_isolation_cut = ecal_isolation_cut_min+(ecal_isolation_cut_max-ecal_isolation_cut_min)*j/(cut_steps-1);
-            
-            if ( highestCluster.hovere < hovere_cut &&
-                 highestCluster.ECALiso < ecal_isolation_cut )
+            // List is sorted by pt
+            for(const auto& cluster : crystalClusters)
             {
-               histograms[i*cut_steps+j]->Fill(highestCluster.et);
+               if ( cluster.hovere < hovere_cut 
+                     && cluster.ECALiso < ecal_isolation_cut )
+               {
+                  histograms[i*cut_steps+j]->Fill(cluster.et);
+                  break;
+               }
             }
          }
       }
+
+      auto& highestEGCandidate = eGammaCollection[0];
       // Don't fill old alg. plots if in barrel
       if ( useBarrel
             || (!useBarrel && fabs(highestEGCandidate.eta()) < 1.479) )
       {
          oldEGalg_rate_hist->Fill(highestEGCandidate.pt());
       }
-      fillhovere_isolation_hists(highestCluster);
+      fillhovere_isolation_hists(crystalClusters[0]);
    }
 }
 
@@ -435,7 +437,7 @@ L1EGRateStudies::endJob()
    else
    {
       // We currently have an efficiency pdf, we want cdf, so we integrate (downward in pt is inclusive)
-      // todo: Apparently, we normalize to 30kHz for some reason
+      // We normalize to 30MHz as this will be the crossing rate of filled bunches in SLHC
       integrateDown(oldEGalg_rate_hist);
       oldEGalg_rate_hist->Scale(30000./eventCount);
       for(auto it=histograms.begin(); it!=histograms.end(); it++)
