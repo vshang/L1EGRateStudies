@@ -103,7 +103,7 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer","EGCrystalCluster"),
 # use this when running over single particle gun sources
    doEfficiencyCalc = cms.untracked.bool(False),
-   useBarrel = cms.untracked.bool(True),
+   useEndcap = cms.untracked.bool(True),
    hovere_cut_min = cms.untracked.double(1),
    hovere_cut_max = cms.untracked.double(4),
    ecal_isolation_cut_min = cms.untracked.double(1),

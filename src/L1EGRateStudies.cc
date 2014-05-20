@@ -96,7 +96,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       
       // ----------member data ---------------------------
       bool doEfficiencyCalc;
-      bool useBarrel;
+      bool useEndcap;
       
       double hovere_cut_min;
       double hovere_cut_max;
@@ -164,7 +164,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
 //
 L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    doEfficiencyCalc(iConfig.getUntrackedParameter<bool>("doEfficiencyCalc", false)),
-   useBarrel(iConfig.getUntrackedParameter<bool>("useBarrel", false)),
+   useEndcap(iConfig.getUntrackedParameter<bool>("useEndcap", false)),
    hovere_cut_min(iConfig.getUntrackedParameter<double>("hovere_cut_min", 0.5)),
    hovere_cut_max(iConfig.getUntrackedParameter<double>("hovere_cut_max", 2.)),
    ecal_isolation_cut_min(iConfig.getUntrackedParameter<double>("ecal_isolation_cut_min", 1.)),
@@ -314,7 +314,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       // and some relative pt error cut
       // and if we find it, it goes in the numerator
       // but only if in the barrel!
-      if ( !useBarrel && fabs(genParticles[0].eta()) > 1.479 )
+      if ( !useEndcap && fabs(genParticles[0].eta()) > 1.479 )
       {
          eventCount--;
          return;
@@ -398,9 +398,9 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       }
 
       auto& highestEGCandidate = eGammaCollection[0];
-      // Don't fill old alg. plots if in barrel
-      if ( useBarrel
-            || (!useBarrel && fabs(highestEGCandidate.eta()) < 1.479) )
+      // Don't fill old alg. plots if in endcap
+      if ( useEndcap
+            || (!useEndcap && fabs(highestEGCandidate.eta()) < 1.479) )
       {
          oldEGalg_rate_hist->Fill(highestEGCandidate.pt());
       }
