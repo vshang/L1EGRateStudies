@@ -33,7 +33,7 @@ void drawNewOld(std::vector<TH1F*> newHists, TH1F * oldHist, TCanvas * c, double
    oldGraph->SetMarkerStyle(20);
    std::string oldTitle = oldHist->GetTitle();
 
-   TMultiGraph mg("mg", "EG Rates");
+   TMultiGraph mg("mg", c->GetTitle());
    mg.Add(oldGraph);
    for ( auto newHist : newHists ) {
       auto g = new TGraph((TH1 *) newHist);
@@ -139,6 +139,7 @@ void drawRateEff() {
    c->SetLogy(1);
    //c->SetGridx(1);
    //c->SetGridy(1);
+   c->SetTitle("EG Fake Rates (PU140, minBias)");
    drawNewOld(newAlgRateHists, oldAlgRateHist, c, 40000.);
    // Draw several cuts on same plot (the four corners in search space)
    std::vector<TH1F*> selectedHists{oldAlgRateHist, newAlgRateHists[0], newAlgRateHists[3], newAlgRateHists[12], newAlgRateHists[15]};
@@ -156,6 +157,7 @@ void drawRateEff() {
    auto oldAlgDEtaHist = (TH1F *) eff->Get("analyzer/oldEG_deta");
    auto oldAlgDPhiHist = (TH1F *) eff->Get("analyzer/oldEG_dphi");
    c->SetLogy(0);
+   c->SetTitle("EG Single Electron Efficiencies");
    drawNewOld(newAlgEtaEffHists, oldAlgEtaHist, c, 1.2);
    rootools::drawMulti({oldAlgEtaHist, newAlgEtaEffHists[10]}, c, "EG efficiencies", "plots/crystalEG_efficiency_tgraph_eta.png", {.5,.7,.9,.9});
    for(auto hist : newAlgPtEffHists)
@@ -191,6 +193,10 @@ void drawRateEff() {
    oldAlgrecoGenPtHist->Draw("colz");
    c->Print("plots/reco_gen_pt.png");
 
+   auto hovereHistSum = new TH1F("hovere_sum", "EG H/E distribution (full pT range)", 30, 0., 4.);
+   auto hovereHistFakeSum = new TH1F("hoverefake_sum", "EG H/E distribution (full pT range)", 30, 0., 4.);
+   auto ecalIsoHistSum = new TH1F("iso_sum", "EG ECal Isolation distribution (full pT range)", 30, 0., 4.);
+   auto ecalIsoHistFakeSum = new TH1F("isofake_sum", "EG ECal Isolation distribution (full pT range)", 30, 0., 4.);
    std::vector<std::string> pts {"lowpt", "medpt", "highpt"};
    for(auto pt : pts)
    {
@@ -198,37 +204,65 @@ void drawRateEff() {
       auto hovereHistFake = (TH1F *) rates->Get(("analyzer/hovere_"+pt).c_str());
       auto ecalIsoHist = (TH1F *) eff->Get(("analyzer/ecalIso_"+pt).c_str());
       auto ecalIsoHistFake = (TH1F *) rates->Get(("analyzer/ecalIso_"+pt).c_str());
+      hovereHistSum->Add(hovereHist);
+      hovereHistFakeSum->Add(hovereHistFake);
+      ecalIsoHistSum->Add(ecalIsoHist);
+      ecalIsoHistFakeSum->Add(ecalIsoHistFake);
       c->Clear();
       c->Divide(2,1);
       hovereHistFake->SetLineColor(kRed);
       c->cd(1);
-      if ( hovereHist->GetMaximum() > hovereHistFake->GetMaximum() )
-      {
-         hovereHist->Draw();
-         hovereHistFake->Draw("same");
-      }
-      else
-      {
-         hovereHistFake->Draw();
-         hovereHist->Draw("same");
-      }
+      // Normalize
+      hovereHist->Scale(1./hovereHist->Integral());
+      hovereHistFake->Scale(1./hovereHistFake->Integral());
+      hovereHist->GetYaxis()->SetTitle("");
+      hovereHist->Draw();
+      hovereHistFake->Draw("same");
       ecalIsoHistFake->SetLineColor(kRed);
       c->cd(2);
-      if ( ecalIsoHist->GetMaximum() > ecalIsoHistFake->GetMaximum() )
-      {
-         ecalIsoHist->Draw();
-         ecalIsoHistFake->Draw("same");
-      }
-      else
-      {
-         ecalIsoHistFake->Draw();
-         ecalIsoHist->Draw("same");
-      }
-      TLegend * l = new TLegend(0.5,0.8,0.9,0.9);
+      ecalIsoHist->Scale(1./ecalIsoHist->Integral());
+      ecalIsoHistFake->Scale(1./ecalIsoHistFake->Integral());
+      ecalIsoHist->GetYaxis()->SetTitle("");
+      ecalIsoHist->Draw();
+      ecalIsoHistFake->Draw("same");
+      TLegend * l = new TLegend(0.4,0.8,0.9,0.9);
       setLegStyle(l);
-      l->AddEntry(ecalIsoHist, "True electron distribution", "l");
-      l->AddEntry(ecalIsoHistFake, "Background distribution", "l");
+      l->AddEntry(ecalIsoHist, "True electron distribution (int-norm)", "l");
+      l->AddEntry(ecalIsoHistFake, "Background distribution (int-norm)", "l");
       l->Draw("same");
       c->Print(("plots/crystalEG_hovere_isolation_distributions_"+pt+".png").c_str());
    }
+   c->Clear();
+   c->Divide(2,1);
+   hovereHistFakeSum->SetLineColor(kRed);
+   c->cd(1);
+   if ( hovereHistSum->GetMaximum() > hovereHistFakeSum->GetMaximum() )
+   {
+      hovereHistSum->Draw();
+      hovereHistFakeSum->Draw("same");
+   }
+   else
+   {
+      hovereHistFakeSum->Draw();
+      hovereHistSum->Draw("same");
+   }
+   ecalIsoHistFakeSum->SetLineColor(kRed);
+   c->cd(2);
+   if ( ecalIsoHistSum->GetMaximum() > ecalIsoHistFakeSum->GetMaximum() )
+   {
+      ecalIsoHistSum->Draw();
+      ecalIsoHistFakeSum->Draw("same");
+   }
+   else
+   {
+      ecalIsoHistFakeSum->Draw();
+      ecalIsoHistSum->Draw("same");
+   }
+   TLegend * l = new TLegend(0.4,0.8,0.9,0.9);
+   setLegStyle(l);
+   l->AddEntry(ecalIsoHistSum, "True electron distribution", "l");
+   l->AddEntry(ecalIsoHistFakeSum, "Background distribution", "l");
+   l->Draw("same");
+   c->Print("plots/crystalEG_hovere_isolation_distributions.png");
+
 }

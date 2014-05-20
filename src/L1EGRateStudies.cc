@@ -79,6 +79,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       bool doEfficiencyCalc;
       bool useOfflineClusters;
       bool debug;
+      bool useEndcap;
       
       double hovere_cut_min;
       double hovere_cut_max;
@@ -148,6 +149,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    doEfficiencyCalc(iConfig.getUntrackedParameter<bool>("doEfficiencyCalc", false)),
    useOfflineClusters(iConfig.getUntrackedParameter<bool>("useOfflineClusters", false)),
    debug(iConfig.getUntrackedParameter<bool>("debug", false)),
+   useEndcap(iConfig.getUntrackedParameter<bool>("useEndcap", false)),
    hovere_cut_min(iConfig.getUntrackedParameter<double>("hovere_cut_min", 0.5)),
    hovere_cut_max(iConfig.getUntrackedParameter<double>("hovere_cut_max", 2.)),
    ecal_isolation_cut_min(iConfig.getUntrackedParameter<double>("ecal_isolation_cut_min", 1.)),
@@ -345,7 +347,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       // and some relative pt error cut
       // and if we find it, it goes in the numerator
       // but only if in the barrel!
-      if ( fabs(trueElectron.eta()) > 1.479 )
+      if ( !useEndcap && fabs(trueElectron.eta()) > 1.479 )
       {
          eventCount--;
          return;
@@ -408,10 +410,6 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    }
    else // !doEfficiencyCalc
    {
-      // List is sorted by pt
-      auto& highestCluster = crystalClusters[0];
-      auto& highestEGCandidate = eGammaCollection[0];
-      
       // Fill rate histograms
       for(int i=0; i<cut_steps; i++)
       {
@@ -419,20 +417,27 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          for(int j=0; j<cut_steps; j++)
          {
             double ecal_isolation_cut = ecal_isolation_cut_min+(ecal_isolation_cut_max-ecal_isolation_cut_min)*j/(cut_steps-1);
-            
-            if ( highestCluster.hovere < hovere_cut &&
-                 highestCluster.ECALiso < ecal_isolation_cut )
+            // List is sorted by pt
+            for(const auto& cluster : crystalClusters)
             {
-               histograms[i*cut_steps+j]->Fill(highestCluster.et);
+               if ( cluster.hovere < hovere_cut 
+                     && cluster.ECALiso < ecal_isolation_cut )
+               {
+                  histograms[i*cut_steps+j]->Fill(cluster.et);
+                  break;
+               }
             }
          }
       }
-      // Don't fill old alg. plots if in barrel
-      if ( fabs(highestEGCandidate.eta()) < 1.479 )
+
+      auto& highestEGCandidate = eGammaCollection[0];
+      // Don't fill old alg. plots if in endcap
+      if ( useEndcap
+            || (!useEndcap && fabs(highestEGCandidate.eta()) < 1.479) )
       {
          oldEGalg_rate_hist->Fill(highestEGCandidate.pt());
       }
-      fillhovere_isolation_hists(highestCluster);
+      fillhovere_isolation_hists(crystalClusters[0]);
    }
 }
 
@@ -465,7 +470,7 @@ L1EGRateStudies::endJob()
    else
    {
       // We currently have an efficiency pdf, we want cdf, so we integrate (downward in pt is inclusive)
-      // todo: Apparently, we normalize to 30kHz for some reason
+      // We normalize to 30MHz as this will be the crossing rate of filled bunches in SLHC
       integrateDown(oldEGalg_rate_hist);
       oldEGalg_rate_hist->Scale(30000./eventCount);
       for(auto it=histograms.begin(); it!=histograms.end(); it++)
