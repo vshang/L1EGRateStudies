@@ -465,6 +465,7 @@ L1EGRateStudies::endJob()
       // We currently have an efficiency pdf, we want cdf, so we integrate (downward in pt is inclusive)
       // We normalize to 30MHz as this will be the crossing rate of filled bunches in SLHC
       integrateDown(oldEGalg_rate_hist);
+      integrateDown(dynEGalg_rate_hist);
       oldEGalg_rate_hist->Scale(30000./eventCount);
       dynEGalg_rate_hist->Scale(30000./eventCount);
       for(auto it=histograms.begin(); it!=histograms.end(); it++)
