@@ -96,6 +96,8 @@ process.egcrystal_producer = cms.Path(process.l1ExtraCrystalProducer)
 process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
 # Old stage-2 trigger
    L1EGammaInputTag = cms.InputTag("SLHCL1ExtraParticles","EGamma"),
+# 'dynamic clustering'
+   L1EGamma2InputTag = cms.InputTag("SLHCL1ExtraParticlesNewClustering","EGamma"),
 # New stage-2 trigger (some sort of isolation cut?)
 #   L1EGammaInputTag = cms.InputTag("SLHCL1ExtraParticles","IsoEGamma"),
 # Sacha's cluster trigger (hovere < 1, isolation < 2)
