@@ -415,18 +415,25 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          }
       }
 
-      auto& highestEGCandidate = eGammaCollection[0];
-      // Don't fill old alg. plots if in endcap
-      if ( useEndcap
-            || (!useEndcap && fabs(highestEGCandidate.eta()) < 1.479) )
+      if ( eGammaCollection.size() > 0 )
       {
-         oldEGalg_rate_hist->Fill(highestEGCandidate.pt());
+         auto& highestEGCandidate = eGammaCollection[0];
+         // Don't fill old alg. plots if in endcap
+         if ( useEndcap
+               || (!useEndcap && fabs(highestEGCandidate.eta()) < 1.479) )
+         {
+            oldEGalg_rate_hist->Fill(highestEGCandidate.pt());
+         }
       }
-      highestEGCandidate = eGammaCollection2[0];
-      if ( useEndcap
-            || (!useEndcap && fabs(highestEGCandidate.eta()) < 1.479) )
+
+      if ( eGammaCollection2.size() > 0 )
       {
-         dynEGalg_rate_hist->Fill(highestEGCandidate.pt());
+         auto& highestEGCandidate = eGammaCollection2[0];
+         if ( useEndcap
+               || (!useEndcap && fabs(highestEGCandidate.eta()) < 1.479) )
+         {
+            dynEGalg_rate_hist->Fill(highestEGCandidate.pt());
+         }
       }
       fillhovere_isolation_hists(crystalClusters[0]);
    }
