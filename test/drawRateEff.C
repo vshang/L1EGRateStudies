@@ -15,6 +15,7 @@
 #include "TGraphErrors.h"
 #include "TMultiGraph.h"
 #include "TPaveStats.h"
+#include "THStack.h"
 
 void setLegStyle(TLegend * leg) {
    leg->SetBorderSize(0);
@@ -25,16 +26,23 @@ void setLegStyle(TLegend * leg) {
    leg->SetFillStyle(0);
 }
 
-void drawNewOld(std::vector<TH1F*> newHists, TH1F * oldHist, TCanvas * c, double ymax, double xmax = 0.) {
+void drawNewOld(std::vector<TH1F*> newHists, std::vector<TH1F*> oldHists, TCanvas * c, double ymax, double xmax = 0.) {
    c->Clear();
-   auto oldGraph = new TGraph((TH1 *) oldHist);
-   oldGraph->SetLineColor(kRed);
-   oldGraph->SetMarkerColor(kRed);
-   oldGraph->SetMarkerStyle(20);
-   std::string oldTitle = oldHist->GetTitle();
-
    TMultiGraph mg("mg", c->GetTitle());
-   mg.Add(oldGraph);
+
+   std::vector<TGraph*> oldGraphs;
+   std::vector<int> colors = {kRed, kGreen, kBlue};
+   auto color = begin(colors);
+   int style = 20;
+   for(auto& oldHist : oldHists)
+   {
+      oldGraphs.push_back(new TGraph((TH1 *) oldHist));
+      oldGraphs.back()->SetLineColor(*color);
+      oldGraphs.back()->SetMarkerColor(*color++);
+      oldGraphs.back()->SetMarkerStyle(style++);
+      mg.Add(oldGraphs.back());
+   }
+
    for ( auto newHist : newHists ) {
       auto g = new TGraph((TH1 *) newHist);
       g->SetMarkerStyle(21);
@@ -46,11 +54,11 @@ void drawNewOld(std::vector<TH1F*> newHists, TH1F * oldHist, TCanvas * c, double
          mg.SetMaximum(ymax);
       TLegend *leg = new TLegend(0.5,0.8,0.9,0.9);
       setLegStyle(leg);
-      leg->AddEntry(oldGraph, "Old L2 Algorithm","lp");
+      for (auto& oldGraph : oldGraphs) leg->AddEntry(oldGraph, oldGraph->GetTitle(),"lp");
       leg->AddEntry(newHist, newHist->GetTitle(),"lp");
       leg->Draw("same");
-      mg.GetXaxis()->SetTitle(oldHist->GetXaxis()->GetTitle());
-      mg.GetYaxis()->SetTitle(oldHist->GetYaxis()->GetTitle());
+      mg.GetXaxis()->SetTitle(newHist->GetXaxis()->GetTitle());
+      mg.GetYaxis()->SetTitle(newHist->GetYaxis()->GetTitle());
 
       c->Print(("plots/"+std::string(newHist->GetName())+".png").c_str());
       delete leg;
@@ -59,44 +67,35 @@ void drawNewOld(std::vector<TH1F*> newHists, TH1F * oldHist, TCanvas * c, double
    }
 }
 
-void drawNewOldHist(std::vector<TH1F*> newHists, TH1F * oldHist, TCanvas * c, double ymax) {
-   oldHist->SetLineColor(kRed);
-   std::string oldTitle = oldHist->GetTitle();
-   oldHist->SetTitle(c->GetTitle());
+void drawNewOldHist(std::vector<TH1F*> newHists, std::vector<TH1F*> oldHists, TCanvas * c, double ymax) {
+   THStack hs("hs", c->GetTitle());
+   std::vector<int> colors = {kRed, kGreen, kBlue};
+   auto color = begin(colors);
+   for(auto& oldHist : oldHists)
+   {
+      oldHist->SetLineColor(*color++);
+      hs.Add(oldHist);
+   }
    c->Clear();
+   if ( c->GetLogy() == 0 ) // linear
+      hs.SetMinimum(0.);
+   if ( ymax != 0. )
+      hs.SetMaximum(ymax);
+
    for ( auto newHist : newHists ) {
-      std::string newTitle = newHist->GetTitle();
-      newHist->SetTitle(c->GetTitle());
-      if ( oldHist->GetMaximum() > newHist->GetMaximum() )
-      {
-         if ( c->GetLogy() == 0 ) // linear
-            oldHist->SetMinimum(0.);
-         if ( ymax != 0. )
-            oldHist->SetMaximum(ymax);
-         oldHist->Draw();
-         newHist->Draw("same");
-      }
-      else
-      {
-         if ( c->GetLogy() == 0 ) // linear
-            newHist->SetMinimum(0.);
-         if ( ymax != 0. )
-            newHist->SetMaximum(ymax);
-         newHist->Draw();
-         oldHist->Draw("same");
-      }
+      hs.Add(newHist);
+      hs.Draw("nostack");
+
       TLegend *leg = new TLegend(0.4,0.8,0.9,0.9);
       setLegStyle(leg);
-      leg->AddEntry(oldHist, "Old L2 Algorithm","l");
-      leg->AddEntry(newHist, newTitle.c_str(),"l");
+      for(auto& oldHist : oldHists) leg->AddEntry(oldHist, oldHist->GetTitle(),"l");
+      leg->AddEntry(newHist, newHist->GetTitle(),"l");
       leg->Draw("same");
                   
       c->Print(("plots/"+std::string(newHist->GetName())+".png").c_str());
       delete leg;
-      newHist->SetTitle(newTitle.c_str());
+      hs.RecursiveRemove(newHist);
    }
-   // Fix our title mangling
-   oldHist->SetTitle(oldTitle.c_str());
 }
 
 
@@ -135,12 +134,14 @@ void drawRateEff() {
    auto newAlgRateHists = rootools::loadObjectsMatchingPattern<TH1F>(rateHistKeys, "crystalEG*");
    auto oldAlgRateHist = (TH1F *) rates->Get("analyzer/oldEG_rate");
    oldAlgRateHist->SetTitle("Old L2 Algorithm");
+   auto dynAlgRateHist = (TH1F *) rates->Get("analyzer/dynEG_rate");
+   dynAlgRateHist->SetTitle("Dynamic Algorithm");
 
    c->SetLogy(1);
    //c->SetGridx(1);
    //c->SetGridy(1);
    c->SetTitle("EG Fake Rates (PU140, minBias)");
-   drawNewOld(newAlgRateHists, oldAlgRateHist, c, 40000.);
+   drawNewOld(newAlgRateHists, {oldAlgRateHist, dynAlgRateHist}, c, 40000.);
    // Draw several cuts on same plot (the four corners in search space)
    std::vector<TH1F*> selectedHists{oldAlgRateHist, newAlgRateHists[0], newAlgRateHists[3], newAlgRateHists[12], newAlgRateHists[15]};
    rootools::drawMulti(selectedHists, c, "EG Fake Rates", "plots/crystalEG_rate_variouscuts.png", {0.5, 0.7, 0.9, 0.9});
@@ -156,21 +157,26 @@ void drawRateEff() {
    auto oldAlgDRHist = (TH1F *) eff->Get("analyzer/oldEG_deltaR");
    auto oldAlgDEtaHist = (TH1F *) eff->Get("analyzer/oldEG_deta");
    auto oldAlgDPhiHist = (TH1F *) eff->Get("analyzer/oldEG_dphi");
+   auto dynAlgEtaHist = (TH1F *) eff->Get("analyzer/dynEG_efficiency_eta");
+   auto dynAlgPtHist = (TH1F *) eff->Get("analyzer/dynEG_efficiency_pt");
+   auto dynAlgDRHist = (TH1F *) eff->Get("analyzer/dynEG_deltaR");
+   auto dynAlgDEtaHist = (TH1F *) eff->Get("analyzer/dynEG_deta");
+   auto dynAlgDPhiHist = (TH1F *) eff->Get("analyzer/dynEG_dphi");
    c->SetLogy(0);
    c->SetTitle("EG Single Electron Efficiencies");
-   drawNewOld(newAlgEtaEffHists, oldAlgEtaHist, c, 1.2);
+   drawNewOld(newAlgEtaEffHists, {oldAlgEtaHist, dynAlgEtaHist}, c, 1.2);
    rootools::drawMulti({oldAlgEtaHist, newAlgEtaEffHists[10]}, c, "EG efficiencies", "plots/crystalEG_efficiency_tgraph_eta.png", {.5,.7,.9,.9});
    for(auto hist : newAlgPtEffHists)
    {
       hist->GetXaxis()->SetRange(0, 10);
    }
-   drawNewOld(newAlgPtEffHists, oldAlgPtHist, c, 1.2, 50.);
+   drawNewOld(newAlgPtEffHists, {oldAlgPtHist, dynAlgPtHist}, c, 1.2, 50.);
    c->SetTitle("#Delta R Distribution Comparison");
-   drawNewOldHist(newAlgDRHists, oldAlgDRHist, c, 0.);
+   drawNewOldHist(newAlgDRHists, {oldAlgDRHist, dynAlgDRHist}, c, 0.);
    c->SetTitle("d#eta Distribution Comparison");
-   drawNewOldHist(newAlgDEtaHists, oldAlgDEtaHist, c, 0.);
+   drawNewOldHist(newAlgDEtaHists, {oldAlgDEtaHist, dynAlgDEtaHist}, c, 0.);
    c->SetTitle("d#phi Distribution Comparison");
-   drawNewOldHist(newAlgDPhiHists, oldAlgDPhiHist, c, 0.);
+   drawNewOldHist(newAlgDPhiHists, {oldAlgDPhiHist, dynAlgDPhiHist}, c, 0.);
 
    std::vector<TH1F*> selectedEtaEffHists{oldAlgEtaHist, newAlgEtaEffHists[0], newAlgEtaEffHists[3], newAlgEtaEffHists[12], newAlgEtaEffHists[15]};
    rootools::drawMulti(selectedEtaEffHists, c, "EG Efficiencies", "plots/crystalEG_efficiency_variouscuts_eta.png", {0.5, 0.7, 0.9, 0.9});
