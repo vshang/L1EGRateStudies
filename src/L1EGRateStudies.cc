@@ -42,6 +42,9 @@
 #include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
 #include "SimDataFormats/SLHC/interface/L1EGCrystalCluster.h"
 
+#include "DataFormats/EgammaReco/interface/SuperCluster.h"
+#include "DataFormats/EgammaReco/interface/SuperClusterFwd.h"
+
 #include "DataFormats/L1Trigger/interface/L1EmParticle.h"
 #include "DataFormats/L1Trigger/interface/L1EmParticleFwd.h"
 
@@ -74,6 +77,8 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       
       // ----------member data ---------------------------
       bool doEfficiencyCalc;
+      bool useOfflineClusters;
+      bool debug;
       bool useEndcap;
       
       double hovere_cut_min;
@@ -141,6 +146,8 @@ class L1EGRateStudies : public edm::EDAnalyzer {
 //
 L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    doEfficiencyCalc(iConfig.getUntrackedParameter<bool>("doEfficiencyCalc", false)),
+   useOfflineClusters(iConfig.getUntrackedParameter<bool>("useOfflineClusters", false)),
+   debug(iConfig.getUntrackedParameter<bool>("debug", false)),
    useEndcap(iConfig.getUntrackedParameter<bool>("useEndcap", false)),
    hovere_cut_min(iConfig.getUntrackedParameter<double>("hovere_cut_min", 0.5)),
    hovere_cut_max(iConfig.getUntrackedParameter<double>("hovere_cut_max", 2.)),
@@ -312,18 +319,66 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    
    if ( doEfficiencyCalc )
    {
+      reco::Candidate::PolarLorentzVector trueElectron;
+      if ( useOfflineClusters )
+      {
+         // Get offline cluster info
+         edm::Handle<reco::SuperClusterCollection> pBarrelCorSuperClustersHandle;
+         iEvent.getByLabel("correctedHybridSuperClusters","",pBarrelCorSuperClustersHandle);
+         reco::SuperClusterCollection pBarrelCorSuperClusters = *pBarrelCorSuperClustersHandle.product();
+
+         if ( debug ) std::cout << "pBarrelCorSuperClusters corrected collection size : " << pBarrelCorSuperClusters.size() << std::endl;
+         if ( debug )
+         {
+            for(auto& cluster : pBarrelCorSuperClusters)
+            {
+              std::cout << " pBarrelCorSuperClusters : pt " 
+                  << cluster.energy()/std::cosh(cluster.position().eta()) 
+                  << " eta " << cluster.position().eta() 
+                  << " phi " << cluster.position().phi() << std::endl;
+            }
+         }
+         
+         // Find the cluster corresponding to generated electron
+         bool trueEfound = false;
+         for(auto& cluster : pBarrelCorSuperClusters)
+         {
+            reco::Candidate::PolarLorentzVector p4;
+            p4.SetPt(cluster.energy()*sin(cluster.position().theta()));
+            p4.SetEta(cluster.position().eta());
+            p4.SetPhi(cluster.position().phi());
+            p4.SetM(0.);
+            if ( deltaR(p4, genParticles[0].polarP4()) < genMatchDeltaRcut )
+            {
+               trueElectron = p4;
+               trueEfound = true;
+               break;
+            }
+         }
+         if ( !trueEfound )
+         {
+            // if we can't offline reconstruct the generated electron, 
+            // it might as well have not existed.
+            eventCount--;
+            return;
+         }
+      }
+      else // !useOfflineClusters
+      {
+         trueElectron = genParticles[0].polarP4();
+      }
       // Only one electron is produced in singleElectron files
       // we look for that electron in the reconstructed data within some deltaR cut,
       // and some relative pt error cut
       // and if we find it, it goes in the numerator
       // but only if in the barrel!
-      if ( !useEndcap && fabs(genParticles[0].eta()) > 1.479 )
+      if ( !useEndcap && fabs(trueElectron.eta()) > 1.479 )
       {
          eventCount--;
          return;
       }
-      efficiency_denominator_hist->Fill(genParticles[0].pt());
-      efficiency_denominator_eta_hist->Fill(genParticles[0].eta());
+      efficiency_denominator_hist->Fill(trueElectron.pt());
+      efficiency_denominator_eta_hist->Fill(trueElectron.eta());
 
       for(int i=0; i<cut_steps; i++)
       {
@@ -337,14 +392,14 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             {
                if ( cluster.hovere < hovere_cut 
                      && cluster.ECALiso < ecal_isolation_cut 
-                     && deltaR(cluster, genParticles[0].polarP4()) < genMatchDeltaRcut
-                     && fabs(cluster.et-genParticles[0].pt())/genParticles[0].pt() < genMatchRelPtcut )
+                     && deltaR(cluster, trueElectron) < genMatchDeltaRcut
+                     && fabs(cluster.et-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
                {
-                  histograms[i*cut_steps+j]->Fill(genParticles[0].pt());
-                  eta_histograms[i*cut_steps+j]->Fill(genParticles[0].eta());
-                  deltaR_histograms[i*cut_steps+j]->Fill(deltaR(cluster, genParticles[0].polarP4()));
-                  deta_histograms[i*cut_steps+j]->Fill(genParticles[0].eta()-cluster.eta);
-                  dphi_histograms[i*cut_steps+j]->Fill(reco::deltaPhi(cluster.phi, genParticles[0].phi()));
+                  histograms[i*cut_steps+j]->Fill(trueElectron.pt());
+                  eta_histograms[i*cut_steps+j]->Fill(trueElectron.eta());
+                  deltaR_histograms[i*cut_steps+j]->Fill(deltaR(cluster, trueElectron));
+                  deta_histograms[i*cut_steps+j]->Fill(trueElectron.eta()-cluster.eta);
+                  dphi_histograms[i*cut_steps+j]->Fill(reco::deltaPhi(cluster.phi, trueElectron.phi()));
                   // Found one, don't find more!
                   break;
                }
@@ -354,26 +409,26 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
       for(auto cluster : crystalClusters)
       {
-         if ( deltaR(cluster, genParticles[0].polarP4()) < genMatchDeltaRcut
-              && fabs(cluster.et-genParticles[0].pt())/genParticles[0].pt() < genMatchRelPtcut)
+         if ( deltaR(cluster, trueElectron) < genMatchDeltaRcut
+              && fabs(cluster.et-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut)
          {
             fillhovere_isolation_hists(cluster);
-            reco_gen_pt_hist->Fill( genParticles[0].pt(), (cluster.et - genParticles[0].pt())/genParticles[0].pt() );
+            reco_gen_pt_hist->Fill( trueElectron.pt(), (cluster.et - trueElectron.pt())/trueElectron.pt() );
             break;
          }
       }
       
       for(auto oldEGCandidate : eGammaCollection)
       {
-         if ( deltaR(oldEGCandidate.polarP4(), genParticles[0].polarP4()) < genMatchDeltaRcut &&
-              fabs(oldEGCandidate.pt()-genParticles[0].pt())/genParticles[0].pt() < genMatchRelPtcut )
+         if ( deltaR(oldEGCandidate.polarP4(), trueElectron) < genMatchDeltaRcut &&
+              fabs(oldEGCandidate.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
          {
-            oldEGalg_efficiency_hist->Fill(genParticles[0].pt());
-            oldEGalg_efficiency_eta_hist->Fill(genParticles[0].eta());
-            oldEGalg_deltaR_hist->Fill(deltaR(oldEGCandidate.polarP4(), genParticles[0].polarP4()));
-            oldEGalg_deta_hist->Fill(genParticles[0].eta()-oldEGCandidate.eta());
-            oldEGalg_dphi_hist->Fill(reco::deltaPhi(oldEGCandidate.phi(), genParticles[0].phi()));
-            oldAlg_reco_gen_pt_hist->Fill( genParticles[0].pt(), (oldEGCandidate.pt() - genParticles[0].pt())/genParticles[0].pt() );
+            oldEGalg_efficiency_hist->Fill(trueElectron.pt());
+            oldEGalg_efficiency_eta_hist->Fill(trueElectron.eta());
+            oldEGalg_deltaR_hist->Fill(deltaR(oldEGCandidate.polarP4(), trueElectron));
+            oldEGalg_deta_hist->Fill(trueElectron.eta()-oldEGCandidate.eta());
+            oldEGalg_dphi_hist->Fill(reco::deltaPhi(oldEGCandidate.phi(), trueElectron.phi()));
+            oldAlg_reco_gen_pt_hist->Fill( trueElectron.pt(), (oldEGCandidate.pt() - trueElectron.pt())/trueElectron.pt() );
             break;
          }
       }
