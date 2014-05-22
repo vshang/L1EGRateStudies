@@ -68,7 +68,7 @@ class L1EGCrystalClusterProducerTest : public edm::EDProducer {
       virtual void beginRun(edm::Run const&, edm::EventSetup const&);
 
       CaloGeometryHelper geometryHelper;
-      bool DEBUG;
+      bool debug;
       bool useECalEndcap;
       class SimpleCaloHit
       {
@@ -122,7 +122,7 @@ class L1EGCrystalClusterProducerTest : public edm::EDProducer {
 };
 
 L1EGCrystalClusterProducerTest::L1EGCrystalClusterProducerTest(const edm::ParameterSet& iConfig) :
-   DEBUG(iConfig.getUntrackedParameter<bool>("DEBUG", false)),
+   debug(iConfig.getUntrackedParameter<bool>("debug", false)),
    useECalEndcap(iConfig.getUntrackedParameter<bool>("useECalEndcap", false))
 {
    produces<l1slhc::L1EGCrystalClusterCollection>("EGCrystalCluster");
@@ -222,8 +222,8 @@ void  L1EGCrystalClusterProducerTest::produce(edm::Event& iEvent, const edm::Eve
       }
       // If we are less than 1GeV or out of hits (i.e. when centerhit is default constructed) we stop
       if ( centerhit.pt() <= 1. ) break;
-      if ( DEBUG ) std::cout << "-------------------------------------" << std::endl;
-      if ( DEBUG ) std::cout << "New cluster: center crystal pt = " << centerhit.pt() << std::endl;
+      if ( debug ) std::cout << "-------------------------------------" << std::endl;
+      if ( debug ) std::cout << "New cluster: center crystal pt = " << centerhit.pt() << std::endl;
       
       // Find the energy-weighted average position,
       //   calculate isolation parameter,
@@ -242,13 +242,13 @@ void  L1EGCrystalClusterProducerTest::produce(edm::Event& iEvent, const edm::Eve
             weightedPosition += hit.position*hit.energy;
             totalEnergy += hit.energy;
             hit.stale = true;
-            if ( DEBUG && hit == centerhit )
+            if ( debug && hit == centerhit )
                std::cout << "\x1B[32m"; // green hilight
-            if ( DEBUG && hit.isEndcapHit ) std::cout << 
+            if ( debug && hit.isEndcapHit ) std::cout << 
                "\tCrystal pt=" << hit.pt() << 
                ", eta=" << hit.position.eta() << 
                ", phi=" << hit.position.phi() << "\x1B[0m" << std::endl;
-            else if ( DEBUG ) std::cout << 
+            else if ( debug ) std::cout << 
                "\tCrystal (" << hit.dieta(centerhit) << "," << hit.diphi(centerhit) << 
                ") pt=" << hit.pt() << 
                ", eta=" << hit.position.eta() << 
@@ -278,9 +278,9 @@ void  L1EGCrystalClusterProducerTest::produce(edm::Event& iEvent, const edm::Eve
       ECalIsolation /= totalPt;
       float totalPtPUcorr = totalPt - ECalPileUpEnergy*sin(ECalPileUpVector.theta())/19.;
 
-      if ( DEBUG ) std::cout << "Weighted position eta = " << weightedPosition.eta() << ", phi = " << weightedPosition.phi() << std::endl;
-      if ( DEBUG ) std::cout << "Total energy = " << totalEnergy << ", total pt = " << totalPt << std::endl;
-      if ( DEBUG ) std::cout << "Isolation: " << ECalIsolation << std::endl;
+      if ( debug ) std::cout << "Weighted position eta = " << weightedPosition.eta() << ", phi = " << weightedPosition.phi() << std::endl;
+      if ( debug ) std::cout << "Total energy = " << totalEnergy << ", total pt = " << totalPt << std::endl;
+      if ( debug ) std::cout << "Isolation: " << ECalIsolation << std::endl;
 
       // Calculate H/E
       float hcalEnergy = 0.;
@@ -293,7 +293,7 @@ void  L1EGCrystalClusterProducerTest::produce(edm::Event& iEvent, const edm::Eve
       }
       float hovere = hcalEnergy/totalEnergy;
 
-      if ( DEBUG ) std::cout << "H/E: " << hovere << std::endl;
+      if ( debug ) std::cout << "H/E: " << hovere << std::endl;
       
       // Form a l1slhc::L1EGCrystalCluster
       l1slhc::L1EGCrystalCluster cluster;
