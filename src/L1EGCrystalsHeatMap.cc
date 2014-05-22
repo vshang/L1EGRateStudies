@@ -68,6 +68,9 @@
 #include "DataFormats/HcalRecHit/interface/HcalRecHitCollections.h"
 #include "DataFormats/HcalRecHit/interface/HcalSourcePositionData.h"
 
+#include "DataFormats/EgammaReco/interface/SuperCluster.h"
+#include "DataFormats/EgammaReco/interface/SuperClusterFwd.h"
+
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "TH1.h"
 #include "TH2.h"
@@ -120,6 +123,8 @@ class L1EGCrystalsHeatMap : public edm::EDAnalyzer {
       // ----------member data ---------------------------
       CaloGeometryHelper geometryHelper;
       int range;
+      bool useEndcap;
+      bool useOfflineClusters;
       bool DEBUG;
       int nEvents = 0;
       std::vector<TH2F*> heatmaps;
@@ -175,6 +180,8 @@ class L1EGCrystalsHeatMap : public edm::EDAnalyzer {
 //
 L1EGCrystalsHeatMap::L1EGCrystalsHeatMap(const edm::ParameterSet& iConfig):
    range(iConfig.getUntrackedParameter<int>("range", 10)),
+   useEndcap(iConfig.getUntrackedParameter<bool>("useEndcap", false)),
+   useOfflineClusters(iConfig.getUntrackedParameter<bool>("useOfflineClusters", false)),
    DEBUG(iConfig.getUntrackedParameter<bool>("DEBUG", false))
 {
    
@@ -264,22 +271,72 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    
    // Get generated electron
    edm::Handle<reco::GenParticleCollection> genParticleHandle;
+   reco::GenParticleCollection genParticles;
    iEvent.getByLabel("genParticles", genParticleHandle);
-   reco::GenParticleCollection genParticles = *genParticleHandle.product();
-   if ( fabs(genParticles[0].eta()) > 1.479 ) {
+   genParticles = *genParticleHandle.product();
+   reco::Candidate::PolarLorentzVector trueElectron;
+   if ( useOfflineClusters )
+   {
+      // Get offline cluster info
+      edm::Handle<reco::SuperClusterCollection> pBarrelCorSuperClustersHandle;
+      iEvent.getByLabel("correctedHybridSuperClusters","",pBarrelCorSuperClustersHandle);
+      reco::SuperClusterCollection pBarrelCorSuperClusters = *pBarrelCorSuperClustersHandle.product();
+
+      if ( DEBUG ) std::cout << "pBarrelCorSuperClusters corrected collection size : " << pBarrelCorSuperClusters.size() << std::endl;
+      if ( DEBUG )
+      {
+         for(auto& cluster : pBarrelCorSuperClusters)
+         {
+           std::cout << " pBarrelCorSuperClusters : pt " 
+               << cluster.energy()/std::cosh(cluster.position().eta()) 
+               << " eta " << cluster.position().eta() 
+               << " phi " << cluster.position().phi() << std::endl;
+         }
+      }
+      
+      // Find the cluster corresponding to generated electron
+      bool trueEfound = false;
+      for(auto& cluster : pBarrelCorSuperClusters)
+      {
+         reco::Candidate::PolarLorentzVector p4;
+         p4.SetPt(cluster.energy()*sin(cluster.position().theta()));
+         p4.SetEta(cluster.position().eta());
+         p4.SetPhi(cluster.position().phi());
+         p4.SetM(0.);
+         if ( deltaR(p4, genParticles[0].polarP4()) < 0.1 )
+         {
+            trueElectron = p4;
+            trueEfound = true;
+            break;
+         }
+      }
+      if ( !trueEfound )
+      {
+         // if we can't offline reconstruct the generated electron, 
+         // it might as well have not existed.
+         nEvents--;
+         return;
+      }
+   }
+   else // !useOfflineClusters
+   {
+      trueElectron = genParticles[0].polarP4();
+   }
+   if ( !useEndcap && fabs(trueElectron.eta()) > 1.479 )
+   {
       // Don't consider generated electrons in the endcap
       nEvents--;
       return;
    }
-   
+  
    // Find closest crystal
    double dRmin = 999.;
    SimpleCaloHit centerhit;
    for(auto ecalhit : ecalhits)
    {
-      if ( reco::deltaR(ecalhit.position, genParticles[0].polarP4()) < dRmin )
+      if ( reco::deltaR(ecalhit.position, trueElectron) < dRmin )
       {
-         dRmin = reco::deltaR(ecalhit.position, genParticles[0].polarP4());
+         dRmin = reco::deltaR(ecalhit.position, trueElectron);
          centerhit = ecalhit;
       }
    }
@@ -289,7 +346,7 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    {
       double ptlow = i*10;
       double pthigh = (i+1)*10;
-      if ( genParticles[0].pt() > ptlow && genParticles[0].pt() <= pthigh )
+      if ( trueElectron.pt() > ptlow && trueElectron.pt() <= pthigh )
       {
          heatmap_nevents[i]++;
          for(auto ecalhit : ecalhits)
@@ -314,7 +371,7 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    
    // Print cluster
    std::sort(std::begin(cluster), std::end(cluster), [](SimpleCaloHit a, SimpleCaloHit b){return a.pt() > b.pt();});
-   std::cout << "Cluster around genParticle with pT=" << genParticles[0].pt() << ", eta=" << genParticles[0].eta() << ", phi=" << genParticles[0].phi() << std::endl;
+   std::cout << "Cluster around genParticle with pT=" << trueElectron.pt() << ", eta=" << trueElectron.eta() << ", phi=" << trueElectron.phi() << std::endl;
    for(auto hit : cluster)
    {
       if ( hit == centerhit )

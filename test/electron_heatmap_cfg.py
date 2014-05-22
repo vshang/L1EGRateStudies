@@ -52,9 +52,17 @@ process.L1CaloTowerProducer.HCALDigis =  cms.InputTag("valHcalTriggerPrimitiveDi
 
 process.reconstruction_step = cms.Path( process.calolocalreco )
 
+# ----------------------------------------------------------------------------------------------
+# 
+# Do offline reconstruction step to get cluster pt
+
+process.load('RecoEcal.Configuration.RecoEcal_cff')
+process.ecalClusters = cms.Path(process.ecalClustersNoPFBox)
+
 
 process.analyzer = cms.EDAnalyzer('L1EGCrystalsHeatMap',
    DEBUG = cms.untracked.bool(False),
+   useOfflineClusters = cms.untracked.bool(True),
    range = cms.untracked.int32(20)
 )
 
