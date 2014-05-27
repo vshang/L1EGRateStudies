@@ -5,59 +5,37 @@ process = cms.Process("test")
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.categories = cms.untracked.vstring('L1EGRateStudies', 'FwkReport')
 process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
-   reportEvery = cms.untracked.int32(500)
+   reportEvery = cms.untracked.int32(5)
 )
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(40000) )
-
-# Single electron (for efficiency)
-from SLHCUpgradeSimulations.L1TrackTriggerObjects.singleElectronFiles_cfi import *
-# Single positron (for efficiency)
-from SLHCUpgradeSimulations.L1TrackTriggerObjects.singlePositronFiles_cfi import *
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 process.source = cms.Source("PoolSource",
-   fileNames = singleElectronFiles
-   #fileNames = singlePositronFiles
+   fileNames = cms.untracked.vstring(
+      "root://eoscms.cern.ch//store/group/comm_trigger/L1TrackTrigger/620_SLHC10/Extended2023TTI/Electrons/PU140/m1_SingleElectron_E2023TTI_PU140.root",
+      "root://eoscms.cern.ch//store/group/comm_trigger/L1TrackTrigger/620_SLHC10/Extended2023TTI/Electrons/PU140/m2_SingleElectron_E2023TTI_PU140.root")
 )
 
 # All this stuff just runs the various EG algorithms that we are studying
-
-# Load geometry
-process.load("Configuration.Geometry.GeometryIdeal_cff")
-process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-                            
+                         
+# ---- Global Tag :
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'POSTLS261_V3::All', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, 'PH2_1K_FB_V3::All', '')
 
-process.load("Configuration.StandardSequences.Services_cff")
+process.load('Configuration.Geometry.GeometryExtended2023TTIReco_cff')
+
 process.load('Configuration/StandardSequences/L1HwVal_cff')
-process.load("Configuration.StandardSequences.RawToDigi_Data_cff") ###check this for MC!
-process.load('Configuration.StandardSequences.L1Reco_cff')
-process.load('Configuration.StandardSequences.Reconstruction_cff')
-process.load('Configuration/StandardSequences/EndOfProcess_cff')
-process.load('Configuration.Geometry.GeometryIdeal_cff')
-process.load('Configuration/StandardSequences/MagneticField_AutoFromDBCurrent_cff')
-process.load("JetMETCorrections.Configuration.DefaultJEC_cff")
-
-# --------------------------------------------------------------------------------------------
-#
-# ----    Runs the stage-2 L1EG algorithms
-#
-
 process.load('Configuration.StandardSequences.RawToDigi_cff')
 process.load("SLHCUpgradeSimulations.L1CaloTrigger.SLHCCaloTrigger_cff")
 
-process.p = cms.Path( 
-    process.RawToDigi+
-    process.SLHCCaloTrigger
-    )
-
 # bug fix for missing HCAL TPs in MC RAW
-process.p.insert(1, process.valHcalTriggerPrimitiveDigis)
 from SimCalorimetry.HcalTrigPrimProducers.hcaltpdigi_cff import HcalTPGCoderULUT
 HcalTPGCoderULUT.LUTGenerationMode = cms.bool(True)
 process.valRctDigis.hcalDigis             = cms.VInputTag(cms.InputTag('valHcalTriggerPrimitiveDigis'))
 process.L1CaloTowerProducer.HCALDigis =  cms.InputTag("valHcalTriggerPrimitiveDigis")
+
+process.slhccalo = cms.Path( process.RawToDigi + process.valHcalTriggerPrimitiveDigis+process.SLHCCaloTrigger)
 
 # run L1Reco to produce the L1EG objects corresponding
 # to the current trigger
@@ -68,10 +46,11 @@ process.L1CaloTowerProducer.HCALDigis =  cms.InputTag("valHcalTriggerPrimitiveDi
 #
 # ----    Produce the L1EGCrystal clusters (code of Sasha Savin)
 
-	# first you need the ECAL RecHIts :
+# first you need the ECAL RecHIts :
+process.load('Configuration.StandardSequences.Reconstruction_cff')
 process.reconstruction_step = cms.Path( process.calolocalreco )
 
-process.L1EGammaCrystalsProducer = cms.EDProducer("L1EGCrystalClusterProducerTest",
+process.L1EGammaCrystalsProducer = cms.EDProducer("L1EGCrystalClusterProducer",
    DEBUG = cms.untracked.bool(False),
    useECalEndcap = cms.untracked.bool(False)
 )
