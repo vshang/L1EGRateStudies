@@ -328,16 +328,6 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          reco::SuperClusterCollection pBarrelCorSuperClusters = *pBarrelCorSuperClustersHandle.product();
 
          if ( debug ) std::cout << "pBarrelCorSuperClusters corrected collection size : " << pBarrelCorSuperClusters.size() << std::endl;
-         if ( debug )
-         {
-            for(auto& cluster : pBarrelCorSuperClusters)
-            {
-              std::cout << " pBarrelCorSuperClusters : pt " 
-                  << cluster.energy()/std::cosh(cluster.position().eta()) 
-                  << " eta " << cluster.position().eta() 
-                  << " phi " << cluster.position().phi() << std::endl;
-            }
-         }
          
          // Find the cluster corresponding to generated electron
          bool trueEfound = false;
@@ -352,6 +342,10 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             {
                trueElectron = p4;
                trueEfound = true;
+               if (debug) std::cout << "Gen.-matched pBarrelCorSuperCluster: pt " 
+                        << cluster.energy()/std::cosh(cluster.position().eta()) 
+                        << " eta " << cluster.position().eta() 
+                        << " phi " << cluster.position().phi() << std::endl;
                break;
             }
          }
@@ -429,21 +423,23 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             oldEGalg_deta_hist->Fill(trueElectron.eta()-oldEGCandidate.eta());
             oldEGalg_dphi_hist->Fill(reco::deltaPhi(oldEGCandidate.phi(), trueElectron.phi()));
             oldAlg_reco_gen_pt_hist->Fill( trueElectron.pt(), (oldEGCandidate.pt() - trueElectron.pt())/trueElectron.pt() );
+            if (debug) std::cout << "Filling old l2 alg. candidate " << oldEGCandidate.polarP4() << std::endl;
             break;
          }
       }
 
       for(auto oldEGCandidate : eGammaCollection2)
       {
-         if ( deltaR(oldEGCandidate.polarP4(), genParticles[0].polarP4()) < genMatchDeltaRcut &&
-              fabs(oldEGCandidate.pt()-genParticles[0].pt())/genParticles[0].pt() < genMatchRelPtcut )
+         if ( deltaR(oldEGCandidate.polarP4(), trueElectron) < genMatchDeltaRcut &&
+              fabs(oldEGCandidate.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
          {
-            dynEGalg_efficiency_hist->Fill(genParticles[0].pt());
-            dynEGalg_efficiency_eta_hist->Fill(genParticles[0].eta());
-            dynEGalg_deltaR_hist->Fill(deltaR(oldEGCandidate.polarP4(), genParticles[0].polarP4()));
-            dynEGalg_deta_hist->Fill(genParticles[0].eta()-oldEGCandidate.eta());
-            dynEGalg_dphi_hist->Fill(reco::deltaPhi(oldEGCandidate.phi(), genParticles[0].phi()));
-            dynAlg_reco_gen_pt_hist->Fill( genParticles[0].pt(), (oldEGCandidate.pt() - genParticles[0].pt())/genParticles[0].pt() );
+            dynEGalg_efficiency_hist->Fill(trueElectron.pt());
+            dynEGalg_efficiency_eta_hist->Fill(trueElectron.eta());
+            dynEGalg_deltaR_hist->Fill(deltaR(oldEGCandidate.polarP4(), trueElectron));
+            dynEGalg_deta_hist->Fill(trueElectron.eta()-oldEGCandidate.eta());
+            dynEGalg_dphi_hist->Fill(reco::deltaPhi(oldEGCandidate.phi(), trueElectron.phi()));
+            dynAlg_reco_gen_pt_hist->Fill( trueElectron.pt(), (oldEGCandidate.pt() - trueElectron.pt())/trueElectron.pt() );
+            if (debug) std::cout << "Filling dyn l2 alg. candidate " << oldEGCandidate.polarP4() << std::endl;
             break;
          }
       }
