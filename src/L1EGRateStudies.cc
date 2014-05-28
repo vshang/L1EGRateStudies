@@ -232,9 +232,8 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       oldAlg_reco_gen_pt_hist = fs->make<TH2F>("oldAlg_reco_gen_pt" , "Old EG relative momentum error;pT_{gen};(pT_{reco}-pT_{gen})/pT_{gen};Counts", 40, 0., 50., 40, -0.3, 0.3); 
       dynAlg_reco_gen_pt_hist = fs->make<TH2F>("dynAlg_reco_gen_pt" , "Dynamic EG relative momentum error;pT_{gen};(pT_{reco}-pT_{gen})/pT_{gen};Counts", 40, 0., 50., 40, -0.3, 0.3); 
 
-      // We don't want to save these, we'll just be dividing by them after looping through all events
-      efficiency_denominator_hist = new TH1F("gen_pt", "Old EG Trigger;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
-      efficiency_denominator_eta_hist = new TH1F("gen_eta", "Old EG Trigger;Gen. #eta; Counts", nHistEtaBins, histetaLow, histetaHigh);
+      efficiency_denominator_hist = fs->make<TH1F>("gen_pt", "Old EG Trigger;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
+      efficiency_denominator_eta_hist = fs->make<TH1F>("gen_eta", "Old EG Trigger;Gen. #eta; Counts", nHistEtaBins, histetaLow, histetaHigh);
    }
    else
    {
@@ -268,11 +267,6 @@ L1EGRateStudies::~L1EGRateStudies()
 {
    // do anything here that needs to be done at desctruction time
    // (e.g. close files, deallocate resources etc.)
-   if ( doEfficiencyCalc ) {
-      // Clean up our denominator histograms
-      delete efficiency_denominator_hist;
-      delete efficiency_denominator_eta_hist;
-   }
 }
 
 
@@ -502,34 +496,15 @@ void
 L1EGRateStudies::endJob() 
 {
    // Rate or efficiency study?
-   if ( doEfficiencyCalc )
-   {
-      // Divide through by the denominator histogram
-      oldEGalg_efficiency_hist->Divide(efficiency_denominator_hist);
-      oldEGalg_efficiency_eta_hist->Divide(efficiency_denominator_eta_hist);
-      dynEGalg_efficiency_hist->Divide(efficiency_denominator_hist);
-      dynEGalg_efficiency_eta_hist->Divide(efficiency_denominator_eta_hist);
-      for(auto& h : histograms)
-      {
-         h->Divide(efficiency_denominator_hist);
-      }
-      for(auto it=eta_histograms.begin(); it!=eta_histograms.end(); it++)
-      {
-         (*it)->Divide(efficiency_denominator_eta_hist);
-      }
-   }
-   else
+   if ( !doEfficiencyCalc )
    {
       // We currently have an efficiency pdf, we want cdf, so we integrate (downward in pt is inclusive)
       // We normalize to 30MHz as this will be the crossing rate of filled bunches in SLHC
       integrateDown(oldEGalg_rate_hist);
       integrateDown(dynEGalg_rate_hist);
-      oldEGalg_rate_hist->Scale(30000./eventCount);
-      dynEGalg_rate_hist->Scale(30000./eventCount);
       for(auto it=histograms.begin(); it!=histograms.end(); it++)
       {
          integrateDown(*it);
-         (*it)->Scale(30000./eventCount);
       }
    }
 }

@@ -8,12 +8,10 @@ process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
    reportEvery = cms.untracked.int32(5)
 )
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.source = cms.Source("PoolSource",
-   fileNames = cms.untracked.vstring(
-      "root://eoscms.cern.ch//store/group/comm_trigger/L1TrackTrigger/620_SLHC10/Extended2023TTI/Electrons/PU140/m1_SingleElectron_E2023TTI_PU140.root",
-      "root://eoscms.cern.ch//store/group/comm_trigger/L1TrackTrigger/620_SLHC10/Extended2023TTI/Electrons/PU140/m2_SingleElectron_E2023TTI_PU140.root")
+   fileNames = cms.untracked.vstring($inputFileNames)
 )
 
 # All this stuff just runs the various EG algorithms that we are studying
@@ -113,6 +111,6 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
 process.panalyzer = cms.Path(process.analyzer)
 
 process.TFileService = cms.Service("TFileService", 
-   fileName = cms.string("egTriggerEff.root"), 
+   fileName = cms.string("$outputFileName"), 
    closeFileFast = cms.untracked.bool(True)
 )
