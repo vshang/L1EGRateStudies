@@ -5,7 +5,7 @@ process = cms.Process("test")
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.categories = cms.untracked.vstring('L1EGRateStudies', 'FwkReport')
 process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
-   reportEvery = cms.untracked.int32(5)
+   reportEvery = cms.untracked.int32(500)
 )
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )

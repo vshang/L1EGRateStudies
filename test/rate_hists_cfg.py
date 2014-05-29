@@ -5,29 +5,13 @@ process = cms.Process("test")
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.categories = cms.untracked.vstring('L1EGRateStudies', 'FwkReport')
 process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
-   reportEvery = cms.untracked.int32(5)
+   reportEvery = cms.untracked.int32(500)
 )
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.source = cms.Source("PoolSource",
-   fileNames = cms.untracked.vstring(
-      "root://eoscms.cern.ch//store/group/comm_trigger/L1TrackTrigger/620_SLHC12/Extended2023TTI/Neutrinos/PU140/NeutrinoGun_E2023TTI_PU140_1.root",
-      "root://eoscms.cern.ch//store/group/comm_trigger/L1TrackTrigger/620_SLHC12/Extended2023TTI/Neutrinos/PU140/NeutrinoGun_E2023TTI_PU140_10.root",
-      "root://eoscms.cern.ch//store/group/comm_trigger/L1TrackTrigger/620_SLHC12/Extended2023TTI/Neutrinos/PU140/NeutrinoGun_E2023TTI_PU140_100.root",
-      "root://eoscms.cern.ch//store/group/comm_trigger/L1TrackTrigger/620_SLHC12/Extended2023TTI/Neutrinos/PU140/NeutrinoGun_E2023TTI_PU140_101.root",
-      "root://eoscms.cern.ch//store/group/comm_trigger/L1TrackTrigger/620_SLHC12/Extended2023TTI/Neutrinos/PU140/NeutrinoGun_E2023TTI_PU140_102.root",
-      "root://eoscms.cern.ch//store/group/comm_trigger/L1TrackTrigger/620_SLHC12/Extended2023TTI/Neutrinos/PU140/NeutrinoGun_E2023TTI_PU140_103.root",
-      "root://eoscms.cern.ch//store/group/comm_trigger/L1TrackTrigger/620_SLHC12/Extended2023TTI/Neutrinos/PU140/NeutrinoGun_E2023TTI_PU140_104.root",
-      "root://eoscms.cern.ch//store/group/comm_trigger/L1TrackTrigger/620_SLHC12/Extended2023TTI/Neutrinos/PU140/NeutrinoGun_E2023TTI_PU140_105.root",
-      "root://eoscms.cern.ch//store/group/comm_trigger/L1TrackTrigger/620_SLHC12/Extended2023TTI/Neutrinos/PU140/NeutrinoGun_E2023TTI_PU140_106.root",
-      "root://eoscms.cern.ch//store/group/comm_trigger/L1TrackTrigger/620_SLHC12/Extended2023TTI/Neutrinos/PU140/NeutrinoGun_E2023TTI_PU140_107.root",
-      "root://eoscms.cern.ch//store/group/comm_trigger/L1TrackTrigger/620_SLHC12/Extended2023TTI/Neutrinos/PU140/NeutrinoGun_E2023TTI_PU140_108.root",
-      "root://eoscms.cern.ch//store/group/comm_trigger/L1TrackTrigger/620_SLHC12/Extended2023TTI/Neutrinos/PU140/NeutrinoGun_E2023TTI_PU140_109.root",
-      "root://eoscms.cern.ch//store/group/comm_trigger/L1TrackTrigger/620_SLHC12/Extended2023TTI/Neutrinos/PU140/NeutrinoGun_E2023TTI_PU140_11.root",
-      "root://eoscms.cern.ch//store/group/comm_trigger/L1TrackTrigger/620_SLHC12/Extended2023TTI/Neutrinos/PU140/NeutrinoGun_E2023TTI_PU140_110.root",
-      "root://eoscms.cern.ch//store/group/comm_trigger/L1TrackTrigger/620_SLHC12/Extended2023TTI/Neutrinos/PU140/NeutrinoGun_E2023TTI_PU140_111.root",
-      "root://eoscms.cern.ch//store/group/comm_trigger/L1TrackTrigger/620_SLHC12/Extended2023TTI/Neutrinos/PU140/NeutrinoGun_E2023TTI_PU140_112.root")
+   fileNames = cms.untracked.vstring($inputFileNames)
 )
 
 # All this stuff just runs the various EG algorithms that we are studying
@@ -116,6 +100,6 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
 process.panalyzer = cms.Path(process.analyzer)
 
 process.TFileService = cms.Service("TFileService", 
-   fileName = cms.string("egTriggerRates.root"), 
+   fileName = cms.string("$outputFileName"), 
    closeFileFast = cms.untracked.bool(True)
 )

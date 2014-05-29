@@ -500,6 +500,10 @@ L1EGRateStudies::endJob()
    {
       // We currently have an efficiency pdf, we want cdf, so we integrate (downward in pt is inclusive)
       // We normalize to 30MHz as this will be the crossing rate of filled bunches in SLHC
+      // (in parallel processing mode, fill dummy hist with event counts so they can be added later)
+      edm::Service<TFileService> fs;
+      TH1I* event_count = fs->make<TH1I>("eventCount", "Event Count", 1, 0., 0.);
+      event_count->SetBinContent(1, eventCount);
       integrateDown(oldEGalg_rate_hist);
       integrateDown(dynEGalg_rate_hist);
       for(auto it=histograms.begin(); it!=histograms.end(); it++)
