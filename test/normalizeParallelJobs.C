@@ -26,6 +26,7 @@ void normalizeParallelJobs() {
    if ( effPtDenom != nullptr )
    {
       std::cout << "Dividing efficiency histograms by gen hists" << std::endl;
+      std::cout << "Total event count: " << effPtDenom->Integral() << std::endl;
       auto effPtHists = rootools::loadObjectsMatchingPattern<TH1F>(effHistKeys, "*_efficiency*pt");
       for(auto& hist : effPtHists) hist->Divide(effPtDenom);
       auto effEtaHists = rootools::loadObjectsMatchingPattern<TH1F>(effHistKeys, "*_efficiency*eta");
