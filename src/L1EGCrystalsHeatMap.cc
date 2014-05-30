@@ -77,28 +77,6 @@
 #include "TVector3.h"
 
 //
-// Define some structs
-//
-namespace l1slhc {
-   class L1EGCrystalClusterTest {
-      public:
-         float et ;
-         float eta ;
-         float phi ;
-         float e ;
-         float x ;
-         float y ;
-         float z ;
-         float hovere ;
-
-         float ECALiso ;
-         float ECALetPUcorr;
-         bool marked=false;
-         bool isoMarked=false;
-   };
-}
-
-//
 // class declaration
 //
 
@@ -127,6 +105,7 @@ class L1EGCrystalsHeatMap : public edm::EDAnalyzer {
       bool useOfflineClusters;
       bool DEBUG;
       int nEvents = 0;
+      edm::InputTag L1CrystalClustersInputTag;
       std::vector<TH2F*> heatmaps;
       std::vector<int> heatmap_nevents;
       class SimpleCaloHit
@@ -184,17 +163,18 @@ L1EGCrystalsHeatMap::L1EGCrystalsHeatMap(const edm::ParameterSet& iConfig):
    useOfflineClusters(iConfig.getUntrackedParameter<bool>("useOfflineClusters", false)),
    DEBUG(iConfig.getUntrackedParameter<bool>("DEBUG", false))
 {
+   L1CrystalClustersInputTag = iConfig.getParameter<edm::InputTag>("L1CrystalClustersInputTag");
    
    edm::Service<TFileService> fs;
 
-   heatmaps.resize(5);
-   heatmap_nevents.resize(5);
-   for(int i=0; i<5; i++) {
-      double ptlow = i*10;
-      double pthigh = (i+1)*10;
-      std::string name = "heatmap_pt"+std::to_string(i);
+   heatmaps.resize(6);
+   heatmap_nevents.resize(6);
+   for(int i=0; i<6; i++) {
+      double dphilow = (i-3)*0.0173;
+      double dphihigh = (i-2)*0.0173;
+      std::string name = "heatmap_dphi"+std::to_string(i);
       std::stringstream title;
-      title << "Single-electron pt Heatmap (" << ptlow << "<pt<" << pthigh << ");d#eta (int.);d#phi (int.)";
+      title << "Single-electron pt Heatmap (" << dphilow << "<dphi<" << dphihigh << ");d#eta (int.);d#phi (int.)";
       heatmaps[i] = fs->make<TH2F>(name.c_str(), title.str().c_str(), 2*range+1, -range-.5, range+.5, 2*range+1, -range-.5, range+.5);
       heatmap_nevents[i] = 0;
    }
@@ -328,7 +308,29 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
       nEvents--;
       return;
    }
-  
+    
+   // Load EG Crystal clusters
+   l1slhc::L1EGCrystalClusterCollection crystalClusters;
+   edm::Handle<l1slhc::L1EGCrystalClusterCollection> crystalClustersHandle;      
+   iEvent.getByLabel(L1CrystalClustersInputTag,crystalClustersHandle);
+   crystalClusters = (*crystalClustersHandle.product());
+   std::sort(begin(crystalClusters), end(crystalClusters), [](const l1slhc::L1EGCrystalCluster& a, const l1slhc::L1EGCrystalCluster& b){return a.et > b.et;});
+
+   // Match EG Crystal cluster to gen particle
+   l1slhc::L1EGCrystalCluster egCluster = crystalClusters[0];
+   for(auto& cluster : crystalClusters)
+   {
+      if ( cluster.hovere < 2
+         && cluster.ECALiso < 3
+         && reco::deltaR(reco::Candidate::PolarLorentzVector(cluster.et, cluster.eta, cluster.phi, 0.), trueElectron) < 0.1
+         && fabs(cluster.et-trueElectron.pt())/trueElectron.pt() < 1. )
+      {
+         std::cout << "Cluster around genParticle with pT=" << trueElectron.pt() << ", eta=" << trueElectron.eta() << ", phi=" << trueElectron.phi() << std::endl;
+         egCluster = cluster;
+         break;
+      }
+   }
+ 
    // Find closest crystal
    double dRmin = 999.;
    SimpleCaloHit centerhit;
@@ -342,11 +344,12 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    }
 
    // Fill heatmap
-   for(int i=0; i<5; i++)
+   // but only if we have a bad dphi from truth (i.e. more than one crystal away)
+   for(int i=0; i<6; i++)
    {
-      double ptlow = i*10;
-      double pthigh = (i+1)*10;
-      if ( trueElectron.pt() > ptlow && trueElectron.pt() <= pthigh )
+      double dphilow = i*0.0173-3*0.0173;
+      double dphihigh = (i+1)*0.0173-3*0.0173;
+      if ( reco::deltaPhi(egCluster.phi, trueElectron.phi()) > dphilow && reco::deltaPhi(egCluster.phi, trueElectron.phi()) < dphihigh )
       {
          heatmap_nevents[i]++;
          for(auto ecalhit : ecalhits)
@@ -357,26 +360,6 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
             }
          }
       }
-   }
-   
-   // Make a cluster
-   std::vector<SimpleCaloHit> cluster;
-   for(auto ecalhit : ecalhits)
-   {
-      if ( fabs(ecalhit.dieta(centerhit)) < 3 && fabs(ecalhit.diphi(centerhit)) < 5 )
-      {
-         cluster.push_back(ecalhit);
-      }
-   }
-   
-   // Print cluster
-   std::sort(std::begin(cluster), std::end(cluster), [](SimpleCaloHit a, SimpleCaloHit b){return a.pt() > b.pt();});
-   std::cout << "Cluster around genParticle with pT=" << trueElectron.pt() << ", eta=" << trueElectron.eta() << ", phi=" << trueElectron.phi() << std::endl;
-   for(auto hit : cluster)
-   {
-      if ( hit == centerhit )
-         std::cout << "\x1B[32m"; // green hilight
-      std::cout << "\tCrystal (" << hit.dieta(centerhit) << "," << hit.diphi(centerhit) << ") pt=" << hit.pt() << ", eta=" << hit.position.eta() << ", phi=" << hit.position.phi() << "\x1B[0m" << std::endl;
    }
 }
 
@@ -391,7 +374,7 @@ void
 L1EGCrystalsHeatMap::endJob() 
 {
    // Scale heatmaps by # events added
-   for(int i=0; i<5; i++)
+   for(int i=0; i<6; i++)
    {
       std::cout << "Heatmap " << i << " has " << heatmap_nevents[i] << " events." << std::endl;
       if ( heatmap_nevents[i] > 0 )
