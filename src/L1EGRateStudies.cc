@@ -401,7 +401,8 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
               && fabs(cluster.et-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut)
          {
             fillhovere_isolation_hists(cluster);
-            reco_gen_pt_hist->Fill( trueElectron.pt(), (cluster.et - trueElectron.pt())/trueElectron.pt() );
+            // for pt comparison, use generator info for electron
+            reco_gen_pt_hist->Fill( genParticles[0].pt(), (cluster.et - genParticles[0].pt())/genParticles[0].pt() );
             break;
          }
       }
@@ -416,7 +417,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             oldEGalg_deltaR_hist->Fill(deltaR(oldEGCandidate.polarP4(), trueElectron));
             oldEGalg_deta_hist->Fill(trueElectron.eta()-oldEGCandidate.eta());
             oldEGalg_dphi_hist->Fill(reco::deltaPhi(oldEGCandidate.phi(), trueElectron.phi()));
-            oldAlg_reco_gen_pt_hist->Fill( trueElectron.pt(), (oldEGCandidate.pt() - trueElectron.pt())/trueElectron.pt() );
+            oldAlg_reco_gen_pt_hist->Fill( genParticles[0].pt(), (oldEGCandidate.pt() - genParticles[0].pt())/genParticles[0].pt() );
             if (debug) std::cout << "Filling old l2 alg. candidate " << oldEGCandidate.polarP4() << std::endl;
             break;
          }
@@ -432,7 +433,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             dynEGalg_deltaR_hist->Fill(deltaR(oldEGCandidate.polarP4(), trueElectron));
             dynEGalg_deta_hist->Fill(trueElectron.eta()-oldEGCandidate.eta());
             dynEGalg_dphi_hist->Fill(reco::deltaPhi(oldEGCandidate.phi(), trueElectron.phi()));
-            dynAlg_reco_gen_pt_hist->Fill( trueElectron.pt(), (oldEGCandidate.pt() - trueElectron.pt())/trueElectron.pt() );
+            dynAlg_reco_gen_pt_hist->Fill( genParticles[0].pt(), (oldEGCandidate.pt() - genParticles[0].pt())/genParticles[0].pt() );
             if (debug) std::cout << "Filling dyn l2 alg. candidate " << oldEGCandidate.polarP4() << std::endl;
             break;
          }
