@@ -503,8 +503,8 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       }
       for(const auto& cluster : crystalClusters)
       {
-         if ( cluster.hovere < (cluster.et > 35) ? 0.5 : (0.5+pow(cluster.et-35,2)/350.)
-              && cluster.ECALiso < (cluster.et > 35) ? 1.3 : (1.3+pow(cluster.et-35,2)*4/(35*35)) )
+         if ( cluster.hovere < ((cluster.et > 35) ? 0.5 : 0.5+pow(cluster.et-35,2)/350. )
+              && cluster.ECALiso < ((cluster.et > 35) ? 1.3 : 1.3+pow(cluster.et-35,2)*4/(35*35) ) )
          {
             dyncrystal_rate_hist->Fill(cluster.et);
             break;
