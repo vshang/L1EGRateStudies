@@ -91,7 +91,7 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    ecal_isolation_cut_min = cms.untracked.double(1),
    ecal_isolation_cut_max = cms.untracked.double(4),
    cut_steps = cms.untracked.int32(4),
-   histogramBinCount = cms.untracked.int32(20),
+   histogramBinCount = cms.untracked.int32(40),
    histogramRangeLow = cms.untracked.double(0),
    histogramRangeHigh = cms.untracked.double(50)
 )
