@@ -15,38 +15,52 @@
 
 void normalizeParallelJobs() {
 
-   TFile * eff = new TFile("egTriggerEff.root", "UPDATE");
-   TFile * rates = new TFile("egTriggerRates.root", "UPDATE");
+    TFile * eff = new TFile("egTriggerEff.root", "UPDATE");
+    TFile * rates = new TFile("egTriggerRates.root", "UPDATE");
 
-   // We need to renormalize everything since these files were parallel processed
+    // We need to renormalize everything since these files were parallel processed
  
-   auto effHistKeys = rootools::getKeysofClass(eff, "analyzer", "TH1F");
-   auto effPtDenom = (TH1F *) eff->Get("analyzer/gen_pt");
-   auto effEtaDenom = (TH1F *) eff->Get("analyzer/gen_eta");
-   if ( effPtDenom != nullptr )
-   {
-      std::cout << "Dividing efficiency histograms by gen hists" << std::endl;
-      std::cout << "Total event count: " << effPtDenom->Integral() << std::endl;
-      auto effPtHists = rootools::loadObjectsMatchingPattern<TH1F>(effHistKeys, "*_efficiency*pt");
-      for(auto& hist : effPtHists) hist->Divide(effPtDenom);
-      auto effEtaHists = rootools::loadObjectsMatchingPattern<TH1F>(effHistKeys, "*_efficiency*eta");
-      for(auto& hist : effEtaHists) hist->Divide(effEtaDenom);
-      auto dir = (TDirectory*) eff->Get("analyzer");
-      dir->Delete("gen_pt;*");
-      dir->Delete("gen_eta;*");
-      eff->Write("", TObject::kOverwrite);
-   }
+    auto effHistKeys = rootools::getKeysofClass(eff, "analyzer", "TH1F");
+    auto effPtDenom = (TH1F *) eff->Get("analyzer/gen_pt");
+    auto effEtaDenom = (TH1F *) eff->Get("analyzer/gen_eta");
+    if ( effPtDenom != nullptr )
+    {
+        std::cout << "Dividing efficiency histograms by gen hists" << std::endl;
+        std::cout << "Total event count: " << effPtDenom->Integral() << std::endl;
+        auto effPtHists = rootools::loadObjectsMatchingPattern<TH1F>(effHistKeys, "*_efficiency*pt");
+        effPtDenom->Sumw2();
+        for(auto& hist : effPtHists) 
+        {
+            hist->Sumw2();
+            hist->Divide(effPtDenom);
+        }
+        auto effEtaHists = rootools::loadObjectsMatchingPattern<TH1F>(effHistKeys, "*_efficiency*eta");
+        effEtaDenom->Sumw2();
+        for(auto& hist : effEtaHists)
+        {
+            hist->Sumw2();
+            hist->Divide(effEtaDenom);
+        }
+        auto dir = (TDirectory*) eff->Get("analyzer");
+        dir->Delete("gen_pt;*");
+        dir->Delete("gen_eta;*");
+        eff->Write("", TObject::kOverwrite);
+    }
 
-   auto rateHistKeys = rootools::getKeysofClass(rates, "analyzer", "TH1F");
-   if ( rates->Get("analyzer/eventCount") != nullptr )
-   {
-      std::cout << "Normalizing rate histograms to 30MHz" << std::endl;
-      int nEvents = ((TH1F*)rates->Get("analyzer/eventCount"))->GetBinContent(1);
-      std::cout << "Total event count: " << nEvents << std::endl;
-      auto rateHists = rootools::loadObjectsMatchingPattern<TH1F>(rateHistKeys, "*_rate*");
-      for(auto& hist : rateHists) hist->Scale(30000./nEvents);
-      auto dir = (TDirectory*) rates->Get("analyzer");
-      dir->Delete("eventCount;*");
-      rates->Write("", TObject::kOverwrite);
-   }
+    auto rateHistKeys = rootools::getKeysofClass(rates, "analyzer", "TH1F");
+    if ( rates->Get("analyzer/eventCount") != nullptr )
+    {
+        std::cout << "Normalizing rate histograms to 30MHz" << std::endl;
+        int nEvents = ((TH1F*)rates->Get("analyzer/eventCount"))->GetBinContent(1);
+        std::cout << "Total event count: " << nEvents << std::endl;
+        auto rateHists = rootools::loadObjectsMatchingPattern<TH1F>(rateHistKeys, "*_rate*");
+        for(auto& hist : rateHists)
+        {
+            hist->Sumw2();
+            hist->Scale(30000./nEvents);
+        }
+        auto dir = (TDirectory*) rates->Get("analyzer");
+        dir->Delete("eventCount;*");
+        rates->Write("", TObject::kOverwrite);
+    }
 }

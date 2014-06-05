@@ -48,6 +48,8 @@
 #include "DataFormats/L1Trigger/interface/L1EmParticle.h"
 #include "DataFormats/L1Trigger/interface/L1EmParticleFwd.h"
 
+#include "FastSimulation/BaseParticlePropagator/interface/BaseParticlePropagator.h"
+
 //
 // class declaration
 //
@@ -106,6 +108,12 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       std::vector<TH1F *> dphi_histograms;
       TH1F * efficiency_denominator_hist;
       TH1F * efficiency_denominator_eta_hist;
+      TH1F * dyncrystal_efficiency_hist;
+      TH1F * dyncrystal_efficiency_eta_hist;
+      TH1F * dyncrystal_deltaR_hist;
+      TH1F * dyncrystal_deta_hist;
+      TH1F * dyncrystal_dphi_hist;
+      TH1F * dyncrystal_rate_hist;
       TH1F * oldEGalg_efficiency_hist;
       TH1F * oldEGalg_efficiency_eta_hist;
       TH1F * oldEGalg_deltaR_hist;
@@ -171,6 +179,10 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    
    edm::Service<TFileService> fs;
    
+   // If using offline-reco clusters, label dR & related hists appropriately
+   std::string drLabel("(Gen-Reco);Counts");
+   if ( useOfflineClusters ) drLabel = "(vs. Offline Reco.)";
+
    // Make a set of histograms to fill, depending on if we are doing rate or efficiency
    histograms.resize(cut_steps*cut_steps);
    if ( doEfficiencyCalc )
@@ -202,38 +214,43 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
             name.str("");
             name << "crystalEG_deltaR_hovere" << i << "_iso" << j;
             title.str("");
-            title << "Crystal-level EG Trigger (hovere "  << hovere_cut << ", iso " << ecal_isolation_cut << ");#Delta R (Gen-Reco);Counts";
+            title << "Crystal-level EG Trigger (hovere "  << hovere_cut << ", iso " << ecal_isolation_cut << ");#Delta R " << drLabel;
             deltaR_histograms[i*cut_steps+j] = fs->make<TH1F>(name.str().c_str(), title.str().c_str(), 30, 0, genMatchDeltaRcut);
             // deta
             name.str("");
             name << "crystalEG_deta_hovere" << i << "_iso" << j;
             title.str("");
-            title << "Crystal-level EG Trigger (hovere "  << hovere_cut << ", iso " << ecal_isolation_cut << ");d#eta (Gen-Reco);Counts";
+            title << "Crystal-level EG Trigger (hovere "  << hovere_cut << ", iso " << ecal_isolation_cut << ");d#eta" << drLabel;
             deta_histograms[i*cut_steps+j] = fs->make<TH1F>(name.str().c_str(), title.str().c_str(), 50, -0.1, 0.1);
             // dphi
             name.str("");
             name << "crystalEG_dphi_hovere" << i << "_iso" << j;
             title.str("");
-            title << "Crystal-level EG Trigger (hovere "  << hovere_cut << ", iso " << ecal_isolation_cut << ");d#phi (Gen-Reco);Counts";
+            title << "Crystal-level EG Trigger (hovere "  << hovere_cut << ", iso " << ecal_isolation_cut << ");d#phi" << drLabel;
             dphi_histograms[i*cut_steps+j] = fs->make<TH1F>(name.str().c_str(), title.str().c_str(), 50, -0.1, 0.1);
          }
       }
+      dyncrystal_efficiency_hist = fs->make<TH1F>("dyncrystalEG_efficiency_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
+      dyncrystal_efficiency_eta_hist = fs->make<TH1F>("dyncrystalEG_efficiency_eta", "Dynamic Crystal Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
+      dyncrystal_deltaR_hist = fs->make<TH1F>("dyncrystalEG_deltaR", ("Dynamic Crystal Trigger;#Delta R "+drLabel).c_str(), 30, 0., genMatchDeltaRcut);
+      dyncrystal_deta_hist = fs->make<TH1F>("dyncrystalEG_deta", ("Dynamic Crystal Trigger;d#eta "+drLabel).c_str(), 50, -0.1, 0.1);
+      dyncrystal_dphi_hist = fs->make<TH1F>("dyncrystalEG_dphi", ("Dynamic Crystal Trigger;d#phi "+drLabel).c_str(), 50, -0.1, 0.1);
       oldEGalg_efficiency_hist = fs->make<TH1F>("oldEG_efficiency_pt", "Old EG Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       oldEGalg_efficiency_eta_hist = fs->make<TH1F>("oldEG_efficiency_eta", "Old EG Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
-      oldEGalg_deltaR_hist = fs->make<TH1F>("oldEG_deltaR", "Old EG Trigger;#Delta R (Gen-Reco);Counts", 30, 0., genMatchDeltaRcut);
-      oldEGalg_deta_hist = fs->make<TH1F>("oldEG_deta", "Old EG Trigger;d#eta (Gen-Reco);Counts", 50, -0.1, 0.1);
-      oldEGalg_dphi_hist = fs->make<TH1F>("oldEG_dphi", "Old EG Trigger;d#phi (Gen-Reco);Counts", 50, -0.1, 0.1);
+      oldEGalg_deltaR_hist = fs->make<TH1F>("oldEG_deltaR", ("Old EG Trigger;#Delta R "+drLabel).c_str(), 30, 0., genMatchDeltaRcut);
+      oldEGalg_deta_hist = fs->make<TH1F>("oldEG_deta", ("Old EG Trigger;d#eta "+drLabel).c_str(), 50, -0.1, 0.1);
+      oldEGalg_dphi_hist = fs->make<TH1F>("oldEG_dphi", ("Old EG Trigger;d#phi "+drLabel).c_str(), 50, -0.1, 0.1);
       dynEGalg_efficiency_hist = fs->make<TH1F>("dynEG_efficiency_pt", "Dynamic EG Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dynEGalg_efficiency_eta_hist = fs->make<TH1F>("dynEG_efficiency_eta", "Dynamic EG Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
-      dynEGalg_deltaR_hist = fs->make<TH1F>("dynEG_deltaR", "Dynamic EG Trigger;#Delta R (Gen-Reco);Counts", 30, 0., genMatchDeltaRcut);
-      dynEGalg_deta_hist = fs->make<TH1F>("dynEG_deta", "Dynamic EG Trigger;d#eta (Gen-Reco);Counts", 50, -0.1, 0.1);
-      dynEGalg_dphi_hist = fs->make<TH1F>("dynEG_dphi", "Dynamic EG Trigger;d#phi (Gen-Reco);Counts", 50, -0.1, 0.1);
-      reco_gen_pt_hist = fs->make<TH2F>("reco_gen_pt" , "EG relative momentum error;pT_{gen};(pT_{reco}-pT_{gen})/pT_{gen};Counts", 40, 0., 50., 40, -0.3, 0.3); 
-      oldAlg_reco_gen_pt_hist = fs->make<TH2F>("oldAlg_reco_gen_pt" , "Old EG relative momentum error;pT_{gen};(pT_{reco}-pT_{gen})/pT_{gen};Counts", 40, 0., 50., 40, -0.3, 0.3); 
-      dynAlg_reco_gen_pt_hist = fs->make<TH2F>("dynAlg_reco_gen_pt" , "Dynamic EG relative momentum error;pT_{gen};(pT_{reco}-pT_{gen})/pT_{gen};Counts", 40, 0., 50., 40, -0.3, 0.3); 
+      dynEGalg_deltaR_hist = fs->make<TH1F>("dynEG_deltaR", ("Dynamic EG Trigger;#Delta R "+drLabel).c_str(), 30, 0., genMatchDeltaRcut);
+      dynEGalg_deta_hist = fs->make<TH1F>("dynEG_deta", ("Dynamic EG Trigger;d#eta "+drLabel).c_str(), 50, -0.1, 0.1);
+      dynEGalg_dphi_hist = fs->make<TH1F>("dynEG_dphi", ("Dynamic EG Trigger;d#phi "+drLabel).c_str(), 50, -0.1, 0.1);
+      reco_gen_pt_hist = fs->make<TH2F>("reco_gen_pt" , "EG relative momentum error;Gen. pT (GeV);(reco-gen)/gen;Counts", 40, 0., 50., 40, -0.3, 0.3); 
+      oldAlg_reco_gen_pt_hist = fs->make<TH2F>("oldAlg_reco_gen_pt" , "Old EG relative momentum error;Gen. pT (GeV);(reco-gen)/gen;Counts", 40, 0., 50., 40, -0.3, 0.3); 
+      dynAlg_reco_gen_pt_hist = fs->make<TH2F>("dynAlg_reco_gen_pt" , "Dynamic EG relative momentum error;Gen. pT (GeV);(reco-gen)/gen;Counts", 40, 0., 50., 40, -0.3, 0.3); 
 
-      efficiency_denominator_hist = fs->make<TH1F>("gen_pt", "Old EG Trigger;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
-      efficiency_denominator_eta_hist = fs->make<TH1F>("gen_eta", "Old EG Trigger;Gen. #eta; Counts", nHistEtaBins, histetaLow, histetaHigh);
+      efficiency_denominator_hist = fs->make<TH1F>("gen_pt", "Gen. pt;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
+      efficiency_denominator_eta_hist = fs->make<TH1F>("gen_eta", "Gen. #eta;Gen. #eta; Counts", nHistEtaBins, histetaLow, histetaHigh);
    }
    else
    {
@@ -251,8 +268,9 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
             histograms[i*cut_steps+j] = fs->make<TH1F>(name.str().c_str(), title.str().c_str(), nHistBins, histLow, histHigh);
          }
       }
-      oldEGalg_rate_hist = fs->make<TH1F>("oldEG_rate" , "EG Rates;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
-      dynEGalg_rate_hist = fs->make<TH1F>("dynEG_rate" , "EG Rates;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
+      dyncrystal_rate_hist = fs->make<TH1F>("dyncrystalEG_rate" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
+      oldEGalg_rate_hist = fs->make<TH1F>("oldEG_rate" , "Old EG Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
+      dynEGalg_rate_hist = fs->make<TH1F>("dynEG_rate" , "Dynamic EG Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
    }
    hovere_hist_lowpt = fs->make<TH1F>("hovere_lowpt" , "EG H/E distribution (0<pT<15);HCal energy / ECal energy;Counts", 30, 0, 4); 
    hovere_hist_medpt = fs->make<TH1F>("hovere_medpt" , "EG H/E distribution (15<pT<35);HCal energy / ECal energy;Counts", 30, 0, 4); 
@@ -321,8 +339,6 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          iEvent.getByLabel("correctedHybridSuperClusters","",pBarrelCorSuperClustersHandle);
          reco::SuperClusterCollection pBarrelCorSuperClusters = *pBarrelCorSuperClustersHandle.product();
 
-         if ( debug ) std::cout << "pBarrelCorSuperClusters corrected collection size : " << pBarrelCorSuperClusters.size() << std::endl;
-         
          // Find the cluster corresponding to generated electron
          bool trueEfound = false;
          for(auto& cluster : pBarrelCorSuperClusters)
@@ -353,7 +369,22 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       }
       else // !useOfflineClusters
       {
-         trueElectron = genParticles[0].polarP4();
+         // Get the particle position upon entering ECal
+         RawParticle particle(genParticles[0].p4());
+         particle.setID(genParticles[0].pdgId());
+         BaseParticlePropagator prop(particle, 0., 0., 4.);
+         prop.propagateToEcalEntrance();
+         if(prop.getSuccess()!=0)
+         {
+            trueElectron = reco::Candidate::PolarLorentzVector(genParticles[0].pt(), prop.vertex().eta(), prop.vertex().phi(), 0.);
+            if ( debug ) std::cout << "Propogated genParticle to ECal, position: " << trueElectron << " distance = " << prop.vertex().mag() << std::endl;
+            if ( debug ) std::cout << "                    genParticle position: " << genParticles[0].polarP4() << std::endl;
+         }
+         else
+         {
+            // something failed?
+            trueElectron = genParticles[0].polarP4();
+         }
       }
       // Only one electron is produced in singleElectron files
       // we look for that electron in the reconstructed data within some deltaR cut,
@@ -376,7 +407,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             double ecal_isolation_cut = ecal_isolation_cut_min+(ecal_isolation_cut_max-ecal_isolation_cut_min)*j/(cut_steps-1);
             
             // Since this iterates in order, we automatically get the highest pt cluster with the given cut
-            for(auto cluster : crystalClusters)
+            for(const auto& cluster : crystalClusters)
             {
                if ( cluster.hovere < hovere_cut 
                      && cluster.ECALiso < ecal_isolation_cut 
@@ -394,12 +425,22 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             }
          }
       }
-
-      for(auto cluster : crystalClusters)
+      for(const auto& cluster : crystalClusters)
       {
          if ( deltaR(cluster, trueElectron) < genMatchDeltaRcut
-              && fabs(cluster.et-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut)
+              && fabs(cluster.et-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut
+              && cluster.hovere < ((cluster.et > 35.) ? 0.5 : 0.5+pow(cluster.et-35,2)/350. )
+              && cluster.ECALiso < ((cluster.et > 35.) ? 1.3 : 1.3+pow(cluster.et-35,2)*4/(35*35) )  )
          {
+            if ( debug ) std::cout << "Dynamic hovere cut: " << ((cluster.et > 35.) ? 0.5 : 0.5+pow(cluster.et-35,2)/350. ) << std::endl;
+            if ( debug ) std::cout << "Dynamic isolation cut: " << ((cluster.et > 35.) ? 1.3 : 1.3+pow(cluster.et-35,2)*4/(35*35) ) << std::endl;
+            if ( debug ) std::cout << "Cluster pt: " << cluster.et << " hovere: " << cluster.hovere << " iso: " << cluster.ECALiso << std::endl;
+            dyncrystal_efficiency_hist->Fill(trueElectron.pt());
+            dyncrystal_efficiency_eta_hist->Fill(trueElectron.eta());
+            dyncrystal_deltaR_hist->Fill(deltaR(cluster, trueElectron));
+            dyncrystal_deta_hist->Fill(trueElectron.eta()-cluster.eta);
+            dyncrystal_dphi_hist->Fill(reco::deltaPhi(cluster.phi, trueElectron.phi()));
+
             fillhovere_isolation_hists(cluster);
             // for pt comparison, use generator info for electron
             reco_gen_pt_hist->Fill( genParticles[0].pt(), (cluster.et - genParticles[0].pt())/genParticles[0].pt() );
@@ -407,7 +448,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          }
       }
       
-      for(auto oldEGCandidate : eGammaCollection)
+      for(const auto& oldEGCandidate : eGammaCollection)
       {
          if ( deltaR(oldEGCandidate.polarP4(), trueElectron) < genMatchDeltaRcut &&
               fabs(oldEGCandidate.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
@@ -423,7 +464,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          }
       }
 
-      for(auto oldEGCandidate : eGammaCollection2)
+      for(const auto& oldEGCandidate : eGammaCollection2)
       {
          if ( deltaR(oldEGCandidate.polarP4(), trueElectron) < genMatchDeltaRcut &&
               fabs(oldEGCandidate.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
@@ -459,6 +500,30 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                }
             }
          }
+      }
+      for(const auto& cluster : crystalClusters)
+      {
+         if ( cluster.hovere < (cluster.et > 35) ? 0.5 : (0.5+pow(cluster.et-35,2)/350.)
+              && cluster.ECALiso < (cluster.et > 35) ? 1.3 : (1.3+pow(cluster.et-35,2)*4/(35*35)) )
+         {
+            dyncrystal_rate_hist->Fill(cluster.et);
+            break;
+         }
+      }
+      
+      // Debug output high pt fakes
+      if ( debug )
+      {
+         for(const auto& cluster : crystalClusters)
+            {
+               if ( cluster.hovere < 2
+                     && cluster.ECALiso < 3
+                     && cluster.et > 40. )
+               {
+                  std::cout << "\x1B[32mHigh pt fake! pt = " << cluster.et << "\x1B[0m" << std::endl;
+                  break;
+               }
+            }
       }
 
       if ( eGammaCollection.size() > 0 )
@@ -505,6 +570,7 @@ L1EGRateStudies::endJob()
       edm::Service<TFileService> fs;
       TH1F* event_count = fs->make<TH1F>("eventCount", "Event Count", 1, -1, 1);
       event_count->SetBinContent(1, eventCount);
+      integrateDown(dyncrystal_rate_hist);
       integrateDown(oldEGalg_rate_hist);
       integrateDown(dynEGalg_rate_hist);
       for(auto it=histograms.begin(); it!=histograms.end(); it++)
