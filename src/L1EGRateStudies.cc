@@ -73,8 +73,6 @@ class L1EGRateStudies : public edm::EDAnalyzer {
 
       // -- user functions
       void integrateDown(TH1F *);
-      inline double deltaR(const reco::Candidate::PolarLorentzVector& a, const reco::Candidate::PolarLorentzVector& b){return reco::deltaR(a,b);};
-      double deltaR(const l1slhc::L1EGCrystalCluster& a, const reco::Candidate::PolarLorentzVector& b);
       void fillhovere_isolation_hists(const l1slhc::L1EGCrystalCluster& cluster);
       
       // ----------member data ---------------------------
@@ -324,7 +322,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    genParticles = *genParticleHandle.product();
 
    // Sort clusters so we can always pick highest pt cluster matching cuts
-   std::sort(begin(crystalClusters), end(crystalClusters), [](const l1slhc::L1EGCrystalCluster& a, const l1slhc::L1EGCrystalCluster& b){return a.et > b.et;});
+   std::sort(begin(crystalClusters), end(crystalClusters), [](const l1slhc::L1EGCrystalCluster& a, const l1slhc::L1EGCrystalCluster& b){return a.pt() > b.pt();});
    // also sort old algorithm products
    std::sort(begin(eGammaCollection), end(eGammaCollection), [](const l1extra::L1EmParticle& a, const l1extra::L1EmParticle& b){return a.pt() > b.pt();});
    std::sort(begin(eGammaCollection2), end(eGammaCollection2), [](const l1extra::L1EmParticle& a, const l1extra::L1EmParticle& b){return a.pt() > b.pt();});
@@ -348,7 +346,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             p4.SetEta(cluster.position().eta());
             p4.SetPhi(cluster.position().phi());
             p4.SetM(0.);
-            if ( deltaR(p4, genParticles[0].polarP4()) < genMatchDeltaRcut )
+            if ( reco::deltaR(p4, genParticles[0].polarP4()) < genMatchDeltaRcut )
             {
                trueElectron = p4;
                trueEfound = true;
@@ -409,16 +407,16 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             // Since this iterates in order, we automatically get the highest pt cluster with the given cut
             for(const auto& cluster : crystalClusters)
             {
-               if ( cluster.hovere < hovere_cut 
-                     && cluster.ECALiso < ecal_isolation_cut 
-                     && deltaR(cluster, trueElectron) < genMatchDeltaRcut
-                     && fabs(cluster.et-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
+               if ( cluster.hovere() < hovere_cut 
+                     && cluster.isolation() < ecal_isolation_cut 
+                     && reco::deltaR(cluster, trueElectron) < genMatchDeltaRcut
+                     && fabs(cluster.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
                {
                   histograms[i*cut_steps+j]->Fill(trueElectron.pt());
                   eta_histograms[i*cut_steps+j]->Fill(trueElectron.eta());
-                  deltaR_histograms[i*cut_steps+j]->Fill(deltaR(cluster, trueElectron));
-                  deta_histograms[i*cut_steps+j]->Fill(trueElectron.eta()-cluster.eta);
-                  dphi_histograms[i*cut_steps+j]->Fill(reco::deltaPhi(cluster.phi, trueElectron.phi()));
+                  deltaR_histograms[i*cut_steps+j]->Fill(reco::deltaR(cluster, trueElectron));
+                  deta_histograms[i*cut_steps+j]->Fill(trueElectron.eta()-cluster.eta());
+                  dphi_histograms[i*cut_steps+j]->Fill(reco::deltaPhi(cluster.phi(), trueElectron.phi()));
                   // Found one, don't find more!
                   break;
                }
@@ -427,35 +425,35 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       }
       for(const auto& cluster : crystalClusters)
       {
-         if ( deltaR(cluster, trueElectron) < genMatchDeltaRcut
-              && fabs(cluster.et-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut
-              && cluster.hovere < ((cluster.et > 35.) ? 0.5 : 0.5+pow(cluster.et-35,2)/350. )
-              && cluster.ECALiso < ((cluster.et > 35.) ? 1.3 : 1.3+pow(cluster.et-35,2)*4/(35*35) )  )
+         if ( reco::deltaR(cluster, trueElectron) < genMatchDeltaRcut
+              && fabs(cluster.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut
+              && cluster.hovere() < ((cluster.pt() > 35.) ? 0.5 : 0.5+pow(cluster.pt()-35,2)/350. )
+              && cluster.isolation() < ((cluster.pt() > 35.) ? 1.3 : 1.3+pow(cluster.pt()-35,2)*4/(35*35) )  )
          {
-            if ( debug ) std::cout << "Dynamic hovere cut: " << ((cluster.et > 35.) ? 0.5 : 0.5+pow(cluster.et-35,2)/350. ) << std::endl;
-            if ( debug ) std::cout << "Dynamic isolation cut: " << ((cluster.et > 35.) ? 1.3 : 1.3+pow(cluster.et-35,2)*4/(35*35) ) << std::endl;
-            if ( debug ) std::cout << "Cluster pt: " << cluster.et << " hovere: " << cluster.hovere << " iso: " << cluster.ECALiso << std::endl;
+            if ( debug ) std::cout << "Dynamic hovere cut: " << ((cluster.pt() > 35.) ? 0.5 : 0.5+pow(cluster.pt()-35,2)/350. ) << std::endl;
+            if ( debug ) std::cout << "Dynamic isolation cut: " << ((cluster.pt() > 35.) ? 1.3 : 1.3+pow(cluster.pt()-35,2)*4/(35*35) ) << std::endl;
+            if ( debug ) std::cout << "Cluster pt: " << cluster.pt() << " hovere: " << cluster.hovere() << " iso: " << cluster.isolation() << std::endl;
             dyncrystal_efficiency_hist->Fill(trueElectron.pt());
             dyncrystal_efficiency_eta_hist->Fill(trueElectron.eta());
-            dyncrystal_deltaR_hist->Fill(deltaR(cluster, trueElectron));
-            dyncrystal_deta_hist->Fill(trueElectron.eta()-cluster.eta);
-            dyncrystal_dphi_hist->Fill(reco::deltaPhi(cluster.phi, trueElectron.phi()));
+            dyncrystal_deltaR_hist->Fill(reco::deltaR(cluster, trueElectron));
+            dyncrystal_deta_hist->Fill(trueElectron.eta()-cluster.eta());
+            dyncrystal_dphi_hist->Fill(reco::deltaPhi(cluster.phi(), trueElectron.phi()));
 
             fillhovere_isolation_hists(cluster);
             // for pt comparison, use generator info for electron
-            reco_gen_pt_hist->Fill( genParticles[0].pt(), (cluster.et - genParticles[0].pt())/genParticles[0].pt() );
+            reco_gen_pt_hist->Fill( genParticles[0].pt(), (cluster.pt() - genParticles[0].pt())/genParticles[0].pt() );
             break;
          }
       }
       
       for(const auto& oldEGCandidate : eGammaCollection)
       {
-         if ( deltaR(oldEGCandidate.polarP4(), trueElectron) < genMatchDeltaRcut &&
+         if ( reco::deltaR(oldEGCandidate.polarP4(), trueElectron) < genMatchDeltaRcut &&
               fabs(oldEGCandidate.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
          {
             oldEGalg_efficiency_hist->Fill(trueElectron.pt());
             oldEGalg_efficiency_eta_hist->Fill(trueElectron.eta());
-            oldEGalg_deltaR_hist->Fill(deltaR(oldEGCandidate.polarP4(), trueElectron));
+            oldEGalg_deltaR_hist->Fill(reco::deltaR(oldEGCandidate.polarP4(), trueElectron));
             oldEGalg_deta_hist->Fill(trueElectron.eta()-oldEGCandidate.eta());
             oldEGalg_dphi_hist->Fill(reco::deltaPhi(oldEGCandidate.phi(), trueElectron.phi()));
             oldAlg_reco_gen_pt_hist->Fill( genParticles[0].pt(), (oldEGCandidate.pt() - genParticles[0].pt())/genParticles[0].pt() );
@@ -466,12 +464,12 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
       for(const auto& oldEGCandidate : eGammaCollection2)
       {
-         if ( deltaR(oldEGCandidate.polarP4(), trueElectron) < genMatchDeltaRcut &&
+         if ( reco::deltaR(oldEGCandidate.polarP4(), trueElectron) < genMatchDeltaRcut &&
               fabs(oldEGCandidate.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
          {
             dynEGalg_efficiency_hist->Fill(trueElectron.pt());
             dynEGalg_efficiency_eta_hist->Fill(trueElectron.eta());
-            dynEGalg_deltaR_hist->Fill(deltaR(oldEGCandidate.polarP4(), trueElectron));
+            dynEGalg_deltaR_hist->Fill(reco::deltaR(oldEGCandidate.polarP4(), trueElectron));
             dynEGalg_deta_hist->Fill(trueElectron.eta()-oldEGCandidate.eta());
             dynEGalg_dphi_hist->Fill(reco::deltaPhi(oldEGCandidate.phi(), trueElectron.phi()));
             dynAlg_reco_gen_pt_hist->Fill( genParticles[0].pt(), (oldEGCandidate.pt() - genParticles[0].pt())/genParticles[0].pt() );
@@ -492,10 +490,10 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             // List is sorted by pt
             for(const auto& cluster : crystalClusters)
             {
-               if ( cluster.hovere < hovere_cut 
-                     && cluster.ECALiso < ecal_isolation_cut )
+               if ( cluster.hovere() < hovere_cut 
+                     && cluster.isolation() < ecal_isolation_cut )
                {
-                  histograms[i*cut_steps+j]->Fill(cluster.et);
+                  histograms[i*cut_steps+j]->Fill(cluster.pt());
                   break;
                }
             }
@@ -503,10 +501,10 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       }
       for(const auto& cluster : crystalClusters)
       {
-         if ( cluster.hovere < ((cluster.et > 35) ? 0.5 : 0.5+pow(cluster.et-35,2)/350. )
-              && cluster.ECALiso < ((cluster.et > 35) ? 1.3 : 1.3+pow(cluster.et-35,2)*4/(35*35) ) )
+         if ( cluster.hovere() < ((cluster.pt() > 35) ? 0.5 : 0.5+pow(cluster.pt()-35,2)/350. )
+              && cluster.isolation() < ((cluster.pt() > 35) ? 1.3 : 1.3+pow(cluster.pt()-35,2)*4/(35*35) ) )
          {
-            dyncrystal_rate_hist->Fill(cluster.et);
+            dyncrystal_rate_hist->Fill(cluster.pt());
             break;
          }
       }
@@ -516,11 +514,11 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       {
          for(const auto& cluster : crystalClusters)
             {
-               if ( cluster.hovere < 2
-                     && cluster.ECALiso < 3
-                     && cluster.et > 40. )
+               if ( cluster.hovere() < 2
+                     && cluster.isolation() < 3
+                     && cluster.pt() > 40. )
                {
-                  std::cout << "\x1B[32mHigh pt fake! pt = " << cluster.et << "\x1B[0m" << std::endl;
+                  std::cout << "\x1B[32mHigh pt fake! pt = " << cluster.pt() << "\x1B[0m" << std::endl;
                   break;
                }
             }
@@ -634,29 +632,22 @@ L1EGRateStudies::integrateDown(TH1F * hist) {
    }
 }
 
-// Wrapper since L1EGCrystalCluster does not implement the required eta() and phi() getter methods.
-double
-L1EGRateStudies::deltaR(const l1slhc::L1EGCrystalCluster& a, const reco::Candidate::PolarLorentzVector& b) {
-   reco::Candidate::PolarLorentzVector clusterP4(a.et, a.eta, a.phi, 0.);
-   return deltaR(clusterP4, b);
-}
-
 void
 L1EGRateStudies::fillhovere_isolation_hists(const l1slhc::L1EGCrystalCluster& cluster) {
-   if ( cluster.et < 15. )
+   if ( cluster.pt() < 15. )
    {
-      hovere_hist_lowpt->Fill(cluster.hovere);
-      ecalIso_hist_lowpt->Fill(cluster.ECALiso);
+      hovere_hist_lowpt->Fill(cluster.hovere());
+      ecalIso_hist_lowpt->Fill(cluster.isolation());
    }
-   else if ( cluster.et > 15. && cluster.et < 35. )
+   else if ( cluster.pt() > 15. && cluster.pt() < 35. )
    {
-      hovere_hist_medpt->Fill(cluster.hovere);
-      ecalIso_hist_medpt->Fill(cluster.ECALiso);
+      hovere_hist_medpt->Fill(cluster.hovere());
+      ecalIso_hist_medpt->Fill(cluster.isolation());
    }
-   else if ( cluster.et > 35. && cluster.et < 50. )
+   else if ( cluster.pt() > 35. && cluster.pt() < 50. )
    {
-      hovere_hist_highpt->Fill(cluster.hovere);
-      ecalIso_hist_highpt->Fill(cluster.ECALiso);
+      hovere_hist_highpt->Fill(cluster.hovere());
+      ecalIso_hist_highpt->Fill(cluster.isolation());
    }
 }
 

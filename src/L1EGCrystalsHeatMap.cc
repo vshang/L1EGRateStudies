@@ -314,16 +314,16 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    edm::Handle<l1slhc::L1EGCrystalClusterCollection> crystalClustersHandle;      
    iEvent.getByLabel(L1CrystalClustersInputTag,crystalClustersHandle);
    crystalClusters = (*crystalClustersHandle.product());
-   std::sort(begin(crystalClusters), end(crystalClusters), [](const l1slhc::L1EGCrystalCluster& a, const l1slhc::L1EGCrystalCluster& b){return a.et > b.et;});
+   std::sort(begin(crystalClusters), end(crystalClusters), [](const l1slhc::L1EGCrystalCluster& a, const l1slhc::L1EGCrystalCluster& b){return a.pt() > b.pt();});
 
    // Match EG Crystal cluster to gen particle
    l1slhc::L1EGCrystalCluster egCluster = crystalClusters[0];
    for(auto& cluster : crystalClusters)
    {
-      if ( cluster.hovere < 2
-         && cluster.ECALiso < 3
-         && reco::deltaR(reco::Candidate::PolarLorentzVector(cluster.et, cluster.eta, cluster.phi, 0.), trueElectron) < 0.1
-         && fabs(cluster.et-trueElectron.pt())/trueElectron.pt() < 1. )
+      if ( cluster.hovere() < 2
+         && cluster.isolation() < 3
+         && reco::deltaR(cluster, trueElectron) < 0.1
+         && fabs(cluster.pt()-trueElectron.pt())/trueElectron.pt() < 1. )
       {
          std::cout << "Cluster around genParticle with pT=" << trueElectron.pt() << ", eta=" << trueElectron.eta() << ", phi=" << trueElectron.phi() << std::endl;
          egCluster = cluster;
@@ -349,7 +349,7 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    {
       double dphilow = i*0.0173-3*0.0173;
       double dphihigh = (i+1)*0.0173-3*0.0173;
-      if ( reco::deltaPhi(egCluster.phi, trueElectron.phi()) > dphilow && reco::deltaPhi(egCluster.phi, trueElectron.phi()) < dphihigh )
+      if ( reco::deltaPhi(egCluster.phi(), trueElectron.phi()) > dphilow && reco::deltaPhi(egCluster.phi(), trueElectron.phi()) < dphihigh )
       {
          heatmap_nevents[i]++;
          for(auto ecalhit : ecalhits)
