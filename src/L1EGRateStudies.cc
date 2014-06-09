@@ -433,22 +433,25 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       for(const auto& cluster : crystalClusters)
       {
          if ( reco::deltaR(cluster, trueElectron) < genMatchDeltaRcut
-              && fabs(cluster.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut
-              && cluster.hovere() < ((cluster.pt() > 35.) ? 0.5 : 0.5+pow(cluster.pt()-35,2)/350. )
-              && cluster.isolation() < ((cluster.pt() > 35.) ? 1.3 : 1.3+pow(cluster.pt()-35,2)*4/(35*35) )  )
+              && fabs(cluster.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
          {
-            if ( debug ) std::cout << "Dynamic hovere cut: " << ((cluster.pt() > 35.) ? 0.5 : 0.5+pow(cluster.pt()-35,2)/350. ) << std::endl;
-            if ( debug ) std::cout << "Dynamic isolation cut: " << ((cluster.pt() > 35.) ? 1.3 : 1.3+pow(cluster.pt()-35,2)*4/(35*35) ) << std::endl;
-            if ( debug ) std::cout << "Cluster pt: " << cluster.pt() << " hovere: " << cluster.hovere() << " iso: " << cluster.isolation() << std::endl;
-            dyncrystal_efficiency_hist->Fill(trueElectron.pt());
-            dyncrystal_efficiency_eta_hist->Fill(trueElectron.eta());
-            dyncrystal_deltaR_hist->Fill(reco::deltaR(cluster, trueElectron));
-            dyncrystal_deta_hist->Fill(trueElectron.eta()-cluster.eta());
-            dyncrystal_dphi_hist->Fill(reco::deltaPhi(cluster.phi(), trueElectron.phi()));
-
             fillhovere_isolation_hists(cluster);
-            reco_gen_pt_hist->Fill( trueElectron.pt(), (cluster.pt() - trueElectron.pt())/trueElectron.pt() );
-            break;
+
+            if ( cluster.hovere() < ((cluster.pt() > 35.) ? 0.5 : 0.5+pow(cluster.pt()-35,2)/350. )
+                 && cluster.isolation() < ((cluster.pt() > 35.) ? 1.3 : 1.3+pow(cluster.pt()-35,2)*4/(35*35) )  )
+            {
+               if ( debug ) std::cout << "Dynamic hovere cut: " << ((cluster.pt() > 35.) ? 0.5 : 0.5+pow(cluster.pt()-35,2)/350. ) << std::endl;
+               if ( debug ) std::cout << "Dynamic isolation cut: " << ((cluster.pt() > 35.) ? 1.3 : 1.3+pow(cluster.pt()-35,2)*4/(35*35) ) << std::endl;
+               if ( debug ) std::cout << "Cluster pt: " << cluster.pt() << " hovere: " << cluster.hovere() << " iso: " << cluster.isolation() << std::endl;
+               dyncrystal_efficiency_hist->Fill(trueElectron.pt());
+               dyncrystal_efficiency_eta_hist->Fill(trueElectron.eta());
+               dyncrystal_deltaR_hist->Fill(reco::deltaR(cluster, trueElectron));
+               dyncrystal_deta_hist->Fill(trueElectron.eta()-cluster.eta());
+               dyncrystal_dphi_hist->Fill(reco::deltaPhi(cluster.phi(), trueElectron.phi()));
+
+               reco_gen_pt_hist->Fill( trueElectron.pt(), (cluster.pt() - trueElectron.pt())/trueElectron.pt() );
+               break;
+            }
          }
       }
       
