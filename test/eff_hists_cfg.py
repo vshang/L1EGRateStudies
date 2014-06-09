@@ -93,7 +93,7 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
 # this just normalizes the histograms to 30kHz rate 
 # use this when running over single particle gun sources
    doEfficiencyCalc = cms.untracked.bool(True),
-   useOfflineClusters = cms.untracked.bool(True),
+   useOfflineClusters = cms.untracked.bool(False),
    useEndcap = cms.untracked.bool(False),
    hovere_cut_min = cms.untracked.double(1),
    hovere_cut_max = cms.untracked.double(4),

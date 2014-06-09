@@ -27,6 +27,8 @@
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
+#include "FWCore/Framework/interface/ESHandle.h"
+#include "FWCore/Framework/interface/EventSetup.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
@@ -49,6 +51,7 @@
 #include "DataFormats/L1Trigger/interface/L1EmParticleFwd.h"
 
 #include "FastSimulation/BaseParticlePropagator/interface/BaseParticlePropagator.h"
+#include "FastSimulation/Particle/interface/ParticleTable.h"
 
 //
 // class declaration
@@ -66,7 +69,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       virtual void analyze(const edm::Event&, const edm::EventSetup&);
       virtual void endJob() ;
 
-      //virtual void beginRun(edm::Run const&, edm::EventSetup const&);
+      virtual void beginRun(edm::Run const&, edm::EventSetup const&);
       //virtual void endRun(edm::Run const&, edm::EventSetup const&);
       //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
       //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
@@ -369,14 +372,18 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       {
          // Get the particle position upon entering ECal
          RawParticle particle(genParticles[0].p4());
+         particle.setVertex(genParticles[0].vertex().x(), genParticles[0].vertex().y(), genParticles[0].vertex().z(), 0.);
          particle.setID(genParticles[0].pdgId());
          BaseParticlePropagator prop(particle, 0., 0., 4.);
+         BaseParticlePropagator start(prop);
          prop.propagateToEcalEntrance();
          if(prop.getSuccess()!=0)
          {
-            trueElectron = reco::Candidate::PolarLorentzVector(genParticles[0].pt(), prop.vertex().eta(), prop.vertex().phi(), 0.);
-            if ( debug ) std::cout << "Propogated genParticle to ECal, position: " << trueElectron << " distance = " << prop.vertex().mag() << std::endl;
-            if ( debug ) std::cout << "                    genParticle position: " << genParticles[0].polarP4() << std::endl;
+            trueElectron = reco::Candidate::PolarLorentzVector(prop.E()*sin(prop.vertex().theta()), prop.vertex().eta(), prop.vertex().phi(), 0.);
+            if ( debug ) std::cout << "Propogated genParticle to ECal, position: " << prop.vertex() << " momentum = " << prop.momentum() << std::endl;
+            if ( debug ) std::cout << "                       starting position: " << start.vertex() << " momentum = " << start.momentum() << std::endl;
+            if ( debug ) std::cout << "                    genParticle position: " << genParticles[0].vertex() << " momentum = " << genParticles[0].p4() << std::endl;
+            if ( debug ) std::cout << "       old pt = " << genParticles[0].pt() << ", new pt = " << trueElectron.pt() << std::endl;
          }
          else
          {
@@ -440,8 +447,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             dyncrystal_dphi_hist->Fill(reco::deltaPhi(cluster.phi(), trueElectron.phi()));
 
             fillhovere_isolation_hists(cluster);
-            // for pt comparison, use generator info for electron
-            reco_gen_pt_hist->Fill( genParticles[0].pt(), (cluster.pt() - genParticles[0].pt())/genParticles[0].pt() );
+            reco_gen_pt_hist->Fill( trueElectron.pt(), (cluster.pt() - trueElectron.pt())/trueElectron.pt() );
             break;
          }
       }
@@ -456,7 +462,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             oldEGalg_deltaR_hist->Fill(reco::deltaR(oldEGCandidate.polarP4(), trueElectron));
             oldEGalg_deta_hist->Fill(trueElectron.eta()-oldEGCandidate.eta());
             oldEGalg_dphi_hist->Fill(reco::deltaPhi(oldEGCandidate.phi(), trueElectron.phi()));
-            oldAlg_reco_gen_pt_hist->Fill( genParticles[0].pt(), (oldEGCandidate.pt() - genParticles[0].pt())/genParticles[0].pt() );
+            oldAlg_reco_gen_pt_hist->Fill( trueElectron.pt(), (oldEGCandidate.pt() - trueElectron.pt())/trueElectron.pt() );
             if (debug) std::cout << "Filling old l2 alg. candidate " << oldEGCandidate.polarP4() << std::endl;
             break;
          }
@@ -472,7 +478,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             dynEGalg_deltaR_hist->Fill(reco::deltaR(oldEGCandidate.polarP4(), trueElectron));
             dynEGalg_deta_hist->Fill(trueElectron.eta()-oldEGCandidate.eta());
             dynEGalg_dphi_hist->Fill(reco::deltaPhi(oldEGCandidate.phi(), trueElectron.phi()));
-            dynAlg_reco_gen_pt_hist->Fill( genParticles[0].pt(), (oldEGCandidate.pt() - genParticles[0].pt())/genParticles[0].pt() );
+            dynAlg_reco_gen_pt_hist->Fill( trueElectron.pt(), (oldEGCandidate.pt() - trueElectron.pt())/trueElectron.pt() );
             if (debug) std::cout << "Filling dyn l2 alg. candidate " << oldEGCandidate.polarP4() << std::endl;
             break;
          }
@@ -579,12 +585,13 @@ L1EGRateStudies::endJob()
 }
 
 // ------------ method called when starting to processes a run  ------------
-/*
 void 
-L1EGRateStudies::beginRun(edm::Run const&, edm::EventSetup const&)
+L1EGRateStudies::beginRun(edm::Run const& run, edm::EventSetup const& es)
 {
+   edm::ESHandle<HepPDT::ParticleDataTable> pdt;
+   es.getData(pdt);
+   if ( !ParticleTable::instance() ) ParticleTable::instance(&(*pdt));
 }
-*/
 
 // ------------ method called when ending the processing of a run  ------------
 /*
