@@ -9,6 +9,7 @@
 #include <memory>
 #include <iostream>
 #include "TH1F.h"
+#include "TGraphAsymmErrors.h"
 #include "TObject.h"
 #include "TDirectory.h"
 
@@ -27,19 +28,24 @@ void normalizeParallelJobs() {
     {
         std::cout << "Dividing efficiency histograms by gen hists" << std::endl;
         std::cout << "Total event count: " << effPtDenom->Integral() << std::endl;
+        
+        eff->cd("analyzer");
         auto effPtHists = rootools::loadObjectsMatchingPattern<TH1F>(effHistKeys, "*_efficiency*pt");
-        effPtDenom->Sumw2();
         for(auto& hist : effPtHists) 
         {
-            hist->Sumw2();
-            hist->Divide(effPtDenom);
+            auto graph = new TGraphAsymmErrors(hist, effPtDenom);
+            graph->GetXaxis()->SetTitle(hist->GetXaxis()->GetTitle());
+            graph->GetYaxis()->SetTitle("Efficiency");
+            graph->Write();
         }
         auto effEtaHists = rootools::loadObjectsMatchingPattern<TH1F>(effHistKeys, "*_efficiency*eta");
         effEtaDenom->Sumw2();
         for(auto& hist : effEtaHists)
         {
-            hist->Sumw2();
-            hist->Divide(effEtaDenom);
+            auto graph = new TGraphAsymmErrors(hist, effEtaDenom);
+            graph->GetXaxis()->SetTitle(hist->GetXaxis()->GetTitle());
+            graph->GetYaxis()->SetTitle("Efficiency");
+            graph->Write();
         }
         auto dir = (TDirectory*) eff->Get("analyzer");
         dir->Delete("gen_pt;*");
