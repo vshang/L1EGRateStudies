@@ -49,8 +49,9 @@ process.load('Configuration.StandardSequences.Reconstruction_cff')
 process.reconstruction_step = cms.Path( process.calolocalreco )
 
 process.L1EGammaCrystalsProducer = cms.EDProducer("L1EGCrystalClusterProducer",
+   EtminForStore = cms.double(0.),
    DEBUG = cms.untracked.bool(False),
-   useECalEndcap = cms.untracked.bool(False)
+   useECalEndcap = cms.bool(False)
 )
 process.pSasha = cms.Path( process.L1EGammaCrystalsProducer )
 
@@ -83,8 +84,8 @@ process.ecalClusters = cms.Path(process.ecalClustersNoPFBox)
 
 process.analyzer = cms.EDAnalyzer('L1EGCrystalsHeatMap',
    L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer","EGCrystalCluster"),
-   DEBUG = cms.untracked.bool(False),
-   useOfflineClusters = cms.untracked.bool(True),
+   debug = cms.untracked.bool(False),
+   useOfflineClusters = cms.untracked.bool(False),
    range = cms.untracked.int32(20)
 )
 
