@@ -76,6 +76,8 @@
 #include "TH2.h"
 #include "TVector3.h"
 
+#include "FastSimulation/BaseParticlePropagator/interface/BaseParticlePropagator.h"
+#include "FastSimulation/Particle/interface/ParticleTable.h"
 //
 // class declaration
 //
@@ -93,7 +95,7 @@ class L1EGCrystalsHeatMap : public edm::EDAnalyzer {
       virtual void analyze(const edm::Event&, const edm::EventSetup&);
       virtual void endJob() ;
 
-      //virtual void beginRun(edm::Run const&, edm::EventSetup const&);
+      virtual void beginRun(edm::Run const&, edm::EventSetup const&);
       //virtual void endRun(edm::Run const&, edm::EventSetup const&);
       //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
       //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
@@ -103,7 +105,7 @@ class L1EGCrystalsHeatMap : public edm::EDAnalyzer {
       int range;
       bool useEndcap;
       bool useOfflineClusters;
-      bool DEBUG;
+      bool kDebug;
       int nEvents = 0;
       edm::InputTag L1CrystalClustersInputTag;
       std::vector<TH2F*> heatmaps;
@@ -161,7 +163,7 @@ L1EGCrystalsHeatMap::L1EGCrystalsHeatMap(const edm::ParameterSet& iConfig):
    range(iConfig.getUntrackedParameter<int>("range", 10)),
    useEndcap(iConfig.getUntrackedParameter<bool>("useEndcap", false)),
    useOfflineClusters(iConfig.getUntrackedParameter<bool>("useOfflineClusters", false)),
-   DEBUG(iConfig.getUntrackedParameter<bool>("DEBUG", false))
+   kDebug(iConfig.getUntrackedParameter<bool>("debug", false))
 {
    L1CrystalClustersInputTag = iConfig.getParameter<edm::InputTag>("L1CrystalClustersInputTag");
    
@@ -262,8 +264,8 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
       iEvent.getByLabel("correctedHybridSuperClusters","",pBarrelCorSuperClustersHandle);
       reco::SuperClusterCollection pBarrelCorSuperClusters = *pBarrelCorSuperClustersHandle.product();
 
-      if ( DEBUG ) std::cout << "pBarrelCorSuperClusters corrected collection size : " << pBarrelCorSuperClusters.size() << std::endl;
-      if ( DEBUG )
+      if ( kDebug ) std::cout << "pBarrelCorSuperClusters corrected collection size : " << pBarrelCorSuperClusters.size() << std::endl;
+      if ( kDebug )
       {
          for(auto& cluster : pBarrelCorSuperClusters)
          {
@@ -300,7 +302,26 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    }
    else // !useOfflineClusters
    {
-      trueElectron = genParticles[0].polarP4();
+      // Get the particle position upon entering ECal
+      RawParticle particle(genParticles[0].p4());
+      particle.setVertex(genParticles[0].vertex().x(), genParticles[0].vertex().y(), genParticles[0].vertex().z(), 0.);
+      particle.setID(genParticles[0].pdgId());
+      BaseParticlePropagator prop(particle, 0., 0., 4.);
+      BaseParticlePropagator start(prop);
+      prop.propagateToEcalEntrance();
+      if(prop.getSuccess()!=0)
+      {
+         trueElectron = reco::Candidate::PolarLorentzVector(prop.E()*sin(prop.vertex().theta()), prop.vertex().eta(), prop.vertex().phi(), 0.);
+         if ( kDebug ) std::cout << "Propogated genParticle to ECal, position: " << prop.vertex() << " momentum = " << prop.momentum() << std::endl;
+         if ( kDebug ) std::cout << "                       starting position: " << start.vertex() << " momentum = " << start.momentum() << std::endl;
+         if ( kDebug ) std::cout << "                    genParticle position: " << genParticles[0].vertex() << " momentum = " << genParticles[0].p4() << std::endl;
+         if ( kDebug ) std::cout << "       old pt = " << genParticles[0].pt() << ", new pt = " << trueElectron.pt() << std::endl;
+      }
+      else
+      {
+         // something failed?
+         trueElectron = genParticles[0].polarP4();
+      }
    }
    if ( !useEndcap && fabs(trueElectron.eta()) > 1.479 )
    {
@@ -383,12 +404,13 @@ L1EGCrystalsHeatMap::endJob()
 }
 
 // ------------ method called when starting to processes a run  ------------
-/*
 void 
-L1EGCrystalsHeatMap::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
+L1EGCrystalsHeatMap::beginRun(edm::Run const& iRun, edm::EventSetup const& es)
 {
+   edm::ESHandle<HepPDT::ParticleDataTable> pdt;
+   es.getData(pdt);
+   if ( !ParticleTable::instance() ) ParticleTable::instance(&(*pdt));
 }
-*/
 
 
 // ------------ method called when ending the processing of a run  ------------
