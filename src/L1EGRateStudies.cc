@@ -109,24 +109,33 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       std::vector<TH1F *> dphi_histograms;
       TH1F * efficiency_denominator_hist;
       TH1F * efficiency_denominator_eta_hist;
+
       TH1F * dyncrystal_efficiency_hist;
+      TH1F * dyncrystal_efficiency_bremcut_hist;
       TH1F * dyncrystal_efficiency_eta_hist;
       TH1F * dyncrystal_deltaR_hist;
+      TH1F * dyncrystal_deltaR_bremcut_hist;
       TH1F * dyncrystal_deta_hist;
       TH1F * dyncrystal_dphi_hist;
+      TH1F * dyncrystal_dphi_bremcut_hist;
       TH1F * dyncrystal_rate_hist;
+      TH2F * dyncrystal_2DdeltaR_hist;
+
       TH1F * oldEGalg_efficiency_hist;
       TH1F * oldEGalg_efficiency_eta_hist;
       TH1F * oldEGalg_deltaR_hist;
       TH1F * oldEGalg_deta_hist;
       TH1F * oldEGalg_dphi_hist;
       TH1F * oldEGalg_rate_hist;
+      TH2F * oldEGalg_2DdeltaR_hist;
+
       TH1F * dynEGalg_efficiency_hist;
       TH1F * dynEGalg_efficiency_eta_hist;
       TH1F * dynEGalg_deltaR_hist;
       TH1F * dynEGalg_deta_hist;
       TH1F * dynEGalg_dphi_hist;
       TH1F * dynEGalg_rate_hist;
+      TH2F * dynEGalg_2DdeltaR_hist;
 
       // hovere and iso distributions
       TH1F * hovere_hist_lowpt;
@@ -140,6 +149,9 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       TH2F * reco_gen_pt_hist;
       TH2F * oldAlg_reco_gen_pt_hist;
       TH2F * dynAlg_reco_gen_pt_hist;
+
+      // dphi vs. brem
+      TH2F * brem_dphi_hist;
 };
 
 //
@@ -232,23 +244,34 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
          }
       }
       dyncrystal_efficiency_hist = fs->make<TH1F>("dyncrystalEG_efficiency_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
+      dyncrystal_efficiency_bremcut_hist = fs->make<TH1F>("dyncrystalEG_efficiency_bremcut_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dyncrystal_efficiency_eta_hist = fs->make<TH1F>("dyncrystalEG_efficiency_eta", "Dynamic Crystal Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
       dyncrystal_deltaR_hist = fs->make<TH1F>("dyncrystalEG_deltaR", ("Dynamic Crystal Trigger;#Delta R "+drLabel).c_str(), 30, 0., genMatchDeltaRcut);
+      dyncrystal_deltaR_bremcut_hist = fs->make<TH1F>("dyncrystalEG_deltaR_bremcut", ("Dynamic Crystal Trigger;#Delta R "+drLabel).c_str(), 30, 0., genMatchDeltaRcut);
       dyncrystal_deta_hist = fs->make<TH1F>("dyncrystalEG_deta", ("Dynamic Crystal Trigger;d#eta "+drLabel).c_str(), 50, -0.1, 0.1);
       dyncrystal_dphi_hist = fs->make<TH1F>("dyncrystalEG_dphi", ("Dynamic Crystal Trigger;d#phi "+drLabel).c_str(), 50, -0.1, 0.1);
+      dyncrystal_dphi_bremcut_hist = fs->make<TH1F>("dyncrystalEG_dphi_bremcut", ("Dynamic Crystal Trigger;d#phi "+drLabel).c_str(), 50, -0.1, 0.1);
+      dyncrystal_2DdeltaR_hist = fs->make<TH2F>("dyncrystalEG_2DdeltaR_hist", "Dynamic Crystal Trigger;d#eta;d#phi;Counts", 50, -0.05, 0.05, 50, -0.05, 0.05);
+
       oldEGalg_efficiency_hist = fs->make<TH1F>("oldEG_efficiency_pt", "Old EG Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       oldEGalg_efficiency_eta_hist = fs->make<TH1F>("oldEG_efficiency_eta", "Old EG Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
       oldEGalg_deltaR_hist = fs->make<TH1F>("oldEG_deltaR", ("Old EG Trigger;#Delta R "+drLabel).c_str(), 30, 0., genMatchDeltaRcut);
       oldEGalg_deta_hist = fs->make<TH1F>("oldEG_deta", ("Old EG Trigger;d#eta "+drLabel).c_str(), 50, -0.1, 0.1);
       oldEGalg_dphi_hist = fs->make<TH1F>("oldEG_dphi", ("Old EG Trigger;d#phi "+drLabel).c_str(), 50, -0.1, 0.1);
+      oldEGalg_2DdeltaR_hist = fs->make<TH2F>("oldEGalg_2DdeltaR_hist", "Old EG Trigger;d#eta;d#phi;Counts", 50, -0.05, 0.05, 50, -0.05, 0.05);
+
       dynEGalg_efficiency_hist = fs->make<TH1F>("dynEG_efficiency_pt", "Dynamic EG Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dynEGalg_efficiency_eta_hist = fs->make<TH1F>("dynEG_efficiency_eta", "Dynamic EG Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
       dynEGalg_deltaR_hist = fs->make<TH1F>("dynEG_deltaR", ("Dynamic EG Trigger;#Delta R "+drLabel).c_str(), 30, 0., genMatchDeltaRcut);
       dynEGalg_deta_hist = fs->make<TH1F>("dynEG_deta", ("Dynamic EG Trigger;d#eta "+drLabel).c_str(), 50, -0.1, 0.1);
       dynEGalg_dphi_hist = fs->make<TH1F>("dynEG_dphi", ("Dynamic EG Trigger;d#phi "+drLabel).c_str(), 50, -0.1, 0.1);
+      dynEGalg_2DdeltaR_hist = fs->make<TH2F>("dynEGalg_2DdeltaR_hist", "Dynamic EG Trigger;d#eta;d#phi;Counts", 50, -0.05, 0.05, 50, -0.05, 0.05);
+
       reco_gen_pt_hist = fs->make<TH2F>("reco_gen_pt" , "EG relative momentum error;Gen. pT (GeV);(reco-gen)/gen;Counts", 40, 0., 50., 40, -0.3, 0.3); 
       oldAlg_reco_gen_pt_hist = fs->make<TH2F>("oldAlg_reco_gen_pt" , "Old EG relative momentum error;Gen. pT (GeV);(reco-gen)/gen;Counts", 40, 0., 50., 40, -0.3, 0.3); 
       dynAlg_reco_gen_pt_hist = fs->make<TH2F>("dynAlg_reco_gen_pt" , "Dynamic EG relative momentum error;Gen. pT (GeV);(reco-gen)/gen;Counts", 40, 0., 50., 40, -0.3, 0.3); 
+
+      brem_dphi_hist = fs->make<TH2F>("brem_dphi_hist" , "Brem. strength vs. d#phi;Brem. Strength;d#phi;Counts", 40, 0., 2., 40, -0.05, 0.05); 
 
       efficiency_denominator_hist = fs->make<TH1F>("gen_pt", "Gen. pt;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
       efficiency_denominator_eta_hist = fs->make<TH1F>("gen_eta", "Gen. #eta;Gen. #eta; Counts", nHistEtaBins, histetaLow, histetaHigh);
@@ -448,8 +471,16 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                dyncrystal_deltaR_hist->Fill(reco::deltaR(cluster, trueElectron));
                dyncrystal_deta_hist->Fill(trueElectron.eta()-cluster.eta());
                dyncrystal_dphi_hist->Fill(reco::deltaPhi(cluster.phi(), trueElectron.phi()));
+               if ( cluster.bremStrength() < 0.2 )
+               {
+                  dyncrystal_efficiency_bremcut_hist->Fill(trueElectron.pt());
+                  dyncrystal_deltaR_bremcut_hist->Fill(reco::deltaR(cluster, trueElectron));
+                  dyncrystal_dphi_bremcut_hist->Fill(reco::deltaPhi(cluster.phi(), trueElectron.phi()));
+               }
+               dyncrystal_2DdeltaR_hist->Fill(trueElectron.eta()-cluster.eta(), reco::deltaPhi(cluster, trueElectron));
 
                reco_gen_pt_hist->Fill( trueElectron.pt(), (cluster.pt() - trueElectron.pt())/trueElectron.pt() );
+               brem_dphi_hist->Fill( cluster.bremStrength(), reco::deltaPhi(cluster, trueElectron) );
                break;
             }
          }
@@ -466,6 +497,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             oldEGalg_deta_hist->Fill(trueElectron.eta()-oldEGCandidate.eta());
             oldEGalg_dphi_hist->Fill(reco::deltaPhi(oldEGCandidate.phi(), trueElectron.phi()));
             oldAlg_reco_gen_pt_hist->Fill( trueElectron.pt(), (oldEGCandidate.pt() - trueElectron.pt())/trueElectron.pt() );
+            oldEGalg_2DdeltaR_hist->Fill(trueElectron.eta()-oldEGCandidate.eta(), reco::deltaPhi(oldEGCandidate, trueElectron));
             if (debug) std::cout << "Filling old l2 alg. candidate " << oldEGCandidate.polarP4() << std::endl;
             break;
          }
@@ -482,6 +514,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             dynEGalg_deta_hist->Fill(trueElectron.eta()-oldEGCandidate.eta());
             dynEGalg_dphi_hist->Fill(reco::deltaPhi(oldEGCandidate.phi(), trueElectron.phi()));
             dynAlg_reco_gen_pt_hist->Fill( trueElectron.pt(), (oldEGCandidate.pt() - trueElectron.pt())/trueElectron.pt() );
+            dynEGalg_2DdeltaR_hist->Fill(trueElectron.eta()-oldEGCandidate.eta(), reco::deltaPhi(oldEGCandidate, trueElectron));
             if (debug) std::cout << "Filling dyn l2 alg. candidate " << oldEGCandidate.polarP4() << std::endl;
             break;
          }
