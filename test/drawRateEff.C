@@ -355,6 +355,8 @@ void drawRateEff() {
    oldAlgRateHist->SetTitle("Tower-level L2 Algorithm");
    auto dynAlgRateHist = (TH1F *) rates->Get("analyzer/dynEG_rate");
    dynAlgRateHist->SetTitle("LLR L2 Algorithm");
+   auto run1AlgRateHist = (TH1F *) rates->Get("analyzer/run1EG_rate");
+   run1AlgRateHist->SetTitle("Run 1 Algorithm");
 
    c->SetLogy(1);
    c->SetGridx(1);
@@ -362,7 +364,7 @@ void drawRateEff() {
    gStyle->SetGridStyle(2);
    gStyle->SetGridColor(kGray+1);
    c->SetTitle("EG Fake Rates (PU140, minBias)");
-   drawNewOld(newAlgRateHists, {oldAlgRateHist, dynAlgRateHist}, c, 40000., {0., 50.});
+   drawNewOld(newAlgRateHists, {oldAlgRateHist, dynAlgRateHist, run1AlgRateHist}, c, 40000., {0., 50.});
 
    auto effHistKeys = rootools::getKeysofClass(eff, "analyzer", "TGraphAsymmErrors");
    auto deltaHistKeys = rootools::getKeysofClass(eff, "analyzer", "TH1F");
@@ -386,6 +388,8 @@ void drawRateEff() {
    dynAlgEtaHist->SetTitle("LLR L2 Algorithm");
    auto dynAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_dynEG_efficiency_pt_by_gen_pt");
    dynAlgPtHist->SetTitle("LLR L2 Algorithm");
+   auto run1AlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_run1EG_efficiency_pt_by_gen_pt");
+   run1AlgPtHist->SetTitle("Run 1 Algorithm");
    auto dynAlgDRHist = (TH1F *) eff->Get("analyzer/dynEG_deltaR");
    dynAlgDRHist->SetTitle("LLR L2 Algorithm");
    auto dynAlgDEtaHist = (TH1F *) eff->Get("analyzer/dynEG_deta");
@@ -396,7 +400,7 @@ void drawRateEff() {
    c->SetLogy(0);
    c->SetTitle("EG Single Electron Efficiencies");
    drawNewOld(newAlgEtaEffHists, {oldAlgEtaHist, dynAlgEtaHist}, c, 1.2, {-1.6, 1.6});
-   drawNewOld(newAlgPtEffHists, {oldAlgPtHist, dynAlgPtHist}, c, 1.2, {0., 50.}, true);
+   drawNewOld(newAlgPtEffHists, {oldAlgPtHist, dynAlgPtHist, run1AlgPtHist}, c, 1.2, {0., 50.}, true);
    c->SetGridx(0);
    c->SetGridy(0);
    c->SetTitle("#Delta R Distribution Comparison");

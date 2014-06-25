@@ -37,8 +37,8 @@ process.slhccalo = cms.Path( process.RawToDigi + process.valHcalTriggerPrimitive
 
 # run L1Reco to produce the L1EG objects corresponding
 # to the current trigger
-#process.load('Configuration.StandardSequences.L1Reco_cff')
-#process.L1Reco = cms.Path( process.l1extraParticles )
+process.load('Configuration.StandardSequences.L1Reco_cff')
+process.L1Reco = cms.Path( process.l1extraParticles )
 
 # --------------------------------------------------------------------------------------------
 #
@@ -78,6 +78,8 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    L1EGammaInputTag = cms.InputTag("SLHCL1ExtraParticles","EGamma"),
 # 'dynamic clustering'
    L1EGamma2InputTag = cms.InputTag("SLHCL1ExtraParticlesNewClustering","EGamma"),
+# Run 1 algo.
+   L1EGamma3InputTag = cms.InputTag("l1extraParticles", "NonIsolated"),
 # New stage-2 trigger (some sort of isolation cut?)
 #   L1EGammaInputTag = cms.InputTag("SLHCL1ExtraParticles","IsoEGamma"),
 # Sacha's cluster trigger (hovere < 1, isolation < 2)

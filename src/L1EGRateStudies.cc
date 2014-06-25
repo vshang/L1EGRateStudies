@@ -20,6 +20,7 @@
 
 // system include files
 #include <memory>
+#include <array>
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
@@ -36,6 +37,7 @@
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "TH1.h"
 #include "TH2.h"
+#include "TTree.h"
 
 #include "DataFormats/Math/interface/deltaR.h"
 #include "DataFormats/Candidate/interface/Candidate.h"
@@ -95,6 +97,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       int eventCount;
       edm::InputTag L1EGammaInputTag;
       edm::InputTag L1EGamma2InputTag;
+      edm::InputTag L1EGamma3InputTag;
       edm::InputTag L1CrystalClustersInputTag;
             
       int nHistBins, nHistEtaBins;
@@ -137,6 +140,14 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       TH1F * dynEGalg_rate_hist;
       TH2F * dynEGalg_2DdeltaR_hist;
 
+      TH1F * run1EGalg_efficiency_hist;
+      TH1F * run1EGalg_efficiency_eta_hist;
+      TH1F * run1EGalg_deltaR_hist;
+      TH1F * run1EGalg_deta_hist;
+      TH1F * run1EGalg_dphi_hist;
+      TH1F * run1EGalg_rate_hist;
+      TH2F * run1EGalg_2DdeltaR_hist;
+
       // hovere and iso distributions
       TH1F * hovere_hist_lowpt;
       TH1F * hovere_hist_medpt;
@@ -144,6 +155,10 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       TH1F * ecalIso_hist_lowpt;
       TH1F * ecalIso_hist_medpt;
       TH1F * ecalIso_hist_highpt;
+
+      // Crystal pt stuff
+      TTree * crystal_tree;
+      std::array<float, 15> crystal_pt;
 
       // (pt_reco-pt_gen)/pt_gen plot
       TH2F * reco_gen_pt_hist;
@@ -188,6 +203,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    eventCount = 0;
    L1EGammaInputTag = iConfig.getParameter<edm::InputTag>("L1EGammaInputTag");
    L1EGamma2InputTag = iConfig.getParameter<edm::InputTag>("L1EGamma2InputTag");
+   L1EGamma3InputTag = iConfig.getParameter<edm::InputTag>("L1EGamma3InputTag");
    L1CrystalClustersInputTag = iConfig.getParameter<edm::InputTag>("L1CrystalClustersInputTag");
    
    edm::Service<TFileService> fs;
@@ -266,6 +282,13 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       dynEGalg_deta_hist = fs->make<TH1F>("dynEG_deta", ("Dynamic EG Trigger;d#eta "+drLabel).c_str(), 50, -0.1, 0.1);
       dynEGalg_dphi_hist = fs->make<TH1F>("dynEG_dphi", ("Dynamic EG Trigger;d#phi "+drLabel).c_str(), 50, -0.1, 0.1);
       dynEGalg_2DdeltaR_hist = fs->make<TH2F>("dynEGalg_2DdeltaR_hist", "Dynamic EG Trigger;d#eta;d#phi;Counts", 50, -0.05, 0.05, 50, -0.05, 0.05);
+      
+      run1EGalg_efficiency_hist = fs->make<TH1F>("run1EG_efficiency_pt", "Run 1 EG Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
+      run1EGalg_efficiency_eta_hist = fs->make<TH1F>("run1EG_efficiency_eta", "Run 1 EG Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
+      run1EGalg_deltaR_hist = fs->make<TH1F>("run1EG_deltaR", ("Run 1 EG Trigger;#Delta R "+drLabel).c_str(), 30, 0., genMatchDeltaRcut);
+      run1EGalg_deta_hist = fs->make<TH1F>("run1EG_deta", ("Run 1 EG Trigger;d#eta "+drLabel).c_str(), 50, -0.1, 0.1);
+      run1EGalg_dphi_hist = fs->make<TH1F>("run1EG_dphi", ("Run 1 EG Trigger;d#phi "+drLabel).c_str(), 50, -0.1, 0.1);
+      run1EGalg_2DdeltaR_hist = fs->make<TH2F>("run1EGalg_2DdeltaR_hist", "Run 1 EG Trigger;d#eta;d#phi;Counts", 50, -0.05, 0.05, 50, -0.05, 0.05);
 
       reco_gen_pt_hist = fs->make<TH2F>("reco_gen_pt" , "EG relative momentum error;Gen. pT (GeV);(reco-gen)/gen;Counts", 40, 0., 50., 40, -0.3, 0.3); 
       oldAlg_reco_gen_pt_hist = fs->make<TH2F>("oldAlg_reco_gen_pt" , "Old EG relative momentum error;Gen. pT (GeV);(reco-gen)/gen;Counts", 40, 0., 50., 40, -0.3, 0.3); 
@@ -295,6 +318,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       dyncrystal_rate_hist = fs->make<TH1F>("dyncrystalEG_rate" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
       oldEGalg_rate_hist = fs->make<TH1F>("oldEG_rate" , "Old EG Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
       dynEGalg_rate_hist = fs->make<TH1F>("dynEG_rate" , "Dynamic EG Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
+      run1EGalg_rate_hist = fs->make<TH1F>("run1EG_rate" , "Run 1 EG Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
    }
    hovere_hist_lowpt = fs->make<TH1F>("hovere_lowpt" , "EG H/E distribution (0<pT<15);HCal energy / ECal energy;Counts", 30, 0, 4); 
    hovere_hist_medpt = fs->make<TH1F>("hovere_medpt" , "EG H/E distribution (15<pT<35);HCal energy / ECal energy;Counts", 30, 0, 4); 
@@ -302,6 +326,9 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    ecalIso_hist_lowpt = fs->make<TH1F>("ecalIso_lowpt" , "EG ECal Isolation distribution (0<pT<15);ECal Isolation;Counts", 30, 0, 4);
    ecalIso_hist_medpt = fs->make<TH1F>("ecalIso_medpt" , "EG ECal Isolation distribution (15<pT<35);ECal Isolation;Counts", 30, 0, 4);
    ecalIso_hist_highpt = fs->make<TH1F>("ecalIso_highpt" , "EG ECal Isolation distribution (35<pT<50);ECal Isolation;Counts", 30, 0, 4);
+
+   crystal_tree = fs->make<TTree>("crystal_tree", "Crystal cluster individual crystal pt values");
+   crystal_tree->Branch("pt", &crystal_pt, "1:2:3:4:5:6");
 }
 
 
@@ -335,6 +362,12 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    iEvent.getByLabel(L1EGamma2InputTag,EGammaHandle2);
    eGammaCollection2 = (*EGammaHandle2.product());
 
+   // electron candidates 3 (run 1 algorithm)
+   l1extra::L1EmParticleCollection eGammaCollection3;
+   edm::Handle<l1extra::L1EmParticleCollection> EGammaHandle3;
+   iEvent.getByLabel(L1EGamma3InputTag,EGammaHandle3);
+   eGammaCollection3 = (*EGammaHandle3.product());
+
    // electron candidate extra info from Sacha's algorithm
    l1slhc::L1EGCrystalClusterCollection crystalClusters;
    edm::Handle<l1slhc::L1EGCrystalClusterCollection> crystalClustersHandle;      
@@ -352,6 +385,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    // also sort old algorithm products
    std::sort(begin(eGammaCollection), end(eGammaCollection), [](const l1extra::L1EmParticle& a, const l1extra::L1EmParticle& b){return a.pt() > b.pt();});
    std::sort(begin(eGammaCollection2), end(eGammaCollection2), [](const l1extra::L1EmParticle& a, const l1extra::L1EmParticle& b){return a.pt() > b.pt();});
+   std::sort(begin(eGammaCollection3), end(eGammaCollection3), [](const l1extra::L1EmParticle& a, const l1extra::L1EmParticle& b){return a.pt() > b.pt();});
    
    if ( doEfficiencyCalc )
    {
@@ -519,6 +553,21 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             break;
          }
       }
+      
+      for(const auto& oldEGCandidate : eGammaCollection3)
+      {
+         if ( reco::deltaR(oldEGCandidate.polarP4(), trueElectron) < genMatchDeltaRcut &&
+              fabs(oldEGCandidate.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
+         {
+            run1EGalg_efficiency_hist->Fill(trueElectron.pt());
+            run1EGalg_efficiency_eta_hist->Fill(trueElectron.eta());
+            run1EGalg_deltaR_hist->Fill(reco::deltaR(oldEGCandidate.polarP4(), trueElectron));
+            run1EGalg_deta_hist->Fill(trueElectron.eta()-oldEGCandidate.eta());
+            run1EGalg_dphi_hist->Fill(reco::deltaPhi(oldEGCandidate.phi(), trueElectron.phi()));
+            if (debug) std::cout << "Filling run 1 alg. candidate " << oldEGCandidate.polarP4() << std::endl;
+            break;
+         }
+      }
    }
    else // !doEfficiencyCalc
    {
@@ -586,6 +635,17 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             dynEGalg_rate_hist->Fill(highestEGCandidate.pt());
          }
       }
+      
+      if ( eGammaCollection3.size() > 0 )
+      {
+         auto& highestEGCandidate = eGammaCollection3[0];
+         if ( useEndcap
+               || (!useEndcap && fabs(highestEGCandidate.eta()) < 1.479) )
+         {
+            run1EGalg_rate_hist->Fill(highestEGCandidate.pt());
+         }
+      }
+
       fillhovere_isolation_hists(crystalClusters[0]);
    }
 }
@@ -613,6 +673,7 @@ L1EGRateStudies::endJob()
       integrateDown(dyncrystal_rate_hist);
       integrateDown(oldEGalg_rate_hist);
       integrateDown(dynEGalg_rate_hist);
+      integrateDown(run1EGalg_rate_hist);
       for(auto it=histograms.begin(); it!=histograms.end(); it++)
       {
          integrateDown(*it);
@@ -692,6 +753,12 @@ L1EGRateStudies::fillhovere_isolation_hists(const l1slhc::L1EGCrystalCluster& cl
       hovere_hist_highpt->Fill(cluster.hovere());
       ecalIso_hist_highpt->Fill(cluster.isolation());
    }
+   // Also do crystal pt stuff
+   for(Size_t i=0; i<crystal_pt.size(); ++i)
+   {
+      crystal_pt[i] = cluster.GetCrystalPt(i);
+   }
+   crystal_tree->Fill();
 }
 
 //define this as a plug-in
