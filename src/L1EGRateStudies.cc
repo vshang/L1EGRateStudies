@@ -86,18 +86,11 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       bool debug;
       bool useEndcap;
       
-      double hovere_cut_min;
-      double hovere_cut_max;
-      double ecal_isolation_cut_min;
-      double ecal_isolation_cut_max;
-      int cut_steps;
       double genMatchDeltaRcut;
       double genMatchRelPtcut;
       
       int eventCount;
-      edm::InputTag L1EGammaInputTag;
-      edm::InputTag L1EGamma2InputTag;
-      edm::InputTag L1EGamma3InputTag;
+      std::vector<edm::InputTag> L1EGammaInputTags;
       edm::InputTag L1CrystalClustersInputTag;
             
       int nHistBins, nHistEtaBins;
@@ -105,11 +98,6 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       double histHigh;
       double histetaLow;
       double histetaHigh;
-      std::vector<TH1F *> histograms;
-      std::vector<TH1F *> eta_histograms;
-      std::vector<TH1F *> deltaR_histograms;
-      std::vector<TH1F *> deta_histograms;
-      std::vector<TH1F *> dphi_histograms;
       TH1F * efficiency_denominator_hist;
       TH1F * efficiency_denominator_eta_hist;
 
@@ -124,29 +112,14 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       TH1F * dyncrystal_rate_hist;
       TH2F * dyncrystal_2DdeltaR_hist;
 
-      TH1F * oldEGalg_efficiency_hist;
-      TH1F * oldEGalg_efficiency_eta_hist;
-      TH1F * oldEGalg_deltaR_hist;
-      TH1F * oldEGalg_deta_hist;
-      TH1F * oldEGalg_dphi_hist;
-      TH1F * oldEGalg_rate_hist;
-      TH2F * oldEGalg_2DdeltaR_hist;
-
-      TH1F * dynEGalg_efficiency_hist;
-      TH1F * dynEGalg_efficiency_eta_hist;
-      TH1F * dynEGalg_deltaR_hist;
-      TH1F * dynEGalg_deta_hist;
-      TH1F * dynEGalg_dphi_hist;
-      TH1F * dynEGalg_rate_hist;
-      TH2F * dynEGalg_2DdeltaR_hist;
-
-      TH1F * run1EGalg_efficiency_hist;
-      TH1F * run1EGalg_efficiency_eta_hist;
-      TH1F * run1EGalg_deltaR_hist;
-      TH1F * run1EGalg_deta_hist;
-      TH1F * run1EGalg_dphi_hist;
-      TH1F * run1EGalg_rate_hist;
-      TH2F * run1EGalg_2DdeltaR_hist;
+      std::map<std::string, TH1F *> EGalg_efficiency_hists;
+      std::map<std::string, TH1F *> EGalg_efficiency_eta_hists;
+      std::map<std::string, TH1F *> EGalg_deltaR_hists;
+      std::map<std::string, TH1F *> EGalg_deta_hists;
+      std::map<std::string, TH1F *> EGalg_dphi_hists;
+      std::map<std::string, TH1F *> EGalg_rate_hists;
+      std::map<std::string, TH2F *> EGalg_2DdeltaR_hists;
+      std::map<std::string, TH2F *> EGalg_reco_gen_pt_hists;
 
       // hovere and iso distributions
       TH1F * hovere_hist_lowpt;
@@ -162,8 +135,6 @@ class L1EGRateStudies : public edm::EDAnalyzer {
 
       // (pt_reco-pt_gen)/pt_gen plot
       TH2F * reco_gen_pt_hist;
-      TH2F * oldAlg_reco_gen_pt_hist;
-      TH2F * dynAlg_reco_gen_pt_hist;
 
       // dphi vs. brem
       TH2F * brem_dphi_hist;
@@ -185,11 +156,6 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    useOfflineClusters(iConfig.getUntrackedParameter<bool>("useOfflineClusters", false)),
    debug(iConfig.getUntrackedParameter<bool>("debug", false)),
    useEndcap(iConfig.getUntrackedParameter<bool>("useEndcap", false)),
-   hovere_cut_min(iConfig.getUntrackedParameter<double>("hovere_cut_min", 0.5)),
-   hovere_cut_max(iConfig.getUntrackedParameter<double>("hovere_cut_max", 2.)),
-   ecal_isolation_cut_min(iConfig.getUntrackedParameter<double>("ecal_isolation_cut_min", 1.)),
-   ecal_isolation_cut_max(iConfig.getUntrackedParameter<double>("ecal_isolation_cut_max", 4.)),
-   cut_steps(iConfig.getUntrackedParameter<int>("cut_steps", 4)),
    genMatchDeltaRcut(iConfig.getUntrackedParameter<double>("genMatchDeltaRcut", 0.1)),
    genMatchRelPtcut(iConfig.getUntrackedParameter<double>("genMatchRelPtcut", 0.5)),
    nHistBins(iConfig.getUntrackedParameter<int>("histogramBinCount", 10)),
@@ -199,66 +165,19 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    histetaLow(iConfig.getUntrackedParameter<double>("histogramRangeetaLow", -2.5)),
    histetaHigh(iConfig.getUntrackedParameter<double>("histogramRangeetaHigh", 2.5))
 {
-   //now do what ever initialization is needed
    eventCount = 0;
-   L1EGammaInputTag = iConfig.getParameter<edm::InputTag>("L1EGammaInputTag");
-   L1EGamma2InputTag = iConfig.getParameter<edm::InputTag>("L1EGamma2InputTag");
-   L1EGamma3InputTag = iConfig.getParameter<edm::InputTag>("L1EGamma3InputTag");
+   L1EGammaInputTags = iConfig.getParameter<std::vector<edm::InputTag>>("L1EGammaInputTags");
    L1CrystalClustersInputTag = iConfig.getParameter<edm::InputTag>("L1CrystalClustersInputTag");
    
    edm::Service<TFileService> fs;
    
    // If using offline-reco clusters, label dR & related hists appropriately
    std::string drLabel("(Gen-Reco);Counts");
-   if ( useOfflineClusters ) drLabel = "(vs. Offline Reco.)";
+   if ( useOfflineClusters ) drLabel = "(vs. Offline Reco.);Counts";
 
    // Make a set of histograms to fill, depending on if we are doing rate or efficiency
-   histograms.resize(cut_steps*cut_steps);
    if ( doEfficiencyCalc )
    {
-      eta_histograms.resize(cut_steps*cut_steps);
-      deltaR_histograms.resize(cut_steps*cut_steps);
-      deta_histograms.resize(cut_steps*cut_steps);
-      dphi_histograms.resize(cut_steps*cut_steps);
-      // We want to plot efficiency vs. pt and eta, for various hovere and isolation cuts
-      for(int i=0; i<cut_steps; i++)
-      {
-         double hovere_cut = hovere_cut_min+(hovere_cut_max-hovere_cut_min)*i/(cut_steps-1);
-         for(int j=0; j<cut_steps; j++)
-         {
-            double ecal_isolation_cut = ecal_isolation_cut_min+(ecal_isolation_cut_max-ecal_isolation_cut_min)*j/(cut_steps-1);
-            std::stringstream name;
-            // efficiency
-            name << "crystalEG_efficiency_hovere" << i << "_iso" << j << "_pt";
-            std::stringstream title;
-            title << "Crystal-level EG Trigger (hovere "  << hovere_cut << ", iso " << ecal_isolation_cut << ");Gen. pT (GeV);Efficiency";
-            histograms[i*cut_steps+j] = fs->make<TH1F>(name.str().c_str(), title.str().c_str(), nHistBins, histLow, histHigh);
-            // hovere
-            name.str("");
-            name << "crystalEG_efficiency_hovere" << i << "_iso" << j << "_eta";
-            title.str("");
-            title << "Crystal-level EG Trigger (hovere "  << hovere_cut << ", iso " << ecal_isolation_cut << ");Gen. #eta;Efficiency";
-            eta_histograms[i*cut_steps+j] = fs->make<TH1F>(name.str().c_str(), title.str().c_str(), nHistEtaBins, histetaLow, histetaHigh);
-            // deltaR
-            name.str("");
-            name << "crystalEG_deltaR_hovere" << i << "_iso" << j;
-            title.str("");
-            title << "Crystal-level EG Trigger (hovere "  << hovere_cut << ", iso " << ecal_isolation_cut << ");#Delta R " << drLabel;
-            deltaR_histograms[i*cut_steps+j] = fs->make<TH1F>(name.str().c_str(), title.str().c_str(), 30, 0, genMatchDeltaRcut);
-            // deta
-            name.str("");
-            name << "crystalEG_deta_hovere" << i << "_iso" << j;
-            title.str("");
-            title << "Crystal-level EG Trigger (hovere "  << hovere_cut << ", iso " << ecal_isolation_cut << ");d#eta" << drLabel;
-            deta_histograms[i*cut_steps+j] = fs->make<TH1F>(name.str().c_str(), title.str().c_str(), 50, -0.1, 0.1);
-            // dphi
-            name.str("");
-            name << "crystalEG_dphi_hovere" << i << "_iso" << j;
-            title.str("");
-            title << "Crystal-level EG Trigger (hovere "  << hovere_cut << ", iso " << ecal_isolation_cut << ");d#phi" << drLabel;
-            dphi_histograms[i*cut_steps+j] = fs->make<TH1F>(name.str().c_str(), title.str().c_str(), 50, -0.1, 0.1);
-         }
-      }
       dyncrystal_efficiency_hist = fs->make<TH1F>("dyncrystalEG_efficiency_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dyncrystal_efficiency_bremcut_hist = fs->make<TH1F>("dyncrystalEG_efficiency_bremcut_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dyncrystal_efficiency_eta_hist = fs->make<TH1F>("dyncrystalEG_efficiency_eta", "Dynamic Crystal Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
@@ -269,31 +188,19 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       dyncrystal_dphi_bremcut_hist = fs->make<TH1F>("dyncrystalEG_dphi_bremcut", ("Dynamic Crystal Trigger;d#phi "+drLabel).c_str(), 50, -0.1, 0.1);
       dyncrystal_2DdeltaR_hist = fs->make<TH2F>("dyncrystalEG_2DdeltaR_hist", "Dynamic Crystal Trigger;d#eta;d#phi;Counts", 50, -0.05, 0.05, 50, -0.05, 0.05);
 
-      oldEGalg_efficiency_hist = fs->make<TH1F>("oldEG_efficiency_pt", "Old EG Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
-      oldEGalg_efficiency_eta_hist = fs->make<TH1F>("oldEG_efficiency_eta", "Old EG Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
-      oldEGalg_deltaR_hist = fs->make<TH1F>("oldEG_deltaR", ("Old EG Trigger;#Delta R "+drLabel).c_str(), 30, 0., genMatchDeltaRcut);
-      oldEGalg_deta_hist = fs->make<TH1F>("oldEG_deta", ("Old EG Trigger;d#eta "+drLabel).c_str(), 50, -0.1, 0.1);
-      oldEGalg_dphi_hist = fs->make<TH1F>("oldEG_dphi", ("Old EG Trigger;d#phi "+drLabel).c_str(), 50, -0.1, 0.1);
-      oldEGalg_2DdeltaR_hist = fs->make<TH2F>("oldEGalg_2DdeltaR_hist", "Old EG Trigger;d#eta;d#phi;Counts", 50, -0.05, 0.05, 50, -0.05, 0.05);
-
-      dynEGalg_efficiency_hist = fs->make<TH1F>("dynEG_efficiency_pt", "Dynamic EG Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
-      dynEGalg_efficiency_eta_hist = fs->make<TH1F>("dynEG_efficiency_eta", "Dynamic EG Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
-      dynEGalg_deltaR_hist = fs->make<TH1F>("dynEG_deltaR", ("Dynamic EG Trigger;#Delta R "+drLabel).c_str(), 30, 0., genMatchDeltaRcut);
-      dynEGalg_deta_hist = fs->make<TH1F>("dynEG_deta", ("Dynamic EG Trigger;d#eta "+drLabel).c_str(), 50, -0.1, 0.1);
-      dynEGalg_dphi_hist = fs->make<TH1F>("dynEG_dphi", ("Dynamic EG Trigger;d#phi "+drLabel).c_str(), 50, -0.1, 0.1);
-      dynEGalg_2DdeltaR_hist = fs->make<TH2F>("dynEGalg_2DdeltaR_hist", "Dynamic EG Trigger;d#eta;d#phi;Counts", 50, -0.05, 0.05, 50, -0.05, 0.05);
-      
-      run1EGalg_efficiency_hist = fs->make<TH1F>("run1EG_efficiency_pt", "Run 1 EG Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
-      run1EGalg_efficiency_eta_hist = fs->make<TH1F>("run1EG_efficiency_eta", "Run 1 EG Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
-      run1EGalg_deltaR_hist = fs->make<TH1F>("run1EG_deltaR", ("Run 1 EG Trigger;#Delta R "+drLabel).c_str(), 30, 0., genMatchDeltaRcut);
-      run1EGalg_deta_hist = fs->make<TH1F>("run1EG_deta", ("Run 1 EG Trigger;d#eta "+drLabel).c_str(), 50, -0.1, 0.1);
-      run1EGalg_dphi_hist = fs->make<TH1F>("run1EG_dphi", ("Run 1 EG Trigger;d#phi "+drLabel).c_str(), 50, -0.1, 0.1);
-      run1EGalg_2DdeltaR_hist = fs->make<TH2F>("run1EGalg_2DdeltaR_hist", "Run 1 EG Trigger;d#eta;d#phi;Counts", 50, -0.05, 0.05, 50, -0.05, 0.05);
+      for(auto& inputTag : L1EGammaInputTags)
+      {
+         const std::string &name = inputTag.encode();
+         EGalg_efficiency_hists[name] = fs->make<TH1F>((name+"_efficiency_pt").c_str(), (name+";Gen. pT (GeV);Efficiency").c_str(), nHistBins, histLow, histHigh);
+         EGalg_efficiency_eta_hists[name] = fs->make<TH1F>((name+"_efficiency_eta").c_str(), (name+";Gen. #eta;Efficiency").c_str(), nHistEtaBins, histetaLow, histetaHigh);
+         EGalg_deltaR_hists[name] = fs->make<TH1F>((name+"_deltaR").c_str(), (name+";#Delta R "+drLabel).c_str(), 30, 0., genMatchDeltaRcut);
+         EGalg_deta_hists[name] = fs->make<TH1F>((name+"_deta").c_str(), (name+";d#eta "+drLabel).c_str(), 50, -0.1, 0.1);
+         EGalg_dphi_hists[name] = fs->make<TH1F>((name+"_dphi").c_str(), (name+";d#phi "+drLabel).c_str(), 50, -0.1, 0.1);
+         EGalg_2DdeltaR_hists[name] = fs->make<TH2F>((name+"_2DdeltaR").c_str(), ";d#eta;d#phi;Counts", 50, -0.05, 0.05, 50, -0.05, 0.05);
+         EGalg_reco_gen_pt_hists[name] = fs->make<TH2F>((name+"_reco_gen_pt").c_str(), (name+";Gen. pT (GeV);(reco-gen)/gen;Counts").c_str(), 40, 0., 50., 40, -0.3, 0.3); 
+      }
 
       reco_gen_pt_hist = fs->make<TH2F>("reco_gen_pt" , "EG relative momentum error;Gen. pT (GeV);(reco-gen)/gen;Counts", 40, 0., 50., 40, -0.3, 0.3); 
-      oldAlg_reco_gen_pt_hist = fs->make<TH2F>("oldAlg_reco_gen_pt" , "Old EG relative momentum error;Gen. pT (GeV);(reco-gen)/gen;Counts", 40, 0., 50., 40, -0.3, 0.3); 
-      dynAlg_reco_gen_pt_hist = fs->make<TH2F>("dynAlg_reco_gen_pt" , "Dynamic EG relative momentum error;Gen. pT (GeV);(reco-gen)/gen;Counts", 40, 0., 50., 40, -0.3, 0.3); 
-
       brem_dphi_hist = fs->make<TH2F>("brem_dphi_hist" , "Brem. strength vs. d#phi;Brem. Strength;d#phi;Counts", 40, 0., 2., 40, -0.05, 0.05); 
 
       efficiency_denominator_hist = fs->make<TH1F>("gen_pt", "Gen. pt;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
@@ -301,24 +208,12 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    }
    else
    {
-      // Just want rates as a function of pt, again for various cuts
-      for(int i=0; i<cut_steps; i++)
-      {
-         double hovere_cut = hovere_cut_min+(hovere_cut_max-hovere_cut_min)*i/(cut_steps-1);
-         for(int j=0; j<cut_steps; j++)
-         {
-            double ecal_isolation_cut = ecal_isolation_cut_min+(ecal_isolation_cut_max-ecal_isolation_cut_min)*j/(cut_steps-1);
-            std::stringstream name;
-            name << "crystalEG_rate_hovere" << i << "_iso" << j;
-            std::stringstream title;
-            title << "Crystal-level EG Trigger (hovere "  << hovere_cut << ", iso " << ecal_isolation_cut << ");ET Threshold (GeV);Rate (kHz)";
-            histograms[i*cut_steps+j] = fs->make<TH1F>(name.str().c_str(), title.str().c_str(), nHistBins, histLow, histHigh);
-         }
-      }
       dyncrystal_rate_hist = fs->make<TH1F>("dyncrystalEG_rate" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
-      oldEGalg_rate_hist = fs->make<TH1F>("oldEG_rate" , "Old EG Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
-      dynEGalg_rate_hist = fs->make<TH1F>("dynEG_rate" , "Dynamic EG Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
-      run1EGalg_rate_hist = fs->make<TH1F>("run1EG_rate" , "Run 1 EG Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
+      for(auto& inputTag : L1EGammaInputTags)
+      {
+         const std::string &name = inputTag.encode();
+         EGalg_rate_hists[name] = fs->make<TH1F>((name+"_rate").c_str() , (name+";ET Threshold (GeV);Rate (kHz)").c_str(), nHistBins, histLow, histHigh);
+      }
    }
    hovere_hist_lowpt = fs->make<TH1F>("hovere_lowpt" , "EG H/E distribution (0<pT<15);HCal energy / ECal energy;Counts", 30, 0, 4); 
    hovere_hist_medpt = fs->make<TH1F>("hovere_medpt" , "EG H/E distribution (15<pT<35);HCal energy / ECal energy;Counts", 30, 0, 4); 
@@ -351,22 +246,16 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    eventCount++;
 
    // electron candidates
-   l1extra::L1EmParticleCollection eGammaCollection;
-   edm::Handle<l1extra::L1EmParticleCollection> EGammaHandle;
-   iEvent.getByLabel(L1EGammaInputTag,EGammaHandle);
-   eGammaCollection = (*EGammaHandle.product());
-
-   // electron candidates 2 (alt. algorithm)
-   l1extra::L1EmParticleCollection eGammaCollection2;
-   edm::Handle<l1extra::L1EmParticleCollection> EGammaHandle2;
-   iEvent.getByLabel(L1EGamma2InputTag,EGammaHandle2);
-   eGammaCollection2 = (*EGammaHandle2.product());
-
-   // electron candidates 3 (run 1 algorithm)
-   l1extra::L1EmParticleCollection eGammaCollection3;
-   edm::Handle<l1extra::L1EmParticleCollection> EGammaHandle3;
-   iEvent.getByLabel(L1EGamma3InputTag,EGammaHandle3);
-   eGammaCollection3 = (*EGammaHandle3.product());
+   std::map<std::string, l1extra::L1EmParticleCollection> eGammaCollections;
+   for(const auto& inputTag : L1EGammaInputTags)
+   {
+      edm::Handle<l1extra::L1EmParticleCollection> handle;
+      iEvent.getByLabel(inputTag, handle);
+      if ( handle.product() == nullptr )
+         std::cout << "There is no product of type " << inputTag.encode() << std::endl;
+      else
+         eGammaCollections[inputTag.encode()] = *handle.product();
+   }
 
    // electron candidate extra info from Sacha's algorithm
    l1slhc::L1EGCrystalClusterCollection crystalClusters;
@@ -383,9 +272,8 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    // Sort clusters so we can always pick highest pt cluster matching cuts
    std::sort(begin(crystalClusters), end(crystalClusters), [](const l1slhc::L1EGCrystalCluster& a, const l1slhc::L1EGCrystalCluster& b){return a.pt() > b.pt();});
    // also sort old algorithm products
-   std::sort(begin(eGammaCollection), end(eGammaCollection), [](const l1extra::L1EmParticle& a, const l1extra::L1EmParticle& b){return a.pt() > b.pt();});
-   std::sort(begin(eGammaCollection2), end(eGammaCollection2), [](const l1extra::L1EmParticle& a, const l1extra::L1EmParticle& b){return a.pt() > b.pt();});
-   std::sort(begin(eGammaCollection3), end(eGammaCollection3), [](const l1extra::L1EmParticle& a, const l1extra::L1EmParticle& b){return a.pt() > b.pt();});
+   for(auto& collection : eGammaCollections)
+      std::sort(begin(collection.second), end(collection.second), [](const l1extra::L1EmParticle& a, const l1extra::L1EmParticle& b){return a.pt() > b.pt();});
    
    if ( doEfficiencyCalc )
    {
@@ -461,32 +349,6 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       efficiency_denominator_hist->Fill(trueElectron.pt());
       efficiency_denominator_eta_hist->Fill(trueElectron.eta());
 
-      for(int i=0; i<cut_steps; i++)
-      {
-         double hovere_cut = hovere_cut_min+(hovere_cut_max-hovere_cut_min)*i/(cut_steps-1);
-         for(int j=0; j<cut_steps; j++)
-         {
-            double ecal_isolation_cut = ecal_isolation_cut_min+(ecal_isolation_cut_max-ecal_isolation_cut_min)*j/(cut_steps-1);
-            
-            // Since this iterates in order, we automatically get the highest pt cluster with the given cut
-            for(const auto& cluster : crystalClusters)
-            {
-               if ( cluster.hovere() < hovere_cut 
-                     && cluster.isolation() < ecal_isolation_cut 
-                     && reco::deltaR(cluster, trueElectron) < genMatchDeltaRcut
-                     && fabs(cluster.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
-               {
-                  histograms[i*cut_steps+j]->Fill(trueElectron.pt());
-                  eta_histograms[i*cut_steps+j]->Fill(trueElectron.eta());
-                  deltaR_histograms[i*cut_steps+j]->Fill(reco::deltaR(cluster, trueElectron));
-                  deta_histograms[i*cut_steps+j]->Fill(trueElectron.eta()-cluster.eta());
-                  dphi_histograms[i*cut_steps+j]->Fill(reco::deltaPhi(cluster.phi(), trueElectron.phi()));
-                  // Found one, don't find more!
-                  break;
-               }
-            }
-         }
-      }
       for(const auto& cluster : crystalClusters)
       {
          if ( reco::deltaR(cluster, trueElectron) < genMatchDeltaRcut
@@ -520,76 +382,28 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          }
       }
       
-      for(const auto& oldEGCandidate : eGammaCollection)
+      for(const auto& eGammaCollection : eGammaCollections)
       {
-         if ( reco::deltaR(oldEGCandidate.polarP4(), trueElectron) < genMatchDeltaRcut &&
-              fabs(oldEGCandidate.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
+         const std::string &name = eGammaCollection.first;
+         for(const auto& EGCandidate : eGammaCollection.second)
          {
-            oldEGalg_efficiency_hist->Fill(trueElectron.pt());
-            oldEGalg_efficiency_eta_hist->Fill(trueElectron.eta());
-            oldEGalg_deltaR_hist->Fill(reco::deltaR(oldEGCandidate.polarP4(), trueElectron));
-            oldEGalg_deta_hist->Fill(trueElectron.eta()-oldEGCandidate.eta());
-            oldEGalg_dphi_hist->Fill(reco::deltaPhi(oldEGCandidate.phi(), trueElectron.phi()));
-            oldAlg_reco_gen_pt_hist->Fill( trueElectron.pt(), (oldEGCandidate.pt() - trueElectron.pt())/trueElectron.pt() );
-            oldEGalg_2DdeltaR_hist->Fill(trueElectron.eta()-oldEGCandidate.eta(), reco::deltaPhi(oldEGCandidate, trueElectron));
-            if (debug) std::cout << "Filling old l2 alg. candidate " << oldEGCandidate.polarP4() << std::endl;
-            break;
-         }
-      }
-
-      for(const auto& oldEGCandidate : eGammaCollection2)
-      {
-         if ( reco::deltaR(oldEGCandidate.polarP4(), trueElectron) < genMatchDeltaRcut &&
-              fabs(oldEGCandidate.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
-         {
-            dynEGalg_efficiency_hist->Fill(trueElectron.pt());
-            dynEGalg_efficiency_eta_hist->Fill(trueElectron.eta());
-            dynEGalg_deltaR_hist->Fill(reco::deltaR(oldEGCandidate.polarP4(), trueElectron));
-            dynEGalg_deta_hist->Fill(trueElectron.eta()-oldEGCandidate.eta());
-            dynEGalg_dphi_hist->Fill(reco::deltaPhi(oldEGCandidate.phi(), trueElectron.phi()));
-            dynAlg_reco_gen_pt_hist->Fill( trueElectron.pt(), (oldEGCandidate.pt() - trueElectron.pt())/trueElectron.pt() );
-            dynEGalg_2DdeltaR_hist->Fill(trueElectron.eta()-oldEGCandidate.eta(), reco::deltaPhi(oldEGCandidate, trueElectron));
-            if (debug) std::cout << "Filling dyn l2 alg. candidate " << oldEGCandidate.polarP4() << std::endl;
-            break;
-         }
-      }
-      
-      for(const auto& oldEGCandidate : eGammaCollection3)
-      {
-         if ( reco::deltaR(oldEGCandidate.polarP4(), trueElectron) < genMatchDeltaRcut &&
-              fabs(oldEGCandidate.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
-         {
-            run1EGalg_efficiency_hist->Fill(trueElectron.pt());
-            run1EGalg_efficiency_eta_hist->Fill(trueElectron.eta());
-            run1EGalg_deltaR_hist->Fill(reco::deltaR(oldEGCandidate.polarP4(), trueElectron));
-            run1EGalg_deta_hist->Fill(trueElectron.eta()-oldEGCandidate.eta());
-            run1EGalg_dphi_hist->Fill(reco::deltaPhi(oldEGCandidate.phi(), trueElectron.phi()));
-            if (debug) std::cout << "Filling run 1 alg. candidate " << oldEGCandidate.polarP4() << std::endl;
-            break;
+            if ( reco::deltaR(EGCandidate.polarP4(), trueElectron) < genMatchDeltaRcut &&
+                 fabs(EGCandidate.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
+            {
+               EGalg_efficiency_hists[name]->Fill(trueElectron.pt());
+               EGalg_efficiency_eta_hists[name]->Fill(trueElectron.eta());
+               EGalg_deltaR_hists[name]->Fill(reco::deltaR(EGCandidate.polarP4(), trueElectron));
+               EGalg_deta_hists[name]->Fill(trueElectron.eta()-EGCandidate.eta());
+               EGalg_dphi_hists[name]->Fill(reco::deltaPhi(EGCandidate.phi(), trueElectron.phi()));
+               EGalg_reco_gen_pt_hists[name]->Fill( trueElectron.pt(), (EGCandidate.pt() - trueElectron.pt())/trueElectron.pt() );
+               EGalg_2DdeltaR_hists[name]->Fill(trueElectron.eta()-EGCandidate.eta(), reco::deltaPhi(EGCandidate, trueElectron));
+               break;
+            }
          }
       }
    }
    else // !doEfficiencyCalc
    {
-      // Fill rate histograms
-      for(int i=0; i<cut_steps; i++)
-      {
-         double hovere_cut = hovere_cut_min+(hovere_cut_max-hovere_cut_min)*i/(cut_steps-1);
-         for(int j=0; j<cut_steps; j++)
-         {
-            double ecal_isolation_cut = ecal_isolation_cut_min+(ecal_isolation_cut_max-ecal_isolation_cut_min)*j/(cut_steps-1);
-            // List is sorted by pt
-            for(const auto& cluster : crystalClusters)
-            {
-               if ( cluster.hovere() < hovere_cut 
-                     && cluster.isolation() < ecal_isolation_cut )
-               {
-                  histograms[i*cut_steps+j]->Fill(cluster.pt());
-                  break;
-               }
-            }
-         }
-      }
       for(const auto& cluster : crystalClusters)
       {
          if ( cluster.hovere() < ((cluster.pt() > 35) ? 0.5 : 0.5+pow(cluster.pt()-35,2)/350. )
@@ -614,35 +428,17 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                }
             }
       }
-
-      if ( eGammaCollection.size() > 0 )
+      
+      for(const auto& eGammaCollection : eGammaCollections)
       {
-         auto& highestEGCandidate = eGammaCollection[0];
+         const std::string &name = eGammaCollection.first;
+         if ( eGammaCollection.second.size() == 0 ) continue;
+         auto& highestEGCandidate = eGammaCollection.second[0];
          // Don't fill old alg. plots if in endcap
          if ( useEndcap
                || (!useEndcap && fabs(highestEGCandidate.eta()) < 1.479) )
          {
-            oldEGalg_rate_hist->Fill(highestEGCandidate.pt());
-         }
-      }
-
-      if ( eGammaCollection2.size() > 0 )
-      {
-         auto& highestEGCandidate = eGammaCollection2[0];
-         if ( useEndcap
-               || (!useEndcap && fabs(highestEGCandidate.eta()) < 1.479) )
-         {
-            dynEGalg_rate_hist->Fill(highestEGCandidate.pt());
-         }
-      }
-      
-      if ( eGammaCollection3.size() > 0 )
-      {
-         auto& highestEGCandidate = eGammaCollection3[0];
-         if ( useEndcap
-               || (!useEndcap && fabs(highestEGCandidate.eta()) < 1.479) )
-         {
-            run1EGalg_rate_hist->Fill(highestEGCandidate.pt());
+            EGalg_rate_hists[name]->Fill(highestEGCandidate.pt());
          }
       }
 
@@ -671,12 +467,9 @@ L1EGRateStudies::endJob()
       TH1F* event_count = fs->make<TH1F>("eventCount", "Event Count", 1, -1, 1);
       event_count->SetBinContent(1, eventCount);
       integrateDown(dyncrystal_rate_hist);
-      integrateDown(oldEGalg_rate_hist);
-      integrateDown(dynEGalg_rate_hist);
-      integrateDown(run1EGalg_rate_hist);
-      for(auto it=histograms.begin(); it!=histograms.end(); it++)
+      for(auto& hist : EGalg_rate_hists)
       {
-         integrateDown(*it);
+         integrateDown(hist.second);
       }
    }
 }

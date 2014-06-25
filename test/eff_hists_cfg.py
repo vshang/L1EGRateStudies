@@ -82,27 +82,20 @@ process.ecalClusters = cms.Path(process.ecalClustersNoPFBox)
 # Analyzer starts here
 
 process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
-# Old stage-2 trigger
-   L1EGammaInputTag = cms.InputTag("SLHCL1ExtraParticles","EGamma"),
-# 'dynamic clustering'
-   L1EGamma2InputTag = cms.InputTag("SLHCL1ExtraParticlesNewClustering","EGamma"),
-# Run 1 algo.
-   L1EGamma3InputTag = cms.InputTag("l1extraParticles", "NonIsolated"),
-# New stage-2 trigger (some sort of isolation cut?)
-#   L1EGammaInputTag = cms.InputTag("SLHCL1ExtraParticles","IsoEGamma"),
-# Sacha's cluster trigger (hovere < 1, isolation < 2)
-#   L1EGammaInputTag = cms.InputTag("L1EGammaCrystalsProducer","EGammaCrystal"),
+   L1EGammaInputTags = cms.VInputTag(
+      # Old stage-2 trigger
+      cms.InputTag("SLHCL1ExtraParticles","EGamma"),
+      # 'dynamic clustering'
+      cms.InputTag("SLHCL1ExtraParticlesNewClustering","EGamma"),
+      # Run 1 algo.
+      cms.InputTag("l1extraParticles", "NonIsolated"),
+      # Crystal-level algo.
+      cms.InputTag("L1EGammaCrystalsProducer","EGammaCrystal")
+   ),
    L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer","EGCrystalCluster"),
-# this just normalizes the histograms to 30kHz rate 
-# use this when running over single particle gun sources
    doEfficiencyCalc = cms.untracked.bool(True),
    useOfflineClusters = cms.untracked.bool(False),
    useEndcap = cms.untracked.bool(False),
-   hovere_cut_min = cms.untracked.double(1),
-   hovere_cut_max = cms.untracked.double(4),
-   ecal_isolation_cut_min = cms.untracked.double(1),
-   ecal_isolation_cut_max = cms.untracked.double(4),
-   cut_steps = cms.untracked.int32(4),
    histogramBinCount = cms.untracked.int32(40),
    histogramRangeLow = cms.untracked.double(0),
    histogramRangeHigh = cms.untracked.double(50),

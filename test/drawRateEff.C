@@ -351,11 +351,11 @@ void drawRateEff() {
 
    auto rateHistKeys = rootools::getKeysofClass(rates, "analyzer", "TH1F");
    auto newAlgRateHists = rootools::loadObjectsMatchingPattern<TH1F>(rateHistKeys, "*crystal*");
-   auto oldAlgRateHist = (TH1F *) rates->Get("analyzer/oldEG_rate");
+   auto oldAlgRateHist = (TH1F *) rates->Get("analyzer/SLHCL1ExtraParticles:EGamma_rate");
    oldAlgRateHist->SetTitle("Tower-level L2 Algorithm");
-   auto dynAlgRateHist = (TH1F *) rates->Get("analyzer/dynEG_rate");
+   auto dynAlgRateHist = (TH1F *) rates->Get("analyzer/SLHCL1ExtraParticlesNewClustering:EGamma_rate");
    dynAlgRateHist->SetTitle("LLR L2 Algorithm");
-   auto run1AlgRateHist = (TH1F *) rates->Get("analyzer/run1EG_rate");
+   auto run1AlgRateHist = (TH1F *) rates->Get("analyzer/l1extraParticles:NonIsolated_rate");
    run1AlgRateHist->SetTitle("Run 1 Algorithm");
 
    c->SetLogy(1);
@@ -373,28 +373,28 @@ void drawRateEff() {
    auto newAlgDRHists = rootools::loadObjectsMatchingPattern<TH1F>(deltaHistKeys, "*crystal*_deltaR*");
    auto newAlgDEtaHists = rootools::loadObjectsMatchingPattern<TH1F>(deltaHistKeys, "*crystal*_deta*");
    auto newAlgDPhiHists = rootools::loadObjectsMatchingPattern<TH1F>(deltaHistKeys, "*crystal*_dphi*");
-   auto oldAlgEtaHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_oldEG_efficiency_eta_by_gen_eta");
+   auto oldAlgEtaHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_SLHCL1ExtraParticles:EGamma_efficiency_eta_by_gen_eta");
    oldAlgEtaHist->SetTitle("Tower-level L2 Algorithm");
-   auto oldAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_oldEG_efficiency_pt_by_gen_pt");
+   auto oldAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_SLHCL1ExtraParticles:EGamma_efficiency_pt_by_gen_pt");
    oldAlgPtHist->SetTitle("Tower-level L2 Algorithm");
-   auto oldAlgDRHist = (TH1F *) eff->Get("analyzer/oldEG_deltaR");
+   auto oldAlgDRHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticles:EGamma_deltaR");
    oldAlgDRHist->SetTitle("Tower-level L2 Algorithm");
    oldAlgDRHist->GetYaxis()->SetTitle("Counts");
-   auto oldAlgDEtaHist = (TH1F *) eff->Get("analyzer/oldEG_deta");
+   auto oldAlgDEtaHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticles:EGamma_deta");
    oldAlgDEtaHist->SetTitle("Tower-level L2 Algorithm");
-   auto oldAlgDPhiHist = (TH1F *) eff->Get("analyzer/oldEG_dphi");
+   auto oldAlgDPhiHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticles:EGamma_dphi");
    oldAlgDPhiHist->SetTitle("Tower-level L2 Algorithm");
-   auto dynAlgEtaHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_dynEG_efficiency_eta_by_gen_eta");
+   auto dynAlgEtaHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_SLHCL1ExtraParticlesNewClustering:EGamma_efficiency_eta_by_gen_eta");
    dynAlgEtaHist->SetTitle("LLR L2 Algorithm");
-   auto dynAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_dynEG_efficiency_pt_by_gen_pt");
+   auto dynAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_SLHCL1ExtraParticlesNewClustering:EGamma_efficiency_pt_by_gen_pt");
    dynAlgPtHist->SetTitle("LLR L2 Algorithm");
-   auto run1AlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_run1EG_efficiency_pt_by_gen_pt");
+   auto run1AlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_l1extraParticles:NonIsolated_efficiency_pt_by_gen_pt");
    run1AlgPtHist->SetTitle("Run 1 Algorithm");
-   auto dynAlgDRHist = (TH1F *) eff->Get("analyzer/dynEG_deltaR");
+   auto dynAlgDRHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticlesNewClustering:EGamma_deltaR");
    dynAlgDRHist->SetTitle("LLR L2 Algorithm");
-   auto dynAlgDEtaHist = (TH1F *) eff->Get("analyzer/dynEG_deta");
+   auto dynAlgDEtaHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticlesNewClustering:EGamma_deta");
    dynAlgDEtaHist->SetTitle("LLR L2 Algorithm");
-   auto dynAlgDPhiHist = (TH1F *) eff->Get("analyzer/dynEG_dphi");
+   auto dynAlgDPhiHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticlesNewClustering:EGamma_dphi");
    dynAlgDPhiHist->SetTitle("LLR L2 Algorithm");
 
    c->SetLogy(0);
@@ -429,7 +429,7 @@ void drawRateEff() {
    auto recoGenPtHist = (TH2F *) eff->Get("analyzer/reco_gen_pt");
    recoGenPtHist->SetTitle("Crystal EG alg. momentum error");
    recoGenPtHist->GetYaxis()->SetTitle("Relative Error (reco-gen)/gen");
-   auto oldAlgrecoGenPtHist = (TH2F *) eff->Get("analyzer/oldAlg_reco_gen_pt");
+   auto oldAlgrecoGenPtHist = (TH2F *) eff->Get("analyzer/SLHCL1ExtraParticles:EGamma_reco_gen_pt");
    oldAlgrecoGenPtHist->SetTitle("Tower EG alg. momentum error");
    oldAlgrecoGenPtHist->GetYaxis()->SetTitle("Relative Error (reco-gen)/gen");
    recoGenPtHist->SetMaximum(50);
