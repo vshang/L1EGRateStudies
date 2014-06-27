@@ -79,6 +79,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       // -- user functions
       void integrateDown(TH1F *);
       void fillhovere_isolation_hists(const l1slhc::L1EGCrystalCluster& cluster);
+      bool cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster);
       
       // ----------member data ---------------------------
       bool doEfficiencyCalc;
@@ -131,7 +132,12 @@ class L1EGRateStudies : public edm::EDAnalyzer {
 
       // Crystal pt stuff
       TTree * crystal_tree;
-      std::array<float, 15> crystal_pt;
+      struct {
+         std::array<float, 6> crystal_pt;
+         float cluster_pt;
+         float hovere;
+         float iso;
+      } treeinfo;
 
       // (pt_reco-pt_gen)/pt_gen plot
       TH2F * reco_gen_pt_hist;
@@ -167,6 +173,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
 {
    eventCount = 0;
    L1EGammaInputTags = iConfig.getParameter<std::vector<edm::InputTag>>("L1EGammaInputTags");
+   L1EGammaInputTags.push_back(edm::InputTag("l1extraParticles:All"));
    L1CrystalClustersInputTag = iConfig.getParameter<edm::InputTag>("L1CrystalClustersInputTag");
    
    edm::Service<TFileService> fs;
@@ -223,7 +230,10 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    ecalIso_hist_highpt = fs->make<TH1F>("ecalIso_highpt" , "EG ECal Isolation distribution (35<pT<50);ECal Isolation;Counts", 30, 0, 4);
 
    crystal_tree = fs->make<TTree>("crystal_tree", "Crystal cluster individual crystal pt values");
-   crystal_tree->Branch("pt", &crystal_pt, "1:2:3:4:5:6");
+   crystal_tree->Branch("pt", &treeinfo.crystal_pt, "1:2:3:4:5:6");
+   crystal_tree->Branch("cluster_pt", &treeinfo.cluster_pt);
+   crystal_tree->Branch("cluster_hovere", &treeinfo.hovere);
+   crystal_tree->Branch("cluster_iso", &treeinfo.iso);
 }
 
 
@@ -249,12 +259,20 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    std::map<std::string, l1extra::L1EmParticleCollection> eGammaCollections;
    for(const auto& inputTag : L1EGammaInputTags)
    {
+      if (inputTag.encode().compare("l1extraParticles:All") == 0) continue;
       edm::Handle<l1extra::L1EmParticleCollection> handle;
       iEvent.getByLabel(inputTag, handle);
       if ( handle.product() == nullptr )
          std::cout << "There is no product of type " << inputTag.encode() << std::endl;
       else
          eGammaCollections[inputTag.encode()] = *handle.product();
+
+      // Special case: Run 1 alg. iso/niso are exclusive, we want to make inclusive EGamma available too
+      if (inputTag.encode().find("l1extraParticles") != std::string::npos)
+      {
+         auto& collection = eGammaCollections["l1extraParticles:All"];
+         collection.insert(begin(collection), begin(*handle.product()), end(*handle.product()));
+      }
    }
 
    // electron candidate extra info from Sacha's algorithm
@@ -356,8 +374,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          {
             fillhovere_isolation_hists(cluster);
 
-            if ( cluster.hovere() < ((cluster.pt() > 35.) ? 0.5 : 0.5+pow(cluster.pt()-35,2)/350. )
-                 && cluster.isolation() < ((cluster.pt() > 35.) ? 1.3 : 1.3+pow(cluster.pt()-35,2)*4/(35*35) )  )
+            if ( cluster_passes_cuts(cluster) )
             {
                if ( debug ) std::cout << "Dynamic hovere cut: " << ((cluster.pt() > 35.) ? 0.5 : 0.5+pow(cluster.pt()-35,2)/350. ) << std::endl;
                if ( debug ) std::cout << "Dynamic isolation cut: " << ((cluster.pt() > 35.) ? 1.3 : 1.3+pow(cluster.pt()-35,2)*4/(35*35) ) << std::endl;
@@ -390,6 +407,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             if ( reco::deltaR(EGCandidate.polarP4(), trueElectron) < genMatchDeltaRcut &&
                  fabs(EGCandidate.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
             {
+               if ( debug ) std::cout << "Filling hists for EG Collection: " << name << std::endl;
                EGalg_efficiency_hists[name]->Fill(trueElectron.pt());
                EGalg_efficiency_eta_hists[name]->Fill(trueElectron.eta());
                EGalg_deltaR_hists[name]->Fill(reco::deltaR(EGCandidate.polarP4(), trueElectron));
@@ -406,8 +424,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    {
       for(const auto& cluster : crystalClusters)
       {
-         if ( cluster.hovere() < ((cluster.pt() > 35) ? 0.5 : 0.5+pow(cluster.pt()-35,2)/350. )
-              && cluster.isolation() < ((cluster.pt() > 35) ? 1.3 : 1.3+pow(cluster.pt()-35,2)*4/(35*35) ) )
+         if ( cluster_passes_cuts(cluster) )
          {
             dyncrystal_rate_hist->Fill(cluster.pt());
             break;
@@ -547,11 +564,26 @@ L1EGRateStudies::fillhovere_isolation_hists(const l1slhc::L1EGCrystalCluster& cl
       ecalIso_hist_highpt->Fill(cluster.isolation());
    }
    // Also do crystal pt stuff
-   for(Size_t i=0; i<crystal_pt.size(); ++i)
+   for(Size_t i=0; i<treeinfo.crystal_pt.size(); ++i)
    {
-      crystal_pt[i] = cluster.GetCrystalPt(i);
+      treeinfo.crystal_pt[i] = cluster.GetCrystalPt(i);
    }
+   treeinfo.cluster_pt = cluster.pt();
+   treeinfo.hovere = cluster.hovere();
+   treeinfo.iso = cluster.isolation();
    crystal_tree->Fill();
+}
+
+bool
+L1EGRateStudies::cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster) {
+   if ( cluster.hovere() < ((cluster.pt() > 35) ? 0.5 : 0.5+pow(cluster.pt()-35,2)/350. )
+        && cluster.isolation() < ((cluster.pt() > 35) ? 1.3 : 1.3+pow(cluster.pt()-35,2)*4/(35*35) )
+        && (cluster.GetCrystalPt(4)/(cluster.GetCrystalPt(0)+cluster.GetCrystalPt(1)) < ( (cluster.pt() < 20) ? 0.08:0.08*(1+(cluster.pt()-20)/30.) ) )
+        && ((cluster.pt() > 10) ? (cluster.GetCrystalPt(4)/(cluster.GetCrystalPt(0)+cluster.GetCrystalPt(1)) > 0.):true) )
+   {
+      return true;
+   }
+   return false;
 }
 
 //define this as a plug-in

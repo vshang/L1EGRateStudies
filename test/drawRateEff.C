@@ -58,9 +58,9 @@ void drawNewOld(std::vector<TH1F*> newHists, std::vector<TH1F*> oldHists, TCanva
       g->SetMarkerSize(0.5);
       mg.Add(g);
       if ( fit )
-         mg.Draw("ape");
+         mg.Draw("apez");
       else
-         mg.Draw("aple");
+         mg.Draw("aplez");
 
       if ( c->GetLogy() == 0 ) // linear
          mg.SetMinimum(0.);
@@ -125,9 +125,9 @@ void drawNewOld(std::vector<TGraphAsymmErrors*> newGraphs, std::vector<TGraphAsy
       newGraph->SetMarkerSize(0.5);
       mg.Add(newGraph);
       if ( fit )
-         mg.Draw("ape");
+         mg.Draw("apez");
       else
-         mg.Draw("aple");
+         mg.Draw("aplez");
 
       if ( c->GetLogy() == 0 ) // linear
          mg.SetMinimum(0.);
@@ -140,7 +140,7 @@ void drawNewOld(std::vector<TGraphAsymmErrors*> newGraphs, std::vector<TGraphAsy
       if ( fit && xrange.second != xrange.first )
       {
          TF1 shape("shape", "[0]/2*(1+TMath::Erf((x-[1])/([2]*sqrt(x))))", xrange.first, xrange.second);
-         shape.SetParameters(1., 10., 2.);
+         shape.SetParameters(1., 5., 2.);
          newGraph->Fit(&shape);
          newGraph->GetFunction("shape")->SetLineColor(newGraph->GetLineColor());
          newGraph->GetFunction("shape")->SetLineWidth(newGraph->GetLineWidth()*2);
@@ -239,8 +239,8 @@ void draw2DdeltaRHists(std::vector<TH2F*> hists, TCanvas * c) {
 
       // Draw x projection
       xprojection_pad->cd();
-      xprojection->Draw("ape");
-      xprojection->GetYaxis()->SetNdivisions(205);
+      xprojection->Draw("apez");
+      xprojection->GetYaxis()->SetNdivisions(0);
       xprojection->GetXaxis()->SetRangeUser(hist->GetXaxis()->GetBinLowEdge(1), hist->GetXaxis()->GetBinUpEdge(hist->GetXaxis()->GetNbins()));
       xprojection->GetXaxis()->SetLabelSize(0.);
       xprojection->GetYaxis()->SetRangeUser(0., 0.2);
@@ -254,8 +254,8 @@ void draw2DdeltaRHists(std::vector<TH2F*> hists, TCanvas * c) {
 
       // Draw y projection
       yprojection_pad->cd();
-      yprojection->Draw("ape");
-      yprojection->GetXaxis()->SetNdivisions(205);
+      yprojection->Draw("apez");
+      yprojection->GetXaxis()->SetNdivisions(0);
       yprojection->GetXaxis()->SetRangeUser(0., 0.2);
       yprojection->GetYaxis()->SetRangeUser(hist->GetYaxis()->GetBinLowEdge(1), hist->GetYaxis()->GetBinUpEdge(hist->GetYaxis()->GetNbins()));
       yprojection->GetYaxis()->SetLabelSize(0.);
@@ -312,8 +312,10 @@ void drawNewOldHist(std::vector<TH1F*> newHists, std::vector<TH1F*> oldHists, TC
    auto color = begin(colors);
    for(auto& oldHist : oldHists)
    {
+      oldHist->Sumw2();
+      oldHist->Scale(1./oldHist->Integral());
       oldHist->SetLineColor(*color++);
-      hs.Add(oldHist);
+      hs.Add(oldHist, "hist ex0");
    }
    c->Clear();
    if ( c->GetLogy() == 0 ) // linear
@@ -322,8 +324,10 @@ void drawNewOldHist(std::vector<TH1F*> newHists, std::vector<TH1F*> oldHists, TC
       hs.SetMaximum(ymax);
 
    for ( auto newHist : newHists ) {
+      newHist->Sumw2();
+      newHist->Scale(1./newHist->Integral());
       newHist->SetLineColor(kBlack);
-      hs.Add(newHist);
+      hs.Add(newHist, "hist ex0");
 
       hs.Draw("nostack");
 
@@ -335,6 +339,7 @@ void drawNewOldHist(std::vector<TH1F*> newHists, std::vector<TH1F*> oldHists, TC
       hs.GetXaxis()->SetTitle(oldHists[0]->GetXaxis()->GetTitle());
       hs.GetYaxis()->SetTitle(oldHists[0]->GetYaxis()->GetTitle());
       hs.GetYaxis()->SetTitleOffset(1.2);
+      hs.GetYaxis()->SetTitle("Fraction of Events");
                   
       c->Print(("plots/"+std::string(newHist->GetName())+".png").c_str());
       delete leg;
@@ -352,10 +357,10 @@ void drawRateEff() {
    auto rateHistKeys = rootools::getKeysofClass(rates, "analyzer", "TH1F");
    auto newAlgRateHists = rootools::loadObjectsMatchingPattern<TH1F>(rateHistKeys, "*crystal*");
    auto oldAlgRateHist = (TH1F *) rates->Get("analyzer/SLHCL1ExtraParticles:EGamma_rate");
-   oldAlgRateHist->SetTitle("Tower-level L2 Algorithm");
+   oldAlgRateHist->SetTitle("Original L2 Algorithm");
    auto dynAlgRateHist = (TH1F *) rates->Get("analyzer/SLHCL1ExtraParticlesNewClustering:EGamma_rate");
    dynAlgRateHist->SetTitle("LLR L2 Algorithm");
-   auto run1AlgRateHist = (TH1F *) rates->Get("analyzer/l1extraParticles:NonIsolated_rate");
+   auto run1AlgRateHist = (TH1F *) rates->Get("analyzer/l1extraParticles:All_rate");
    run1AlgRateHist->SetTitle("Run 1 Algorithm");
 
    c->SetLogy(1);
@@ -374,28 +379,30 @@ void drawRateEff() {
    auto newAlgDEtaHists = rootools::loadObjectsMatchingPattern<TH1F>(deltaHistKeys, "*crystal*_deta*");
    auto newAlgDPhiHists = rootools::loadObjectsMatchingPattern<TH1F>(deltaHistKeys, "*crystal*_dphi*");
    auto oldAlgEtaHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_SLHCL1ExtraParticles:EGamma_efficiency_eta_by_gen_eta");
-   oldAlgEtaHist->SetTitle("Tower-level L2 Algorithm");
+   oldAlgEtaHist->SetTitle("Original L2 Algorithm");
    auto oldAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_SLHCL1ExtraParticles:EGamma_efficiency_pt_by_gen_pt");
-   oldAlgPtHist->SetTitle("Tower-level L2 Algorithm");
+   oldAlgPtHist->SetTitle("Original L2 Algorithm");
    auto oldAlgDRHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticles:EGamma_deltaR");
-   oldAlgDRHist->SetTitle("Tower-level L2 Algorithm");
+   oldAlgDRHist->SetTitle("Original L2 Algorithm");
    oldAlgDRHist->GetYaxis()->SetTitle("Counts");
    auto oldAlgDEtaHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticles:EGamma_deta");
-   oldAlgDEtaHist->SetTitle("Tower-level L2 Algorithm");
+   oldAlgDEtaHist->SetTitle("Original L2 Algorithm");
    auto oldAlgDPhiHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticles:EGamma_dphi");
-   oldAlgDPhiHist->SetTitle("Tower-level L2 Algorithm");
+   oldAlgDPhiHist->SetTitle("Original L2 Algorithm");
    auto dynAlgEtaHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_SLHCL1ExtraParticlesNewClustering:EGamma_efficiency_eta_by_gen_eta");
    dynAlgEtaHist->SetTitle("LLR L2 Algorithm");
    auto dynAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_SLHCL1ExtraParticlesNewClustering:EGamma_efficiency_pt_by_gen_pt");
    dynAlgPtHist->SetTitle("LLR L2 Algorithm");
-   auto run1AlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_l1extraParticles:NonIsolated_efficiency_pt_by_gen_pt");
-   run1AlgPtHist->SetTitle("Run 1 Algorithm");
    auto dynAlgDRHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticlesNewClustering:EGamma_deltaR");
    dynAlgDRHist->SetTitle("LLR L2 Algorithm");
    auto dynAlgDEtaHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticlesNewClustering:EGamma_deta");
    dynAlgDEtaHist->SetTitle("LLR L2 Algorithm");
    auto dynAlgDPhiHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticlesNewClustering:EGamma_dphi");
    dynAlgDPhiHist->SetTitle("LLR L2 Algorithm");
+   auto run1AlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_l1extraParticles:All_efficiency_pt_by_gen_pt");
+   run1AlgPtHist->SetTitle("Run 1 Algorithm");
+   auto run1AlgDRHist = (TH1F *) eff->Get("analyzer/l1extraParticles:All_deltaR");
+   run1AlgDRHist->SetTitle("Run 1 Algorithm");
 
    c->SetLogy(0);
    c->SetTitle("EG Single Electron Efficiencies");
@@ -404,7 +411,7 @@ void drawRateEff() {
    c->SetGridx(0);
    c->SetGridy(0);
    c->SetTitle("#Delta R Distribution Comparison");
-   drawNewOldHist(newAlgDRHists, {oldAlgDRHist, dynAlgDRHist}, c, 0.);
+   drawNewOldHist(newAlgDRHists, {oldAlgDRHist, dynAlgDRHist, run1AlgDRHist}, c, 0.);
    c->SetTitle("d#eta Distribution Comparison");
    drawNewOldHist(newAlgDEtaHists, {oldAlgDEtaHist, dynAlgDEtaHist}, c, 0.);
    c->SetTitle("d#phi Distribution Comparison");

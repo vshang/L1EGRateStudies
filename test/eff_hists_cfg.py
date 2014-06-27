@@ -88,6 +88,7 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
       # 'dynamic clustering'
       cms.InputTag("SLHCL1ExtraParticlesNewClustering","EGamma"),
       # Run 1 algo.
+      cms.InputTag("l1extraParticles", "Isolated"),
       cms.InputTag("l1extraParticles", "NonIsolated"),
       # Crystal-level algo.
       cms.InputTag("L1EGammaCrystalsProducer","EGammaCrystal")
