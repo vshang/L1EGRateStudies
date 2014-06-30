@@ -101,8 +101,10 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       double histetaHigh;
       TH1F * efficiency_denominator_hist;
       TH1F * efficiency_denominator_eta_hist;
+      TH1F * efficiency_denominator_reco_hist;
 
       TH1F * dyncrystal_efficiency_hist;
+      std::map<double, TH1F *> dyncrystal_efficiency_reco_hists; // Turn-on thresholds
       TH1F * dyncrystal_efficiency_bremcut_hist;
       TH1F * dyncrystal_efficiency_eta_hist;
       TH1F * dyncrystal_deltaR_hist;
@@ -114,6 +116,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       TH2F * dyncrystal_2DdeltaR_hist;
 
       std::map<std::string, TH1F *> EGalg_efficiency_hists;
+      std::map<std::string, std::map<double, TH1F *>> EGalg_efficiency_reco_hists;
       std::map<std::string, TH1F *> EGalg_efficiency_eta_hists;
       std::map<std::string, TH1F *> EGalg_deltaR_hists;
       std::map<std::string, TH1F *> EGalg_deta_hists;
@@ -137,6 +140,9 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float cluster_pt;
          float hovere;
          float iso;
+         float gen_pt = 0.;
+         float reco_pt = 0.;
+         bool  passed = false;
       } treeinfo;
 
       // (pt_reco-pt_gen)/pt_gen plot
@@ -185,9 +191,14 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    // Make a set of histograms to fill, depending on if we are doing rate or efficiency
    if ( doEfficiencyCalc )
    {
+      auto thresholds = iConfig.getUntrackedParameter<std::vector<int>>("turnOnThresholds");
+
       dyncrystal_efficiency_hist = fs->make<TH1F>("dyncrystalEG_efficiency_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dyncrystal_efficiency_bremcut_hist = fs->make<TH1F>("dyncrystalEG_efficiency_bremcut_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dyncrystal_efficiency_eta_hist = fs->make<TH1F>("dyncrystalEG_efficiency_eta", "Dynamic Crystal Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
+      // Implicit conversion from int to double
+      for(int threshold : thresholds)
+         dyncrystal_efficiency_reco_hists[threshold] = fs->make<TH1F>(("dyncrystalEG_threshold"+std::to_string(threshold)+"_efficiency_reco_pt").c_str(), "Dynamic Crystal Trigger;Offline reco. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dyncrystal_deltaR_hist = fs->make<TH1F>("dyncrystalEG_deltaR", ("Dynamic Crystal Trigger;#Delta R "+drLabel).c_str(), 30, 0., genMatchDeltaRcut);
       dyncrystal_deltaR_bremcut_hist = fs->make<TH1F>("dyncrystalEG_deltaR_bremcut", ("Dynamic Crystal Trigger;#Delta R "+drLabel).c_str(), 30, 0., genMatchDeltaRcut);
       dyncrystal_deta_hist = fs->make<TH1F>("dyncrystalEG_deta", ("Dynamic Crystal Trigger;d#eta "+drLabel).c_str(), 50, -0.1, 0.1);
@@ -200,6 +211,9 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
          const std::string &name = inputTag.encode();
          EGalg_efficiency_hists[name] = fs->make<TH1F>((name+"_efficiency_pt").c_str(), (name+";Gen. pT (GeV);Efficiency").c_str(), nHistBins, histLow, histHigh);
          EGalg_efficiency_eta_hists[name] = fs->make<TH1F>((name+"_efficiency_eta").c_str(), (name+";Gen. #eta;Efficiency").c_str(), nHistEtaBins, histetaLow, histetaHigh);
+         // Implicit conversion from int to double
+         for(int threshold : thresholds)
+            EGalg_efficiency_reco_hists[name][threshold] = fs->make<TH1F>((name+"_threshold"+std::to_string(threshold)+"_efficiency_reco_pt").c_str(), (name+";Offline reco. pT (GeV);Efficiency").c_str(), nHistBins, histLow, histHigh);
          EGalg_deltaR_hists[name] = fs->make<TH1F>((name+"_deltaR").c_str(), (name+";#Delta R "+drLabel).c_str(), 30, 0., genMatchDeltaRcut);
          EGalg_deta_hists[name] = fs->make<TH1F>((name+"_deta").c_str(), (name+";d#eta "+drLabel).c_str(), 50, -0.1, 0.1);
          EGalg_dphi_hists[name] = fs->make<TH1F>((name+"_dphi").c_str(), (name+";d#phi "+drLabel).c_str(), 50, -0.1, 0.1);
@@ -211,6 +225,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       brem_dphi_hist = fs->make<TH2F>("brem_dphi_hist" , "Brem. strength vs. d#phi;Brem. Strength;d#phi;Counts", 40, 0., 2., 40, -0.05, 0.05); 
 
       efficiency_denominator_hist = fs->make<TH1F>("gen_pt", "Gen. pt;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
+      efficiency_denominator_reco_hist = fs->make<TH1F>("reco_pt", "Offline reco. pt;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
       efficiency_denominator_eta_hist = fs->make<TH1F>("gen_eta", "Gen. #eta;Gen. #eta; Counts", nHistEtaBins, histetaLow, histetaHigh);
    }
    else
@@ -234,6 +249,9 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("cluster_pt", &treeinfo.cluster_pt);
    crystal_tree->Branch("cluster_hovere", &treeinfo.hovere);
    crystal_tree->Branch("cluster_iso", &treeinfo.iso);
+   crystal_tree->Branch("gen_pt", &treeinfo.gen_pt);
+   crystal_tree->Branch("reco_pt", &treeinfo.reco_pt);
+   crystal_tree->Branch("passed", &treeinfo.passed);
 }
 
 
@@ -296,42 +314,45 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    if ( doEfficiencyCalc )
    {
       reco::Candidate::PolarLorentzVector trueElectron;
-      if ( useOfflineClusters )
-      {
-         // Get offline cluster info
-         edm::Handle<reco::SuperClusterCollection> pBarrelCorSuperClustersHandle;
-         iEvent.getByLabel("correctedHybridSuperClusters","",pBarrelCorSuperClustersHandle);
-         reco::SuperClusterCollection pBarrelCorSuperClusters = *pBarrelCorSuperClustersHandle.product();
+      float reco_electron_pt = 0.;
+      
+      // Get offline cluster info
+      edm::Handle<reco::SuperClusterCollection> pBarrelCorSuperClustersHandle;
+      iEvent.getByLabel("correctedHybridSuperClusters","",pBarrelCorSuperClustersHandle);
+      reco::SuperClusterCollection pBarrelCorSuperClusters = *pBarrelCorSuperClustersHandle.product();
 
-         // Find the cluster corresponding to generated electron
-         bool trueEfound = false;
-         for(auto& cluster : pBarrelCorSuperClusters)
+      // Find the cluster corresponding to generated electron
+      bool offlineRecoFound = false;
+      for(auto& cluster : pBarrelCorSuperClusters)
+      {
+         reco::Candidate::PolarLorentzVector p4;
+         p4.SetPt(cluster.energy()*sin(cluster.position().theta()));
+         p4.SetEta(cluster.position().eta());
+         p4.SetPhi(cluster.position().phi());
+         p4.SetM(0.);
+         if ( reco::deltaR(p4, genParticles[0].polarP4()) < genMatchDeltaRcut
+             && fabs(p4.pt() - genParticles[0].pt()) < genMatchRelPtcut*genParticles[0].pt() )
          {
-            reco::Candidate::PolarLorentzVector p4;
-            p4.SetPt(cluster.energy()*sin(cluster.position().theta()));
-            p4.SetEta(cluster.position().eta());
-            p4.SetPhi(cluster.position().phi());
-            p4.SetM(0.);
-            if ( reco::deltaR(p4, genParticles[0].polarP4()) < genMatchDeltaRcut )
-            {
+            if ( useOfflineClusters )
                trueElectron = p4;
-               trueEfound = true;
-               if (debug) std::cout << "Gen.-matched pBarrelCorSuperCluster: pt " 
-                        << cluster.energy()/std::cosh(cluster.position().eta()) 
-                        << " eta " << cluster.position().eta() 
-                        << " phi " << cluster.position().phi() << std::endl;
-               break;
-            }
-         }
-         if ( !trueEfound )
-         {
-            // if we can't offline reconstruct the generated electron, 
-            // it might as well have not existed.
-            eventCount--;
-            return;
+            reco_electron_pt = p4.pt();
+            offlineRecoFound = true;
+            if (debug) std::cout << "Gen.-matched pBarrelCorSuperCluster: pt " 
+                     << cluster.energy()/std::cosh(cluster.position().eta()) 
+                     << " eta " << cluster.position().eta() 
+                     << " phi " << cluster.position().phi() << std::endl;
+            break;
          }
       }
-      else // !useOfflineClusters
+      if ( useOfflineClusters && !offlineRecoFound )
+      {
+         // if we can't offline reconstruct the generated electron, 
+         // it might as well have not existed.
+         eventCount--;
+         return;
+      }
+
+      if ( !useOfflineClusters )
       {
          // Get the particle position upon entering ECal
          RawParticle particle(genParticles[0].p4());
@@ -354,6 +375,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             trueElectron = genParticles[0].polarP4();
          }
       }
+
       // Only one electron is produced in singleElectron files
       // we look for that electron in the reconstructed data within some deltaR cut,
       // and some relative pt error cut
@@ -365,7 +387,16 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          return;
       }
       efficiency_denominator_hist->Fill(trueElectron.pt());
+      treeinfo.gen_pt = genParticles[0].pt();
       efficiency_denominator_eta_hist->Fill(trueElectron.eta());
+      if ( offlineRecoFound ) {
+         treeinfo.reco_pt = reco_electron_pt;
+         efficiency_denominator_reco_hist->Fill(reco_electron_pt);
+      }
+      else
+      {
+         treeinfo.reco_pt = 0.;
+      }
 
       for(const auto& cluster : crystalClusters)
       {
@@ -381,6 +412,15 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                if ( debug ) std::cout << "Cluster pt: " << cluster.pt() << " hovere: " << cluster.hovere() << " iso: " << cluster.isolation() << std::endl;
                dyncrystal_efficiency_hist->Fill(trueElectron.pt());
                dyncrystal_efficiency_eta_hist->Fill(trueElectron.eta());
+               if ( offlineRecoFound )
+               {
+                  for(auto& pair : dyncrystal_efficiency_reco_hists)
+                  {
+                     // (threshold, histogram)
+                     if (cluster.pt() > pair.first)
+                        pair.second->Fill(reco_electron_pt);
+                  }
+               }
                dyncrystal_deltaR_hist->Fill(reco::deltaR(cluster, trueElectron));
                dyncrystal_deta_hist->Fill(trueElectron.eta()-cluster.eta());
                dyncrystal_dphi_hist->Fill(reco::deltaPhi(cluster.phi(), trueElectron.phi()));
@@ -410,6 +450,15 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                if ( debug ) std::cout << "Filling hists for EG Collection: " << name << std::endl;
                EGalg_efficiency_hists[name]->Fill(trueElectron.pt());
                EGalg_efficiency_eta_hists[name]->Fill(trueElectron.eta());
+               if ( offlineRecoFound )
+               {
+                  for(auto& pair : EGalg_efficiency_reco_hists[name])
+                  {
+                     // (threshold, histogram)
+                     if (EGCandidate.pt() > pair.first)
+                        pair.second->Fill(reco_electron_pt);
+                  }
+               }
                EGalg_deltaR_hists[name]->Fill(reco::deltaR(EGCandidate.polarP4(), trueElectron));
                EGalg_deta_hists[name]->Fill(trueElectron.eta()-EGCandidate.eta());
                EGalg_dphi_hists[name]->Fill(reco::deltaPhi(EGCandidate.phi(), trueElectron.phi()));
@@ -477,7 +526,7 @@ L1EGRateStudies::endJob()
    // Rate or efficiency study?
    if ( !doEfficiencyCalc )
    {
-      // We currently have an efficiency pdf, we want cdf, so we integrate (downward in pt is inclusive)
+      // We currently have a rate pdf, we want cdf, so we integrate (downward in pt is inclusive)
       // We normalize to 30MHz as this will be the crossing rate of filled bunches in SLHC
       // (in parallel processing mode, fill dummy hist with event counts so they can be added later)
       edm::Service<TFileService> fs;
@@ -571,6 +620,8 @@ L1EGRateStudies::fillhovere_isolation_hists(const l1slhc::L1EGCrystalCluster& cl
    treeinfo.cluster_pt = cluster.pt();
    treeinfo.hovere = cluster.hovere();
    treeinfo.iso = cluster.isolation();
+   treeinfo.passed = cluster_passes_cuts(cluster);
+   // Gen and reco pt get filled earlier
    crystal_tree->Fill();
 }
 

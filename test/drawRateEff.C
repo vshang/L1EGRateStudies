@@ -37,7 +37,7 @@ void drawNewOld(std::vector<TH1F*> newHists, std::vector<TH1F*> oldHists, TCanva
    TMultiGraph mg("mg", c->GetTitle());
 
    std::vector<TGraphErrors*> oldGraphs;
-   std::vector<int> colors = {kRed, kGreen, kBlue};
+   std::vector<int> colors = {kRed, kGreen, kBlue, kOrange, kGray};
    auto color = begin(colors);
    int style = 20;
    for(auto& oldHist : oldHists)
@@ -102,76 +102,68 @@ void drawNewOld(std::vector<TH1F*> newHists, std::vector<TH1F*> oldHists, TCanva
    }
 }
 
-void drawNewOld(std::vector<TGraphAsymmErrors*> newGraphs, std::vector<TGraphAsymmErrors*> oldGraphs, TCanvas * c, double ymax, std::pair<double, double> xrange = {0., 0.}, bool fit = false) {
+void draw(std::vector<TGraphAsymmErrors*> graphs, TCanvas * c, double ymax, std::pair<double, double> xrange = {0., 0.}, bool fit = false) {
    c->Clear();
    TMultiGraph mg("mg", c->GetTitle());
 
-   std::vector<int> colors = {kRed, kGreen, kBlue};
+   std::vector<int> colors = {kBlack, kRed, kGreen, kBlue, kOrange, kGray};
    auto color = begin(colors);
    int style = 20;
-   for(auto& oldGraph : oldGraphs)
+   for(auto& graph : graphs)
    {
-      oldGraph->SetLineColor(*color);
-      oldGraph->SetMarkerColor(*color++);
-      oldGraph->SetMarkerStyle(style++);
-      oldGraph->SetMarkerSize(0.5);
-      mg.Add(oldGraph);
+      graph->SetLineColor(*color);
+      graph->SetMarkerColor(*color++);
+      graph->SetMarkerStyle(style++);
+      graph->SetMarkerSize(0.5);
+      mg.Add(graph);
    }
+   if ( fit )
+      mg.Draw("apez");
+   else
+      mg.Draw("aplez");
 
-   for ( auto newGraph : newGraphs ) {
-      newGraph->SetLineColor(kBlack);
-      newGraph->SetMarkerColor(kBlack);
-      newGraph->SetMarkerStyle(25);
-      newGraph->SetMarkerSize(0.5);
-      mg.Add(newGraph);
-      if ( fit )
-         mg.Draw("apez");
-      else
-         mg.Draw("aplez");
+   if ( c->GetLogy() == 0 ) // linear
+      mg.SetMinimum(0.);
+   else
+      mg.SetMinimum(10.);
 
-      if ( c->GetLogy() == 0 ) // linear
-         mg.SetMinimum(0.);
-      else
-         mg.SetMinimum(10.);
+   if ( ymax != 0. )
+      mg.SetMaximum(ymax);
 
-      if ( ymax != 0. )
-         mg.SetMaximum(ymax);
-
-      if ( fit && xrange.second != xrange.first )
+   if ( fit && xrange.second != xrange.first )
+   {
+      for(auto& graph : graphs)
       {
          TF1 shape("shape", "[0]/2*(1+TMath::Erf((x-[1])/([2]*sqrt(x))))", xrange.first, xrange.second);
-         shape.SetParameters(1., 5., 2.);
-         newGraph->Fit(&shape);
-         newGraph->GetFunction("shape")->SetLineColor(newGraph->GetLineColor());
-         newGraph->GetFunction("shape")->SetLineWidth(newGraph->GetLineWidth()*2);
-         for(auto& graph : oldGraphs)
-         {
-            graph->Fit(&shape);
-            graph->GetFunction("shape")->SetLineColor(graph->GetLineColor());
-            graph->GetFunction("shape")->SetLineWidth(graph->GetLineWidth()*2);
-         }
+         shape.SetParameters(1., 15., 3.);
+         // Somehow, step size increases each time, have to find a way to control it...
+         graph->Fit(&shape);
+         graph->GetFunction("shape")->SetLineColor(graph->GetLineColor());
+         graph->GetFunction("shape")->SetLineWidth(graph->GetLineWidth()*2);
       }
+   }
 
-      TLegend *leg = new TLegend(0.5,0.76,0.9,0.9);
-      setLegStyle(leg);
-      for (auto& oldGraph : oldGraphs) leg->AddEntry(oldGraph, oldGraph->GetTitle(),"lpe");
-      leg->AddEntry(newGraph, newGraph->GetTitle(),"lpe");
-      leg->Draw("same");
-      mg.GetXaxis()->SetTitle(oldGraphs[0]->GetXaxis()->GetTitle());
-      if ( xrange.first != 0. || xrange.second != 0 )
-        mg.GetXaxis()->SetRangeUser(xrange.first, xrange.second);
-      mg.GetYaxis()->SetTitle(oldGraphs[0]->GetYaxis()->GetTitle());
+   TLegend *leg = new TLegend(0.5,0.76,0.9,0.9);
+   setLegStyle(leg);
+   for (auto& graph: graphs) leg->AddEntry(graph, graph->GetTitle(),"lpe");
+   leg->Draw("same");
+   mg.GetXaxis()->SetTitle(graphs[0]->GetXaxis()->GetTitle());
+   if ( xrange.first != 0. || xrange.second != 0 )
+     mg.GetXaxis()->SetRangeUser(xrange.first, xrange.second);
+   mg.GetYaxis()->SetTitle(graphs[0]->GetYaxis()->GetTitle());
 
-      // Get rid of divide_... stuff
-      std::string name(newGraph->GetName());
-      name = name.substr(7, name.find("_by")-7);
-      c->Print(("plots/"+name+".png").c_str());
-      delete leg;
-      mg.RecursiveRemove(newGraph);
+   // Get rid of divide_... stuff
+   std::string name(graphs[0]->GetName());
+   name = name.substr(7, name.find("_by")-7);
+   c->Print(("plots/"+name+".png").c_str());
+   delete leg;
+   for(auto& graph : graphs)
+   {
+      mg.RecursiveRemove(graph);
    }
 }
 
-void draw2DdeltaRHists(std::vector<TH2F*> hists, TCanvas * c) {
+void draw2DdeltaRHist(TH2F* hist, TCanvas * c) {
    c->Clear();
    c->cd();
    gStyle->SetOptTitle(0);
@@ -187,128 +179,124 @@ void draw2DdeltaRHists(std::vector<TH2F*> hists, TCanvas * c) {
    yprojection_pad->SetMargin(0., 0., 0., 0.);
    yprojection_pad->Draw();
 
-   // Ok, probably not going to do this for more than the crystal-level hist
-   // perhaps in the future this whole thing can be moved to rootools.
-   for(auto hist : hists)
+   hist->Sumw2();
+   hist->Scale(1./hist->Integral());
+   auto xprojection_hist = hist->ProjectionX(hist->GetName(), 1, hist->GetNbinsY(), "e");
+   auto xprojection = new TGraphErrors(xprojection_hist);
+   xprojection->SetLineColor(kBlack);
+   xprojection->SetMarkerColor(kBlack);
+   auto yprojection_hist = hist->ProjectionY(hist->GetName(), 1, hist->GetNbinsX(), "e");
+   auto yprojection = new TGraphErrors(yprojection_hist->GetXaxis()->GetNbins());
+   yprojection->SetName((yprojection_hist->GetName()+std::string("_graph")).c_str());
+   TAxis * yproj_xaxis = yprojection_hist->GetXaxis();
+   for(int i=0; i<yprojection_hist->GetXaxis()->GetNbins(); i++)
    {
-      hist->Sumw2();
-      hist->Scale(1./hist->Integral());
-      auto xprojection_hist = hist->ProjectionX(hist->GetName(), 1, hist->GetNbinsY(), "e");
-      auto xprojection = new TGraphErrors(xprojection_hist);
-      xprojection->SetLineColor(kBlack);
-      xprojection->SetMarkerColor(kBlack);
-      auto yprojection_hist = hist->ProjectionY(hist->GetName(), 1, hist->GetNbinsX(), "e");
-      auto yprojection = new TGraphErrors(yprojection_hist->GetXaxis()->GetNbins());
-      yprojection->SetName((yprojection_hist->GetName()+std::string("_graph")).c_str());
-      TAxis * yproj_xaxis = yprojection_hist->GetXaxis();
-      for(int i=0; i<yprojection_hist->GetXaxis()->GetNbins(); i++)
-      {
-         double bin = yproj_xaxis->GetBinCenter(i+1);
-         double width = yprojection_hist->GetBinWidth(i+1)*gStyle->GetErrorX();
-         double count = yprojection_hist->GetBinContent(i+1);
-         double err = yprojection_hist->GetBinError(i+1);
-         yprojection->SetPoint(i, count, bin);
-         yprojection->SetPointError(i, err, width);
-      }
-
-      // Draw 2D hist
-      hist_pad->cd();
-      hist->Draw("col");
-      hist->GetYaxis()->SetTitleOffset(1.4);
-      
-      // Fit hist
-      TF2 shape("2dshape", "[0]*exp(-[2]*(x[0]-[1])**2-[4]*(x[1]-[3])**2-2*[5]*(x[0]-[1])*(x[1]-[3]))", -0.05, 0.05, -0.05, 0.05);
-      shape.SetParameters(0.003, 0., 3.769e4, 0., 4.215e4, -1.763e4);
-      hist->Fit(&shape, "n");
-      const double max = shape.GetParameter(0);
-      const double contours[3] {max*exp(-4.5), max*exp(-2), max*exp(-0.5)};
-      shape.SetContour(3, contours);
-      shape.SetNpx(100);
-      shape.SetNpy(100);
-      shape.SetLineWidth(2);
-      shape.SetLineColor(kRed);
-      shape.Draw("cont3 same");
-      
-      // One crystal box
-      TBox crystalBox(-0.0173/2, -0.0173/2, 0.0173/2, 0.0173/2);
-      crystalBox.SetLineStyle(3);
-      crystalBox.SetLineColor(kGray);
-      crystalBox.SetLineWidth(2);
-      crystalBox.SetFillStyle(0);
-      crystalBox.Draw();
-
-      // Draw x projection
-      xprojection_pad->cd();
-      xprojection->Draw("apez");
-      xprojection->GetYaxis()->SetNdivisions(0);
-      xprojection->GetXaxis()->SetRangeUser(hist->GetXaxis()->GetBinLowEdge(1), hist->GetXaxis()->GetBinUpEdge(hist->GetXaxis()->GetNbins()));
-      xprojection->GetXaxis()->SetLabelSize(0.);
-      xprojection->GetYaxis()->SetRangeUser(0., 0.2);
-      TF1 shapeprojX("shapeprojX", "[0]*sqrt(([2]*[4]-[5]**2)/(TMath::Pi()*[2]))*exp(([5]**2-[2]*[4])*(x-[3])**2/[2])", -0.05, 0.05);
-      shapeprojX.SetParameters(shape.GetParameters());
-      shapeprojX.SetParameter(0, shape.GetParameter(0)/20);
-      shapeprojX.SetLineWidth(2);
-      shapeprojX.SetNpx(100);
-      shapeprojX.SetLineColor(kRed);
-      shapeprojX.Draw("same");
-
-      // Draw y projection
-      yprojection_pad->cd();
-      yprojection->Draw("apez");
-      yprojection->GetXaxis()->SetNdivisions(0);
-      yprojection->GetXaxis()->SetRangeUser(0., 0.2);
-      yprojection->GetYaxis()->SetRangeUser(hist->GetYaxis()->GetBinLowEdge(1), hist->GetYaxis()->GetBinUpEdge(hist->GetYaxis()->GetNbins()));
-      yprojection->GetYaxis()->SetLabelSize(0.);
-      TF1 shapeprojY("shapeprojY", "[0]*sqrt(([2]*[4]-[5]**2)/(TMath::Pi()*[4]))*exp(([5]**2-[2]*[4])*(x-[1])**2/[4])", -0.05, 0.05);
-      shapeprojY.SetParameters(shape.GetParameters());
-      shapeprojY.SetParameter(0, shape.GetParameter(0)/20);
-      double shapeprojYpos[101], shapeprojYval[101];
-      for(int i=0; i<101; ++i) {
-         shapeprojYpos[i] = 1e-3*i-0.05;
-         shapeprojYval[i] = shapeprojY.Eval(shapeprojYpos[i]);
-      }
-      TGraph shapeprojYLine(101, shapeprojYval, shapeprojYpos);
-      shapeprojYLine.SetLineColor(kRed);
-      shapeprojYLine.SetLineWidth(2);
-      shapeprojYLine.Draw("l");
-
-      // Draw Title
-      c->cd();
-      auto title = new TLatex(margin, 1-margin+0.01, "Crystal-level EG Trigger #DeltaR Distribution");
-      title->SetTextSize(0.04);
-      title->SetNDC();
-      title->Draw();
-
-      // Stats
-      TLatex *stats[5];
-      stats[0] = new TLatex(histpad_size+margin+0.01, histpad_size+margin+0.13, ("#mu_#eta = "+to_string(shape.GetParameter(1))).c_str());
-      stats[1] = new TLatex(histpad_size+margin+0.01, histpad_size+margin+0.1, ("#mu_#phi = "+to_string(shape.GetParameter(3))).c_str());
-      stats[2] = new TLatex(histpad_size+margin+0.01, histpad_size+margin+0.07, ("#sigma_#eta#eta = "+to_string(sqrt(0.5/shape.GetParameter(2)))).c_str());
-      stats[3] = new TLatex(histpad_size+margin+0.01, histpad_size+margin+0.04, ("#sigma_#phi#phi = "+to_string(sqrt(0.5/shape.GetParameter(4)))).c_str());
-      stats[4] = new TLatex(histpad_size+margin+0.01, histpad_size+margin+0.01, ("#sigma_#eta#phi = "+to_string(sqrt(-0.5/shape.GetParameter(5)))).c_str());
-      for(int i=0; i<5; ++i) {
-         stats[i]->SetTextSize(0.024);
-         stats[i]->SetNDC();
-         stats[i]->Draw();
-      }
-
-      // Draw palette
-      // (not working)
-      gPad->Update();
-      auto palette = new TPaletteAxis(1-margin+0.01, margin, 1-0.01, histpad_size+margin, hist);
-      palette->Draw();
-      gPad->Modified();
-      gPad->Update();
-
-      c->Print(("plots/"+std::string(hist->GetName())+".png").c_str());
-      delete yprojection;
+      double bin = yproj_xaxis->GetBinCenter(i+1);
+      double width = yprojection_hist->GetBinWidth(i+1)*gStyle->GetErrorX();
+      double count = yprojection_hist->GetBinContent(i+1);
+      double err = yprojection_hist->GetBinError(i+1);
+      yprojection->SetPoint(i, count, bin);
+      yprojection->SetPointError(i, err, width);
    }
+
+   // Draw 2D hist
+   hist_pad->cd();
+   hist->Draw("col");
+   hist->GetYaxis()->SetTitleOffset(1.4);
+   
+   // Fit hist
+   TF2 shape("2dshape", "[0]*exp(-[2]*(x[0]-[1])**2-[4]*(x[1]-[3])**2-2*[5]*(x[0]-[1])*(x[1]-[3]))", -0.05, 0.05, -0.05, 0.05);
+   shape.SetParameters(0.003, 0., 3.769e4, 0., 4.215e4, -1.763e4);
+   hist->Fit(&shape, "n");
+   const double max = shape.GetParameter(0);
+   const double contours[3] {max*exp(-4.5), max*exp(-2), max*exp(-0.5)};
+   shape.SetContour(3, contours);
+   shape.SetNpx(100);
+   shape.SetNpy(100);
+   shape.SetLineWidth(2);
+   shape.SetLineColor(kRed);
+   shape.Draw("cont3 same");
+   
+   // One crystal box
+   TBox crystalBox(-0.0173/2, -0.0173/2, 0.0173/2, 0.0173/2);
+   crystalBox.SetLineStyle(3);
+   crystalBox.SetLineColor(kGray);
+   crystalBox.SetLineWidth(2);
+   crystalBox.SetFillStyle(0);
+   crystalBox.Draw();
+
+   // Draw x projection
+   xprojection_pad->cd();
+   xprojection->Draw("apez");
+   xprojection->GetYaxis()->SetNdivisions(0);
+   xprojection->GetXaxis()->SetRangeUser(hist->GetXaxis()->GetBinLowEdge(1), hist->GetXaxis()->GetBinUpEdge(hist->GetXaxis()->GetNbins()));
+   xprojection->GetXaxis()->SetLabelSize(0.);
+   xprojection->GetYaxis()->SetRangeUser(0., 0.2);
+   TF1 shapeprojX("shapeprojX", "[0]*sqrt(([2]*[4]-[5]**2)/(TMath::Pi()*[2]))*exp(([5]**2-[2]*[4])*(x-[3])**2/[2])", -0.05, 0.05);
+   shapeprojX.SetParameters(shape.GetParameters());
+   shapeprojX.SetParameter(0, shape.GetParameter(0)/20);
+   shapeprojX.SetLineWidth(2);
+   shapeprojX.SetNpx(100);
+   shapeprojX.SetLineColor(kRed);
+   shapeprojX.Draw("same");
+
+   // Draw y projection
+   yprojection_pad->cd();
+   yprojection->Draw("apez");
+   yprojection->GetXaxis()->SetNdivisions(0);
+   yprojection->GetXaxis()->SetRangeUser(0., 0.2);
+   yprojection->GetYaxis()->SetRangeUser(hist->GetYaxis()->GetBinLowEdge(1), hist->GetYaxis()->GetBinUpEdge(hist->GetYaxis()->GetNbins()));
+   yprojection->GetYaxis()->SetLabelSize(0.);
+   TF1 shapeprojY("shapeprojY", "[0]*sqrt(([2]*[4]-[5]**2)/(TMath::Pi()*[4]))*exp(([5]**2-[2]*[4])*(x-[1])**2/[4])", -0.05, 0.05);
+   shapeprojY.SetParameters(shape.GetParameters());
+   shapeprojY.SetParameter(0, shape.GetParameter(0)/20);
+   double shapeprojYpos[101], shapeprojYval[101];
+   for(int i=0; i<101; ++i) {
+      shapeprojYpos[i] = 1e-3*i-0.05;
+      shapeprojYval[i] = shapeprojY.Eval(shapeprojYpos[i]);
+   }
+   TGraph shapeprojYLine(101, shapeprojYval, shapeprojYpos);
+   shapeprojYLine.SetLineColor(kRed);
+   shapeprojYLine.SetLineWidth(2);
+   shapeprojYLine.Draw("l");
+
+   // Draw Title
+   c->cd();
+   auto title = new TLatex(margin, 1-margin+0.01, "Crystal-level EG Trigger #DeltaR Distribution");
+   title->SetTextSize(0.04);
+   title->SetNDC();
+   title->Draw();
+
+   // Stats
+   TLatex *stats[5];
+   stats[0] = new TLatex(histpad_size+margin+0.01, histpad_size+margin+0.13, ("#mu_#eta = "+to_string(shape.GetParameter(1))).c_str());
+   stats[1] = new TLatex(histpad_size+margin+0.01, histpad_size+margin+0.1, ("#mu_#phi = "+to_string(shape.GetParameter(3))).c_str());
+   stats[2] = new TLatex(histpad_size+margin+0.01, histpad_size+margin+0.07, ("#sigma_#eta#eta = "+to_string(sqrt(0.5/shape.GetParameter(2)))).c_str());
+   stats[3] = new TLatex(histpad_size+margin+0.01, histpad_size+margin+0.04, ("#sigma_#phi#phi = "+to_string(sqrt(0.5/shape.GetParameter(4)))).c_str());
+   stats[4] = new TLatex(histpad_size+margin+0.01, histpad_size+margin+0.01, ("#sigma_#eta#phi = "+to_string(sqrt(-0.5/shape.GetParameter(5)))).c_str());
+   for(int i=0; i<5; ++i) {
+      stats[i]->SetTextSize(0.024);
+      stats[i]->SetNDC();
+      stats[i]->Draw();
+   }
+
+   // Draw palette
+   // (not working)
+   gPad->Update();
+   auto palette = new TPaletteAxis(1-margin+0.01, margin, 1-0.01, histpad_size+margin, hist);
+   palette->Draw();
+   gPad->Modified();
+   gPad->Update();
+
+   c->Print(("plots/"+std::string(hist->GetName())+".png").c_str());
+   delete yprojection;
+   
    gStyle->SetOptTitle(1);
 }
 
 void drawNewOldHist(std::vector<TH1F*> newHists, std::vector<TH1F*> oldHists, TCanvas * c, double ymax) {
    THStack hs("hs", c->GetTitle());
-   std::vector<int> colors = {kRed, kGreen, kBlue};
+   std::vector<int> colors = {kRed, kGreen, kBlue, kOrange, kGray};
    auto color = begin(colors);
    for(auto& oldHist : oldHists)
    {
@@ -362,6 +350,8 @@ void drawRateEff() {
    dynAlgRateHist->SetTitle("LLR L2 Algorithm");
    auto run1AlgRateHist = (TH1F *) rates->Get("analyzer/l1extraParticles:All_rate");
    run1AlgRateHist->SetTitle("Run 1 Algorithm");
+   auto crystalAlgRateHist = (TH1F *) rates->Get("analyzer/L1EGammaCrystalsProducer:EGammaCrystal_rate");
+   crystalAlgRateHist->SetTitle("Crystal-level Algorithm (producer)");
 
    c->SetLogy(1);
    c->SetGridx(1);
@@ -374,14 +364,18 @@ void drawRateEff() {
    auto effHistKeys = rootools::getKeysofClass(eff, "analyzer", "TGraphAsymmErrors");
    auto deltaHistKeys = rootools::getKeysofClass(eff, "analyzer", "TH1F");
    auto newAlgEtaEffHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "*crystal*_eta_by_gen_eta");
-   auto newAlgPtEffHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "*crystal*_pt_by_gen_pt");
+   auto newAlgPtEffHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_dyncrystal*_pt_by_gen_pt");
+   auto newAlgRecoPtEffHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_dyncrystalEG_threshold*");
    auto newAlgDRHists = rootools::loadObjectsMatchingPattern<TH1F>(deltaHistKeys, "*crystal*_deltaR*");
    auto newAlgDEtaHists = rootools::loadObjectsMatchingPattern<TH1F>(deltaHistKeys, "*crystal*_deta*");
    auto newAlgDPhiHists = rootools::loadObjectsMatchingPattern<TH1F>(deltaHistKeys, "*crystal*_dphi*");
+
    auto oldAlgEtaHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_SLHCL1ExtraParticles:EGamma_efficiency_eta_by_gen_eta");
    oldAlgEtaHist->SetTitle("Original L2 Algorithm");
    auto oldAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_SLHCL1ExtraParticles:EGamma_efficiency_pt_by_gen_pt");
    oldAlgPtHist->SetTitle("Original L2 Algorithm");
+   auto oldAlgRecoPtHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_SLHCL1ExtraParticles:EGamma_threshold*");
+   for(auto& hist : oldAlgRecoPtHists) hist->SetTitle("Original L2 Algorithm");
    auto oldAlgDRHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticles:EGamma_deltaR");
    oldAlgDRHist->SetTitle("Original L2 Algorithm");
    oldAlgDRHist->GetYaxis()->SetTitle("Counts");
@@ -389,6 +383,7 @@ void drawRateEff() {
    oldAlgDEtaHist->SetTitle("Original L2 Algorithm");
    auto oldAlgDPhiHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticles:EGamma_dphi");
    oldAlgDPhiHist->SetTitle("Original L2 Algorithm");
+
    auto dynAlgEtaHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_SLHCL1ExtraParticlesNewClustering:EGamma_efficiency_eta_by_gen_eta");
    dynAlgEtaHist->SetTitle("LLR L2 Algorithm");
    auto dynAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_SLHCL1ExtraParticlesNewClustering:EGamma_efficiency_pt_by_gen_pt");
@@ -399,15 +394,26 @@ void drawRateEff() {
    dynAlgDEtaHist->SetTitle("LLR L2 Algorithm");
    auto dynAlgDPhiHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticlesNewClustering:EGamma_dphi");
    dynAlgDPhiHist->SetTitle("LLR L2 Algorithm");
+
    auto run1AlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_l1extraParticles:All_efficiency_pt_by_gen_pt");
    run1AlgPtHist->SetTitle("Run 1 Algorithm");
    auto run1AlgDRHist = (TH1F *) eff->Get("analyzer/l1extraParticles:All_deltaR");
    run1AlgDRHist->SetTitle("Run 1 Algorithm");
 
+   auto crystalAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_L1EGammaCrystalsProducer:EGammaCrystal_efficiency_pt_by_gen_pt");
+   crystalAlgPtHist->SetTitle("Crystal-level Algorithm (producer)");
+
    c->SetLogy(0);
    c->SetTitle("EG Single Electron Efficiencies");
-   drawNewOld(newAlgEtaEffHists, {oldAlgEtaHist, dynAlgEtaHist}, c, 1.2, {-1.6, 1.6});
-   drawNewOld(newAlgPtEffHists, {oldAlgPtHist, dynAlgPtHist, run1AlgPtHist}, c, 1.2, {0., 50.}, true);
+   for(auto& hist : newAlgEtaEffHists)
+      draw({hist, oldAlgEtaHist, dynAlgEtaHist}, c, 1.2, {-1.6, 1.6});
+   for(auto& hist : newAlgPtEffHists)
+      draw({hist, oldAlgPtHist, dynAlgPtHist, run1AlgPtHist}, c, 1.2, {0., 50.}, true);
+   std::cout << "new hists size: " << newAlgRecoPtEffHists.size() << ", old hists size: " << oldAlgRecoPtHists.size() << std::endl;
+   c->SetTitle("EG Single Electron Turn-On Efficiencies, 15GeV Threshold");
+   draw({newAlgRecoPtEffHists[0], oldAlgRecoPtHists[0]}, c, 1.2, {0., 50.}, true);
+   c->SetTitle("EG Single Electron Turn-On Efficiencies, 30GeV Threshold");
+   draw({newAlgRecoPtEffHists[1], oldAlgRecoPtHists[1]}, c, 1.2, {0., 50.}, true);
    c->SetGridx(0);
    c->SetGridy(0);
    c->SetTitle("#Delta R Distribution Comparison");
@@ -428,7 +434,7 @@ void drawRateEff() {
    auto dynCrystal2DdeltaRHist = (TH2F *) eff->Get("analyzer/dyncrystalEG_2DdeltaR_hist");
    c->SetCanvasSize(800, 700);
    c->SetTitle("#Delta R Distribution Fit");
-   draw2DdeltaRHists({dynCrystal2DdeltaRHist}, c);
+   draw2DdeltaRHist(dynCrystal2DdeltaRHist, c);
 
    c->Clear();
    c->SetCanvasSize(1200,600);

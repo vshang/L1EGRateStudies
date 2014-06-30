@@ -24,16 +24,22 @@ void normalizeParallelJobs() {
     auto effHistKeys = rootools::getKeysofClass(eff, "analyzer", "TH1F");
     auto effPtDenom = (TH1F *) eff->Get("analyzer/gen_pt");
     auto effEtaDenom = (TH1F *) eff->Get("analyzer/gen_eta");
+    auto effRecoPtDenom = (TH1F *) eff->Get("analyzer/reco_pt");
     if ( effPtDenom != nullptr )
     {
-        std::cout << "Dividing efficiency histograms by gen hists" << std::endl;
+        std::cout << "Dividing efficiency histograms by gen/reco hists" << std::endl;
         std::cout << "Total event count: " << effPtDenom->Integral() << std::endl;
+        std::cout << "Total offline reco event count: " << effRecoPtDenom->Integral() << std::endl;
         
         eff->cd("analyzer");
         auto effPtHists = rootools::loadObjectsMatchingPattern<TH1F>(effHistKeys, "*_efficiency*pt");
         for(auto& hist : effPtHists) 
         {
-            auto graph = new TGraphAsymmErrors(hist, effPtDenom);
+            auto denom = effPtDenom;
+            if (std::string(hist->GetName()).find("reco_") != std::string::npos)
+                denom = effRecoPtDenom;
+            std::cout << "    Dividing " << hist->GetName() << " by " << denom->GetName() << std::endl;
+            auto graph = new TGraphAsymmErrors(hist, denom);
             graph->GetXaxis()->SetTitle(hist->GetXaxis()->GetTitle());
             graph->GetYaxis()->SetTitle("Efficiency");
             graph->Write();
