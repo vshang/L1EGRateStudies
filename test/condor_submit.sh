@@ -8,8 +8,9 @@ popd
 jobopts=''
 doeff=true
 dorate=true
+dofakes=false
 rmold=true
-while getopts ":trej:" opt; do
+while getopts ":trefj:" opt; do
   case $opt in
     j)
       jobopts="$jobopts --job-count=$OPTARG"
@@ -22,6 +23,11 @@ while getopts ":trej:" opt; do
       doeff=false
       ;;
     e)
+      dorate=false
+      ;;
+    f)
+      dofakes=true
+      doeff=false
       dorate=false
       ;;
     \?)
@@ -55,5 +61,16 @@ if $dorate; then
         --input-dir=/store/mc/TTI2023Upg14D/Neutrino_Pt2to20_gun/GEN-SIM-DIGI-RAW/PU140bx25_PH2_1K_FB_V3-v2/00000 \
         --input-files-per-job=1 $jobopts \
         egalg_rate_hists $CMSSW_BASE rate_hists_cfg.py
+fi
+
+if $dofakes; then
+    if $rmold; then
+        rm /nfs_scratch/nsmith/egalg_fakes* -r
+        gsido rm /hdfs/store/user/nsmith/egalg_fakes* -r
+    fi
+    farmoutAnalysisJobs \
+        --input-dir=/store/mc/TTI2023Upg14D/Neutrino_Pt2to20_gun/GEN-SIM-DIGI-RAW/PU140bx25_PH2_1K_FB_V3-v2/00000 \
+        --input-files-per-job=1 $jobopts \
+        egalg_fakes $CMSSW_BASE fake_heatmap_cfg.py
 fi
 

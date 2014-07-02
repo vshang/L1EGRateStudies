@@ -96,9 +96,7 @@ class L1EGCrystalsHeatMap : public edm::EDAnalyzer {
       virtual void endJob() ;
 
       virtual void beginRun(edm::Run const&, edm::EventSetup const&);
-      //virtual void endRun(edm::Run const&, edm::EventSetup const&);
-      //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
-      //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
+      bool cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster);
 
       // ----------member data ---------------------------
       CaloGeometryHelper geometryHelper;
@@ -106,6 +104,8 @@ class L1EGCrystalsHeatMap : public edm::EDAnalyzer {
       bool useEndcap;
       bool useOfflineClusters;
       bool kDebug;
+      bool kUseGenMatch;
+      double kClusterPtCut; 
       int nEvents = 0;
       edm::InputTag L1CrystalClustersInputTag;
       std::vector<TH2F*> heatmaps;
@@ -163,7 +163,9 @@ L1EGCrystalsHeatMap::L1EGCrystalsHeatMap(const edm::ParameterSet& iConfig):
    range(iConfig.getUntrackedParameter<int>("range", 10)),
    useEndcap(iConfig.getUntrackedParameter<bool>("useEndcap", false)),
    useOfflineClusters(iConfig.getUntrackedParameter<bool>("useOfflineClusters", false)),
-   kDebug(iConfig.getUntrackedParameter<bool>("debug", false))
+   kDebug(iConfig.getUntrackedParameter<bool>("debug", false)),
+   kUseGenMatch(iConfig.getUntrackedParameter<bool>("useGenMatch", true)),
+   kClusterPtCut(iConfig.getUntrackedParameter<double>("clusterPtCut", 10.))
 {
    L1CrystalClustersInputTag = iConfig.getParameter<edm::InputTag>("L1CrystalClustersInputTag");
    
@@ -251,85 +253,6 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
       }
    }
    
-   // Get generated electron
-   edm::Handle<reco::GenParticleCollection> genParticleHandle;
-   reco::GenParticleCollection genParticles;
-   iEvent.getByLabel("genParticles", genParticleHandle);
-   genParticles = *genParticleHandle.product();
-   reco::Candidate::PolarLorentzVector trueElectron;
-   if ( useOfflineClusters )
-   {
-      // Get offline cluster info
-      edm::Handle<reco::SuperClusterCollection> pBarrelCorSuperClustersHandle;
-      iEvent.getByLabel("correctedHybridSuperClusters","",pBarrelCorSuperClustersHandle);
-      reco::SuperClusterCollection pBarrelCorSuperClusters = *pBarrelCorSuperClustersHandle.product();
-
-      if ( kDebug ) std::cout << "pBarrelCorSuperClusters corrected collection size : " << pBarrelCorSuperClusters.size() << std::endl;
-      if ( kDebug )
-      {
-         for(auto& cluster : pBarrelCorSuperClusters)
-         {
-           std::cout << " pBarrelCorSuperClusters : pt " 
-               << cluster.energy()/std::cosh(cluster.position().eta()) 
-               << " eta " << cluster.position().eta() 
-               << " phi " << cluster.position().phi() << std::endl;
-         }
-      }
-      
-      // Find the cluster corresponding to generated electron
-      bool trueEfound = false;
-      for(auto& cluster : pBarrelCorSuperClusters)
-      {
-         reco::Candidate::PolarLorentzVector p4;
-         p4.SetPt(cluster.energy()*sin(cluster.position().theta()));
-         p4.SetEta(cluster.position().eta());
-         p4.SetPhi(cluster.position().phi());
-         p4.SetM(0.);
-         if ( deltaR(p4, genParticles[0].polarP4()) < 0.1 )
-         {
-            trueElectron = p4;
-            trueEfound = true;
-            break;
-         }
-      }
-      if ( !trueEfound )
-      {
-         // if we can't offline reconstruct the generated electron, 
-         // it might as well have not existed.
-         nEvents--;
-         return;
-      }
-   }
-   else // !useOfflineClusters
-   {
-      // Get the particle position upon entering ECal
-      RawParticle particle(genParticles[0].p4());
-      particle.setVertex(genParticles[0].vertex().x(), genParticles[0].vertex().y(), genParticles[0].vertex().z(), 0.);
-      particle.setID(genParticles[0].pdgId());
-      BaseParticlePropagator prop(particle, 0., 0., 4.);
-      BaseParticlePropagator start(prop);
-      prop.propagateToEcalEntrance();
-      if(prop.getSuccess()!=0)
-      {
-         trueElectron = reco::Candidate::PolarLorentzVector(prop.E()*sin(prop.vertex().theta()), prop.vertex().eta(), prop.vertex().phi(), 0.);
-         if ( kDebug ) std::cout << "Propogated genParticle to ECal, position: " << prop.vertex() << " momentum = " << prop.momentum() << std::endl;
-         if ( kDebug ) std::cout << "                       starting position: " << start.vertex() << " momentum = " << start.momentum() << std::endl;
-         if ( kDebug ) std::cout << "                    genParticle position: " << genParticles[0].vertex() << " momentum = " << genParticles[0].p4() << std::endl;
-         if ( kDebug ) std::cout << "       old pt = " << genParticles[0].pt() << ", new pt = " << trueElectron.pt() << std::endl;
-      }
-      else
-      {
-         // something failed?
-         trueElectron = genParticles[0].polarP4();
-      }
-   }
-   if ( !useEndcap && fabs(trueElectron.eta()) > 1.479 )
-   {
-      // Don't consider generated electrons in the endcap
-      nEvents--;
-      return;
-   }
-    
    // Load EG Crystal clusters
    l1slhc::L1EGCrystalClusterCollection crystalClusters;
    edm::Handle<l1slhc::L1EGCrystalClusterCollection> crystalClustersHandle;      
@@ -337,12 +260,110 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    crystalClusters = (*crystalClustersHandle.product());
    std::sort(begin(crystalClusters), end(crystalClusters), [](const l1slhc::L1EGCrystalCluster& a, const l1slhc::L1EGCrystalCluster& b){return a.pt() > b.pt();});
 
+   reco::Candidate::PolarLorentzVector trueElectron;
+   if (kUseGenMatch) {
+      // Get generated electron
+      edm::Handle<reco::GenParticleCollection> genParticleHandle;
+      reco::GenParticleCollection genParticles;
+      iEvent.getByLabel("genParticles", genParticleHandle);
+      genParticles = *genParticleHandle.product();
+
+      if ( useOfflineClusters )
+      {
+         // Get offline cluster info
+         edm::Handle<reco::SuperClusterCollection> pBarrelCorSuperClustersHandle;
+         iEvent.getByLabel("correctedHybridSuperClusters","",pBarrelCorSuperClustersHandle);
+         reco::SuperClusterCollection pBarrelCorSuperClusters = *pBarrelCorSuperClustersHandle.product();
+   
+         if ( kDebug ) std::cout << "pBarrelCorSuperClusters corrected collection size : " << pBarrelCorSuperClusters.size() << std::endl;
+         if ( kDebug )
+         {
+            for(auto& cluster : pBarrelCorSuperClusters)
+            {
+              std::cout << " pBarrelCorSuperClusters : pt " 
+                  << cluster.energy()/std::cosh(cluster.position().eta()) 
+                  << " eta " << cluster.position().eta() 
+                  << " phi " << cluster.position().phi() << std::endl;
+            }
+         }
+         
+         // Find the cluster corresponding to generated electron
+         bool trueEfound = false;
+         for(auto& cluster : pBarrelCorSuperClusters)
+         {
+            reco::Candidate::PolarLorentzVector p4;
+            p4.SetPt(cluster.energy()*sin(cluster.position().theta()));
+            p4.SetEta(cluster.position().eta());
+            p4.SetPhi(cluster.position().phi());
+            p4.SetM(0.);
+            if ( deltaR(p4, genParticles[0].polarP4()) < 0.1 )
+            {
+               trueElectron = p4;
+               trueEfound = true;
+               break;
+            }
+         }
+         if ( !trueEfound )
+         {
+            // if we can't offline reconstruct the generated electron, 
+            // it might as well have not existed.
+            nEvents--;
+            return;
+         }
+      }
+      else // !useOfflineClusters
+      {
+         // Get the particle position upon entering ECal
+         RawParticle particle(genParticles[0].p4());
+         particle.setVertex(genParticles[0].vertex().x(), genParticles[0].vertex().y(), genParticles[0].vertex().z(), 0.);
+         particle.setID(genParticles[0].pdgId());
+         BaseParticlePropagator prop(particle, 0., 0., 4.);
+         BaseParticlePropagator start(prop);
+         prop.propagateToEcalEntrance();
+         if(prop.getSuccess()!=0)
+         {
+            trueElectron = reco::Candidate::PolarLorentzVector(prop.E()*sin(prop.vertex().theta()), prop.vertex().eta(), prop.vertex().phi(), 0.);
+            if ( kDebug ) std::cout << "Propogated genParticle to ECal, position: " << prop.vertex() << " momentum = " << prop.momentum() << std::endl;
+            if ( kDebug ) std::cout << "                       starting position: " << start.vertex() << " momentum = " << start.momentum() << std::endl;
+            if ( kDebug ) std::cout << "                    genParticle position: " << genParticles[0].vertex() << " momentum = " << genParticles[0].p4() << std::endl;
+            if ( kDebug ) std::cout << "       old pt = " << genParticles[0].pt() << ", new pt = " << trueElectron.pt() << std::endl;
+         }
+         else
+         {
+            // something failed?
+            trueElectron = genParticles[0].polarP4();
+         }
+      }
+      if ( !useEndcap && fabs(trueElectron.eta()) > 1.479 )
+      {
+         // Don't consider generated electrons in the endcap
+         nEvents--;
+         return;
+      }
+   }
+   else // !kUseGenMatch
+   {
+      for(auto& cluster : crystalClusters)
+      {
+         if ( cluster_passes_cuts(cluster) && cluster.pt() > kClusterPtCut )
+         {
+            trueElectron = cluster.polarP4();
+            break;
+         }
+      }
+      if ( trueElectron.pt() == 0. )
+      {
+         nEvents--;
+         return;
+      }
+   }
+    
    // Match EG Crystal cluster to gen particle
-   l1slhc::L1EGCrystalCluster egCluster = crystalClusters[0];
+   l1slhc::L1EGCrystalCluster egCluster;
    for(auto& cluster : crystalClusters)
    {
-      if ( cluster.hovere() < 2
-         && cluster.isolation() < 3
+      if ( cluster_passes_cuts(cluster)
+         && cluster.pt() > kClusterPtCut
          && reco::deltaR(cluster, trueElectron) < 0.1
          && fabs(cluster.pt()-trueElectron.pt())/trueElectron.pt() < 1. )
       {
@@ -351,11 +372,12 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
          break;
       }
    }
+   if ( egCluster.pt() == 0. ) return;
  
    // Find closest crystal
    double dRmin = 999.;
    SimpleCaloHit centerhit;
-   for(auto ecalhit : ecalhits)
+   for(auto& ecalhit : ecalhits)
    {
       if ( reco::deltaR(ecalhit.position, trueElectron) < dRmin )
       {
@@ -365,15 +387,14 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    }
 
    // Fill heatmap
-   // but only if we have a bad dphi from truth (i.e. more than one crystal away)
    for(int i=0; i<6; i++)
    {
       double dphilow = i*0.0173-3*0.0173;
       double dphihigh = (i+1)*0.0173-3*0.0173;
-      if ( reco::deltaPhi(egCluster.phi(), trueElectron.phi()) > dphilow && reco::deltaPhi(egCluster.phi(), trueElectron.phi()) < dphihigh )
+      if ( reco::deltaPhi(egCluster.phi(), trueElectron.phi()) >= dphilow && reco::deltaPhi(egCluster.phi(), trueElectron.phi()) < dphihigh )
       {
          heatmap_nevents[i]++;
-         for(auto ecalhit : ecalhits)
+         for(auto& ecalhit : ecalhits)
          {
             if ( abs(ecalhit.dieta(centerhit)) <= range && abs(ecalhit.diphi(centerhit)) <= range )
             {
@@ -412,30 +433,18 @@ L1EGCrystalsHeatMap::beginRun(edm::Run const& iRun, edm::EventSetup const& es)
    if ( !ParticleTable::instance() ) ParticleTable::instance(&(*pdt));
 }
 
-
-// ------------ method called when ending the processing of a run  ------------
-/*
-void 
-L1EGCrystalsHeatMap::endRun(edm::Run const&, edm::EventSetup const&)
-{
+bool
+L1EGCrystalsHeatMap::cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster) {
+   if ( cluster.hovere() < 14./cluster.pt()+0.05
+        && cluster.isolation() < 40./cluster.pt()+0.1
+        && (cluster.GetCrystalPt(4)/(cluster.GetCrystalPt(0)+cluster.GetCrystalPt(1)) < ( (cluster.pt() < 20) ? 0.08:0.08*(1+(cluster.pt()-20)/25.) ) )
+        && ((cluster.pt() > 10) ? (cluster.GetCrystalPt(4)/(cluster.GetCrystalPt(0)+cluster.GetCrystalPt(1)) > 0.):true) )
+   {
+      return true;
+   }
+   return false;
 }
-*/
 
-// ------------ method called when starting to processes a luminosity block  ------------
-/*
-void 
-L1EGCrystalsHeatMap::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
-{
-}
-*/
-
-// ------------ method called when ending the processing of a luminosity block  ------------
-/*
-void 
-L1EGCrystalsHeatMap::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
-{
-}
-*/
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void

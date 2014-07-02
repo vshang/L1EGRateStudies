@@ -11,7 +11,7 @@ process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.source = cms.Source("PoolSource",
-   fileNames = cms.untracked.vstring("/store/user/ncsmith/L1TrackTriggerMC/m1_SingleElectron_E2023TTI_PU140.root")
+   fileNames = cms.untracked.vstring($inputFileNames)
 )
 
 # All this stuff just runs the various EG algorithms that we are studying
@@ -85,14 +85,15 @@ process.ecalClusters = cms.Path(process.ecalClustersNoPFBox)
 process.analyzer = cms.EDAnalyzer('L1EGCrystalsHeatMap',
    L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer","EGCrystalCluster"),
    debug = cms.untracked.bool(False),
+   useGenMatch = cms.untracked.bool(False),
    useOfflineClusters = cms.untracked.bool(False),
    range = cms.untracked.int32(20),
-   clusterPtCut = cms.untracked.double(15.)
+   clusterPtCut = cms.untracked.double(20.)
 )
 
 process.panalyzer = cms.Path(process.analyzer)
 
 process.TFileService = cms.Service("TFileService", 
-   fileName = cms.string("electronHeatmap.root"), 
+   fileName = cms.string("$outputFileName"), 
    closeFileFast = cms.untracked.bool(True)
 )
