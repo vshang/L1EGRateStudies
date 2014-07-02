@@ -102,7 +102,7 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    histogramRangeLow = cms.untracked.double(0),
    histogramRangeHigh = cms.untracked.double(50),
    histogramEtaBinCount = cms.untracked.int32(20),
-   genMatchDeltaRcut = cms.untracked.double(0.1),
+   genMatchDeltaRcut = cms.untracked.double(0.25),
    genMatchRelPtcut = cms.untracked.double(0.5)
 )
 
