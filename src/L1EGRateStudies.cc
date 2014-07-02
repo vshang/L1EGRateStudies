@@ -442,9 +442,11 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       for(const auto& eGammaCollection : eGammaCollections)
       {
          const std::string &name = eGammaCollection.first;
+         double temp_deltaRcut = genMatchDeltaRcut;
+         if ( name.find("l1extraParticles") != std::string::npos ) temp_deltaRcut = 0.2;
          for(const auto& EGCandidate : eGammaCollection.second)
          {
-            if ( reco::deltaR(EGCandidate.polarP4(), trueElectron) < genMatchDeltaRcut &&
+            if ( reco::deltaR(EGCandidate.polarP4(), trueElectron) < temp_deltaRcut &&
                  fabs(EGCandidate.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
             {
                if ( debug ) std::cout << "Filling hists for EG Collection: " << name << std::endl;
@@ -627,9 +629,9 @@ L1EGRateStudies::fillhovere_isolation_hists(const l1slhc::L1EGCrystalCluster& cl
 
 bool
 L1EGRateStudies::cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster) {
-   if ( cluster.hovere() < ((cluster.pt() > 35) ? 0.5 : 0.5+pow(cluster.pt()-35,2)/350. )
-        && cluster.isolation() < ((cluster.pt() > 35) ? 1.3 : 1.3+pow(cluster.pt()-35,2)*4/(35*35) )
-        && (cluster.GetCrystalPt(4)/(cluster.GetCrystalPt(0)+cluster.GetCrystalPt(1)) < ( (cluster.pt() < 20) ? 0.08:0.08*(1+(cluster.pt()-20)/30.) ) )
+   if ( cluster.hovere() < 14./cluster.pt()+0.05
+        && cluster.isolation() < 40./cluster.pt()+0.1
+        && (cluster.GetCrystalPt(4)/(cluster.GetCrystalPt(0)+cluster.GetCrystalPt(1)) < ( (cluster.pt() < 20) ? 0.08:0.08*(1+(cluster.pt()-20)/25.) ) )
         && ((cluster.pt() > 10) ? (cluster.GetCrystalPt(4)/(cluster.GetCrystalPt(0)+cluster.GetCrystalPt(1)) > 0.):true) )
    {
       return true;
