@@ -38,7 +38,7 @@ void drawNewOld(std::vector<TH1F*> newHists, std::vector<TH1F*> oldHists, TCanva
    TMultiGraph mg("mg", c->GetTitle());
 
    std::vector<TGraphErrors*> oldGraphs;
-   std::vector<int> colors = {kRed, kGreen, kBlue, kOrange, kGray};
+   std::vector<int> colors = {kBlack, kRed, kBlue, kGreen, kOrange, kGray};
    auto color = begin(colors);
    int style = 20;
    for(auto& oldHist : oldHists)
@@ -107,8 +107,10 @@ void draw(std::vector<TGraphAsymmErrors*> graphs, TCanvas * c, double ymax, std:
    c->Clear();
    TMultiGraph mg("mg", c->GetTitle());
 
-   std::vector<int> colors = {kBlack, kRed, kGreen, kBlue, kOrange, kGray};
+   std::vector<int> colors = {kBlack, kRed, kBlue, kGreen, kOrange, kGray};
    auto color = begin(colors);
+   std::vector<int> lines = {kSolid, kDashed, kDotted};
+   auto linestyle = begin(lines);
    int style = 20;
    for(auto& graph : graphs)
    {
@@ -141,6 +143,7 @@ void draw(std::vector<TGraphAsymmErrors*> graphs, TCanvas * c, double ymax, std:
          graph->Fit(&shape);
          graph->GetFunction("shape")->SetLineColor(graph->GetLineColor());
          graph->GetFunction("shape")->SetLineWidth(graph->GetLineWidth()*2);
+         graph->GetFunction("shape")->SetLineStyle(*linestyle++);
       }
    }
 
@@ -297,14 +300,14 @@ void draw2DdeltaRHist(TH2F* hist, TCanvas * c) {
 
 void drawNewOldHist(std::vector<TH1F*> newHists, std::vector<TH1F*> oldHists, TCanvas * c, double ymax) {
    THStack hs("hs", c->GetTitle());
-   std::vector<int> colors = {kRed, kGreen, kBlue, kOrange, kGray};
+   std::vector<int> colors = {kRed, kBlue, kGreen, kOrange, kGray};
    auto color = begin(colors);
    for(auto& oldHist : oldHists)
    {
       oldHist->Sumw2();
       oldHist->Scale(1./oldHist->Integral());
       oldHist->SetLineColor(*color++);
-      hs.Add(oldHist, "hist ex0");
+      hs.Add(oldHist, "ex0 hist");
    }
    c->Clear();
    if ( c->GetLogy() == 0 ) // linear
@@ -322,7 +325,7 @@ void drawNewOldHist(std::vector<TH1F*> newHists, std::vector<TH1F*> oldHists, TC
 
       TLegend *leg = new TLegend(0.5,0.76,0.9,0.9);
       setLegStyle(leg);
-      for(auto& oldHist : oldHists) leg->AddEntry(oldHist, oldHist->GetTitle(),"l");
+      for(auto& oldHist : oldHists) leg->AddEntry(oldHist, oldHist->GetTitle(),"lp");
       leg->AddEntry(newHist, newHist->GetTitle(),"l");
       leg->Draw("same");
       hs.GetXaxis()->SetTitle(oldHists[0]->GetXaxis()->GetTitle());
@@ -360,7 +363,7 @@ void drawRateEff() {
    gStyle->SetGridStyle(2);
    gStyle->SetGridColor(kGray+1);
    c->SetTitle("EG Fake Rates (PU140, minBias)");
-   drawNewOld(newAlgRateHists, {oldAlgRateHist, dynAlgRateHist, run1AlgRateHist}, c, 40000., {0., 50.});
+   drawNewOld(newAlgRateHists, {oldAlgRateHist, run1AlgRateHist}, c, 40000., {0., 50.});
 
    auto effHistKeys = rootools::getKeysofClass(eff, "analyzer", "TGraphAsymmErrors");
    auto deltaHistKeys = rootools::getKeysofClass(eff, "analyzer", "TH1F");
@@ -400,6 +403,10 @@ void drawRateEff() {
    run1AlgPtHist->SetTitle("Run 1 Algorithm");
    auto run1AlgDRHist = (TH1F *) eff->Get("analyzer/l1extraParticles:All_deltaR");
    run1AlgDRHist->SetTitle("Run 1 Algorithm");
+   auto run1AlgDEtaHist = (TH1F *) eff->Get("analyzer/l1extraParticles:All_deta");
+   run1AlgDEtaHist->SetTitle("Run 1 Algorithm");
+   auto run1AlgDPhiHist = (TH1F *) eff->Get("analyzer/l1extraParticles:All_dphi");
+   run1AlgDPhiHist->SetTitle("Run 1 Algorithm");
 
    auto crystalAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_L1EGammaCrystalsProducer:EGammaCrystal_efficiency_pt_by_gen_pt");
    crystalAlgPtHist->SetTitle("Crystal-level Algorithm (producer)");
@@ -425,27 +432,29 @@ void drawRateEff() {
    crystal_tree->Draw("reco_pt >> newAlgTurnOnDenom", "reco_pt > 0.");
    crystal_tree->Draw("reco_pt >> newAlgTurnOnNumerator", "reco_pt > 0. && passed && cluster_pt > 15./1.109");
    auto newAlgCorrectedRecoPtHist15 = new TGraphAsymmErrors(newAlgTurnOnNumerator, newAlgTurnOnDenom);
+   newAlgCorrectedRecoPtHist15->SetName("divide_dyncrystalEG_threshold15_efficiency_reco_pt_by_reco_pt_2");
    crystal_tree->Draw("reco_pt >> newAlgTurnOnNumerator", "reco_pt > 0. && passed && cluster_pt > 30./1.109");
    auto newAlgCorrectedRecoPtHist30 = new TGraphAsymmErrors(newAlgTurnOnNumerator, newAlgTurnOnDenom);
+   newAlgCorrectedRecoPtHist30->SetName("divide_dyncrystalEG_threshold30_efficiency_reco_pt_by_reco_pt_2");
 
    c->SetTitle("EG Single Electron Efficiencies");
    for(auto& hist : newAlgEtaEffHists)
-      draw({hist, oldAlgEtaHist, dynAlgEtaHist}, c, 1.2, {-1.6, 1.6});
+      draw({hist, oldAlgEtaHist}, c, 1.2, {-1.6, 1.6});
    for(auto& hist : newAlgPtEffHists)
-      draw({hist, oldAlgPtHist, dynAlgPtHist, run1AlgPtHist}, c, 1.2, {0., 50.}, true);
+      draw({hist, oldAlgPtHist, run1AlgPtHist}, c, 1.2, {0., 50.}, true);
    std::cout << "new hists size: " << newAlgRecoPtEffHists.size() << ", old hists size: " << oldAlgRecoPtHists.size() << std::endl;
    c->SetTitle("EG Single Electron Turn-On Efficiencies, 15GeV Threshold");
-   draw({newAlgRecoPtEffHists[0], newAlgCorrectedRecoPtHist15, oldAlgRecoPtHists[0]}, c, 1.2, {0., 50.}, true);
+   draw({newAlgCorrectedRecoPtHist15, oldAlgRecoPtHists[0]}, c, 1.2, {0., 50.}, true);
    c->SetTitle("EG Single Electron Turn-On Efficiencies, 30GeV Threshold");
-   draw({newAlgRecoPtEffHists[1], newAlgCorrectedRecoPtHist30, oldAlgRecoPtHists[1]}, c, 1.2, {0., 50.}, true);
+   draw({newAlgCorrectedRecoPtHist30, oldAlgRecoPtHists[1]}, c, 1.2, {0., 50.}, true);
    c->SetGridx(0);
    c->SetGridy(0);
    c->SetTitle("#Delta R Distribution Comparison");
-   drawNewOldHist(newAlgDRHists, {oldAlgDRHist, dynAlgDRHist, run1AlgDRHist}, c, 0.);
+   drawNewOldHist(newAlgDRHists, {oldAlgDRHist, run1AlgDRHist}, c, 0.);
    c->SetTitle("d#eta Distribution Comparison");
-   drawNewOldHist(newAlgDEtaHists, {oldAlgDEtaHist, dynAlgDEtaHist}, c, 0.);
+   drawNewOldHist(newAlgDEtaHists, {oldAlgDEtaHist, run1AlgDEtaHist}, c, 0.);
    c->SetTitle("d#phi Distribution Comparison");
-   drawNewOldHist(newAlgDPhiHists, {oldAlgDPhiHist, dynAlgDPhiHist}, c, 0.);
+   drawNewOldHist(newAlgDPhiHists, {oldAlgDPhiHist, run1AlgDPhiHist}, c, 0.);
 
    c->Clear();
    auto bremHist = (TH2F *) eff->Get("analyzer/brem_dphi_hist");
