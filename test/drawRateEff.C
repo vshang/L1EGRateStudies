@@ -19,6 +19,7 @@
 #include "TMultiGraph.h"
 #include "TPaletteAxis.h"
 #include "TPaveStats.h"
+#include "TTree.h"
 #include "THStack.h"
 #include "TF1.h"
 #include "TF2.h"
@@ -403,7 +404,30 @@ void drawRateEff() {
    auto crystalAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_L1EGammaCrystalsProducer:EGammaCrystal_efficiency_pt_by_gen_pt");
    crystalAlgPtHist->SetTitle("Crystal-level Algorithm (producer)");
 
+   // Use crystal tree to adjust turn-on plot for incorrect offline pt reconstruction
+   auto crystal_tree = (TTree *) eff->Get("analyzer/crystal_tree");
+   auto newAlgTurnOnNumerator = new TH1F("newAlgTurnOnNumerator", "Crystal (pT corrected)", 60, 0., 50.);
+   auto newAlgTurnOnDenom = new TH1F("newAlgTurnOnDenom", "Dynamic Crystal Trigger", 60, 0., 50.);
+   auto offlineRecoHist = new TH2F("offlineRecoHist", "Offline reco to gen. comparison;Gen. pT (GeV);(reco-gen)/gen;Counts", 60, 0., 50., 60, -0.5, 0.5);
+   crystal_tree->Draw("(reco_pt-gen_pt)/gen_pt:gen_pt >> offlineRecoHist", "reco_pt>0", "colz");
+   auto offlineRecoHistProjection = offlineRecoHist->ProjectionY("offlineRecoHistProjection", 0, -1, "e");
    c->SetLogy(0);
+   offlineRecoHist->Draw("colz");
+   c->Print("plots/offlineReco_vs_gen.png");
+   c->Clear();
+   offlineRecoHistProjection->Draw("hist ex0");
+   TF1 gaus("gaus", "gaus", -.5, .5);
+   gaus.SetParameters(1.3e3, 0.1, 0.1);
+   offlineRecoHistProjection->Fit(&gaus, "", "", 0., 0.2);
+   TLatex fitmu(-0.4, 1200., ("#mu = "+std::to_string(gaus.GetParameter(1))).c_str());
+   fitmu.Draw();
+   c->Print("plots/offlineReco_vs_gen_projection.png");
+   crystal_tree->Draw("reco_pt >> newAlgTurnOnDenom", "reco_pt > 0.");
+   crystal_tree->Draw("reco_pt >> newAlgTurnOnNumerator", "reco_pt > 0. && passed && cluster_pt > 15./1.109");
+   auto newAlgCorrectedRecoPtHist15 = new TGraphAsymmErrors(newAlgTurnOnNumerator, newAlgTurnOnDenom);
+   crystal_tree->Draw("reco_pt >> newAlgTurnOnNumerator", "reco_pt > 0. && passed && cluster_pt > 30./1.109");
+   auto newAlgCorrectedRecoPtHist30 = new TGraphAsymmErrors(newAlgTurnOnNumerator, newAlgTurnOnDenom);
+
    c->SetTitle("EG Single Electron Efficiencies");
    for(auto& hist : newAlgEtaEffHists)
       draw({hist, oldAlgEtaHist, dynAlgEtaHist}, c, 1.2, {-1.6, 1.6});
@@ -411,9 +435,9 @@ void drawRateEff() {
       draw({hist, oldAlgPtHist, dynAlgPtHist, run1AlgPtHist}, c, 1.2, {0., 50.}, true);
    std::cout << "new hists size: " << newAlgRecoPtEffHists.size() << ", old hists size: " << oldAlgRecoPtHists.size() << std::endl;
    c->SetTitle("EG Single Electron Turn-On Efficiencies, 15GeV Threshold");
-   draw({newAlgRecoPtEffHists[0], oldAlgRecoPtHists[0]}, c, 1.2, {0., 50.}, true);
+   draw({newAlgRecoPtEffHists[0], newAlgCorrectedRecoPtHist15, oldAlgRecoPtHists[0]}, c, 1.2, {0., 50.}, true);
    c->SetTitle("EG Single Electron Turn-On Efficiencies, 30GeV Threshold");
-   draw({newAlgRecoPtEffHists[1], oldAlgRecoPtHists[1]}, c, 1.2, {0., 50.}, true);
+   draw({newAlgRecoPtEffHists[1], newAlgCorrectedRecoPtHist30, oldAlgRecoPtHists[1]}, c, 1.2, {0., 50.}, true);
    c->SetGridx(0);
    c->SetGridy(0);
    c->SetTitle("#Delta R Distribution Comparison");
