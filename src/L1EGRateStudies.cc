@@ -144,6 +144,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float gen_pt = 0.;
          float reco_pt = 0.;
          bool  passed = false;
+         int   nthCandidate = -1;
       } treeinfo;
 
       // (pt_reco-pt_gen)/pt_gen plot
@@ -254,6 +255,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("gen_pt", &treeinfo.gen_pt);
    crystal_tree->Branch("reco_pt", &treeinfo.reco_pt);
    crystal_tree->Branch("passed", &treeinfo.passed);
+   crystal_tree->Branch("nthCandidate", &treeinfo.nthCandidate);
 }
 
 
@@ -401,11 +403,14 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          treeinfo.reco_pt = 0.;
       }
 
+      int clusterCount = 0;
       for(const auto& cluster : crystalClusters)
       {
+         clusterCount++;
          if ( reco::deltaR(cluster, trueElectron) < genMatchDeltaRcut
               && fabs(cluster.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
          {
+            treeinfo.nthCandidate = clusterCount;
             fillhovere_isolation_hists(cluster);
 
             if ( cluster_passes_cuts(cluster) )
@@ -474,8 +479,12 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    }
    else // !doEfficiencyCalc
    {
+      int clusterCount = 0;
       for(const auto& cluster : crystalClusters)
       {
+         clusterCount++;
+         treeinfo.nthCandidate = clusterCount;
+         fillhovere_isolation_hists(cluster);
          if ( cluster_passes_cuts(cluster) )
          {
             dyncrystal_rate_hist->Fill(cluster.pt());
@@ -510,8 +519,6 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             EGalg_rate_hists[name]->Fill(highestEGCandidate.pt());
          }
       }
-
-      fillhovere_isolation_hists(crystalClusters[0]);
    }
 }
 
