@@ -93,6 +93,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       int eventCount;
       std::vector<edm::InputTag> L1EGammaInputTags;
       edm::InputTag L1CrystalClustersInputTag;
+      edm::InputTag offlineRecoClusterInputTag;
             
       int nHistBins, nHistEtaBins;
       double histLow;
@@ -181,6 +182,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    L1EGammaInputTags = iConfig.getParameter<std::vector<edm::InputTag>>("L1EGammaInputTags");
    L1EGammaInputTags.push_back(edm::InputTag("l1extraParticles:All"));
    L1CrystalClustersInputTag = iConfig.getParameter<edm::InputTag>("L1CrystalClustersInputTag");
+   offlineRecoClusterInputTag = iConfig.getParameter<edm::InputTag>("OfflineRecoClustersInputTag");
    
    edm::Service<TFileService> fs;
    
@@ -317,13 +319,13 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       float reco_electron_pt = 0.;
       
       // Get offline cluster info
-      edm::Handle<reco::SuperClusterCollection> pBarrelCorSuperClustersHandle;
-      iEvent.getByLabel("correctedHybridSuperClusters","",pBarrelCorSuperClustersHandle);
-      reco::SuperClusterCollection pBarrelCorSuperClusters = *pBarrelCorSuperClustersHandle.product();
+      edm::Handle<reco::SuperClusterCollection> offlineRecoClustersHandle;
+      iEvent.getByLabel(offlineRecoClusterInputTag, offlineRecoClustersHandle);
+      reco::SuperClusterCollection offlineRecoClusters = *offlineRecoClustersHandle.product();
 
       // Find the cluster corresponding to generated electron
       bool offlineRecoFound = false;
-      for(auto& cluster : pBarrelCorSuperClusters)
+      for(auto& cluster : offlineRecoClusters)
       {
          reco::Candidate::PolarLorentzVector p4;
          p4.SetPt(cluster.energy()*sin(cluster.position().theta()));
@@ -341,6 +343,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                      << cluster.energy()/std::cosh(cluster.position().eta()) 
                      << " eta " << cluster.position().eta() 
                      << " phi " << cluster.position().phi() << std::endl;
+            if (true) std::cout << "Cluster pt - Gen pt / Gen pt = " << (reco_electron_pt-genParticles[0].pt())/genParticles[0].pt() << std::endl;
             break;
          }
       }
