@@ -183,7 +183,6 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    L1EGammaInputTags = iConfig.getParameter<std::vector<edm::InputTag>>("L1EGammaInputTags");
    L1EGammaInputTags.push_back(edm::InputTag("l1extraParticles:All"));
    L1CrystalClustersInputTag = iConfig.getParameter<edm::InputTag>("L1CrystalClustersInputTag");
-   offlineRecoClusterInputTag = iConfig.getParameter<edm::InputTag>("OfflineRecoClustersInputTag");
    
    edm::Service<TFileService> fs;
    
@@ -195,6 +194,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    if ( doEfficiencyCalc )
    {
       auto thresholds = iConfig.getUntrackedParameter<std::vector<int>>("turnOnThresholds");
+      offlineRecoClusterInputTag = iConfig.getParameter<edm::InputTag>("OfflineRecoClustersInputTag");
 
       dyncrystal_efficiency_hist = fs->make<TH1F>("dyncrystalEG_efficiency_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dyncrystal_efficiency_bremcut_hist = fs->make<TH1F>("dyncrystalEG_efficiency_bremcut_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);

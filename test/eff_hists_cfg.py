@@ -94,6 +94,7 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
       cms.InputTag("L1EGammaCrystalsProducer","EGammaCrystal")
    ),
    L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer","EGCrystalCluster"),
+   OfflineRecoClustersInputTag = cms.InputTag("correctedHybridSuperClusters"),
    doEfficiencyCalc = cms.untracked.bool(True),
    useOfflineClusters = cms.untracked.bool(False),
    useEndcap = cms.untracked.bool(False),
