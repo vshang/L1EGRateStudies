@@ -33,74 +33,44 @@ void setLegStyle(TLegend * leg) {
    leg->SetFillStyle(0);
 }
 
-void drawNewOld(std::vector<TH1F*> newHists, std::vector<TH1F*> oldHists, TCanvas * c, double ymax, std::pair<double, double> xrange = {0., 0.}, bool fit = false) {
+void draw(std::vector<TH1F*> hists, TCanvas * c, double ymax, std::pair<double, double> xrange = {0., 0.}) {
    c->Clear();
    TMultiGraph mg("mg", c->GetTitle());
 
-   std::vector<TGraphErrors*> oldGraphs;
+   std::vector<TGraphErrors*> graphs;
    std::vector<int> colors = {kBlack, kRed, kBlue, kGreen, kOrange, kGray};
    auto color = begin(colors);
    int style = 20;
-   for(auto& oldHist : oldHists)
+   for(auto& hist: hists)
    {
-      oldGraphs.push_back(new TGraphErrors((TH1 *) oldHist));
-      oldGraphs.back()->SetLineColor(*color);
-      oldGraphs.back()->SetMarkerColor(*color++);
-      oldGraphs.back()->SetMarkerStyle(style++);
-      oldGraphs.back()->SetMarkerSize(0.5);
-      mg.Add(oldGraphs.back());
+      graphs.push_back(new TGraphErrors((TH1 *) hist));
+      graphs.back()->SetLineColor(*color);
+      graphs.back()->SetMarkerColor(*color++);
+      graphs.back()->SetMarkerStyle(style++);
+      graphs.back()->SetMarkerSize(0.5);
+      mg.Add(graphs.back());
    }
+   mg.Draw("aplez");
 
-   for ( auto newHist : newHists ) {
-      auto g = new TGraphErrors((TH1 *) newHist);
-      g->SetLineColor(kBlack);
-      g->SetMarkerColor(kBlack);
-      g->SetMarkerStyle(25);
-      g->SetMarkerSize(0.5);
-      mg.Add(g);
-      if ( fit )
-         mg.Draw("apez");
-      else
-         mg.Draw("aplez");
+   if ( c->GetLogy() == 0 ) // linear
+      mg.SetMinimum(0.);
+   else
+      mg.SetMinimum(10.);
 
-      if ( c->GetLogy() == 0 ) // linear
-         mg.SetMinimum(0.);
-      else
-         mg.SetMinimum(10.);
+   if ( ymax != 0. )
+      mg.SetMaximum(ymax);
 
-      if ( ymax != 0. )
-         mg.SetMaximum(ymax);
+   TLegend *leg = new TLegend(0.5,0.76,0.9,0.9);
+   setLegStyle(leg);
+   for (auto& graph : graphs) leg->AddEntry(graph, graph->GetTitle(),"lpe");
+   leg->Draw("same");
+   mg.GetXaxis()->SetTitle(graphs[0]->GetXaxis()->GetTitle());
+   if ( xrange.first != 0. || xrange.second != 0 )
+     mg.GetXaxis()->SetRangeUser(xrange.first, xrange.second);
+   mg.GetYaxis()->SetTitle(graphs[0]->GetYaxis()->GetTitle());
 
-      if ( fit && xrange.second != xrange.first )
-      {
-         TF1 shape("shape", "[0]/2*(1+TMath::Erf((x-[1])/([2]*sqrt(x))))", xrange.first, xrange.second);
-         shape.SetParameters(1., 10., 2.);
-         g->Fit(&shape);
-         g->GetFunction("shape")->SetLineColor(g->GetLineColor());
-         g->GetFunction("shape")->SetLineWidth(g->GetLineWidth()*2);
-         for(auto& graph : oldGraphs)
-         {
-            graph->Fit(&shape);
-            graph->GetFunction("shape")->SetLineColor(graph->GetLineColor());
-            graph->GetFunction("shape")->SetLineWidth(graph->GetLineWidth()*2);
-         }
-      }
-
-      TLegend *leg = new TLegend(0.5,0.76,0.9,0.9);
-      setLegStyle(leg);
-      for (auto& oldGraph : oldGraphs) leg->AddEntry(oldGraph, oldGraph->GetTitle(),"lpe");
-      leg->AddEntry(g, g->GetTitle(),"lpe");
-      leg->Draw("same");
-      mg.GetXaxis()->SetTitle(oldHists[0]->GetXaxis()->GetTitle());
-      if ( xrange.first != 0. || xrange.second != 0 )
-        mg.GetXaxis()->SetRangeUser(xrange.first, xrange.second);
-      mg.GetYaxis()->SetTitle(oldHists[0]->GetYaxis()->GetTitle());
-
-      c->Print(("plots/"+std::string(newHist->GetName())+".png").c_str());
-      delete leg;
-      mg.RecursiveRemove(g);
-      delete g;
-   }
+   c->Print(("plots/"+std::string(hists[0]->GetName())+".png").c_str());
+   delete leg;
 }
 
 void draw(std::vector<TGraphAsymmErrors*> graphs, TCanvas * c, double ymax, std::pair<double, double> xrange = {0., 0.}, bool fit = false) {
@@ -120,10 +90,7 @@ void draw(std::vector<TGraphAsymmErrors*> graphs, TCanvas * c, double ymax, std:
       graph->SetMarkerSize(0.5);
       mg.Add(graph);
    }
-   if ( fit )
-      mg.Draw("apez");
-   else
-      mg.Draw("aplez");
+   mg.Draw("apez");
 
    if ( c->GetLogy() == 0 ) // linear
       mg.SetMinimum(0.);
@@ -363,7 +330,7 @@ void drawRateEff() {
    gStyle->SetGridStyle(2);
    gStyle->SetGridColor(kGray+1);
    c->SetTitle("EG Fake Rates (PU140, minBias)");
-   drawNewOld(newAlgRateHists, {oldAlgRateHist, run1AlgRateHist}, c, 40000., {0., 50.});
+   draw({newAlgRateHists[0], oldAlgRateHist, run1AlgRateHist}, c, 40000., {0., 50.});
 
    auto effHistKeys = rootools::getKeysofClass(eff, "analyzer", "TGraphAsymmErrors");
    auto deltaHistKeys = rootools::getKeysofClass(eff, "analyzer", "TH1F");
@@ -399,6 +366,10 @@ void drawRateEff() {
    auto dynAlgDPhiHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticlesNewClustering:EGamma_dphi");
    dynAlgDPhiHist->SetTitle("LLR L2 Algorithm");
 
+   auto run1AlgRecoPtHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_l1extraParticles:All_threshold*");
+   for(auto& hist : run1AlgRecoPtHists) hist->SetTitle("Run 1 Algorithm");
+   auto run1AlgEtaHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_l1extraParticles:All_efficiency_eta_by_gen_eta");
+   run1AlgEtaHist->SetTitle("Run 1 Algorithm");
    auto run1AlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_l1extraParticles:All_efficiency_pt_by_gen_pt");
    run1AlgPtHist->SetTitle("Run 1 Algorithm");
    auto run1AlgDRHist = (TH1F *) eff->Get("analyzer/l1extraParticles:All_deltaR");
@@ -413,7 +384,7 @@ void drawRateEff() {
 
    // Use crystal tree to adjust turn-on plot for incorrect offline pt reconstruction
    auto crystal_tree = (TTree *) eff->Get("analyzer/crystal_tree");
-   auto newAlgTurnOnNumerator = new TH1F("newAlgTurnOnNumerator", "Crystal (pT corrected)", 60, 0., 50.);
+   auto newAlgTurnOnNumerator = new TH1F("newAlgTurnOnNumerator", "Crystal Trigger (pT corrected)", 60, 0., 50.);
    auto newAlgTurnOnDenom = new TH1F("newAlgTurnOnDenom", "Dynamic Crystal Trigger", 60, 0., 50.);
    auto offlineRecoHist = new TH2F("offlineRecoHist", "Offline reco to gen. comparison;Gen. pT (GeV);(reco-gen)/gen;Counts", 60, 0., 50., 60, -0.5, 0.5);
    crystal_tree->Draw("(reco_pt-gen_pt)/gen_pt:gen_pt >> offlineRecoHist", "reco_pt>0", "colz");
@@ -428,25 +399,34 @@ void drawRateEff() {
    offlineRecoHistProjection->Fit(&gaus, "", "", 0., 0.2);
    TLatex fitmu(-0.4, 1200., ("#mu = "+std::to_string(gaus.GetParameter(1))).c_str());
    fitmu.Draw();
+   double pt_threshold_scale_factor = 1.16; // fitmu??
    c->Print("plots/offlineReco_vs_gen_projection.png");
    crystal_tree->Draw("reco_pt >> newAlgTurnOnDenom", "reco_pt > 0.");
-   crystal_tree->Draw("reco_pt >> newAlgTurnOnNumerator", "reco_pt > 0. && passed && cluster_pt > 15./1.109");
+   crystal_tree->Draw("reco_pt >> newAlgTurnOnNumerator", ("reco_pt > 0. && passed && cluster_pt > 15./"+std::to_string(pt_threshold_scale_factor)).c_str());
    auto newAlgCorrectedRecoPtHist15 = new TGraphAsymmErrors(newAlgTurnOnNumerator, newAlgTurnOnDenom);
    newAlgCorrectedRecoPtHist15->SetName("divide_dyncrystalEG_threshold15_efficiency_reco_pt_by_reco_pt_2");
-   crystal_tree->Draw("reco_pt >> newAlgTurnOnNumerator", "reco_pt > 0. && passed && cluster_pt > 30./1.109");
+   crystal_tree->Draw("reco_pt >> newAlgTurnOnNumerator", ("reco_pt > 0. && passed && cluster_pt > 30./"+std::to_string(pt_threshold_scale_factor)).c_str());
    auto newAlgCorrectedRecoPtHist30 = new TGraphAsymmErrors(newAlgTurnOnNumerator, newAlgTurnOnDenom);
    newAlgCorrectedRecoPtHist30->SetName("divide_dyncrystalEG_threshold30_efficiency_reco_pt_by_reco_pt_2");
+   // Draw shifted rate hist too...
+   auto dyncrystalCorrectedRateHist = (TH1F *) newAlgRateHists[0]->Clone("dyncrystalEG_corrected_rate");
+   dyncrystalCorrectedRateHist->SetTitle("Crystal Trigger (pT corrected)");
+   auto dccr_xaxis = dyncrystalCorrectedRateHist->GetXaxis();
+   dccr_xaxis->Set(dccr_xaxis->GetNbins(), dccr_xaxis->GetXmin()*pt_threshold_scale_factor, dccr_xaxis->GetXmax()*pt_threshold_scale_factor);
+   c->SetLogy(1);
+   draw({dyncrystalCorrectedRateHist, oldAlgRateHist, run1AlgRateHist}, c, 40000., {0., 50.});
+   c->SetLogy(0);
 
    c->SetTitle("EG Single Electron Efficiencies");
    for(auto& hist : newAlgEtaEffHists)
-      draw({hist, oldAlgEtaHist}, c, 1.2, {-1.6, 1.6});
+      draw({hist, oldAlgEtaHist, run1AlgEtaHist}, c, 1.2, {-1.6, 1.6});
    for(auto& hist : newAlgPtEffHists)
       draw({hist, oldAlgPtHist, run1AlgPtHist}, c, 1.2, {0., 50.}, true);
    std::cout << "new hists size: " << newAlgRecoPtEffHists.size() << ", old hists size: " << oldAlgRecoPtHists.size() << std::endl;
    c->SetTitle("EG Single Electron Turn-On Efficiencies, 15GeV Threshold");
-   draw({newAlgCorrectedRecoPtHist15, oldAlgRecoPtHists[0]}, c, 1.2, {0., 50.}, true);
+   draw({newAlgCorrectedRecoPtHist15, oldAlgRecoPtHists[0], run1AlgRecoPtHists[0]}, c, 1.2, {0., 50.}, true);
    c->SetTitle("EG Single Electron Turn-On Efficiencies, 30GeV Threshold");
-   draw({newAlgCorrectedRecoPtHist30, oldAlgRecoPtHists[1]}, c, 1.2, {0., 50.}, true);
+   draw({newAlgCorrectedRecoPtHist30, oldAlgRecoPtHists[1], run1AlgRecoPtHists[1]}, c, 1.2, {0., 50.}, true);
    c->SetGridx(0);
    c->SetGridy(0);
    c->SetTitle("#Delta R Distribution Comparison");
@@ -476,15 +456,20 @@ void drawRateEff() {
    recoGenPtHist->SetTitle("Crystal EG alg. momentum error");
    recoGenPtHist->GetYaxis()->SetTitle("Relative Error (reco-gen)/gen");
    auto oldAlgrecoGenPtHist = (TH2F *) eff->Get("analyzer/SLHCL1ExtraParticles:EGamma_reco_gen_pt");
+   // auto oldAlgrecoGenPtHist = (TH2F *) eff->Get("analyzer/l1extraParticles:All_reco_gen_pt");
    oldAlgrecoGenPtHist->SetTitle("Tower EG alg. momentum error");
    oldAlgrecoGenPtHist->GetYaxis()->SetTitle("Relative Error (reco-gen)/gen");
    recoGenPtHist->SetMaximum(50);
    oldAlgrecoGenPtHist->SetMaximum(50);
    oldAlgrecoGenPtHist->SetLineColor(kRed);
    c->cd(1);
+   gPad->SetGridx(1);
+   gPad->SetGridy(1);
    recoGenPtHist->Draw("colz");
    recoGenPtHist->GetYaxis()->SetTitleOffset(1.4);
    c->cd(2);
+   gPad->SetGridx(1);
+   gPad->SetGridy(1);
    oldAlgrecoGenPtHist->Draw("colz");
    oldAlgrecoGenPtHist->GetYaxis()->SetTitleOffset(1.4);
    c->Print("plots/reco_gen_pt.png");
