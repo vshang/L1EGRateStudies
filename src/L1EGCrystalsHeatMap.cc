@@ -78,6 +78,8 @@
 
 #include "FastSimulation/BaseParticlePropagator/interface/BaseParticlePropagator.h"
 #include "FastSimulation/Particle/interface/ParticleTable.h"
+
+#include "DataFormats/EcalDigi/interface/EcalDigiCollections.h"
 //
 // class declaration
 //
@@ -91,34 +93,15 @@ class L1EGCrystalsHeatMap : public edm::EDAnalyzer {
 
 
    private:
-      virtual void beginJob() ;
-      virtual void analyze(const edm::Event&, const edm::EventSetup&);
-      virtual void endJob() ;
-
-      virtual void beginRun(edm::Run const&, edm::EventSetup const&);
-      bool cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster);
-
-      // ----------member data ---------------------------
-      CaloGeometryHelper geometryHelper;
-      int range;
-      bool useEndcap;
-      bool useOfflineClusters;
-      bool kDebug;
-      bool kUseGenMatch;
-      double kClusterPtCut; 
-      int nEvents = 0;
-      edm::InputTag L1CrystalClustersInputTag;
-      std::vector<TH2F*> heatmaps;
-      std::vector<int> heatmap_nevents;
       class SimpleCaloHit
       {
          public:
             EBDetId id;
             GlobalPoint position;
             double energy=0.;
-            inline double pt(){return energy*sin(position.theta());};
+            inline double pt() const{return energy*sin(position.theta());};
             inline double deta(SimpleCaloHit& other){return position.eta() - other.position.eta();};
-            int dieta(SimpleCaloHit& other)
+            int dieta(SimpleCaloHit& other) const
             {
                // int indices do not contain zero
                // Logic from EBDetId::distanceEta() without the abs()
@@ -127,7 +110,7 @@ class L1EGCrystalsHeatMap : public edm::EDAnalyzer {
                return id.ieta()-other.id.ieta()-1;
             };
             inline double dphi(SimpleCaloHit& other){return reco::deltaPhi(position.phi(), other.position.phi());};
-            inline int diphi(SimpleCaloHit& other)
+            inline int diphi(SimpleCaloHit& other) const
             {
                // Logic from EBDetId::distancePhi() without the abs()
                int PI = 180;
@@ -146,6 +129,31 @@ class L1EGCrystalsHeatMap : public edm::EDAnalyzer {
                return false;
             };
       };
+      virtual void beginJob() ;
+      virtual void analyze(const edm::Event&, const edm::EventSetup&);
+      virtual void endJob() ;
+
+      virtual void beginRun(edm::Run const&, edm::EventSetup const&);
+      bool cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster);
+      void fillHeatmap(std::string name, SimpleCaloHit &centerHit);
+      SimpleCaloHit& findClosestHit(reco::Candidate &cluster);
+
+      // ----------member data ---------------------------
+      CaloGeometryHelper geometryHelper;
+      int range_;
+      bool useEndcap;
+      bool useOfflineClusters;
+      bool kDebug;
+      bool kUseGenMatch;
+      double kClusterPtCut; 
+      edm::InputTag L1CrystalClustersInputTag;
+      std::vector<edm::InputTag> L1EGammaOtherAlgs;
+      std::map<std::string, TH2F*> heatmaps_;
+      TH1I * fakeStatus;
+      TH2F * crystalTowerComparison;
+      std::map<std::string, int> heatmap_nevents_;
+      std::vector<SimpleCaloHit> ecalhits_;
+      std::vector<SimpleCaloHit> hcalhits_;
 };
 
 //
@@ -160,7 +168,7 @@ class L1EGCrystalsHeatMap : public edm::EDAnalyzer {
 // constructors and destructor
 //
 L1EGCrystalsHeatMap::L1EGCrystalsHeatMap(const edm::ParameterSet& iConfig):
-   range(iConfig.getUntrackedParameter<int>("range", 10)),
+   range_(iConfig.getUntrackedParameter<int>("range", 10)),
    useEndcap(iConfig.getUntrackedParameter<bool>("useEndcap", false)),
    useOfflineClusters(iConfig.getUntrackedParameter<bool>("useOfflineClusters", false)),
    kDebug(iConfig.getUntrackedParameter<bool>("debug", false)),
@@ -168,20 +176,10 @@ L1EGCrystalsHeatMap::L1EGCrystalsHeatMap(const edm::ParameterSet& iConfig):
    kClusterPtCut(iConfig.getUntrackedParameter<double>("clusterPtCut", 10.))
 {
    L1CrystalClustersInputTag = iConfig.getParameter<edm::InputTag>("L1CrystalClustersInputTag");
-   
+   L1EGammaOtherAlgs = iConfig.getParameter<std::vector<edm::InputTag>>("L1EGammaOtherAlgs");
    edm::Service<TFileService> fs;
-
-   heatmaps.resize(6);
-   heatmap_nevents.resize(6);
-   for(int i=0; i<6; i++) {
-      double dphilow = (i-3)*0.0173;
-      double dphihigh = (i-2)*0.0173;
-      std::string name = "heatmap_dphi"+std::to_string(i);
-      std::stringstream title;
-      title << "Single-electron pt Heatmap (" << dphilow << "<dphi<" << dphihigh << ");d#eta (int.);d#phi (int.)";
-      heatmaps[i] = fs->make<TH2F>(name.c_str(), title.str().c_str(), 2*range+1, -range-.5, range+.5, 2*range+1, -range-.5, range+.5);
-      heatmap_nevents[i] = 0;
-   }
+   fakeStatus = fs->make<TH1I>("fakeStatus", "Fake statuses", 10, 0, 9);
+   crystalTowerComparison = fs->make<TH2F>("crystalTowerComparison", "Crystal cluster pt vs. nearest tower pt", 50, 0., 50., 50, 0., 50.);
 }
 
 
@@ -215,10 +213,9 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
       geometryHelper.setupTopology(*theCaloTopology);
       geometryHelper.initialize(bField000);
    }
-   nEvents++;
 
-   std::vector<SimpleCaloHit> ecalhits;
-   std::vector<SimpleCaloHit> hcalhits;
+   ecalhits_.clear();
+   hcalhits_.clear();
 
    // Retrieve the ecal barrel hits
    // using RecHits (https://cmssdt.cern.ch/SDT/doxygen/CMSSW_6_1_2_SLHC6/doc/html/d8/dc9/classEcalRecHit.html)
@@ -233,7 +230,7 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
          ehit.id = hit.id();
          ehit.position = cell->getPosition();
          ehit.energy = hit.energy();
-         ecalhits.push_back(ehit);
+         ecalhits_.push_back(ehit);
       }
    }
 
@@ -249,7 +246,7 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
          hhit.id = hit.id();
          hhit.position = cell->getPosition();
          hhit.energy = hit.energy();
-         ecalhits.push_back(hhit);
+         hcalhits_.push_back(hhit);
       }
    }
    
@@ -260,6 +257,16 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    crystalClusters = (*crystalClustersHandle.product());
    std::sort(begin(crystalClusters), end(crystalClusters), [](const l1slhc::L1EGCrystalCluster& a, const l1slhc::L1EGCrystalCluster& b){return a.pt() > b.pt();});
 
+   // Load other algorithm products
+   l1extra::L1EmParticleCollection EGClusters;
+   for(const auto& tag : L1EGammaOtherAlgs)
+   {
+      edm::Handle<l1extra::L1EmParticleCollection> EGClustersHandle;
+      iEvent.getByLabel(tag, EGClustersHandle);
+      EGClusters.insert(begin(EGClusters), begin(*EGClustersHandle.product()), end(*EGClustersHandle.product()));
+   }
+   std::sort(begin(EGClusters), end(EGClusters), [](const l1extra::L1EmParticle& a, const l1extra::L1EmParticle& b){return a.pt() > b.pt();});
+
    reco::Candidate::PolarLorentzVector trueElectron;
    if (kUseGenMatch) {
       // Get generated electron
@@ -268,76 +275,30 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
       iEvent.getByLabel("genParticles", genParticleHandle);
       genParticles = *genParticleHandle.product();
 
-      if ( useOfflineClusters )
+      // Get the particle position upon entering ECal
+      RawParticle particle(genParticles[0].p4());
+      particle.setVertex(genParticles[0].vertex().x(), genParticles[0].vertex().y(), genParticles[0].vertex().z(), 0.);
+      particle.setID(genParticles[0].pdgId());
+      BaseParticlePropagator prop(particle, 0., 0., 4.);
+      BaseParticlePropagator start(prop);
+      prop.propagateToEcalEntrance();
+      if(prop.getSuccess()!=0)
       {
-         // Get offline cluster info
-         edm::Handle<reco::SuperClusterCollection> pBarrelCorSuperClustersHandle;
-         iEvent.getByLabel("correctedHybridSuperClusters","",pBarrelCorSuperClustersHandle);
-         reco::SuperClusterCollection pBarrelCorSuperClusters = *pBarrelCorSuperClustersHandle.product();
-   
-         if ( kDebug ) std::cout << "pBarrelCorSuperClusters corrected collection size : " << pBarrelCorSuperClusters.size() << std::endl;
-         if ( kDebug )
-         {
-            for(auto& cluster : pBarrelCorSuperClusters)
-            {
-              std::cout << " pBarrelCorSuperClusters : pt " 
-                  << cluster.energy()/std::cosh(cluster.position().eta()) 
-                  << " eta " << cluster.position().eta() 
-                  << " phi " << cluster.position().phi() << std::endl;
-            }
-         }
-         
-         // Find the cluster corresponding to generated electron
-         bool trueEfound = false;
-         for(auto& cluster : pBarrelCorSuperClusters)
-         {
-            reco::Candidate::PolarLorentzVector p4;
-            p4.SetPt(cluster.energy()*sin(cluster.position().theta()));
-            p4.SetEta(cluster.position().eta());
-            p4.SetPhi(cluster.position().phi());
-            p4.SetM(0.);
-            if ( deltaR(p4, genParticles[0].polarP4()) < 0.1 )
-            {
-               trueElectron = p4;
-               trueEfound = true;
-               break;
-            }
-         }
-         if ( !trueEfound )
-         {
-            // if we can't offline reconstruct the generated electron, 
-            // it might as well have not existed.
-            nEvents--;
-            return;
-         }
+         trueElectron = reco::Candidate::PolarLorentzVector(prop.E()*sin(prop.vertex().theta()), prop.vertex().eta(), prop.vertex().phi(), 0.);
+         if ( kDebug ) std::cout << "Propogated genParticle to ECal, position: " << prop.vertex() << " momentum = " << prop.momentum() << std::endl;
+         if ( kDebug ) std::cout << "                       starting position: " << start.vertex() << " momentum = " << start.momentum() << std::endl;
+         if ( kDebug ) std::cout << "                    genParticle position: " << genParticles[0].vertex() << " momentum = " << genParticles[0].p4() << std::endl;
+         if ( kDebug ) std::cout << "       old pt = " << genParticles[0].pt() << ", new pt = " << trueElectron.pt() << std::endl;
       }
-      else // !useOfflineClusters
+      else
       {
-         // Get the particle position upon entering ECal
-         RawParticle particle(genParticles[0].p4());
-         particle.setVertex(genParticles[0].vertex().x(), genParticles[0].vertex().y(), genParticles[0].vertex().z(), 0.);
-         particle.setID(genParticles[0].pdgId());
-         BaseParticlePropagator prop(particle, 0., 0., 4.);
-         BaseParticlePropagator start(prop);
-         prop.propagateToEcalEntrance();
-         if(prop.getSuccess()!=0)
-         {
-            trueElectron = reco::Candidate::PolarLorentzVector(prop.E()*sin(prop.vertex().theta()), prop.vertex().eta(), prop.vertex().phi(), 0.);
-            if ( kDebug ) std::cout << "Propogated genParticle to ECal, position: " << prop.vertex() << " momentum = " << prop.momentum() << std::endl;
-            if ( kDebug ) std::cout << "                       starting position: " << start.vertex() << " momentum = " << start.momentum() << std::endl;
-            if ( kDebug ) std::cout << "                    genParticle position: " << genParticles[0].vertex() << " momentum = " << genParticles[0].p4() << std::endl;
-            if ( kDebug ) std::cout << "       old pt = " << genParticles[0].pt() << ", new pt = " << trueElectron.pt() << std::endl;
-         }
-         else
-         {
-            // something failed?
-            trueElectron = genParticles[0].polarP4();
-         }
+         // something failed?
+         trueElectron = genParticles[0].polarP4();
       }
+      
       if ( !useEndcap && fabs(trueElectron.eta()) > 1.479 )
       {
          // Don't consider generated electrons in the endcap
-         nEvents--;
          return;
       }
    }
@@ -345,61 +306,55 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    {
       for(auto& cluster : crystalClusters)
       {
-         if ( cluster_passes_cuts(cluster) && cluster.pt() > kClusterPtCut )
+         if ( cluster.pt() < kClusterPtCut ) continue;
+         bool otherAlgMatchFound = false;
+         for(const auto& candidate : EGClusters)
+         {
+            if ( reco::deltaR(candidate, cluster) < 0.25 )
+            {
+               otherAlgMatchFound = true;
+               break;
+            }
+         }
+         if ( cluster_passes_cuts(cluster) && !otherAlgMatchFound )
          {
             trueElectron = cluster.polarP4();
-            break;
-         }
-      }
-      if ( trueElectron.pt() == 0. )
-      {
-         nEvents--;
-         return;
-      }
-   }
-    
-   // Match EG Crystal cluster to gen particle
-   l1slhc::L1EGCrystalCluster egCluster;
-   for(auto& cluster : crystalClusters)
-   {
-      if ( cluster_passes_cuts(cluster)
-         && cluster.pt() > kClusterPtCut
-         && reco::deltaR(cluster, trueElectron) < 0.1
-         && fabs(cluster.pt()-trueElectron.pt())/trueElectron.pt() < 1. )
-      {
-         std::cout << "Cluster around genParticle with pT=" << trueElectron.pt() << ", eta=" << trueElectron.eta() << ", phi=" << trueElectron.phi() << std::endl;
-         egCluster = cluster;
-         break;
-      }
-   }
-   if ( egCluster.pt() == 0. ) return;
- 
-   // Find closest crystal
-   double dRmin = 999.;
-   SimpleCaloHit centerhit;
-   for(auto& ecalhit : ecalhits)
-   {
-      if ( reco::deltaR(ecalhit.position, trueElectron) < dRmin )
-      {
-         dRmin = reco::deltaR(ecalhit.position, trueElectron);
-         centerhit = ecalhit;
-      }
-   }
+            std::cout << "No match in old algs for crystal alg pt: " << cluster.pt() << " eta: " << cluster.eta() << " phi: " << cluster.phi() << std::endl;
 
-   // Fill heatmap
-   for(int i=0; i<6; i++)
-   {
-      double dphilow = i*0.0173-3*0.0173;
-      double dphihigh = (i+1)*0.0173-3*0.0173;
-      if ( reco::deltaPhi(egCluster.phi(), trueElectron.phi()) >= dphilow && reco::deltaPhi(egCluster.phi(), trueElectron.phi()) < dphihigh )
-      {
-         heatmap_nevents[i]++;
-         for(auto& ecalhit : ecalhits)
-         {
-            if ( abs(ecalhit.dieta(centerhit)) <= range && abs(ecalhit.diphi(centerhit)) <= range )
+            // Look at tpgs
+            edm::Handle<EcalTrigPrimDigiCollection> tpgH;
+            iEvent.getByLabel(edm::InputTag("ecalDigis:EcalTriggerPrimitives"), tpgH);
+            EcalTrigPrimDigiCollection tpgs = *tpgH.product();
+            auto &seedHit = findClosestHit(cluster);
+            for(const auto& tpg : tpgs)
             {
-               heatmaps[i]->Fill(ecalhit.dieta(centerhit), ecalhit.diphi(centerhit), ecalhit.pt());
+               if ( seedHit.id.tower() == tpg.id() )
+               {
+                  std::cout << "Found tower for seed hit, et: " << tpg.compressedEt()*0.5 << std::endl;
+                  crystalTowerComparison->Fill(cluster.pt(), tpg.compressedEt()*0.5);                  
+                  if ( tpg.compressedEt() == 0 )
+                  {
+                     fillHeatmap("crystal_notowerEt", seedHit);
+                     fakeStatus->Fill(1);
+                  }
+                  else
+                  {
+                     fillHeatmap("crystal_towerEt", seedHit);
+                     fakeStatus->Fill(2);
+                  }
+                  double etSum = 0.;
+                  for(const auto& hit : ecalhits_)
+                  {
+                     if ( hit.id.tower() == tpg.id() )
+                     {
+                        etSum += hit.pt();
+                        std::cout << "   hit in tower, et: " << hit.pt() << std::endl;
+                     }
+                  }
+                  std::cout << "Total et found in tower: " << etSum << std::endl;
+               }
             }
+            break;
          }
       }
    }
@@ -415,12 +370,13 @@ L1EGCrystalsHeatMap::beginJob()
 void 
 L1EGCrystalsHeatMap::endJob() 
 {
-   // Scale heatmaps by # events added
-   for(int i=0; i<6; i++)
+   // Scale heatmaps_ by # events added
+   for(auto& pair : heatmaps_)
    {
-      std::cout << "Heatmap " << i << " has " << heatmap_nevents[i] << " events." << std::endl;
-      if ( heatmap_nevents[i] > 0 )
-         heatmaps[i]->Scale(1./heatmap_nevents[i]);
+      auto& name = pair.first;
+      std::cout << "Heatmap " << name << " has " << heatmap_nevents_[name] << " events." << std::endl;
+      if ( heatmap_nevents_[name] > 0 )
+         heatmaps_[name]->Scale(1./heatmap_nevents_[name]);
    }
 }
 
@@ -431,6 +387,41 @@ L1EGCrystalsHeatMap::beginRun(edm::Run const& iRun, edm::EventSetup const& es)
    edm::ESHandle<HepPDT::ParticleDataTable> pdt;
    es.getData(pdt);
    if ( !ParticleTable::instance() ) ParticleTable::instance(&(*pdt));
+}
+
+void
+L1EGCrystalsHeatMap::fillHeatmap(std::string name, SimpleCaloHit &centerHit)
+{
+   if ( heatmap_nevents_[name] == 0)
+   {
+      edm::Service<TFileService> fs;
+      heatmaps_[name] = fs->make<TH2F>(name.c_str(), name.c_str(), 2*range_+1, -range_-.5, range_+.5, 2*range_+1, -range_-.5, range_+.5);
+   }
+   heatmap_nevents_[name]++;
+   for(const auto& ecalhit : ecalhits_)
+   {
+      if ( abs(ecalhit.dieta(centerHit)) <= range_ && abs(ecalhit.diphi(centerHit)) <= range_ )
+      {
+         heatmaps_[name]->Fill(ecalhit.dieta(centerHit), ecalhit.diphi(centerHit), ecalhit.pt());
+      }
+   }
+}
+
+L1EGCrystalsHeatMap::SimpleCaloHit&
+L1EGCrystalsHeatMap::findClosestHit(reco::Candidate &cluster)
+{
+   double dRmin = 999.;
+   SimpleCaloHit *centerhit = &ecalhits_[0];
+   for(auto& ecalhit : ecalhits_)
+   {
+      if ( reco::deltaR(ecalhit.position, cluster) < dRmin )
+      {
+         dRmin = reco::deltaR(ecalhit.position, cluster);
+         centerhit = &ecalhit;
+      }
+   }
+   // centerhit should never be null as long as ecalhits_ has entries
+   return *centerhit;
 }
 
 bool

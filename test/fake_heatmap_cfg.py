@@ -37,8 +37,8 @@ process.slhccalo = cms.Path( process.RawToDigi + process.valHcalTriggerPrimitive
 
 # run L1Reco to produce the L1EG objects corresponding
 # to the current trigger
-#process.load('Configuration.StandardSequences.L1Reco_cff')
-#process.L1Reco = cms.Path( process.l1extraParticles )
+process.load('Configuration.StandardSequences.L1Reco_cff')
+process.L1Reco = cms.Path( process.l1extraParticles )
 
 # --------------------------------------------------------------------------------------------
 #
@@ -84,11 +84,15 @@ process.ecalClusters = cms.Path(process.ecalClustersNoPFBox)
 
 process.analyzer = cms.EDAnalyzer('L1EGCrystalsHeatMap',
    L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer","EGCrystalCluster"),
+   L1EGammaOtherAlgs = cms.VInputTag(
+      cms.InputTag("l1extraParticles", "Isolated"),
+      cms.InputTag("l1extraParticles", "NonIsolated")
+   ),
    debug = cms.untracked.bool(False),
    useGenMatch = cms.untracked.bool(False),
    useOfflineClusters = cms.untracked.bool(False),
    range = cms.untracked.int32(20),
-   clusterPtCut = cms.untracked.double(20.)
+   clusterPtCut = cms.untracked.double(25.)
 )
 
 process.panalyzer = cms.Path(process.analyzer)
