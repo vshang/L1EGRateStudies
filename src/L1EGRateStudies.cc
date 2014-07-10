@@ -142,6 +142,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float hovere;
          float iso;
          float gen_pt = 0.;
+         float denom_pt = 0.;
          float reco_pt = 0.;
          bool  passed = false;
          int   nthCandidate = -1;
@@ -253,6 +254,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("cluster_hovere", &treeinfo.hovere);
    crystal_tree->Branch("cluster_iso", &treeinfo.iso);
    crystal_tree->Branch("gen_pt", &treeinfo.gen_pt);
+   crystal_tree->Branch("denom_pt", &treeinfo.denom_pt);
    crystal_tree->Branch("reco_pt", &treeinfo.reco_pt);
    crystal_tree->Branch("passed", &treeinfo.passed);
    crystal_tree->Branch("nthCandidate", &treeinfo.nthCandidate);
@@ -393,6 +395,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       }
       efficiency_denominator_hist->Fill(trueElectron.pt());
       treeinfo.gen_pt = genParticles[0].pt();
+      treeinfo.denom_pt = trueElectron.pt();
       efficiency_denominator_eta_hist->Fill(trueElectron.eta());
       if ( offlineRecoFound ) {
          treeinfo.reco_pt = reco_electron_pt;
