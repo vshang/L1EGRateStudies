@@ -55,6 +55,7 @@
 #include "FastSimulation/BaseParticlePropagator/interface/BaseParticlePropagator.h"
 #include "FastSimulation/Particle/interface/ParticleTable.h"
 
+#include "DataFormats/EcalDigi/interface/EcalDigiCollections.h"
 //
 // class declaration
 //
@@ -490,8 +491,21 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          fillhovere_isolation_hists(cluster);
          if ( cluster_passes_cuts(cluster) )
          {
-            dyncrystal_rate_hist->Fill(cluster.pt());
-            break;
+            // Before filling, see if there is no tower energy where the cluster is...
+            edm::Handle<EcalTrigPrimDigiCollection> tpgH;
+            iEvent.getByLabel(edm::InputTag("ecalDigis:EcalTriggerPrimitives"), tpgH);
+            EcalTrigPrimDigiCollection tpgs = *tpgH.product();
+            for (auto& tp : tpgs)
+            {
+               if ( tp.id() == ((EBDetId) cluster.seedCrystal()).tower() )
+               {
+                  if ( tp.compressedEt() > 0 )
+                  {
+                     dyncrystal_rate_hist->Fill(cluster.pt());
+                  }
+                  break;
+               }
+            }
          }
       }
       
