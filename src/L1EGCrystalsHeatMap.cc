@@ -72,6 +72,7 @@
 #include "DataFormats/EgammaReco/interface/SuperClusterFwd.h"
 
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
+#include "TTree.h"
 #include "TH1.h"
 #include "TH2.h"
 #include "TVector3.h"
@@ -154,6 +155,19 @@ class L1EGCrystalsHeatMap : public edm::EDAnalyzer {
       std::map<std::string, int> heatmap_nevents_;
       std::vector<SimpleCaloHit> ecalhits_;
       std::vector<SimpleCaloHit> hcalhits_;
+
+      // Crystal pt stuff
+      TTree * crystal_tree;
+      struct {
+         std::array<float, 6> crystal_pt;
+         float cluster_pt;
+         float hovere;
+         float iso;
+         float run1_pt = 0.;
+         bool  passed = false;
+         int   nthCandidate = -1;
+      } treeinfo;
+
 };
 
 //
@@ -180,6 +194,15 @@ L1EGCrystalsHeatMap::L1EGCrystalsHeatMap(const edm::ParameterSet& iConfig):
    edm::Service<TFileService> fs;
    fakeStatus = fs->make<TH1I>("fakeStatus", "Fake statuses", 10, 0, 9);
    crystalTowerComparison = fs->make<TH2F>("crystalTowerComparison", "Crystal cluster pt vs. nearest tower pt", 50, 0., 50., 50, 0., 50.);
+
+   crystal_tree = fs->make<TTree>("crystal_tree", "Crystal cluster individual crystal pt values");
+   crystal_tree->Branch("pt", &treeinfo.crystal_pt, "1:2:3:4:5:6");
+   crystal_tree->Branch("cluster_pt", &treeinfo.cluster_pt);
+   crystal_tree->Branch("cluster_hovere", &treeinfo.hovere);
+   crystal_tree->Branch("cluster_iso", &treeinfo.iso);
+   crystal_tree->Branch("run1_pt", &treeinfo.run1_pt);
+   crystal_tree->Branch("passed", &treeinfo.passed);
+   crystal_tree->Branch("nthCandidate", &treeinfo.nthCandidate);
 }
 
 
@@ -304,15 +327,19 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    }
    else // !kUseGenMatch
    {
+      int clusterIndex = -1;
       for(auto& cluster : crystalClusters)
       {
+         clusterIndex++;
          if ( cluster.pt() < kClusterPtCut ) continue;
          bool otherAlgMatchFound = false;
+         l1extra::L1EmParticle run1Cand;
          for(const auto& candidate : EGClusters)
          {
             if ( reco::deltaR(candidate, cluster) < 0.25 )
             {
                otherAlgMatchFound = true;
+               run1Cand = candidate;
                break;
             }
          }
@@ -341,6 +368,18 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
                   {
                      fillHeatmap("crystal_towerEt", seedHit);
                      fakeStatus->Fill(2);
+
+                     for(Size_t i=0; i<treeinfo.crystal_pt.size(); ++i)
+                     {
+                        treeinfo.crystal_pt[i] = cluster.GetCrystalPt(i);
+                     }
+                     treeinfo.cluster_pt = cluster.pt();
+                     treeinfo.hovere = cluster.hovere();
+                     treeinfo.iso = cluster.isolation();
+                     treeinfo.run1_pt = run1Cand.pt();
+                     treeinfo.passed = true;
+                     treeinfo.nthCandidate = clusterIndex;
+                     crystal_tree->Fill();
                   }
                   double etSum = 0.;
                   for(const auto& hit : ecalhits_)
