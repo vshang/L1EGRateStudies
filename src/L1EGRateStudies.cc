@@ -81,6 +81,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       void integrateDown(TH1F *);
       void fillhovere_isolation_hists(const l1slhc::L1EGCrystalCluster& cluster);
       bool cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster);
+      bool checkTowerExists(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps) const;
       
       // ----------member data ---------------------------
       bool doEfficiencyCalc;
@@ -312,6 +313,11 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    iEvent.getByLabel("genParticles", genParticleHandle);
    genParticles = *genParticleHandle.product();
 
+   // Trigger tower info (trigger primitives)
+   edm::Handle<EcalTrigPrimDigiCollection> tpH;
+   iEvent.getByLabel(edm::InputTag("ecalDigis:EcalTriggerPrimitives"), tpH);
+   EcalTrigPrimDigiCollection triggerPrimitives = *tpH.product();
+
    // Sort clusters so we can always pick highest pt cluster matching cuts
    std::sort(begin(crystalClusters), end(crystalClusters), [](const l1slhc::L1EGCrystalCluster& a, const l1slhc::L1EGCrystalCluster& b){return a.pt() > b.pt();});
    // also sort old algorithm products
@@ -417,7 +423,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             treeinfo.nthCandidate = clusterCount;
             fillhovere_isolation_hists(cluster);
 
-            if ( cluster_passes_cuts(cluster) )
+            if ( cluster_passes_cuts(cluster) && checkTowerExists(cluster, triggerPrimitives) )
             {
                if ( debug ) std::cout << "Dynamic hovere cut: " << ((cluster.pt() > 35.) ? 0.5 : 0.5+pow(cluster.pt()-35,2)/350. ) << std::endl;
                if ( debug ) std::cout << "Dynamic isolation cut: " << ((cluster.pt() > 35.) ? 1.3 : 1.3+pow(cluster.pt()-35,2)*4/(35*35) ) << std::endl;
@@ -489,23 +495,11 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          clusterCount++;
          treeinfo.nthCandidate = clusterCount;
          fillhovere_isolation_hists(cluster);
-         if ( cluster_passes_cuts(cluster) )
+
+         if ( cluster_passes_cuts(cluster) && checkTowerExists(cluster, triggerPrimitives) )
          {
-            // Before filling, see if there is no tower energy where the cluster is...
-            edm::Handle<EcalTrigPrimDigiCollection> tpgH;
-            iEvent.getByLabel(edm::InputTag("ecalDigis:EcalTriggerPrimitives"), tpgH);
-            EcalTrigPrimDigiCollection tpgs = *tpgH.product();
-            for (auto& tp : tpgs)
-            {
-               if ( tp.id() == ((EBDetId) cluster.seedCrystal()).tower() )
-               {
-                  if ( tp.compressedEt() > 0 )
-                  {
-                     dyncrystal_rate_hist->Fill(cluster.pt());
-                  }
-                  break;
-               }
-            }
+            dyncrystal_rate_hist->Fill(cluster.pt());
+            break;
          }
       }
       
@@ -660,6 +654,23 @@ L1EGRateStudies::cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster) 
         && ((cluster.pt() > 10) ? (cluster.GetCrystalPt(4)/(cluster.GetCrystalPt(0)+cluster.GetCrystalPt(1)) > 0.):true) )
    {
       return true;
+   }
+   return false;
+}
+
+bool
+L1EGRateStudies::checkTowerExists(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps) const
+{
+   for (const auto& tp : tps)
+   {
+      if ( tp.id() == ((EBDetId) cluster.seedCrystal()).tower() )
+      {
+         if ( tp.compressedEt() > 0 )
+         {
+            return true;
+         }
+         break;
+      }
    }
    return false;
 }
