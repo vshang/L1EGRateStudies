@@ -64,10 +64,10 @@ void draw(std::vector<TH1F*> hists, TCanvas * c, double ymax, std::pair<double, 
    setLegStyle(leg);
    for (auto& graph : graphs) leg->AddEntry(graph, graph->GetTitle(),"lpe");
    leg->Draw("same");
-   mg.GetXaxis()->SetTitle(graphs[0]->GetXaxis()->GetTitle());
+   mg.GetXaxis()->SetTitle(hists[0]->GetXaxis()->GetTitle());
    if ( xrange.first != 0. || xrange.second != 0 )
      mg.GetXaxis()->SetRangeUser(xrange.first, xrange.second);
-   mg.GetYaxis()->SetTitle(graphs[0]->GetYaxis()->GetTitle());
+   mg.GetYaxis()->SetTitle(hists[0]->GetYaxis()->GetTitle());
 
    c->Print(("plots/"+std::string(hists[0]->GetName())+".png").c_str());
    delete leg;
@@ -322,7 +322,7 @@ void drawRateEff() {
    auto run1AlgRateHist = (TH1F *) rates->Get("analyzer/l1extraParticles:All_rate");
    run1AlgRateHist->SetTitle("Run 1 Algorithm");
    auto crystalAlgRateHist = (TH1F *) rates->Get("analyzer/L1EGammaCrystalsProducer:EGammaCrystal_rate");
-   crystalAlgRateHist->SetTitle("Crystal-level Algorithm (producer)");
+   crystalAlgRateHist->SetTitle("Crystal Trigger (w/zero-towers)");
 
    c->SetLogy(1);
    c->SetGridx(1);
@@ -330,7 +330,7 @@ void drawRateEff() {
    gStyle->SetGridStyle(2);
    gStyle->SetGridColor(kGray+1);
    c->SetTitle("EG Fake Rates (PU140, minBias)");
-   draw({newAlgRateHists[0], oldAlgRateHist, run1AlgRateHist}, c, 40000., {0., 50.});
+   draw({newAlgRateHists[0], oldAlgRateHist, run1AlgRateHist, crystalAlgRateHist}, c, 40000., {0., 50.});
 
    auto effHistKeys = rootools::getKeysofClass(eff, "analyzer", "TGraphAsymmErrors");
    auto deltaHistKeys = rootools::getKeysofClass(eff, "analyzer", "TH1F");
@@ -380,7 +380,7 @@ void drawRateEff() {
    run1AlgDPhiHist->SetTitle("Run 1 Algorithm");
 
    auto crystalAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_L1EGammaCrystalsProducer:EGammaCrystal_efficiency_pt_by_gen_pt");
-   crystalAlgPtHist->SetTitle("Crystal-level Algorithm (producer)");
+   crystalAlgPtHist->SetTitle("Crystal Trigger (w/zero-towers)");
 
    // Use crystal tree to adjust turn-on plot for incorrect offline pt reconstruction
    auto crystal_tree = (TTree *) eff->Get("analyzer/crystal_tree");
@@ -413,15 +413,19 @@ void drawRateEff() {
    dyncrystalCorrectedRateHist->SetTitle("Crystal Trigger (pT corrected)");
    auto dccr_xaxis = dyncrystalCorrectedRateHist->GetXaxis();
    dccr_xaxis->Set(dccr_xaxis->GetNbins(), dccr_xaxis->GetXmin()*pt_threshold_scale_factor, dccr_xaxis->GetXmax()*pt_threshold_scale_factor);
+   auto dyncrystalTowersProdCorrectedRateHist = (TH1F *) crystalAlgRateHist->Clone("dyncrystalEG_withtowers_corrected_rate");
+   dyncrystalTowersProdCorrectedRateHist->SetTitle("Crystal Trigger (pT, w/zero-towers)");
+   dccr_xaxis = dyncrystalTowersProdCorrectedRateHist->GetXaxis();
+   dccr_xaxis->Set(dccr_xaxis->GetNbins(), dccr_xaxis->GetXmin()*pt_threshold_scale_factor, dccr_xaxis->GetXmax()*pt_threshold_scale_factor);
    c->SetLogy(1);
-   draw({dyncrystalCorrectedRateHist, oldAlgRateHist, run1AlgRateHist}, c, 40000., {0., 50.});
+   draw({dyncrystalCorrectedRateHist, oldAlgRateHist, run1AlgRateHist, dyncrystalTowersProdCorrectedRateHist}, c, 40000., {0., 50.});
    c->SetLogy(0);
 
    c->SetTitle("EG Single Electron Efficiencies");
    for(auto& hist : newAlgEtaEffHists)
       draw({hist, oldAlgEtaHist, run1AlgEtaHist}, c, 1.2, {-1.6, 1.6});
    for(auto& hist : newAlgPtEffHists)
-      draw({hist, oldAlgPtHist, run1AlgPtHist}, c, 1.2, {0., 50.}, true);
+      draw({hist, oldAlgPtHist, run1AlgPtHist, crystalAlgPtHist}, c, 1.2, {0., 50.}, true);
    std::cout << "new hists size: " << newAlgRecoPtEffHists.size() << ", old hists size: " << oldAlgRecoPtHists.size() << std::endl;
    c->SetTitle("EG Single Electron Turn-On Efficiencies, 15GeV Threshold");
    draw({newAlgCorrectedRecoPtHist15, oldAlgRecoPtHists[0], run1AlgRecoPtHists[0]}, c, 1.2, {0., 50.}, true);
