@@ -343,7 +343,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          p4.SetEta(cluster.position().eta());
          p4.SetPhi(cluster.position().phi());
          p4.SetM(0.);
-         if ( reco::deltaR(p4, genParticles[0].polarP4()) < genMatchDeltaRcut
+         if ( reco::deltaR(p4, genParticles[0].polarP4()) < 0.1
              && fabs(p4.pt() - genParticles[0].pt()) < genMatchRelPtcut*genParticles[0].pt() )
          {
             if ( useOfflineClusters )
@@ -354,7 +354,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                      << cluster.energy()/std::cosh(cluster.position().eta()) 
                      << " eta " << cluster.position().eta() 
                      << " phi " << cluster.position().phi() << std::endl;
-            if (true) std::cout << "Cluster pt - Gen pt / Gen pt = " << (reco_electron_pt-genParticles[0].pt())/genParticles[0].pt() << std::endl;
+            if (debug) std::cout << "Cluster pt - Gen pt / Gen pt = " << (reco_electron_pt-genParticles[0].pt())/genParticles[0].pt() << std::endl;
             break;
          }
       }
