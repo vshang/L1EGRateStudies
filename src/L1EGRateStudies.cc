@@ -56,6 +56,8 @@
 #include "FastSimulation/Particle/interface/ParticleTable.h"
 
 #include "DataFormats/EcalDigi/interface/EcalDigiCollections.h"
+#include "DataFormats/EcalRecHit/interface/EcalRecHit.h"
+#include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
 //
 // class declaration
 //
@@ -496,6 +498,50 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          treeinfo.nthCandidate = clusterCount;
          fillhovere_isolation_hists(cluster);
 
+         if ( cluster_passes_cuts(cluster) )
+         {
+            std::cout << "Event (pt = " << cluster.pt() << ") passed cuts, ";
+            if ( checkTowerExists(cluster, triggerPrimitives) )
+               std::cout << "\x1B[32mtower exists!\x1B[0m" << std::endl;
+            else
+               std::cout << "\x1B[31mtower does not exist!\x1B[0m" << std::endl;
+            std::cout << "Here are the cluster seed crystal reco flags:" << std::endl;
+            edm::Handle<EcalRecHitCollection> pcalohits;
+            iEvent.getByLabel("ecalRecHit","EcalRecHitsEB",pcalohits);
+            for(auto hit : *pcalohits.product())
+            {
+               if( hit.id() == cluster.seedCrystal() )
+               {
+                  const std::map<int, std::string> flagDefs {
+                     { EcalRecHit::kGood, "channel ok, the energy and time measurement are reliable" },
+                     { EcalRecHit::kPoorReco, "the energy is available from the UncalibRecHit, but approximate (bad shape, large chi2)" },
+                     { EcalRecHit::kOutOfTime, "the energy is available from the UncalibRecHit (sync reco), but the event is out of time" },
+                     { EcalRecHit::kFaultyHardware, "The energy is available from the UncalibRecHit, channel is faulty at some hardware level (e.g. noisy)" },
+                     { EcalRecHit::kNoisy, "the channel is very noisy" },
+                     { EcalRecHit::kPoorCalib, "the energy is available from the UncalibRecHit, but the calibration of the channel is poor" },
+                     { EcalRecHit::kSaturated, "saturated channel (recovery not tried)" },
+                     { EcalRecHit::kLeadingEdgeRecovered, "saturated channel: energy estimated from the leading edge before saturation" },
+                     { EcalRecHit::kNeighboursRecovered, "saturated/isolated dead: energy estimated from neighbours" },
+                     { EcalRecHit::kTowerRecovered, "channel in TT with no data link, info retrieved from Trigger Primitive" },
+                     { EcalRecHit::kDead, "channel is dead and any recovery fails" },
+                     { EcalRecHit::kKilled, "MC only flag: the channel is{ EcalRecHit::killed in the real detector" },
+                     { EcalRecHit::kTPSaturated, "the channel is in a region with saturated TP" },
+                     { EcalRecHit::kL1SpikeFlag, "the channel is in a region with TP with sFGVB = 0" },
+                     { EcalRecHit::kWeird, "the signal is believed to originate from an anomalous deposit (spike) " },
+                     { EcalRecHit::kDiWeird, "the signal is anomalous, and neighbors another anomalous signal  " },
+                     { EcalRecHit::kHasSwitchToGain6, "at least one data frame is in G6" },
+                     { EcalRecHit::kHasSwitchToGain1, "at least one data frame is in G1" }
+                  };
+                  for(auto& flag : flagDefs)
+                  {
+                     if ( flag.first == EcalRecHit::kGood ) std::cout << "\x1B[32m";
+                     if ( hit.checkFlag(flag.first) )
+                        std::cout << "    " << flag.second << std::endl;
+                     if ( flag.first == EcalRecHit::kGood ) std::cout << "\x1B[0m";
+                  }
+               }
+            }
+         }
          if ( cluster_passes_cuts(cluster) && checkTowerExists(cluster, triggerPrimitives) )
          {
             dyncrystal_rate_hist->Fill(cluster.pt());
