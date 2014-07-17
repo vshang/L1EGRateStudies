@@ -34,20 +34,21 @@ void setLegStyle(TLegend * leg) {
 }
 
 void draw(std::vector<TH1F*> hists, TCanvas * c, double ymax, std::pair<double, double> xrange = {0., 0.}) {
+   const std::vector<int> colors{kBlack, kRed, kBlue, kGreen, kOrange, kGray};
+   const std::vector<int> marker_styles{20, 24, 25, 26, 32};
    c->Clear();
    TMultiGraph mg("mg", c->GetTitle());
 
    std::vector<TGraphErrors*> graphs;
-   std::vector<int> colors = {kBlack, kRed, kBlue, kGreen, kOrange, kGray};
    auto color = begin(colors);
-   int style = 20;
+   auto style = begin(marker_styles);
    for(auto& hist: hists)
    {
       graphs.push_back(new TGraphErrors((TH1 *) hist));
       graphs.back()->SetLineColor(*color);
       graphs.back()->SetMarkerColor(*color++);
-      graphs.back()->SetMarkerStyle(style++);
-      graphs.back()->SetMarkerSize(0.5);
+      graphs.back()->SetMarkerStyle(*style++);
+      graphs.back()->SetMarkerSize(0.8);
       mg.Add(graphs.back());
    }
    mg.Draw("aplez");
@@ -69,25 +70,26 @@ void draw(std::vector<TH1F*> hists, TCanvas * c, double ymax, std::pair<double, 
      mg.GetXaxis()->SetRangeUser(xrange.first, xrange.second);
    mg.GetYaxis()->SetTitle(hists[0]->GetYaxis()->GetTitle());
 
-   c->Print(("plots/"+std::string(hists[0]->GetName())+".png").c_str());
+   c->Print(("plots/"+std::string(c->GetName())+".png").c_str());
    delete leg;
 }
 
 void draw(std::vector<TGraphAsymmErrors*> graphs, TCanvas * c, double ymax, std::pair<double, double> xrange = {0., 0.}, bool fit = false) {
+   const std::vector<int> colors{kBlack, kRed, kBlue, kGreen, kOrange, kGray};
+   const std::vector<int> marker_styles{20, 24, 25, 26, 32};
    c->Clear();
    TMultiGraph mg("mg", c->GetTitle());
 
-   std::vector<int> colors = {kBlack, kRed, kBlue, kGreen, kOrange, kGray};
    auto color = begin(colors);
    std::vector<int> lines = {kSolid, kDashed, kDotted};
    auto linestyle = begin(lines);
-   int style = 20;
+   auto style = begin(marker_styles);
    for(auto& graph : graphs)
    {
       graph->SetLineColor(*color);
       graph->SetMarkerColor(*color++);
-      graph->SetMarkerStyle(style++);
-      graph->SetMarkerSize(0.5);
+      graph->SetMarkerStyle(*style++);
+      graph->SetMarkerSize(0.8);
       mg.Add(graph);
    }
    mg.Draw("apez");
@@ -123,10 +125,7 @@ void draw(std::vector<TGraphAsymmErrors*> graphs, TCanvas * c, double ymax, std:
      mg.GetXaxis()->SetRangeUser(xrange.first, xrange.second);
    mg.GetYaxis()->SetTitle(graphs[0]->GetYaxis()->GetTitle());
 
-   // Get rid of divide_... stuff
-   std::string name(graphs[0]->GetName());
-   name = name.substr(7, name.find("_by")-7);
-   c->Print(("plots/"+name+".png").c_str());
+   c->Print(("plots/"+std::string(c->GetName())+".png").c_str());
    delete leg;
    for(auto& graph : graphs)
    {
@@ -240,11 +239,11 @@ void draw2DdeltaRHist(TH2F* hist, TCanvas * c) {
 
    // Stats
    TLatex *stats[5];
-   stats[0] = new TLatex(histpad_size+margin+0.01, histpad_size+margin+0.13, ("#mu_#eta = "+to_string(shape.GetParameter(1))).c_str());
-   stats[1] = new TLatex(histpad_size+margin+0.01, histpad_size+margin+0.1, ("#mu_#phi = "+to_string(shape.GetParameter(3))).c_str());
-   stats[2] = new TLatex(histpad_size+margin+0.01, histpad_size+margin+0.07, ("#sigma_#eta#eta = "+to_string(sqrt(0.5/shape.GetParameter(2)))).c_str());
-   stats[3] = new TLatex(histpad_size+margin+0.01, histpad_size+margin+0.04, ("#sigma_#phi#phi = "+to_string(sqrt(0.5/shape.GetParameter(4)))).c_str());
-   stats[4] = new TLatex(histpad_size+margin+0.01, histpad_size+margin+0.01, ("#sigma_#eta#phi = "+to_string(sqrt(-0.5/shape.GetParameter(5)))).c_str());
+   stats[0] = new TLatex(histpad_size+margin+0.01, histpad_size+margin+0.13, ("#mu_#eta = "+std::to_string(shape.GetParameter(1))).c_str());
+   stats[1] = new TLatex(histpad_size+margin+0.01, histpad_size+margin+0.1, ("#mu_#phi = "+std::to_string(shape.GetParameter(3))).c_str());
+   stats[2] = new TLatex(histpad_size+margin+0.01, histpad_size+margin+0.07, ("#sigma_#eta#eta = "+std::to_string(sqrt(0.5/shape.GetParameter(2)))).c_str());
+   stats[3] = new TLatex(histpad_size+margin+0.01, histpad_size+margin+0.04, ("#sigma_#phi#phi = "+std::to_string(sqrt(0.5/shape.GetParameter(4)))).c_str());
+   stats[4] = new TLatex(histpad_size+margin+0.01, histpad_size+margin+0.01, ("#sigma_#eta#phi = "+std::to_string(sqrt(-0.5/shape.GetParameter(5)))).c_str());
    for(int i=0; i<5; ++i) {
       stats[i]->SetTextSize(0.024);
       stats[i]->SetNDC();
@@ -259,22 +258,27 @@ void draw2DdeltaRHist(TH2F* hist, TCanvas * c) {
    gPad->Modified();
    gPad->Update();
 
-   c->Print(("plots/"+std::string(hist->GetName())+".png").c_str());
+   c->Print(("plots/"+std::string(c->GetName())+".png").c_str());
    delete yprojection;
    
    gStyle->SetOptTitle(1);
 }
 
-void drawNewOldHist(std::vector<TH1F*> newHists, std::vector<TH1F*> oldHists, TCanvas * c, double ymax) {
+void drawDRHists(std::vector<TH1F*> hists, TCanvas * c, double ymax) {
+   const std::vector<int> colors{kBlack, kRed, kBlue, kGreen, kOrange, kGray};
+   const std::vector<int> marker_styles{20, 24, 25, 26, 32};
    THStack hs("hs", c->GetTitle());
-   std::vector<int> colors = {kRed, kBlue, kGreen, kOrange, kGray};
    auto color = begin(colors);
-   for(auto& oldHist : oldHists)
+   auto style = begin(marker_styles);
+   for(auto& hist : hists)
    {
-      oldHist->Sumw2();
-      oldHist->Scale(1./oldHist->Integral());
-      oldHist->SetLineColor(*color++);
-      hs.Add(oldHist, "ex0 hist");
+      hist->Sumw2();
+      hist->Scale(1./hist->Integral());
+      hist->SetLineColor(*color);
+      hist->SetMarkerColor(*color++);
+      hist->SetMarkerStyle(*style++);
+      hist->SetMarkerSize(0.8);
+      hs.Add(hist, "ex0 hist");
    }
    c->Clear();
    if ( c->GetLogy() == 0 ) // linear
@@ -282,28 +286,32 @@ void drawNewOldHist(std::vector<TH1F*> newHists, std::vector<TH1F*> oldHists, TC
    if ( ymax != 0. )
       hs.SetMaximum(ymax);
 
-   for ( auto newHist : newHists ) {
-      newHist->Sumw2();
-      newHist->Scale(1./newHist->Integral());
-      newHist->SetLineColor(kBlack);
-      hs.Add(newHist, "hist ex0");
+   hs.Draw("nostack");
 
-      hs.Draw("nostack");
-
-      TLegend *leg = new TLegend(0.5,0.76,0.9,0.9);
-      setLegStyle(leg);
-      for(auto& oldHist : oldHists) leg->AddEntry(oldHist, oldHist->GetTitle(),"lp");
-      leg->AddEntry(newHist, newHist->GetTitle(),"l");
-      leg->Draw("same");
-      hs.GetXaxis()->SetTitle(oldHists[0]->GetXaxis()->GetTitle());
-      hs.GetYaxis()->SetTitle(oldHists[0]->GetYaxis()->GetTitle());
-      hs.GetYaxis()->SetTitleOffset(1.2);
-      hs.GetYaxis()->SetTitle("Fraction of Events");
-                  
-      c->Print(("plots/"+std::string(newHist->GetName())+".png").c_str());
-      delete leg;
-      hs.RecursiveRemove(newHist);
+   std::vector<TGraph> markers;
+   for(auto& hist : hists)
+   {
+      markers.emplace_back(hist);
+      markers.back().Draw("psame");
    }
+
+   TF1 * fit = new TF1("1d_gaus", "gaus", 0., 0.25);
+   fit->SetParameters(0.4, 0., 0.006);
+   //hists[0]->Fit(fit, "n");
+   //fit->Draw("lsame");
+
+   TLegend *leg = new TLegend(0.5,0.76,0.9,0.9);
+   setLegStyle(leg);
+   for(auto& hist : hists) leg->AddEntry(hist, hist->GetTitle(),"elp");
+   leg->Draw("same");
+   hs.GetXaxis()->SetTitle(hists[0]->GetXaxis()->GetTitle());
+   hs.GetYaxis()->SetTitle(hists[0]->GetYaxis()->GetTitle());
+   hs.GetYaxis()->SetTitleOffset(1.2);
+   hs.GetYaxis()->SetTitle("Fraction of Events");
+               
+   c->Print(("plots/"+std::string(c->GetName())+".png").c_str());
+   delete leg;
+   for(auto& hist : hists) hs.RecursiveRemove(hist);
 }
 
 void drawRateEff() {
@@ -313,14 +321,14 @@ void drawRateEff() {
    TFile * rates = new TFile("egTriggerRates.root");
    TFile * eff = new TFile("egTriggerEff.root");
 
-   auto rateHistKeys = rootools::getKeysofClass(rates, "analyzer", "TH1F");
-   auto newAlgRateHists = rootools::loadObjectsMatchingPattern<TH1F>(rateHistKeys, "*crystal*");
+   auto newAlgRateHist = (TH1F *) rates->Get("analyzer/dyncrystalEG_rate");
+   newAlgRateHist->SetTitle("Crystal Algorithm");
    auto oldAlgRateHist = (TH1F *) rates->Get("analyzer/SLHCL1ExtraParticles:EGamma_rate");
    oldAlgRateHist->SetTitle("Original L2 Algorithm");
    auto dynAlgRateHist = (TH1F *) rates->Get("analyzer/SLHCL1ExtraParticlesNewClustering:EGamma_rate");
-   dynAlgRateHist->SetTitle("LLR L2 Algorithm");
+   dynAlgRateHist->SetTitle("Tower Algorithm 2");
    auto run1AlgRateHist = (TH1F *) rates->Get("analyzer/l1extraParticles:All_rate");
-   run1AlgRateHist->SetTitle("Run 1 Algorithm");
+   run1AlgRateHist->SetTitle("Tower Algorithm 1");
    auto crystalAlgRateHist = (TH1F *) rates->Get("analyzer/L1EGammaCrystalsProducer:EGammaCrystal_rate");
    crystalAlgRateHist->SetTitle("Crystal Trigger (w/zero-towers)");
 
@@ -329,17 +337,20 @@ void drawRateEff() {
    c->SetGridy(1);
    gStyle->SetGridStyle(2);
    gStyle->SetGridColor(kGray+1);
+   c->SetName("dyncrystalEG_rate");
    c->SetTitle("EG Fake Rates (PU140, minBias)");
-   draw({newAlgRateHists[0], oldAlgRateHist, run1AlgRateHist, crystalAlgRateHist}, c, 40000., {0., 50.});
+   draw({newAlgRateHist, run1AlgRateHist, dynAlgRateHist}, c, 40000., {0., 50.});
 
    auto effHistKeys = rootools::getKeysofClass(eff, "analyzer", "TGraphAsymmErrors");
-   auto deltaHistKeys = rootools::getKeysofClass(eff, "analyzer", "TH1F");
-   auto newAlgEtaEffHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "*crystal*_eta_by_gen_eta");
-   auto newAlgPtEffHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_dyncrystal*_pt_by_gen_pt");
-   auto newAlgRecoPtEffHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_dyncrystalEG_threshold*");
-   auto newAlgDRHists = rootools::loadObjectsMatchingPattern<TH1F>(deltaHistKeys, "*crystal*_deltaR*");
-   auto newAlgDEtaHists = rootools::loadObjectsMatchingPattern<TH1F>(deltaHistKeys, "*crystal*_deta*");
-   auto newAlgDPhiHists = rootools::loadObjectsMatchingPattern<TH1F>(deltaHistKeys, "*crystal*_dphi*");
+
+   auto newAlgEtaHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_dyncrystalEG_efficiency_eta_by_gen_eta");
+   newAlgEtaHist->SetTitle("Crystal Algorithm");
+   auto newAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_dyncrystalEG_efficiency_pt_by_gen_pt");
+   newAlgPtHist->SetTitle("Crystal Algorithm");
+   auto newAlgRecoPtHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_dyncrystalEG_threshold*");
+   for(auto& hist : newAlgRecoPtHists) hist->SetTitle("Crystal Algorithm");
+   auto newAlgDRHist = (TH1F *) eff->Get("analyzer/dyncrystalEG_deltaR");
+   newAlgDRHist->SetTitle("Crystal Algorithm");
 
    auto oldAlgEtaHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_SLHCL1ExtraParticles:EGamma_efficiency_eta_by_gen_eta");
    oldAlgEtaHist->SetTitle("Original L2 Algorithm");
@@ -349,35 +360,24 @@ void drawRateEff() {
    for(auto& hist : oldAlgRecoPtHists) hist->SetTitle("Original L2 Algorithm");
    auto oldAlgDRHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticles:EGamma_deltaR");
    oldAlgDRHist->SetTitle("Original L2 Algorithm");
-   oldAlgDRHist->GetYaxis()->SetTitle("Counts");
-   auto oldAlgDEtaHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticles:EGamma_deta");
-   oldAlgDEtaHist->SetTitle("Original L2 Algorithm");
-   auto oldAlgDPhiHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticles:EGamma_dphi");
-   oldAlgDPhiHist->SetTitle("Original L2 Algorithm");
 
    auto dynAlgEtaHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_SLHCL1ExtraParticlesNewClustering:EGamma_efficiency_eta_by_gen_eta");
-   dynAlgEtaHist->SetTitle("LLR L2 Algorithm");
+   dynAlgEtaHist->SetTitle("Tower Algorithm 2");
    auto dynAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_SLHCL1ExtraParticlesNewClustering:EGamma_efficiency_pt_by_gen_pt");
-   dynAlgPtHist->SetTitle("LLR L2 Algorithm");
+   dynAlgPtHist->SetTitle("Tower Algorithm 2");
+   auto dynAlgRecoPtHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_SLHCL1ExtraParticlesNewClustering:EGamma_threshold*");
+   for(auto& hist : dynAlgRecoPtHists) hist->SetTitle("Tower Algorithm 2");
    auto dynAlgDRHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticlesNewClustering:EGamma_deltaR");
-   dynAlgDRHist->SetTitle("LLR L2 Algorithm");
-   auto dynAlgDEtaHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticlesNewClustering:EGamma_deta");
-   dynAlgDEtaHist->SetTitle("LLR L2 Algorithm");
-   auto dynAlgDPhiHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticlesNewClustering:EGamma_dphi");
-   dynAlgDPhiHist->SetTitle("LLR L2 Algorithm");
+   dynAlgDRHist->SetTitle("Tower Algorithm 2");
 
-   auto run1AlgRecoPtHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_l1extraParticles:All_threshold*");
-   for(auto& hist : run1AlgRecoPtHists) hist->SetTitle("Run 1 Algorithm");
    auto run1AlgEtaHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_l1extraParticles:All_efficiency_eta_by_gen_eta");
-   run1AlgEtaHist->SetTitle("Run 1 Algorithm");
+   run1AlgEtaHist->SetTitle("Tower Algorithm 1");
    auto run1AlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_l1extraParticles:All_efficiency_pt_by_gen_pt");
-   run1AlgPtHist->SetTitle("Run 1 Algorithm");
+   run1AlgPtHist->SetTitle("Tower Algorithm 1");
+   auto run1AlgRecoPtHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_l1extraParticles:All_threshold*");
+   for(auto& hist : run1AlgRecoPtHists) hist->SetTitle("Tower Algorithm 1");
    auto run1AlgDRHist = (TH1F *) eff->Get("analyzer/l1extraParticles:All_deltaR");
-   run1AlgDRHist->SetTitle("Run 1 Algorithm");
-   auto run1AlgDEtaHist = (TH1F *) eff->Get("analyzer/l1extraParticles:All_deta");
-   run1AlgDEtaHist->SetTitle("Run 1 Algorithm");
-   auto run1AlgDPhiHist = (TH1F *) eff->Get("analyzer/l1extraParticles:All_dphi");
-   run1AlgDPhiHist->SetTitle("Run 1 Algorithm");
+   run1AlgDRHist->SetTitle("Tower Algorithm 1");
 
    auto crystalAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_L1EGammaCrystalsProducer:EGammaCrystal_efficiency_pt_by_gen_pt");
    crystalAlgPtHist->SetTitle("Crystal Trigger (w/zero-towers)");
@@ -405,12 +405,18 @@ void drawRateEff() {
    crystal_tree->Draw("reco_pt >> newAlgTurnOnNumerator", ("reco_pt > 0. && passed && cluster_pt > 15./"+std::to_string(pt_threshold_scale_factor)).c_str());
    auto newAlgCorrectedRecoPtHist15 = new TGraphAsymmErrors(newAlgTurnOnNumerator, newAlgTurnOnDenom);
    newAlgCorrectedRecoPtHist15->SetName("divide_dyncrystalEG_threshold15_efficiency_reco_pt_by_reco_pt_2");
+   newAlgCorrectedRecoPtHist15->SetTitle("Crystal Algorithm");
+   newAlgCorrectedRecoPtHist15->GetXaxis()->SetTitle("Offline reco pT");
+   newAlgCorrectedRecoPtHist15->GetYaxis()->SetTitle("Efficiency");
    crystal_tree->Draw("reco_pt >> newAlgTurnOnNumerator", ("reco_pt > 0. && passed && cluster_pt > 30./"+std::to_string(pt_threshold_scale_factor)).c_str());
    auto newAlgCorrectedRecoPtHist30 = new TGraphAsymmErrors(newAlgTurnOnNumerator, newAlgTurnOnDenom);
    newAlgCorrectedRecoPtHist30->SetName("divide_dyncrystalEG_threshold30_efficiency_reco_pt_by_reco_pt_2");
+   newAlgCorrectedRecoPtHist30->SetTitle("Crystal Algorithm");
+   newAlgCorrectedRecoPtHist30->GetXaxis()->SetTitle("Offline reco pT");
+   newAlgCorrectedRecoPtHist30->GetYaxis()->SetTitle("Efficiency");
    // Draw shifted rate hist too...
-   auto dyncrystalCorrectedRateHist = (TH1F *) newAlgRateHists[0]->Clone("dyncrystalEG_corrected_rate");
-   dyncrystalCorrectedRateHist->SetTitle("Crystal Trigger (pT corrected)");
+   auto dyncrystalCorrectedRateHist = (TH1F *) newAlgRateHist->Clone("dyncrystalEG_corrected_rate");
+   dyncrystalCorrectedRateHist->SetTitle("Crystal Algorithm");
    auto dccr_xaxis = dyncrystalCorrectedRateHist->GetXaxis();
    dccr_xaxis->Set(dccr_xaxis->GetNbins(), dccr_xaxis->GetXmin()*pt_threshold_scale_factor, dccr_xaxis->GetXmax()*pt_threshold_scale_factor);
    auto dyncrystalTowersProdCorrectedRateHist = (TH1F *) crystalAlgRateHist->Clone("dyncrystalEG_withtowers_corrected_rate");
@@ -418,27 +424,26 @@ void drawRateEff() {
    dccr_xaxis = dyncrystalTowersProdCorrectedRateHist->GetXaxis();
    dccr_xaxis->Set(dccr_xaxis->GetNbins(), dccr_xaxis->GetXmin()*pt_threshold_scale_factor, dccr_xaxis->GetXmax()*pt_threshold_scale_factor);
    c->SetLogy(1);
-   draw({dyncrystalCorrectedRateHist, oldAlgRateHist, run1AlgRateHist, dyncrystalTowersProdCorrectedRateHist}, c, 40000., {0., 50.});
+   c->SetName("dyncrystalEG_corrected_rate");
+   draw({dyncrystalCorrectedRateHist, run1AlgRateHist, dynAlgRateHist}, c, 40000., {0., 50.});
    c->SetLogy(0);
 
+   c->SetName("dyncrystalEG_efficiency_eta");
    c->SetTitle("EG Single Electron Efficiencies");
-   for(auto& hist : newAlgEtaEffHists)
-      draw({hist, oldAlgEtaHist, run1AlgEtaHist}, c, 1.2, {-1.6, 1.6});
-   for(auto& hist : newAlgPtEffHists)
-      draw({hist, oldAlgPtHist, run1AlgPtHist, crystalAlgPtHist}, c, 1.2, {0., 50.}, true);
-   std::cout << "new hists size: " << newAlgRecoPtEffHists.size() << ", old hists size: " << oldAlgRecoPtHists.size() << std::endl;
+   draw({newAlgEtaHist, run1AlgEtaHist, dynAlgEtaHist}, c, 1.2, {-1.6, 1.6});
+   c->SetName("dyncrystalEG_efficiency_pt");
+   draw({newAlgPtHist, run1AlgPtHist, dynAlgPtHist}, c, 1.2, {0., 50.}, true);
+   c->SetName("dyncrystalEG_threshold15_efficiency_reco_pt");
    c->SetTitle("EG Single Electron Turn-On Efficiencies, 15GeV Threshold");
-   draw({newAlgCorrectedRecoPtHist15, oldAlgRecoPtHists[0], run1AlgRecoPtHists[0]}, c, 1.2, {0., 50.}, true);
+   draw({newAlgCorrectedRecoPtHist15, run1AlgRecoPtHists[0], dynAlgRecoPtHists[0]}, c, 1.2, {0., 50.}, true);
+   c->SetName("dyncrystalEG_threshold30_efficiency_reco_pt");
    c->SetTitle("EG Single Electron Turn-On Efficiencies, 30GeV Threshold");
-   draw({newAlgCorrectedRecoPtHist30, oldAlgRecoPtHists[1], run1AlgRecoPtHists[1]}, c, 1.2, {0., 50.}, true);
+   draw({newAlgCorrectedRecoPtHist30, run1AlgRecoPtHists[1], dynAlgRecoPtHists[1]}, c, 1.2, {0., 50.}, true);
    c->SetGridx(0);
    c->SetGridy(0);
-   c->SetTitle("#Delta R Distribution Comparison");
-   drawNewOldHist(newAlgDRHists, {oldAlgDRHist, run1AlgDRHist}, c, 0.);
-   c->SetTitle("d#eta Distribution Comparison");
-   drawNewOldHist(newAlgDEtaHists, {oldAlgDEtaHist, run1AlgDEtaHist}, c, 0.);
-   c->SetTitle("d#phi Distribution Comparison");
-   drawNewOldHist(newAlgDPhiHists, {oldAlgDPhiHist, run1AlgDPhiHist}, c, 0.);
+   c->SetName("dyncrystalEG_deltaR");
+   c->SetTitle("#DeltaR Distribution Comparison");
+   drawDRHists({newAlgDRHist, run1AlgDRHist, dynAlgDRHist}, c, 0.);
 
    c->Clear();
    auto bremHist = (TH2F *) eff->Get("analyzer/brem_dphi_hist");
@@ -450,22 +455,32 @@ void drawRateEff() {
 
    auto dynCrystal2DdeltaRHist = (TH2F *) eff->Get("analyzer/dyncrystalEG_2DdeltaR_hist");
    c->SetCanvasSize(800, 700);
+   c->SetName("dyncrystalEG_2D_deltaR");
    c->SetTitle("#Delta R Distribution Fit");
    draw2DdeltaRHist(dynCrystal2DdeltaRHist, c);
 
    c->Clear();
-   c->SetCanvasSize(1200,600);
-   c->Divide(2,1);
+   c->SetCanvasSize(700, 600);
+   c->SetGridx(1);
+   c->SetGridy(1);
+   c->SetRightMargin(0.14);
    auto recoGenPtHist = (TH2F *) eff->Get("analyzer/reco_gen_pt");
-   recoGenPtHist->SetTitle("Crystal EG alg. momentum error");
+   recoGenPtHist->SetTitle("Crystal EG algorithm momentum error");
    recoGenPtHist->GetYaxis()->SetTitle("Relative Error (reco-gen)/gen");
+   recoGenPtHist->GetYaxis()->SetTitleOffset(1.3);
+   recoGenPtHist->SetMaximum(50);
+   recoGenPtHist->Draw("colz");
+   c->Print("plots/dyncrystalEG_reco_gen_pt.png");
+
+   c->Clear();
    auto oldAlgrecoGenPtHist = (TH2F *) eff->Get("analyzer/SLHCL1ExtraParticles:EGamma_reco_gen_pt");
    // auto oldAlgrecoGenPtHist = (TH2F *) eff->Get("analyzer/l1extraParticles:All_reco_gen_pt");
    oldAlgrecoGenPtHist->SetTitle("Tower EG alg. momentum error");
    oldAlgrecoGenPtHist->GetYaxis()->SetTitle("Relative Error (reco-gen)/gen");
-   recoGenPtHist->SetMaximum(50);
    oldAlgrecoGenPtHist->SetMaximum(50);
    oldAlgrecoGenPtHist->SetLineColor(kRed);
+   c->SetCanvasSize(1200,600);
+   c->Divide(2,1);
    c->cd(1);
    gPad->SetGridx(1);
    gPad->SetGridy(1);
@@ -477,77 +492,4 @@ void drawRateEff() {
    oldAlgrecoGenPtHist->Draw("colz");
    oldAlgrecoGenPtHist->GetYaxis()->SetTitleOffset(1.4);
    c->Print("plots/reco_gen_pt.png");
-
-   auto hovereHistSum = new TH1F("hovere_sum", "EG H/E distribution (full pT range)", 30, 0., 4.);
-   auto hovereHistFakeSum = new TH1F("hoverefake_sum", "EG H/E distribution (full pT range)", 30, 0., 4.);
-   auto ecalIsoHistSum = new TH1F("iso_sum", "EG ECal Isolation distribution (full pT range)", 30, 0., 4.);
-   auto ecalIsoHistFakeSum = new TH1F("isofake_sum", "EG ECal Isolation distribution (full pT range)", 30, 0., 4.);
-   std::vector<std::string> pts {"lowpt", "medpt", "highpt"};
-   for(auto pt : pts)
-   {
-      auto hovereHist = (TH1F *) eff->Get(("analyzer/hovere_"+pt).c_str());
-      auto hovereHistFake = (TH1F *) rates->Get(("analyzer/hovere_"+pt).c_str());
-      auto ecalIsoHist = (TH1F *) eff->Get(("analyzer/ecalIso_"+pt).c_str());
-      auto ecalIsoHistFake = (TH1F *) rates->Get(("analyzer/ecalIso_"+pt).c_str());
-      hovereHistSum->Add(hovereHist);
-      hovereHistFakeSum->Add(hovereHistFake);
-      ecalIsoHistSum->Add(ecalIsoHist);
-      ecalIsoHistFakeSum->Add(ecalIsoHistFake);
-      c->Clear();
-      c->Divide(2,1);
-      hovereHistFake->SetLineColor(kRed);
-      c->cd(1);
-      // Normalize
-      hovereHist->Scale(1./hovereHist->Integral());
-      hovereHistFake->Scale(1./hovereHistFake->Integral());
-      hovereHist->GetYaxis()->SetTitle("");
-      hovereHist->Draw();
-      hovereHistFake->Draw("same");
-      ecalIsoHistFake->SetLineColor(kRed);
-      c->cd(2);
-      ecalIsoHist->Scale(1./ecalIsoHist->Integral());
-      ecalIsoHistFake->Scale(1./ecalIsoHistFake->Integral());
-      ecalIsoHist->GetYaxis()->SetTitle("");
-      ecalIsoHist->Draw();
-      ecalIsoHistFake->Draw("same");
-      TLegend * l = new TLegend(0.4,0.8,0.9,0.9);
-      setLegStyle(l);
-      l->AddEntry(ecalIsoHist, "True electron distribution (int-norm)", "l");
-      l->AddEntry(ecalIsoHistFake, "Background distribution (int-norm)", "l");
-      l->Draw("same");
-      c->Print(("plots/crystalEG_hovere_isolation_distributions_"+pt+".png").c_str());
-   }
-   c->Clear();
-   c->Divide(2,1);
-   hovereHistFakeSum->SetLineColor(kRed);
-   c->cd(1);
-   if ( hovereHistSum->GetMaximum() > hovereHistFakeSum->GetMaximum() )
-   {
-      hovereHistSum->Draw();
-      hovereHistFakeSum->Draw("same");
-   }
-   else
-   {
-      hovereHistFakeSum->Draw();
-      hovereHistSum->Draw("same");
-   }
-   ecalIsoHistFakeSum->SetLineColor(kRed);
-   c->cd(2);
-   if ( ecalIsoHistSum->GetMaximum() > ecalIsoHistFakeSum->GetMaximum() )
-   {
-      ecalIsoHistSum->Draw();
-      ecalIsoHistFakeSum->Draw("same");
-   }
-   else
-   {
-      ecalIsoHistFakeSum->Draw();
-      ecalIsoHistSum->Draw("same");
-   }
-   TLegend * l = new TLegend(0.4,0.8,0.9,0.9);
-   setLegStyle(l);
-   l->AddEntry(ecalIsoHistSum, "True electron distribution", "l");
-   l->AddEntry(ecalIsoHistFakeSum, "Background distribution", "l");
-   l->Draw("same");
-   c->Print("plots/crystalEG_hovere_isolation_distributions.png");
-
 }

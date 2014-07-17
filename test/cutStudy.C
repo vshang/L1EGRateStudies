@@ -13,6 +13,15 @@ void createCDF(TH2F * hist, bool invert = false) {
     }
 }
 
+void setLegStyle(TLegend * leg) {
+   leg->SetBorderSize(0);
+   leg->SetLineColor(1);
+   leg->SetLineStyle(1);
+   leg->SetLineWidth(.3);
+   leg->SetFillColor(0);
+   leg->SetFillStyle(0);
+}
+
 void cutStudy(){
     gStyle->SetOptStat(0);
     TFile *_file0 = TFile::Open("egTriggerEff.root");
@@ -91,4 +100,22 @@ void cutStudy(){
     isocut->Draw("lsame");
     oldisocut->Draw("lsame");
     c4->Print("plots/isolation_cdf.png");
+
+    TCanvas * c5 = new TCanvas("ptratio_canvas", "ptratio_canvas", 700, 600);
+    TH1F * ptratio_rate = new TH1F("ptratio_rate", "Single electron signal", 50, 0, 0.2);
+    rate->Draw("pt.5/(pt.1+pt.2) >> ptratio_rate", "cluster_pt > 10.", "goff");
+    ptratio_rate->SetLineColor(kRed);
+    ptratio_rate->Sumw2();
+    ptratio_rate->Scale(1./ptratio_rate->Integral());
+    TH1F * ptratio_eff = new TH1F("ptratio_eff", "Background", 50, 0, 0.2);
+    eff->Draw("pt.5/(pt.1+pt.2) >> ptratio_eff", "cluster_pt > 10.", "goff");
+    ptratio_eff->Sumw2();
+    ptratio_eff->Scale(1./ptratio_eff->Integral());
+    THStack * ptratio_stack = new THStack("ptratio_stack", "Pt ratio cut parameter;pt.5/(pt.1+pt.2);Fraction of Events");
+    ptratio_stack->Add(ptratio_rate, "hist ex0");
+    ptratio_stack->Add(ptratio_eff, "hist ex0");
+    ptratio_stack->Draw("nostack");
+    ptratio_stack->GetYaxis()->SetTitleOffset(1.3);
+    setLegStyle(c5->BuildLegend());
+    c5->Print("plots/pt5_over_pt1+2_clustergt10.png");
 }
