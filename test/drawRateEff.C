@@ -74,7 +74,7 @@ void draw(std::vector<TH1F*> hists, TCanvas * c, double ymax, std::pair<double, 
    delete leg;
 }
 
-void draw(std::vector<TGraphAsymmErrors*> graphs, TCanvas * c, double ymax, std::pair<double, double> xrange = {0., 0.}, bool fit = false) {
+void draw(std::vector<TGraphAsymmErrors*> graphs, TCanvas * c, double ymax, std::pair<double, double> xrange = {0., 0.}, bool fit = false, std::vector<double> fitHint = {1., 15., 3., 0.}) {
    const std::vector<int> colors{kBlack, kRed, kBlue, kGreen, kOrange, kGray};
    const std::vector<int> marker_styles{20, 24, 25, 26, 32};
    c->Clear();
@@ -106,8 +106,8 @@ void draw(std::vector<TGraphAsymmErrors*> graphs, TCanvas * c, double ymax, std:
    {
       for(auto& graph : graphs)
       {
-         TF1 shape("shape", "[0]/2*(1+TMath::Erf((x-[1])/([2]*sqrt(x))))", xrange.first, xrange.second);
-         shape.SetParameters(1., 15., 3.);
+         TF1 shape("shape", "[0]/2*(1+TMath::Erf((x-[1])/([2]*sqrt(x))))+[3]*x", xrange.first, xrange.second);
+         shape.SetParameters(fitHint[0], fitHint[1], fitHint[2], fitHint[3]);
          // Somehow, step size increases each time, have to find a way to control it...
          graph->Fit(&shape);
          graph->GetFunction("shape")->SetLineColor(graph->GetLineColor());
@@ -295,8 +295,8 @@ void drawDRHists(std::vector<TH1F*> hists, TCanvas * c, double ymax) {
       markers.back().Draw("psame");
    }
 
-   TF1 * fit = new TF1("1d_gaus", "gaus", 0., 0.25);
-   fit->SetParameters(0.4, 0., 0.006);
+   TF1 * fit = new TF1("doublegaus", "gaus+gaus(3)", 0., 0.25);
+   fit->SetParameters(0.3, 0., 0.003, 0.1, 0., 0.02);
    //hists[0]->Fit(fit, "n");
    //fit->Draw("lsame");
 
@@ -414,6 +414,7 @@ void drawRateEff() {
    newAlgCorrectedRecoPtHist30->SetTitle("Crystal Algorithm");
    newAlgCorrectedRecoPtHist30->GetXaxis()->SetTitle("Offline reco pT");
    newAlgCorrectedRecoPtHist30->GetYaxis()->SetTitle("Efficiency");
+
    // Draw shifted rate hist too...
    auto dyncrystalCorrectedRateHist = (TH1F *) newAlgRateHist->Clone("dyncrystalEG_corrected_rate");
    dyncrystalCorrectedRateHist->SetTitle("Crystal Algorithm");
@@ -432,13 +433,13 @@ void drawRateEff() {
    c->SetTitle("EG Single Electron Efficiencies");
    draw({newAlgEtaHist, run1AlgEtaHist, dynAlgEtaHist}, c, 1.2, {-1.6, 1.6});
    c->SetName("dyncrystalEG_efficiency_pt");
-   draw({newAlgPtHist, run1AlgPtHist, dynAlgPtHist}, c, 1.2, {0., 50.}, true);
+   draw({newAlgPtHist, run1AlgPtHist, dynAlgPtHist}, c, 1.2, {0., 50.}, true, {0.9, 2., 1., 0.});
    c->SetName("dyncrystalEG_threshold15_efficiency_reco_pt");
    c->SetTitle("EG Single Electron Turn-On Efficiencies, 15GeV Threshold");
-   draw({newAlgCorrectedRecoPtHist15, run1AlgRecoPtHists[0], dynAlgRecoPtHists[0]}, c, 1.2, {0., 50.}, true);
+   draw({newAlgCorrectedRecoPtHist15, run1AlgRecoPtHists[0], dynAlgRecoPtHists[0]}, c, 1.2, {0., 50.}, true, {0.9, 15., 1., 0.});
    c->SetName("dyncrystalEG_threshold30_efficiency_reco_pt");
    c->SetTitle("EG Single Electron Turn-On Efficiencies, 30GeV Threshold");
-   draw({newAlgCorrectedRecoPtHist30, run1AlgRecoPtHists[1], dynAlgRecoPtHists[1]}, c, 1.2, {0., 50.}, true);
+   draw({newAlgCorrectedRecoPtHist30, run1AlgRecoPtHists[1], dynAlgRecoPtHists[1]}, c, 1.2, {0., 50.}, true, {0.95, 30., 1., 0.});
    c->SetGridx(0);
    c->SetGridy(0);
    c->SetName("dyncrystalEG_deltaR");
