@@ -82,8 +82,9 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       // -- user functions
       void integrateDown(TH1F *);
       void fillhovere_isolation_hists(const l1slhc::L1EGCrystalCluster& cluster);
-      bool cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster);
+      bool cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
       bool checkTowerExists(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps) const;
+      void checkRecHitsFlags(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps, const EcalRecHitCollection &ecalRecHits) const;
       
       // ----------member data ---------------------------
       bool doEfficiencyCalc;
@@ -137,6 +138,10 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       TH1F * ecalIso_hist_lowpt;
       TH1F * ecalIso_hist_medpt;
       TH1F * ecalIso_hist_highpt;
+
+      // EcalRecHits flags
+      TH1I * RecHitFlagsTowerHist;
+      TH1I * RecHitFlagsNoTowerHist;
 
       // Crystal pt stuff
       TTree * crystal_tree;
@@ -252,6 +257,9 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    ecalIso_hist_medpt = fs->make<TH1F>("ecalIso_medpt" , "EG ECal Isolation distribution (15<pT<35);ECal Isolation;Counts", 30, 0, 4);
    ecalIso_hist_highpt = fs->make<TH1F>("ecalIso_highpt" , "EG ECal Isolation distribution (35<pT<50);ECal Isolation;Counts", 30, 0, 4);
 
+   RecHitFlagsTowerHist = fs->make<TH1I>("recHitFlags_tower", "EcalRecHit status flags when tower exists;Flag;Counts", 20, 0, 19);
+   RecHitFlagsNoTowerHist = fs->make<TH1I>("recHitFlags_notower", "EcalRecHit status flags when tower exists;Flag;Counts", 20, 0, 19);
+
    crystal_tree = fs->make<TTree>("crystal_tree", "Crystal cluster individual crystal pt values");
    crystal_tree->Branch("pt", &treeinfo.crystal_pt, "1:2:3:4:5:6");
    crystal_tree->Branch("cluster_pt", &treeinfo.cluster_pt);
@@ -319,6 +327,11 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    edm::Handle<EcalTrigPrimDigiCollection> tpH;
    iEvent.getByLabel(edm::InputTag("ecalDigis:EcalTriggerPrimitives"), tpH);
    EcalTrigPrimDigiCollection triggerPrimitives = *tpH.product();
+
+   // EcalRecHits for looking at flags in the cluster seed crystal
+   edm::Handle<EcalRecHitCollection> pcalohits;
+   iEvent.getByLabel("ecalRecHit","EcalRecHitsEB",pcalohits);
+   EcalRecHitCollection ecalRecHits = *pcalohits.product();
 
    // Sort clusters so we can always pick highest pt cluster matching cuts
    std::sort(begin(crystalClusters), end(crystalClusters), [](const l1slhc::L1EGCrystalCluster& a, const l1slhc::L1EGCrystalCluster& b){return a.pt() > b.pt();});
@@ -424,6 +437,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          {
             treeinfo.nthCandidate = clusterCount;
             fillhovere_isolation_hists(cluster);
+            checkRecHitsFlags(cluster, triggerPrimitives, ecalRecHits);
 
             if ( cluster_passes_cuts(cluster) && checkTowerExists(cluster, triggerPrimitives) )
             {
@@ -497,51 +511,8 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          clusterCount++;
          treeinfo.nthCandidate = clusterCount;
          fillhovere_isolation_hists(cluster);
+         checkRecHitsFlags(cluster, triggerPrimitives, ecalRecHits);
 
-         if ( cluster_passes_cuts(cluster) )
-         {
-            std::cout << "Event (pt = " << cluster.pt() << ") passed cuts, ";
-            if ( checkTowerExists(cluster, triggerPrimitives) )
-               std::cout << "\x1B[32mtower exists!\x1B[0m" << std::endl;
-            else
-               std::cout << "\x1B[31mtower does not exist!\x1B[0m" << std::endl;
-            std::cout << "Here are the cluster seed crystal reco flags:" << std::endl;
-            edm::Handle<EcalRecHitCollection> pcalohits;
-            iEvent.getByLabel("ecalRecHit","EcalRecHitsEB",pcalohits);
-            for(auto hit : *pcalohits.product())
-            {
-               if( hit.id() == cluster.seedCrystal() )
-               {
-                  const std::map<int, std::string> flagDefs {
-                     { EcalRecHit::kGood, "channel ok, the energy and time measurement are reliable" },
-                     { EcalRecHit::kPoorReco, "the energy is available from the UncalibRecHit, but approximate (bad shape, large chi2)" },
-                     { EcalRecHit::kOutOfTime, "the energy is available from the UncalibRecHit (sync reco), but the event is out of time" },
-                     { EcalRecHit::kFaultyHardware, "The energy is available from the UncalibRecHit, channel is faulty at some hardware level (e.g. noisy)" },
-                     { EcalRecHit::kNoisy, "the channel is very noisy" },
-                     { EcalRecHit::kPoorCalib, "the energy is available from the UncalibRecHit, but the calibration of the channel is poor" },
-                     { EcalRecHit::kSaturated, "saturated channel (recovery not tried)" },
-                     { EcalRecHit::kLeadingEdgeRecovered, "saturated channel: energy estimated from the leading edge before saturation" },
-                     { EcalRecHit::kNeighboursRecovered, "saturated/isolated dead: energy estimated from neighbours" },
-                     { EcalRecHit::kTowerRecovered, "channel in TT with no data link, info retrieved from Trigger Primitive" },
-                     { EcalRecHit::kDead, "channel is dead and any recovery fails" },
-                     { EcalRecHit::kKilled, "MC only flag: the channel is{ EcalRecHit::killed in the real detector" },
-                     { EcalRecHit::kTPSaturated, "the channel is in a region with saturated TP" },
-                     { EcalRecHit::kL1SpikeFlag, "the channel is in a region with TP with sFGVB = 0" },
-                     { EcalRecHit::kWeird, "the signal is believed to originate from an anomalous deposit (spike) " },
-                     { EcalRecHit::kDiWeird, "the signal is anomalous, and neighbors another anomalous signal  " },
-                     { EcalRecHit::kHasSwitchToGain6, "at least one data frame is in G6" },
-                     { EcalRecHit::kHasSwitchToGain1, "at least one data frame is in G1" }
-                  };
-                  for(auto& flag : flagDefs)
-                  {
-                     if ( flag.first == EcalRecHit::kGood ) std::cout << "\x1B[32m";
-                     if ( hit.checkFlag(flag.first) )
-                        std::cout << "    " << flag.second << std::endl;
-                     if ( flag.first == EcalRecHit::kGood ) std::cout << "\x1B[0m";
-                  }
-               }
-            }
-         }
          if ( cluster_passes_cuts(cluster) && checkTowerExists(cluster, triggerPrimitives) )
          {
             dyncrystal_rate_hist->Fill(cluster.pt());
@@ -693,7 +664,7 @@ L1EGRateStudies::fillhovere_isolation_hists(const l1slhc::L1EGCrystalCluster& cl
 }
 
 bool
-L1EGRateStudies::cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster) {
+L1EGRateStudies::cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster) const {
    if ( cluster.hovere() < 14./cluster.pt()+0.05
         && cluster.isolation() < 40./cluster.pt()+0.1
         && (cluster.GetCrystalPt(4)/(cluster.GetCrystalPt(0)+cluster.GetCrystalPt(1)) < ( (cluster.pt() < 20) ? 0.08:0.08*(1+(cluster.pt()-20)/25.) ) )
@@ -705,8 +676,7 @@ L1EGRateStudies::cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster) 
 }
 
 bool
-L1EGRateStudies::checkTowerExists(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps) const
-{
+L1EGRateStudies::checkTowerExists(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps) const {
    for (const auto& tp : tps)
    {
       if ( tp.id() == ((EBDetId) cluster.seedCrystal()).tower() )
@@ -719,6 +689,59 @@ L1EGRateStudies::checkTowerExists(const l1slhc::L1EGCrystalCluster &cluster, con
       }
    }
    return false;
+}
+
+void
+L1EGRateStudies::checkRecHitsFlags(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps, const EcalRecHitCollection &ecalRecHits) const {
+   if ( cluster_passes_cuts(cluster) )
+   {
+      if ( debug ) std::cout << "Event (pt = " << cluster.pt() << ") passed cuts, ";
+      if ( debug && checkTowerExists(cluster, tps) )
+         std::cout << "\x1B[32mtower exists!\x1B[0m" << std::endl;
+      else if ( debug )
+         std::cout << "\x1B[31mtower does not exist!\x1B[0m" << std::endl;
+      if ( debug ) std::cout << "Here are the cluster seed crystal reco flags:" << std::endl;
+      for(auto hit : ecalRecHits)
+      {
+         if( hit.id() == cluster.seedCrystal() )
+         {
+            const std::map<int, std::string> flagDefs {
+               { EcalRecHit::kGood, "channel ok, the energy and time measurement are reliable" },
+               { EcalRecHit::kPoorReco, "the energy is available from the UncalibRecHit, but approximate (bad shape, large chi2)" },
+               { EcalRecHit::kOutOfTime, "the energy is available from the UncalibRecHit (sync reco), but the event is out of time" },
+               { EcalRecHit::kFaultyHardware, "The energy is available from the UncalibRecHit, channel is faulty at some hardware level (e.g. noisy)" },
+               { EcalRecHit::kNoisy, "the channel is very noisy" },
+               { EcalRecHit::kPoorCalib, "the energy is available from the UncalibRecHit, but the calibration of the channel is poor" },
+               { EcalRecHit::kSaturated, "saturated channel (recovery not tried)" },
+               { EcalRecHit::kLeadingEdgeRecovered, "saturated channel: energy estimated from the leading edge before saturation" },
+               { EcalRecHit::kNeighboursRecovered, "saturated/isolated dead: energy estimated from neighbours" },
+               { EcalRecHit::kTowerRecovered, "channel in TT with no data link, info retrieved from Trigger Primitive" },
+               { EcalRecHit::kDead, "channel is dead and any recovery fails" },
+               { EcalRecHit::kKilled, "MC only flag: the channel is{ EcalRecHit::killed in the real detector" },
+               { EcalRecHit::kTPSaturated, "the channel is in a region with saturated TP" },
+               { EcalRecHit::kL1SpikeFlag, "the channel is in a region with TP with sFGVB = 0" },
+               { EcalRecHit::kWeird, "the signal is believed to originate from an anomalous deposit (spike) " },
+               { EcalRecHit::kDiWeird, "the signal is anomalous, and neighbors another anomalous signal  " },
+               { EcalRecHit::kHasSwitchToGain6, "at least one data frame is in G6" },
+               { EcalRecHit::kHasSwitchToGain1, "at least one data frame is in G1" }
+            };
+            for(auto& flag : flagDefs)
+            {
+               if ( hit.checkFlag(flag.first) )
+               {
+                  if ( flag.first == EcalRecHit::kGood && debug ) std::cout << "\x1B[32m";
+                  if ( debug ) std::cout << "    " << flag.second << std::endl;
+                  if ( flag.first == EcalRecHit::kGood && debug ) std::cout << "\x1B[0m";
+
+                  if ( checkTowerExists(cluster, tps) )
+                     RecHitFlagsTowerHist->Fill(flag.first);
+                  else
+                     RecHitFlagsNoTowerHist->Fill(flag.first);
+               }
+            }
+         }
+      }
+   }
 }
 
 //define this as a plug-in
