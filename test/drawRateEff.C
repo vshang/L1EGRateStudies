@@ -252,11 +252,13 @@ void draw2DdeltaRHist(TH2F* hist, TCanvas * c) {
 
    // Draw Title
    c->cd();
-   auto title = new TLatex(margin, 1-margin+0.01, "Crystal-level EG Trigger #DeltaR Distribution");
-   title->SetTextSize(0.04);
-   title->SetTextFont(42);
-   title->SetNDC();
-   title->Draw();
+   if ( *(c->GetTitle()) != '\0' ) {
+      auto title = new TLatex(margin, 1-margin+0.01, "Crystal-level EG Trigger #DeltaR Distribution");
+      title->SetTextSize(0.04);
+      title->SetTextFont(42);
+      title->SetNDC();
+      title->Draw();
+   }
 
    // CMS info string
    TLatex * cmsString = new TLatex(
@@ -384,7 +386,8 @@ void drawRateEff() {
    gStyle->SetGridStyle(2);
    gStyle->SetGridColor(kGray+1);
    c->SetName("dyncrystalEG_rate");
-   c->SetTitle("EG Fake Rates");
+   //c->SetTitle("EG Fake Rates");
+   c->SetTitle("");
    drawRates({newAlgRateHist, run1AlgRateHist, dynAlgRateHist}, c, 40000., {0., 50.});
 
    auto effHistKeys = rootools::getKeysofClass(eff, "analyzer", "TGraphAsymmErrors");
@@ -486,7 +489,8 @@ void drawRateEff() {
    c->SetLogy(0);
 
    c->SetName("dyncrystalEG_efficiency_eta");
-   c->SetTitle("EG Efficiencies");
+   //c->SetTitle("EG Efficiencies");
+   c->SetTitle("");
    drawEfficiency({newAlgEtaHist, run1AlgEtaHist, dynAlgEtaHist}, c, 1.2, {-1.6, 1.6});
    c->SetName("dyncrystalEG_efficiency_pt");
    drawEfficiency({newAlgPtHist}, c, 1.2, {0., 50.}, true, {0.9, 2., 1., 0.});
@@ -497,14 +501,16 @@ void drawRateEff() {
    c->SetTitle("EG Turn-On Efficiencies, 30GeV Threshold");
    drawEfficiency({newAlgCorrectedRecoPtHist30, run1AlgRecoPtHists[1], dynAlgRecoPtHists[1]}, c, 1.2, {0., 50.}, true, {0.95, 30., 1., 0.});
    c->SetName("dyncrystalEG_threshold20_efficiency_gen_pt");
-   c->SetTitle("EG Turn-On Efficiencies");
+   //c->SetTitle("EG Turn-On Efficiencies");
+   c->SetTitle("");
    drawEfficiency({newAlgGenPtTurnOn20}, c, 1.2, {0., 50.}, true, {0.95, 20., 1., 0.});
    c->SetName("dyncrystalEG_threshold20_efficiency_gen_pt_comparison");
    drawEfficiency({newAlgGenPtTurnOn20, newAlgPtHist}, c, 1.2, {0., 50.}, true, {0.95, 20., 1., 0.});
    c->SetGridx(0);
    c->SetGridy(0);
    c->SetName("dyncrystalEG_deltaR");
-   c->SetTitle("#DeltaR Distribution");
+   //c->SetTitle("#DeltaR Distribution");
+   c->SetTitle("");
    drawDRHists({newAlgDRHist, dynAlgDRHist}, c, 0.);
 
    c->Clear();
@@ -518,7 +524,8 @@ void drawRateEff() {
    auto dynCrystal2DdeltaRHist = (TH2F *) eff->Get("analyzer/dyncrystalEG_2DdeltaR_hist");
    c->SetCanvasSize(800, 700);
    c->SetName("dyncrystalEG_2D_deltaR");
-   c->SetTitle("#Delta R Distribution Fit");
+   //c->SetTitle("#Delta R Distribution Fit");
+   c->SetTitle("");
    draw2DdeltaRHist(dynCrystal2DdeltaRHist, c);
 
    c->Clear();
@@ -528,7 +535,8 @@ void drawRateEff() {
    c->SetRightMargin(0.14);
    c->SetTopMargin(0.13);
    auto recoGenPtHist = (TH2F *) eff->Get("analyzer/reco_gen_pt");
-   recoGenPtHist->SetTitle("Crystal EG algorithm pT resolution");
+   //recoGenPtHist->SetTitle("Crystal EG algorithm pT resolution");
+   recoGenPtHist->SetTitle("");
    recoGenPtHist->GetYaxis()->SetTitle("Relative Error (reco-gen)/gen");
    recoGenPtHist->GetYaxis()->SetTitleOffset(1.3);
    recoGenPtHist->SetMaximum(50);
