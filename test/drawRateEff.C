@@ -491,7 +491,7 @@ void drawRateEff() {
    c->SetName("dyncrystalEG_efficiency_eta");
    //c->SetTitle("EG Efficiencies");
    c->SetTitle("");
-   drawEfficiency({newAlgEtaHist, run1AlgEtaHist, dynAlgEtaHist}, c, 1.2, {-1.6, 1.6});
+   drawEfficiency({newAlgEtaHist, run1AlgEtaHist, dynAlgEtaHist}, c, 1.2, {-2.5, 2.5});
    c->SetName("dyncrystalEG_efficiency_pt");
    drawEfficiency({newAlgPtHist}, c, 1.2, {0., 50.}, true, {0.9, 2., 1., 0.});
    c->SetName("dyncrystalEG_threshold15_efficiency_reco_pt");

@@ -51,7 +51,7 @@ process.reconstruction_step = cms.Path( process.calolocalreco )
 process.L1EGammaCrystalsProducer = cms.EDProducer("L1EGCrystalClusterProducer",
    EtminForStore = cms.double(0.),
    DEBUG = cms.untracked.bool(False),
-   useECalEndcap = cms.bool(False)
+   useECalEndcap = cms.bool(True)
 )
 process.pSasha = cms.Path( process.L1EGammaCrystalsProducer )
 
@@ -97,7 +97,7 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    OfflineRecoClustersInputTag = cms.InputTag("correctedHybridSuperClusters"),
    doEfficiencyCalc = cms.untracked.bool(True),
    useOfflineClusters = cms.untracked.bool(False),
-   useEndcap = cms.untracked.bool(False),
+   useEndcap = cms.untracked.bool(True),
    turnOnThresholds = cms.untracked.vint32(15, 30),
    histogramBinCount = cms.untracked.int32(60),
    histogramRangeLow = cms.untracked.double(0),

@@ -40,12 +40,12 @@ void cutStudy(){
 
     TH2F * hovere_hist_sig = new TH2F("hovere_hist_sig", "Single Electron Signal;Cluster pT;H/E Value", 60, 0., 50., 80, 0., 5.);
     TH2F * hovere_hist_bg = new TH2F("hovere_hist_bg", "Background;Cluster pT;H/E Value", 60, 0., 50., 80, 0., 5.);
-    eff->Draw("cluster_hovere:cluster_pt >> hovere_hist_sig", "", "goff");
-    rate->Draw("cluster_hovere:cluster_pt >> hovere_hist_bg", "", "goff");
+    eff->Draw("cluster_hovere:cluster_pt >> hovere_hist_sig", "!endcap", "goff");
+    rate->Draw("cluster_hovere:cluster_pt >> hovere_hist_bg", "!endcap", "goff");
     TH2F * iso_hist_sig = new TH2F("iso_hist_sig", "Single Electron Signal;Cluster pT;Isolation Value", 60, 0., 50., 80, 0., 15.);
     TH2F * iso_hist_bg = new TH2F("iso_hist_bg", "Background;Cluster pT;Isolation Value", 60, 0., 50., 80, 0., 15.);
-    eff->Draw("cluster_iso:cluster_pt >> iso_hist_sig", "", "goff");
-    rate->Draw("cluster_iso:cluster_pt >> iso_hist_bg", "", "goff");
+    eff->Draw("cluster_iso:cluster_pt >> iso_hist_sig", "!endcap", "goff");
+    rate->Draw("cluster_iso:cluster_pt >> iso_hist_bg", "!endcap", "goff");
 
     TCanvas * c = new TCanvas("canvas", "scatter canvas", 1200, 600);
     c->Divide(2,1);
@@ -61,7 +61,7 @@ void cutStudy(){
     TF1 * cut = new TF1("cut", "[0]/x+[1]", 1e-3, 50);
     cut->SetParameters(14., 0.05);
     cut->SetLineColor(kBlack);
-    TF1 * oldcut = new TF1("oldcut", "0.5+(35-x+(x-35)*(35<x))**2/350", 1e-3, 50);
+    TF1 * oldcut = new TF1("oldcut", "21./x+0.", 1e-3, 50);
     oldcut->SetLineColor(kGray-2);
     oldcut->SetLineStyle(kDashed);
 
@@ -97,7 +97,7 @@ void cutStudy(){
     TF1 * isocut = new TF1("cut", "[0]/x+[1]", 1e-3, 50);
     isocut->SetParameters(40., 0.1);
     isocut->SetLineColor(kBlack);
-    TF1 * oldisocut = new TF1("oldcut", "1.3+(35-x+(x-35)*(35<x))**2/306.25", 1e-3, 50);
+    TF1 * oldisocut = new TF1("oldcut", "63./x+0.1", 1e-3, 50);
     oldisocut->SetLineColor(kGray-2);
     oldisocut->SetLineStyle(kDashed);
 
@@ -119,13 +119,13 @@ void cutStudy(){
     c4->Print("plots/isolation_cdf.png");
 
     TCanvas * c5 = new TCanvas("ptratio_canvas", "ptratio_canvas", 700, 600);
-    TH1F * ptratio_rate = new TH1F("ptratio_rate", "Single electron signal", 50, 0, 0.2);
-    rate->Draw("pt.5/(pt.1+pt.2) >> ptratio_rate", "cluster_pt > 10.", "goff");
+    TH1F * ptratio_rate = new TH1F("ptratio_rate", "Background", 50, 0, 0.2);
+    rate->Draw("pt.5/(pt.1+pt.2) >> ptratio_rate", "cluster_pt > 10. && !endcap", "goff");
     ptratio_rate->SetLineColor(kRed);
     ptratio_rate->Sumw2();
     ptratio_rate->Scale(1./ptratio_rate->Integral());
-    TH1F * ptratio_eff = new TH1F("ptratio_eff", "Background", 50, 0, 0.2);
-    eff->Draw("pt.5/(pt.1+pt.2) >> ptratio_eff", "cluster_pt > 10.", "goff");
+    TH1F * ptratio_eff = new TH1F("ptratio_eff", "Single electron signal", 50, 0, 0.2);
+    eff->Draw("pt.5/(pt.1+pt.2) >> ptratio_eff", "cluster_pt > 10. && !endcap", "goff");
     ptratio_eff->Sumw2();
     ptratio_eff->Scale(1./ptratio_eff->Integral());
     THStack * ptratio_stack = new THStack("ptratio_stack", "Pt ratio cut parameter;pt.5/(pt.1+pt.2);Fraction of Events");
