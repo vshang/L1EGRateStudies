@@ -84,7 +84,7 @@ void drawRates(std::vector<TH1F*> hists, TCanvas * c, double ymax, std::pair<dou
      mg.GetXaxis()->SetRangeUser(xrange.first, xrange.second);
    mg.GetYaxis()->SetTitle(hists[0]->GetYaxis()->GetTitle());
 
-   auto cmsString = drawCMSString("CMS Simulation, Phase-2, <PU>=140 bx=25, MinBias");
+   auto cmsString = drawCMSString("CMS Simulation, <PU>=140 bx=25, MinBias");
 
    c->Print(("plots/"+std::string(c->GetName())+".png").c_str());
    delete leg;
@@ -142,7 +142,7 @@ void drawEfficiency(std::vector<TGraphAsymmErrors*> graphs, TCanvas * c, double 
      mg.GetXaxis()->SetRangeUser(xrange.first, xrange.second);
    mg.GetYaxis()->SetTitle(graphs[0]->GetYaxis()->GetTitle());
 
-   auto cmsString = drawCMSString("CMS Simulation, Phase-2, <PU>=140 bx=25, Single Electron");
+   auto cmsString = drawCMSString("CMS Simulation, <PU>=140 bx=25, Single Electron");
 
    c->Print(("plots/"+std::string(c->GetName())+".png").c_str());
    delete leg;
@@ -264,7 +264,7 @@ void draw2DdeltaRHist(TH2F* hist, TCanvas * c) {
    TLatex * cmsString = new TLatex(
       histpad_size+margin-0.005, 
       1-margin-0.005, 
-      "CMS Simulation, Phase-2, <PU>=140 bx=25, Single Electron");
+      "CMS Simulation, <PU>=140 bx=25, Single Electron");
    cmsString->SetTextFont(42);
    cmsString->SetTextSize(0.02);
    cmsString->SetNDC(1);
@@ -346,7 +346,7 @@ void drawDRHists(std::vector<TH1F*> hists, TCanvas * c, double ymax) {
    hs.GetYaxis()->SetTitle("Fraction of Events");
    hs.GetXaxis()->SetRangeUser(0., 0.1);
 
-   auto cmsString = drawCMSString("CMS Simulation, Phase-2, <PU>=140 bx=25, Single Electron");
+   auto cmsString = drawCMSString("CMS Simulation, <PU>=140 bx=25, Single Electron");
                
    c->Print(("plots/"+std::string(c->GetName())+".png").c_str());
    delete leg;
@@ -374,11 +374,11 @@ void drawRateEff() {
    auto oldAlgRateHist = (TH1F *) rates->Get("analyzer/SLHCL1ExtraParticles:EGamma_rate");
    oldAlgRateHist->SetTitle("Original L2 Algorithm");
    auto dynAlgRateHist = (TH1F *) rates->Get("analyzer/SLHCL1ExtraParticlesNewClustering:EGamma_rate");
-   dynAlgRateHist->SetTitle("L1EGamma");
+   dynAlgRateHist->SetTitle("L1EGamma_Tower");
    auto run1AlgRateHist = (TH1F *) rates->Get("analyzer/l1extraParticles:All_rate");
-   run1AlgRateHist->SetTitle("Tower Algorithm 1");
+   run1AlgRateHist->SetTitle("Run 1 Alg.");
    auto crystalAlgRateHist = (TH1F *) rates->Get("analyzer/L1EGammaCrystalsProducer:EGammaCrystal_rate");
-   crystalAlgRateHist->SetTitle("Crystal Trigger (w/zero-towers)");
+   crystalAlgRateHist->SetTitle("Crystal Trigger (prod.)");
 
    c->SetLogy(1);
    c->SetGridx(1);
@@ -411,25 +411,25 @@ void drawRateEff() {
    oldAlgDRHist->SetTitle("Original L2 Algorithm");
 
    auto dynAlgEtaHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_SLHCL1ExtraParticlesNewClustering:EGamma_efficiency_eta_by_gen_eta");
-   dynAlgEtaHist->SetTitle("L1EGamma");
+   dynAlgEtaHist->SetTitle("L1EGamma_Tower");
    auto dynAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_SLHCL1ExtraParticlesNewClustering:EGamma_efficiency_pt_by_gen_pt");
-   dynAlgPtHist->SetTitle("L1EGamma");
+   dynAlgPtHist->SetTitle("L1EGamma_Tower");
    auto dynAlgRecoPtHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_SLHCL1ExtraParticlesNewClustering:EGamma_threshold*");
    for(auto& hist : dynAlgRecoPtHists) hist->SetTitle("Tower Algorithm 2");
    auto dynAlgDRHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticlesNewClustering:EGamma_deltaR");
-   dynAlgDRHist->SetTitle("L1EGamma");
+   dynAlgDRHist->SetTitle("L1EGamma_Tower");
 
    auto run1AlgEtaHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_l1extraParticles:All_efficiency_eta_by_gen_eta");
-   run1AlgEtaHist->SetTitle("Tower Algorithm 1");
+   run1AlgEtaHist->SetTitle("Run 1 Alg.");
    auto run1AlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_l1extraParticles:All_efficiency_pt_by_gen_pt");
-   run1AlgPtHist->SetTitle("Tower Algorithm 1");
+   run1AlgPtHist->SetTitle("Run 1 Alg.");
    auto run1AlgRecoPtHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_l1extraParticles:All_threshold*");
-   for(auto& hist : run1AlgRecoPtHists) hist->SetTitle("Tower Algorithm 1");
+   for(auto& hist : run1AlgRecoPtHists) hist->SetTitle("Run 1 Alg.");
    auto run1AlgDRHist = (TH1F *) eff->Get("analyzer/l1extraParticles:All_deltaR");
-   run1AlgDRHist->SetTitle("Tower Algorithm 1");
+   run1AlgDRHist->SetTitle("Run 1 Alg.");
 
    auto crystalAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_L1EGammaCrystalsProducer:EGammaCrystal_efficiency_pt_by_gen_pt");
-   crystalAlgPtHist->SetTitle("Crystal Trigger (w/zero-towers)");
+   crystalAlgPtHist->SetTitle("Crystal Trigger (prod.)");
 
    // Use crystal tree to adjust turn-on plot for incorrect offline pt reconstruction
    auto crystal_tree = (TTree *) eff->Get("analyzer/crystal_tree");
@@ -541,7 +541,7 @@ void drawRateEff() {
    recoGenPtHist->GetYaxis()->SetTitleOffset(1.3);
    recoGenPtHist->SetMaximum(50);
    recoGenPtHist->Draw("colz");
-   auto cmsString = drawCMSString("CMS Simulation, Phase-2, <PU>=140 bx=25, Single Electron");
+   auto cmsString = drawCMSString("CMS Simulation, <PU>=140 bx=25, Single Electron");
    c->Print("plots/dyncrystalEG_reco_gen_pt.png");
    delete cmsString;
 

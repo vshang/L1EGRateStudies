@@ -439,7 +439,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             fillhovere_isolation_hists(cluster);
             checkRecHitsFlags(cluster, triggerPrimitives, ecalRecHits);
 
-            if ( cluster_passes_cuts(cluster) && checkTowerExists(cluster, triggerPrimitives) )
+            if ( cluster_passes_cuts(cluster) )
             {
                if ( debug ) std::cout << "Dynamic hovere cut: " << ((cluster.pt() > 35.) ? 0.5 : 0.5+pow(cluster.pt()-35,2)/350. ) << std::endl;
                if ( debug ) std::cout << "Dynamic isolation cut: " << ((cluster.pt() > 35.) ? 1.3 : 1.3+pow(cluster.pt()-35,2)*4/(35*35) ) << std::endl;
@@ -513,7 +513,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          fillhovere_isolation_hists(cluster);
          checkRecHitsFlags(cluster, triggerPrimitives, ecalRecHits);
 
-         if ( cluster_passes_cuts(cluster) && checkTowerExists(cluster, triggerPrimitives) )
+         if ( cluster_passes_cuts(cluster) )
          {
             dyncrystal_rate_hist->Fill(cluster.pt());
             break;
