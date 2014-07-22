@@ -63,7 +63,7 @@ void cutStudy(){
     TF1 * hoecut = new TF1("hoecut", "[0]/x+[1]", 1e-3, 50);
     hoecut->SetParameters(14., 0.05);
     hoecut->SetLineColor(kBlack);
-    TF1 * hoecut_endcap = new TF1("hoecut_endcap", "21./x+0.", 1e-3, 50);
+    TF1 * hoecut_endcap = new TF1("hoecut_endcap", "22./x+0.", 1e-3, 50);
     hoecut_endcap->SetLineColor(kGray-2);
     hoecut_endcap->SetLineStyle(kDashed);
 
@@ -99,7 +99,7 @@ void cutStudy(){
     TF1 * isocut = new TF1("isocut", "[0]/x+[1]", 1e-3, 50);
     isocut->SetParameters(40., 0.1);
     isocut->SetLineColor(kBlack);
-    TF1 * isocut_endcap = new TF1("isocut_endcap", "63./x+0.1", 1e-3, 50);
+    TF1 * isocut_endcap = new TF1("isocut_endcap", "64./x+0.1", 1e-3, 50);
     isocut_endcap->SetLineColor(kGray-2);
     isocut_endcap->SetLineStyle(kDashed);
 
@@ -140,7 +140,7 @@ void cutStudy(){
 
     TCanvas * c6 = new TCanvas("ptratio_2dcanvas", "ptratio_2dcanvas", 1200, 600);
     TF1 * ratiocut = new TF1("ratiocut", "0.18*(1-x/100)*(x<30)+.18*.7*(x>30)", 0., 50.);
-    TF1 * ratiocut_endcap = new TF1("ratiocut_endcap", "0.17*(1-x/70)*(x<40)+.17*3/7*(x>40)", 0., 50.);
+    TF1 * ratiocut_endcap = new TF1("ratiocut_endcap", "0.18*(1-x/70)*(x<40)+.18*3/7*(x>40)", 0., 50.);
     ratiocut_endcap->SetLineColor(kGray-2);
     ratiocut_endcap->SetLineStyle(kDashed);
     c6->Divide(2,1);

@@ -447,9 +447,6 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
             if ( cluster_passes_cuts(cluster) )
             {
-               if ( debug ) std::cout << "Dynamic hovere cut: " << ((cluster.pt() > 35.) ? 0.5 : 0.5+pow(cluster.pt()-35,2)/350. ) << std::endl;
-               if ( debug ) std::cout << "Dynamic isolation cut: " << ((cluster.pt() > 35.) ? 1.3 : 1.3+pow(cluster.pt()-35,2)*4/(35*35) ) << std::endl;
-               if ( debug ) std::cout << "Cluster pt: " << cluster.pt() << " hovere: " << cluster.hovere() << " iso: " << cluster.isolation() << std::endl;
                dyncrystal_efficiency_hist->Fill(trueElectron.pt());
                dyncrystal_efficiency_eta_hist->Fill(trueElectron.eta());
                if ( offlineRecoFound )
@@ -675,11 +672,11 @@ L1EGRateStudies::fillhovere_isolation_hists(const l1slhc::L1EGCrystalCluster& cl
 
 bool
 L1EGRateStudies::cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster) const {
-   if ( cluster.eta() > 1.479 )
+   if ( fabs(cluster.eta()) > 1.479 )
    {
-      if ( cluster.hovere() < 21./cluster.pt()
-           && cluster.isolation() < 63./cluster.pt()+0.1
-           && cluster.GetCrystalPt(4)/(cluster.GetCrystalPt(0)+cluster.GetCrystalPt(1)) < ( (cluster.pt() < 40) ? 0.17*(1-cluster.pt()/70.):0.17*3/7. ) )
+      if ( cluster.hovere() < 22./cluster.pt()
+           && cluster.isolation() < 64./cluster.pt()+0.1
+           && cluster.GetCrystalPt(4)/(cluster.GetCrystalPt(0)+cluster.GetCrystalPt(1)) < ( (cluster.pt() < 40) ? 0.18*(1-cluster.pt()/70.):0.18*3/7. ) )
       {
          return true;
       }

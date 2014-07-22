@@ -493,7 +493,7 @@ void drawRateEff() {
    c->SetTitle("");
    drawEfficiency({newAlgEtaHist, run1AlgEtaHist, dynAlgEtaHist}, c, 1.2, {-2.5, 2.5});
    c->SetName("dyncrystalEG_efficiency_pt");
-   drawEfficiency({newAlgPtHist, crystalAlgPtHist, run1AlgPtHist}, c, 1.2, {0., 50.}, true, {0.9, 2., 1., 0.});
+   drawEfficiency({newAlgPtHist, run1AlgPtHist, dynAlgPtHist}, c, 1.2, {0., 50.}, true, {0.9, 2., 1., 0.});
    c->SetName("dyncrystalEG_threshold15_efficiency_reco_pt");
    c->SetTitle("EG Turn-On Efficiencies, 15GeV Threshold");
    drawEfficiency({newAlgCorrectedRecoPtHist15, run1AlgRecoPtHists[0], dynAlgRecoPtHists[0]}, c, 1.2, {0., 50.}, true, {0.9, 15., 1., 0.});
