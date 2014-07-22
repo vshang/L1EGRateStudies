@@ -24,17 +24,26 @@ void setLegStyle(TLegend * leg) {
 
 void cutStudy(){
     gStyle->SetOptStat(0);
+    gStyle->SetTitleFont(42, "p");
+    gStyle->SetTitleColor(1);
+    gStyle->SetTitleTextColor(1);
+    gStyle->SetTitleFillColor(10);
+    gStyle->SetTitleFontSize(0.05);
+    gStyle->SetTitleOffset(1.2, "XYZ");
+    gStyle->SetTitleFont(42, "XYZ");
+    gStyle->SetLabelFont(42, "XYZ");
+
     TFile *_file0 = TFile::Open("egTriggerEff.root");
     TFile *_file1 = TFile::Open("egTriggerRates.root");
     TTree * eff = (TTree*) _file0->Get("analyzer/crystal_tree");
     TTree * rate = (TTree*) _file1->Get("analyzer/crystal_tree");
 
-    TH2F * hovere_hist_sig = new TH2F("hovere_hist_sig", "H/E scatter (signal);Cluster pT;H/E Value", 60, 0., 50., 80, 0., 5.);
-    TH2F * hovere_hist_bg = new TH2F("hovere_hist_bg", "H/E scatter (background);Cluster pT;H/E Value", 60, 0., 50., 80, 0., 5.);
+    TH2F * hovere_hist_sig = new TH2F("hovere_hist_sig", "Single Electron Signal;Cluster pT;H/E Value", 60, 0., 50., 80, 0., 5.);
+    TH2F * hovere_hist_bg = new TH2F("hovere_hist_bg", "Background;Cluster pT;H/E Value", 60, 0., 50., 80, 0., 5.);
     eff->Draw("cluster_hovere:cluster_pt >> hovere_hist_sig", "", "goff");
     rate->Draw("cluster_hovere:cluster_pt >> hovere_hist_bg", "", "goff");
-    TH2F * iso_hist_sig = new TH2F("iso_hist_sig", "Isolation scatter (signal);Cluster pT;Isolation Value", 60, 0., 50., 80, 0., 15.);
-    TH2F * iso_hist_bg = new TH2F("iso_hist_bg", "Isolation scatter (background);Cluster pT;Isolation Value", 60, 0., 50., 80, 0., 15.);
+    TH2F * iso_hist_sig = new TH2F("iso_hist_sig", "Single Electron Signal;Cluster pT;Isolation Value", 60, 0., 50., 80, 0., 15.);
+    TH2F * iso_hist_bg = new TH2F("iso_hist_bg", "Background;Cluster pT;Isolation Value", 60, 0., 50., 80, 0., 15.);
     eff->Draw("cluster_iso:cluster_pt >> iso_hist_sig", "", "goff");
     rate->Draw("cluster_iso:cluster_pt >> iso_hist_bg", "", "goff");
 
@@ -60,14 +69,18 @@ void cutStudy(){
     TCanvas * c2 = new TCanvas("intcanvas", "integral canvas", 1200, 600);
     c2->Divide(2,1);
     c2->cd(1);
+    gPad->SetRightMargin(0.13);
     hovere_hist_sig->SetContour(6, contours);
+    hovere_hist_sig->GetZaxis()->SetTitle("Cumulative event fraction (<cut)");
     hovere_hist_sig->Draw("colz");
     cut->Draw("lsame");
-    oldcut->Draw("lsame");
+    //oldcut->Draw("lsame");
     c2->cd(2);
+    gPad->SetRightMargin(0.13);
+    hovere_hist_bg->GetZaxis()->SetTitle("Cumulative event fraction (>cut)");
     hovere_hist_bg->Draw("colz");
     cut->Draw("lsame");
-    oldcut->Draw("lsame");
+    //oldcut->Draw("lsame");
     c2->Print("plots/hovere_cdf.png");
 
     TCanvas * c3 = new TCanvas("isocanvas", "scatter canvas", 1200, 600);
@@ -91,14 +104,18 @@ void cutStudy(){
     TCanvas * c4 = new TCanvas("isointcanvas", "integral canvas", 1200, 600);
     c4->Divide(2,1);
     c4->cd(1);
+    gPad->SetRightMargin(0.13);
     iso_hist_sig->SetContour(6, contours);
+    iso_hist_sig->GetZaxis()->SetTitle("Cumulative event fraction (<cut)");
     iso_hist_sig->Draw("colz");
     isocut->Draw("lsame");
-    oldisocut->Draw("lsame");
+    //oldisocut->Draw("lsame");
     c4->cd(2);
+    gPad->SetRightMargin(0.13);
+    iso_hist_bg->GetZaxis()->SetTitle("Cumulative event fraction (>cut)");
     iso_hist_bg->Draw("colz");
     isocut->Draw("lsame");
-    oldisocut->Draw("lsame");
+    //oldisocut->Draw("lsame");
     c4->Print("plots/isolation_cdf.png");
 
     TCanvas * c5 = new TCanvas("ptratio_canvas", "ptratio_canvas", 700, 600);
@@ -118,4 +135,33 @@ void cutStudy(){
     ptratio_stack->GetYaxis()->SetTitleOffset(1.3);
     setLegStyle(c5->BuildLegend());
     c5->Print("plots/pt5_over_pt1+2_clustergt10.png");
+
+    TCanvas * c6 = new TCanvas("ptratio_2dcanvas", "ptratio_2dcanvas", 1200, 600);
+    TF1 * ratiocut = new TF1("ratiocut", "0.08*(1+(x-20)/25*(x>20))", 0., 50.);
+    TF1 * ratiocut_endcap = new TF1("ratiocut_endcap", "0.17*(1-x/70)*(x<40)+.17*3/7*(x>40)", 0., 50.);
+    ratiocut_endcap->SetLineColor(kGray-2);
+    ratiocut_endcap->SetLineStyle(kDashed);
+    c6->Divide(2,1);
+    c6->cd(2);
+    gPad->SetRightMargin(0.13);
+    TH2F * ptratio2_rate = new TH2F("ptratio2_rate", "Background;Cluster pT;pt.5/(pt.1+pt.2)", 50, 0., 50., 50, 0., 0.3);
+    rate->Draw("pt.5/(pt.1+pt.2) : cluster_pt >> ptratio2_rate", "", "goff");
+    createCDF(ptratio2_rate, true);
+    ptratio2_rate->GetZaxis()->SetTitle("Cumulative event fraction (>cut)");
+    ptratio2_rate->GetYaxis()->SetTitleOffset(1.4);
+    ptratio2_rate->Draw("colz");
+    ratiocut->Draw("lsame");
+    //ratiocut_endcap->Draw("lsame");
+    c6->cd(1);
+    gPad->SetRightMargin(0.13);
+    TH2F * ptratio2_eff = new TH2F("ptratio2_eff", "Single electron signal;Cluster pT;pt.5/(pt.1+pt.2)", 50, 0., 50., 50, 0., 0.3);
+    eff->Draw("pt.5/(pt.1+pt.2) : cluster_pt >> ptratio2_eff", "", "goff");
+    ptratio2_eff->SetContour(6, contours);
+    createCDF(ptratio2_eff);
+    ptratio2_eff->GetZaxis()->SetTitle("Cumulative event fraction (<cut)");
+    ptratio2_eff->GetYaxis()->SetTitleOffset(1.4);
+    ptratio2_eff->Draw("colz");
+    ratiocut->Draw("lsame");
+    //ratiocut_endcap->Draw("lsame");
+    c6->Print("plots/pt5_over_pt1+2_2d.png");
 }
