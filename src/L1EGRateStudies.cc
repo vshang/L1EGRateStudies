@@ -527,32 +527,27 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             break;
          }
       }
-      
-      // Debug output high pt fakes
-      if ( debug )
-      {
-         for(const auto& cluster : crystalClusters)
-            {
-               if ( cluster.hovere() < 2
-                     && cluster.isolation() < 3
-                     && cluster.pt() > 40. )
-               {
-                  std::cout << "\x1B[32mHigh pt fake! pt = " << cluster.pt() << "\x1B[0m" << std::endl;
-                  break;
-               }
-            }
-      }
-      
+
       for(const auto& eGammaCollection : eGammaCollections)
       {
          const std::string &name = eGammaCollection.first;
          if ( eGammaCollection.second.size() == 0 ) continue;
-         auto& highestEGCandidate = eGammaCollection.second[0];
-         // Don't fill old alg. plots if in endcap
-         if ( useEndcap
-               || (!useEndcap && fabs(highestEGCandidate.eta()) < 1.479) )
+         if ( useEndcap )
          {
+            auto& highestEGCandidate = eGammaCollection.second[0];
             EGalg_rate_hists[name]->Fill(highestEGCandidate.pt());
+         }
+         else // !useEndcap
+         {
+            // Can't assume the highest candidate is in the barrel
+            for(const auto& candidate : eGammaCollection.second)
+            {
+               if ( fabs(candidate.eta()) < 1.479 )
+               {
+                  EGalg_rate_hists[name]->Fill(candidate.pt());
+                  break;
+               }
+            }
          }
       }
    }
