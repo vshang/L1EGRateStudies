@@ -511,6 +511,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       int clusterCount = 0;
       for(const auto& cluster : crystalClusters)
       {
+         if ( !useEndcap && fabs(cluster.eta()) >= 1.479 ) continue;
          clusterCount++;
          treeinfo.nthCandidate = clusterCount;
          if ( fabs(cluster.eta()) > 1.479 )

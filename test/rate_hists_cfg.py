@@ -87,7 +87,7 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    ),
    L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer","EGCrystalCluster"),
    doEfficiencyCalc = cms.untracked.bool(False),
-   useEndcap = cms.untracked.bool(True),
+   useEndcap = cms.untracked.bool(False),
    histogramBinCount = cms.untracked.int32(40),
    histogramRangeLow = cms.untracked.double(0),
    histogramRangeHigh = cms.untracked.double(50)
