@@ -76,13 +76,13 @@ void cutStudy(){
     hovere_hist_sig->GetZaxis()->SetTitle("Cumulative event fraction (<cut)");
     hovere_hist_sig->Draw("colz");
     hoecut->Draw("lsame");
-    hoecut_endcap->Draw("lsame");
+    //hoecut_endcap->Draw("lsame");
     c2->cd(2);
     gPad->SetRightMargin(0.13);
     hovere_hist_bg->GetZaxis()->SetTitle("Cumulative event fraction (>cut)");
     hovere_hist_bg->Draw("colz");
     hoecut->Draw("lsame");
-    hoecut_endcap->Draw("lsame");
+    //hoecut_endcap->Draw("lsame");
     c2->Print("plots/hovere_cdf.png");
 
     TCanvas * c3 = new TCanvas("isocanvas", "scatter canvas", 1200, 600);
@@ -111,13 +111,13 @@ void cutStudy(){
     iso_hist_sig->GetZaxis()->SetTitle("Cumulative event fraction (<cut)");
     iso_hist_sig->Draw("colz");
     isocut->Draw("lsame");
-    isocut_endcap->Draw("lsame");
+    //isocut_endcap->Draw("lsame");
     c4->cd(2);
     gPad->SetRightMargin(0.13);
     iso_hist_bg->GetZaxis()->SetTitle("Cumulative event fraction (>cut)");
     iso_hist_bg->Draw("colz");
     isocut->Draw("lsame");
-    isocut_endcap->Draw("lsame");
+    //isocut_endcap->Draw("lsame");
     c4->Print("plots/isolation_cdf.png");
 
     TCanvas * c5 = new TCanvas("ptratio_canvas", "ptratio_canvas", 700, 600);
@@ -153,7 +153,7 @@ void cutStudy(){
     ptratio2_rate->GetYaxis()->SetTitleOffset(1.4);
     ptratio2_rate->Draw("colz");
     ratiocut->Draw("lsame");
-    ratiocut_endcap->Draw("lsame");
+    //ratiocut_endcap->Draw("lsame");
     c6->cd(1);
     gPad->SetRightMargin(0.13);
     TH2F * ptratio2_eff = new TH2F("ptratio2_eff", "Single electron signal;Cluster pT;pt.5/(pt.1+pt.2)", 50, 0., 50., 50, 0., 0.3);
@@ -164,6 +164,6 @@ void cutStudy(){
     ptratio2_eff->GetYaxis()->SetTitleOffset(1.4);
     ptratio2_eff->Draw("colz");
     ratiocut->Draw("lsame");
-    ratiocut_endcap->Draw("lsame");
+    //ratiocut_endcap->Draw("lsame");
     c6->Print("plots/pt5_over_pt1+2_2d.png");
 }
