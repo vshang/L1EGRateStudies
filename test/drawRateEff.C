@@ -479,13 +479,16 @@ void drawRateEff() {
    dyncrystalCorrectedRateHist->SetTitle("L1EGamma_Crystal");
    auto dccr_xaxis = dyncrystalCorrectedRateHist->GetXaxis();
    dccr_xaxis->Set(dccr_xaxis->GetNbins(), dccr_xaxis->GetXmin()*pt_threshold_scale_factor, dccr_xaxis->GetXmax()*pt_threshold_scale_factor);
-   auto dyncrystalTowersProdCorrectedRateHist = (TH1F *) crystalAlgRateHist->Clone("dyncrystalEG_withtowers_corrected_rate");
-   dyncrystalTowersProdCorrectedRateHist->SetTitle("Crystal Trigger (pT, w/zero-towers)");
-   dccr_xaxis = dyncrystalTowersProdCorrectedRateHist->GetXaxis();
+   auto dyncrystalProdCorrectedRateHist = (TH1F *) crystalAlgRateHist->Clone("dyncrystalEG_prod_corrected_rate");
+   dyncrystalProdCorrectedRateHist->SetTitle("Crystal Trigger (prod.)");
+   dccr_xaxis = dyncrystalProdCorrectedRateHist->GetXaxis();
    dccr_xaxis->Set(dccr_xaxis->GetNbins(), dccr_xaxis->GetXmin()*pt_threshold_scale_factor, dccr_xaxis->GetXmax()*pt_threshold_scale_factor);
    c->SetLogy(1);
    c->SetName("dyncrystalEG_corrected_rate");
    drawRates({dyncrystalCorrectedRateHist, dynAlgRateHist}, c, 40000., {0., 50.});
+   c->SetName("dyncrystalEG_corrected_rate_UW");
+   c->SetTitle("EG Rates (UW only)");
+   drawRates({dyncrystalCorrectedRateHist, run1AlgRateHist, dynAlgRateHist, dyncrystalProdCorrectedRateHist}, c, 40000., {0., 50.});
    c->SetLogy(0);
 
    c->SetName("dyncrystalEG_efficiency_eta");
@@ -493,7 +496,7 @@ void drawRateEff() {
    drawEfficiency({newAlgEtaHist, run1AlgEtaHist, dynAlgEtaHist}, c, 1.2, {-2.5, 2.5});
    c->SetName("dyncrystalEG_efficiency_pt_UW");
    c->SetTitle("EG Efficiencies (UW only)");
-   drawEfficiency({newAlgPtHist, run1AlgPtHist, dynAlgPtHist}, c, 1.2, {0., 50.}, true, {0.9, 2., 1., 0.});
+   drawEfficiency({newAlgPtHist, run1AlgPtHist, dynAlgPtHist, crystalAlgPtHist}, c, 1.2, {0., 50.}, true, {0.9, 2., 1., 0.});
    c->SetName("dyncrystalEG_efficiency_pt");
    c->SetTitle("");
    drawEfficiency({newAlgPtHist}, c, 1.2, {0., 50.}, true, {0.9, 2., 1., 0.});
