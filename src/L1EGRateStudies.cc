@@ -193,6 +193,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    eventCount = 0;
    L1EGammaInputTags = iConfig.getParameter<std::vector<edm::InputTag>>("L1EGammaInputTags");
    L1EGammaInputTags.push_back(edm::InputTag("l1extraParticles:All"));
+   L1EGammaInputTags.push_back(edm::InputTag("l1extraParticlesUCT:All"));
    L1CrystalClustersInputTag = iConfig.getParameter<edm::InputTag>("L1CrystalClustersInputTag");
    
    edm::Service<TFileService> fs;
@@ -298,6 +299,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    for(const auto& inputTag : L1EGammaInputTags)
    {
       if (inputTag.encode().compare("l1extraParticles:All") == 0) continue;
+      if (inputTag.encode().compare("l1extraParticlesUCT:All") == 0) continue;
       edm::Handle<l1extra::L1EmParticleCollection> handle;
       iEvent.getByLabel(inputTag, handle);
       if ( handle.product() == nullptr )
@@ -305,8 +307,13 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       else
          eGammaCollections[inputTag.encode()] = *handle.product();
 
-      // Special case: Run 1 alg. iso/niso are exclusive, we want to make inclusive EGamma available too
-      if (inputTag.encode().find("l1extraParticles") != std::string::npos)
+      // Special case: Run 1, UCT alg. iso/niso are exclusive, we want to make inclusive EGamma available too
+      if (inputTag.encode().find("l1extraParticlesUCT") != std::string::npos)
+      {
+         auto& collection = eGammaCollections["l1extraParticlesUCT:All"];
+         collection.insert(begin(collection), begin(*handle.product()), end(*handle.product()));
+      }
+      else if (inputTag.encode().find("l1extraParticles") != std::string::npos)
       {
          auto& collection = eGammaCollections["l1extraParticles:All"];
          collection.insert(begin(collection), begin(*handle.product()), end(*handle.product()));

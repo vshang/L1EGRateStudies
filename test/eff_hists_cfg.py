@@ -40,6 +40,14 @@ process.slhccalo = cms.Path( process.RawToDigi + process.valHcalTriggerPrimitive
 process.load('Configuration.StandardSequences.L1Reco_cff')
 process.L1Reco = cms.Path( process.l1extraParticles )
 
+# producer for UCT2015 / Stage-1 trigger objects
+process.load("L1Trigger.UCT2015.emulationMC_cfi")
+process.load("L1Trigger.UCT2015.uctl1extraparticles_cfi")
+process.pUCT = cms.Path(
+    process.emulationSequence *
+    process.uct2015L1Extra
+)
+
 # --------------------------------------------------------------------------------------------
 #
 # ----    Produce the L1EGCrystal clusters (code of Sasha Savin)
@@ -90,6 +98,9 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
       # Run 1 algo.
       cms.InputTag("l1extraParticles", "Isolated"),
       cms.InputTag("l1extraParticles", "NonIsolated"),
+      # UCT alg.
+      cms.InputTag("l1extraParticlesUCT", "Isolated"),
+      cms.InputTag("l1extraParticlesUCT", "NonIsolated"),
       # Crystal-level algo.
       cms.InputTag("L1EGammaCrystalsProducer","EGammaCrystal")
    ),
