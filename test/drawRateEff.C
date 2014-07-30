@@ -398,8 +398,10 @@ void drawRateEff() {
    newAlgEtaHist->SetTitle("L1EGamma_Crystal");
    auto newAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_dyncrystalEG_efficiency_pt_by_gen_pt");
    newAlgPtHist->SetTitle("L1EGamma_Crystal");
-   auto newAlgRecoPtHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_dyncrystalEG_threshold*");
+   auto newAlgRecoPtHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_dyncrystalEG_threshold*_reco_pt");
    for(auto& hist : newAlgRecoPtHists) hist->SetTitle("Crystal Algorithm");
+   auto newAlgGenPtHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_dyncrystalEG_threshold*_gen_pt");
+   for(auto& hist : newAlgGenPtHists) hist->SetTitle("Crystal Algorithm");
    auto newAlgDRHist = (TH1F *) eff->Get("analyzer/dyncrystalEG_deltaR");
    newAlgDRHist->SetTitle("L1EGamma_Crystal");
 
@@ -407,7 +409,7 @@ void drawRateEff() {
    oldAlgEtaHist->SetTitle("Original L2 Algorithm");
    auto oldAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_SLHCL1ExtraParticles:EGamma_efficiency_pt_by_gen_pt");
    oldAlgPtHist->SetTitle("Original L2 Algorithm");
-   auto oldAlgRecoPtHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_SLHCL1ExtraParticles:EGamma_threshold*");
+   auto oldAlgRecoPtHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_SLHCL1ExtraParticles:EGamma_threshold*_reco_pt");
    for(auto& hist : oldAlgRecoPtHists) hist->SetTitle("Original L2 Algorithm");
    auto oldAlgDRHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticles:EGamma_deltaR");
    oldAlgDRHist->SetTitle("Original L2 Algorithm");
@@ -416,7 +418,7 @@ void drawRateEff() {
    dynAlgEtaHist->SetTitle("L1EGamma_Tower");
    auto dynAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_SLHCL1ExtraParticlesNewClustering:EGamma_efficiency_pt_by_gen_pt");
    dynAlgPtHist->SetTitle("L1EGamma_Tower");
-   auto dynAlgRecoPtHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_SLHCL1ExtraParticlesNewClustering:EGamma_threshold*");
+   auto dynAlgRecoPtHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_SLHCL1ExtraParticlesNewClustering:EGamma_threshold*_reco_pt");
    for(auto& hist : dynAlgRecoPtHists) hist->SetTitle("Tower Algorithm 2");
    auto dynAlgDRHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticlesNewClustering:EGamma_deltaR");
    dynAlgDRHist->SetTitle("L1EGamma_Tower");
@@ -425,7 +427,7 @@ void drawRateEff() {
    run1AlgEtaHist->SetTitle("Run 1 Alg.");
    auto run1AlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_l1extraParticles:All_efficiency_pt_by_gen_pt");
    run1AlgPtHist->SetTitle("Run 1 Alg.");
-   auto run1AlgRecoPtHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_l1extraParticles:All_threshold*");
+   auto run1AlgRecoPtHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_l1extraParticles:All_threshold*_reco_pt");
    for(auto& hist : run1AlgRecoPtHists) hist->SetTitle("Run 1 Alg.");
    auto run1AlgDRHist = (TH1F *) eff->Get("analyzer/l1extraParticles:All_deltaR");
    run1AlgDRHist->SetTitle("Run 1 Alg.");
@@ -433,8 +435,17 @@ void drawRateEff() {
    auto crystalAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_L1EGammaCrystalsProducer:EGammaCrystal_efficiency_pt_by_gen_pt");
    crystalAlgPtHist->SetTitle("Crystal Trigger (prod.)");
 
+   const char * title = "Phase 1 TDR";
+   auto UCTAlgEtaHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_l1extraParticlesUCT:All_efficiency_eta_by_gen_eta");
+   UCTAlgEtaHist->SetTitle(title);
    auto UCTAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_l1extraParticlesUCT:All_efficiency_pt_by_gen_pt");
-   UCTAlgPtHist->SetTitle("UCT2015");
+   UCTAlgPtHist->SetTitle(title);
+   auto UCTAlgRecoPtHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_l1extraParticlesUCT:All_threshold*_reco_pt");
+   for(auto& hist : UCTAlgRecoPtHists) hist->SetTitle(title);
+   auto UCTAlgGenPtHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_l1extraParticlesUCT:All_threshold*_gen_pt");
+   for(auto& hist : UCTAlgGenPtHists) hist->SetTitle(title);
+   auto UCTAlgDRHist = (TH1F *) eff->Get("analyzer/l1extraParticlesUCT:All_deltaR");
+   UCTAlgDRHist->SetTitle(title);
 
    // Use crystal tree to adjust turn-on plot for incorrect offline pt reconstruction
    auto crystal_tree = (TTree *) eff->Get("analyzer/crystal_tree");
@@ -442,27 +453,19 @@ void drawRateEff() {
    auto newAlgTurnOnDenom = new TH1F("newAlgTurnOnDenom", "Dynamic Crystal Trigger", 60, 0., 50.);
    auto offlineRecoHist = new TH2F("offlineRecoHist", "Offline reco to gen. comparison;Gen. pT (GeV);(reco-gen)/gen;Counts", 60, 0., 50., 60, -0.5, 0.5);
    crystal_tree->Draw("(reco_pt-gen_pt)/gen_pt:gen_pt >> offlineRecoHist", "reco_pt>0", "colz");
-   auto offlineRecoHistProjection = offlineRecoHist->ProjectionY("offlineRecoHistProjection", 0, -1, "e");
    c->SetLogy(0);
    offlineRecoHist->Draw("colz");
    c->Print("plots/offlineReco_vs_gen.png");
    c->Clear();
-   offlineRecoHistProjection->Draw("hist ex0");
-   TF1 gaus("gaus", "gaus", -.5, .5);
-   gaus.SetParameters(1.3e3, 0.1, 0.1);
-   offlineRecoHistProjection->Fit(&gaus, "", "", 0., 0.2);
-   TLatex fitmu(-0.4, 1200., ("#mu = "+std::to_string(gaus.GetParameter(1))).c_str());
-   fitmu.Draw();
-   double pt_threshold_scale_factor = 1.16; // fitmu??
-   c->Print("plots/offlineReco_vs_gen_projection.png");
+   double pt_threshold_scale_factor = 1.16;
 
    crystal_tree->Draw("reco_pt >> newAlgTurnOnDenom", "reco_pt > 0.");
-   crystal_tree->Draw("reco_pt >> newAlgTurnOnNumerator", ("reco_pt > 0. && passed && cluster_pt > 15./"+std::to_string(pt_threshold_scale_factor)).c_str());
-   auto newAlgCorrectedRecoPtHist15 = new TGraphAsymmErrors(newAlgTurnOnNumerator, newAlgTurnOnDenom);
-   newAlgCorrectedRecoPtHist15->SetName("divide_dyncrystalEG_threshold15_efficiency_reco_pt_by_reco_pt_2");
-   newAlgCorrectedRecoPtHist15->SetTitle("Crystal Algorithm");
-   newAlgCorrectedRecoPtHist15->GetXaxis()->SetTitle("Offline reco pT");
-   newAlgCorrectedRecoPtHist15->GetYaxis()->SetTitle("Efficiency");
+   crystal_tree->Draw("reco_pt >> newAlgTurnOnNumerator", ("reco_pt > 0. && passed && cluster_pt > 20./"+std::to_string(pt_threshold_scale_factor)).c_str());
+   auto newAlgCorrectedRecoPtHist20 = new TGraphAsymmErrors(newAlgTurnOnNumerator, newAlgTurnOnDenom);
+   newAlgCorrectedRecoPtHist20->SetName("divide_dyncrystalEG_threshold20_efficiency_reco_pt_by_reco_pt_2");
+   newAlgCorrectedRecoPtHist20->SetTitle("Crystal Algorithm");
+   newAlgCorrectedRecoPtHist20->GetXaxis()->SetTitle("Offline reco pT");
+   newAlgCorrectedRecoPtHist20->GetYaxis()->SetTitle("Efficiency");
    crystal_tree->Draw("reco_pt >> newAlgTurnOnNumerator", ("reco_pt > 0. && passed && cluster_pt > 30./"+std::to_string(pt_threshold_scale_factor)).c_str());
    auto newAlgCorrectedRecoPtHist30 = new TGraphAsymmErrors(newAlgTurnOnNumerator, newAlgTurnOnDenom);
    newAlgCorrectedRecoPtHist30->SetName("divide_dyncrystalEG_threshold30_efficiency_reco_pt_by_reco_pt_2");
@@ -505,9 +508,9 @@ void drawRateEff() {
    c->SetName("dyncrystalEG_efficiency_pt");
    c->SetTitle("");
    drawEfficiency({newAlgPtHist}, c, 1.2, {0., 50.}, true, {0.9, 2., 1., 0.});
-   c->SetName("dyncrystalEG_threshold15_efficiency_reco_pt");
-   c->SetTitle("EG Turn-On Efficiencies, 15GeV Threshold");
-   drawEfficiency({newAlgCorrectedRecoPtHist15, run1AlgRecoPtHists[0], dynAlgRecoPtHists[0]}, c, 1.2, {0., 50.}, true, {0.9, 15., 1., 0.});
+   c->SetName("dyncrystalEG_threshold20_efficiency_reco_pt");
+   c->SetTitle("EG Turn-On Efficiencies, 20GeV Threshold");
+   drawEfficiency({newAlgCorrectedRecoPtHist20, run1AlgRecoPtHists[0], dynAlgRecoPtHists[0]}, c, 1.2, {0., 50.}, true, {0.9, 20., 1., 0.});
    c->SetName("dyncrystalEG_threshold30_efficiency_reco_pt");
    c->SetTitle("EG Turn-On Efficiencies, 30GeV Threshold");
    drawEfficiency({newAlgCorrectedRecoPtHist30, run1AlgRecoPtHists[1], dynAlgRecoPtHists[1]}, c, 1.2, {0., 50.}, true, {0.95, 30., 1., 0.});
