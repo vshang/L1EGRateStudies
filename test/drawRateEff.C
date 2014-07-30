@@ -379,6 +379,8 @@ void drawRateEff() {
    run1AlgRateHist->SetTitle("Run 1 Alg.");
    auto crystalAlgRateHist = (TH1F *) rates->Get("analyzer/L1EGammaCrystalsProducer:EGammaCrystal_rate");
    crystalAlgRateHist->SetTitle("Crystal Trigger (prod.)");
+   auto UCTAlgRateHist = (TH1F *) rates->Get("analyzer/l1extraParticlesUCT:All_rate");
+   UCTAlgRateHist->SetTitle("UCT2015");
 
    c->SetLogy(1);
    c->SetGridx(1);
@@ -430,6 +432,9 @@ void drawRateEff() {
 
    auto crystalAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_L1EGammaCrystalsProducer:EGammaCrystal_efficiency_pt_by_gen_pt");
    crystalAlgPtHist->SetTitle("Crystal Trigger (prod.)");
+
+   auto UCTAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_l1extraParticlesUCT:All_efficiency_pt_by_gen_pt");
+   UCTAlgPtHist->SetTitle("UCT2015");
 
    // Use crystal tree to adjust turn-on plot for incorrect offline pt reconstruction
    auto crystal_tree = (TTree *) eff->Get("analyzer/crystal_tree");
@@ -488,7 +493,7 @@ void drawRateEff() {
    drawRates({dyncrystalCorrectedRateHist, dynAlgRateHist}, c, 40000., {0., 50.});
    c->SetName("dyncrystalEG_corrected_rate_UW");
    c->SetTitle("EG Rates (UW only)");
-   drawRates({dyncrystalCorrectedRateHist, run1AlgRateHist, dynAlgRateHist, dyncrystalProdCorrectedRateHist}, c, 40000., {0., 50.});
+   drawRates({dyncrystalCorrectedRateHist, run1AlgRateHist, dynAlgRateHist, dyncrystalProdCorrectedRateHist, UCTAlgRateHist}, c, 40000., {0., 50.});
    c->SetLogy(0);
 
    c->SetName("dyncrystalEG_efficiency_eta");
@@ -496,7 +501,7 @@ void drawRateEff() {
    drawEfficiency({newAlgEtaHist, run1AlgEtaHist, dynAlgEtaHist}, c, 1.2, {-2.5, 2.5});
    c->SetName("dyncrystalEG_efficiency_pt_UW");
    c->SetTitle("EG Efficiencies (UW only)");
-   drawEfficiency({newAlgPtHist, run1AlgPtHist, dynAlgPtHist, crystalAlgPtHist}, c, 1.2, {0., 50.}, true, {0.9, 2., 1., 0.});
+   drawEfficiency({newAlgPtHist, run1AlgPtHist, dynAlgPtHist, crystalAlgPtHist, UCTAlgPtHist}, c, 1.2, {0., 50.}, true, {0.9, 2., 1., 0.});
    c->SetName("dyncrystalEG_efficiency_pt");
    c->SetTitle("");
    drawEfficiency({newAlgPtHist}, c, 1.2, {0., 50.}, true, {0.9, 2., 1., 0.});
