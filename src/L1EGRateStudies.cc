@@ -144,6 +144,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float cluster_pt;
          float hovere;
          float iso;
+         float deltaR = 0.;
          float gen_pt = 0.;
          float denom_pt = 0.;
          float reco_pt = 0.;
@@ -260,6 +261,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("cluster_pt", &treeinfo.cluster_pt);
    crystal_tree->Branch("cluster_hovere", &treeinfo.hovere);
    crystal_tree->Branch("cluster_iso", &treeinfo.iso);
+   crystal_tree->Branch("deltaR", &treeinfo.deltaR);
    crystal_tree->Branch("gen_pt", &treeinfo.gen_pt);
    crystal_tree->Branch("denom_pt", &treeinfo.denom_pt);
    crystal_tree->Branch("reco_pt", &treeinfo.reco_pt);
@@ -442,6 +444,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
               && fabs(cluster.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
          {
             treeinfo.nthCandidate = clusterCount;
+            treeinfo.deltaR = reco::deltaR(cluster, trueElectron);
             fill_tree(cluster);
             checkRecHitsFlags(cluster, triggerPrimitives, ecalRecHits);
 

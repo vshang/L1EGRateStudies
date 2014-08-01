@@ -344,14 +344,39 @@ void drawDRHists(std::vector<TH1F*> hists, TCanvas * c, double ymax) {
    hs.GetYaxis()->SetTitle(hists[0]->GetYaxis()->GetTitle());
    hs.GetYaxis()->SetTitleOffset(1.2);
    hs.GetYaxis()->SetTitle("Fraction of Events");
-   hs.GetXaxis()->SetRangeUser(0., 0.1);
+   //hs.GetXaxis()->SetRangeUser(0., 0.1);
 
    auto cmsString = drawCMSString("CMS Simulation, <PU>=140 bx=25, Single Electron");
                
    c->Print(("plots/"+std::string(c->GetName())+".png").c_str());
+   c->Clear();
+   markers.clear();
+
+   // Now for integral
+   for(auto& hist : hists)
+   {
+      hs.RecursiveRemove(hist);
+      TH1F * intHist = (TH1F*) hist->Clone((hist->GetName()+std::string("_cdf")).c_str());
+      double integral = 0;
+      for(int bin=0; bin<=intHist->GetNbinsX(); ++bin)
+      {
+         integral += intHist->GetBinContent(bin);
+         intHist->SetBinContent(bin, integral);
+      }
+      hs.Add(intHist, "ex0 hist");
+      markers.emplace_back(intHist);
+   }
+   hs.SetMaximum(1.2);
+   hs.GetYaxis()->SetTitle((std::string("Cumulative ")+hs.GetYaxis()->GetTitle()).c_str());
+   hs.Draw("nostack");
+   for(auto& m : markers) m.Draw("psame");
+   leg->Draw("same");
+   auto cmsString2 = drawCMSString("CMS Simulation, <PU>=140 bx=25, Single Electron");
+   c->Print(("plots/"+std::string(c->GetName())+"_cdf.png").c_str());
+
    delete leg;
    delete cmsString;
-   for(auto& hist : hists) hs.RecursiveRemove(hist);
+   delete cmsString2;
 }
 
 void drawRateEff() {
@@ -374,13 +399,13 @@ void drawRateEff() {
    auto oldAlgRateHist = (TH1F *) rates->Get("analyzer/SLHCL1ExtraParticles:EGamma_rate");
    oldAlgRateHist->SetTitle("Original L2 Algorithm");
    auto dynAlgRateHist = (TH1F *) rates->Get("analyzer/SLHCL1ExtraParticlesNewClustering:EGamma_rate");
-   dynAlgRateHist->SetTitle("L1EGamma_Tower");
+   dynAlgRateHist->SetTitle("LLR Alg.");
    auto run1AlgRateHist = (TH1F *) rates->Get("analyzer/l1extraParticles:All_rate");
    run1AlgRateHist->SetTitle("Run 1 Alg.");
    auto crystalAlgRateHist = (TH1F *) rates->Get("analyzer/L1EGammaCrystalsProducer:EGammaCrystal_rate");
    crystalAlgRateHist->SetTitle("Crystal Trigger (prod.)");
    auto UCTAlgRateHist = (TH1F *) rates->Get("analyzer/l1extraParticlesUCT:All_rate");
-   UCTAlgRateHist->SetTitle("UCT2015");
+   UCTAlgRateHist->SetTitle("Phase 1 TDR");
 
    c->SetLogy(1);
    c->SetGridx(1);
@@ -415,13 +440,13 @@ void drawRateEff() {
    oldAlgDRHist->SetTitle("Original L2 Algorithm");
 
    auto dynAlgEtaHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_SLHCL1ExtraParticlesNewClustering:EGamma_efficiency_eta_by_gen_eta");
-   dynAlgEtaHist->SetTitle("L1EGamma_Tower");
+   dynAlgEtaHist->SetTitle("LLR Alg.");
    auto dynAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_SLHCL1ExtraParticlesNewClustering:EGamma_efficiency_pt_by_gen_pt");
-   dynAlgPtHist->SetTitle("L1EGamma_Tower");
+   dynAlgPtHist->SetTitle("LLR Alg.");
    auto dynAlgRecoPtHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_SLHCL1ExtraParticlesNewClustering:EGamma_threshold*_reco_pt");
    for(auto& hist : dynAlgRecoPtHists) hist->SetTitle("Tower Algorithm 2");
    auto dynAlgDRHist = (TH1F *) eff->Get("analyzer/SLHCL1ExtraParticlesNewClustering:EGamma_deltaR");
-   dynAlgDRHist->SetTitle("L1EGamma_Tower");
+   dynAlgDRHist->SetTitle("LLR Alg.");
 
    auto run1AlgEtaHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_l1extraParticles:All_efficiency_eta_by_gen_eta");
    run1AlgEtaHist->SetTitle("Run 1 Alg.");
@@ -457,30 +482,21 @@ void drawRateEff() {
    offlineRecoHist->Draw("colz");
    c->Print("plots/offlineReco_vs_gen.png");
    c->Clear();
-   double pt_threshold_scale_factor = 1.16;
+   double pt_threshold_scale_factor = 1.135;
 
-   crystal_tree->Draw("reco_pt >> newAlgTurnOnDenom", "reco_pt > 0.");
-   crystal_tree->Draw("reco_pt >> newAlgTurnOnNumerator", ("reco_pt > 0. && passed && cluster_pt > 20./"+std::to_string(pt_threshold_scale_factor)).c_str());
-   auto newAlgCorrectedRecoPtHist20 = new TGraphAsymmErrors(newAlgTurnOnNumerator, newAlgTurnOnDenom);
-   newAlgCorrectedRecoPtHist20->SetName("divide_dyncrystalEG_threshold20_efficiency_reco_pt_by_reco_pt_2");
-   newAlgCorrectedRecoPtHist20->SetTitle("Crystal Algorithm");
-   newAlgCorrectedRecoPtHist20->GetXaxis()->SetTitle("Offline reco pT");
-   newAlgCorrectedRecoPtHist20->GetYaxis()->SetTitle("Efficiency");
-   crystal_tree->Draw("reco_pt >> newAlgTurnOnNumerator", ("reco_pt > 0. && passed && cluster_pt > 30./"+std::to_string(pt_threshold_scale_factor)).c_str());
-   auto newAlgCorrectedRecoPtHist30 = new TGraphAsymmErrors(newAlgTurnOnNumerator, newAlgTurnOnDenom);
-   newAlgCorrectedRecoPtHist30->SetName("divide_dyncrystalEG_threshold30_efficiency_reco_pt_by_reco_pt_2");
-   newAlgCorrectedRecoPtHist30->SetTitle("Crystal Algorithm");
-   newAlgCorrectedRecoPtHist30->GetXaxis()->SetTitle("Offline reco pT");
-   newAlgCorrectedRecoPtHist30->GetYaxis()->SetTitle("Efficiency");
-
-   // Now for gen pt
-   crystal_tree->Draw("gen_pt >> newAlgTurnOnDenom");
-   crystal_tree->Draw("gen_pt >> newAlgTurnOnNumerator", "passed && cluster_pt > 20.");
-   auto newAlgGenPtTurnOn20 = new TGraphAsymmErrors(newAlgTurnOnNumerator, newAlgTurnOnDenom);
-   newAlgGenPtTurnOn20->SetName("divide_dyncrystalEG_threshold20_efficiency_gen_pt_by_gen_pt");
-   newAlgGenPtTurnOn20->SetTitle("L1EGamma_Crystal > 20GeV");
-   newAlgGenPtTurnOn20->GetXaxis()->SetTitle("Gen. pT (GeV)");
-   newAlgGenPtTurnOn20->GetYaxis()->SetTitle("Efficiency");
+   crystal_tree->Draw("gen_pt >> newAlgTurnOnDenom", "gen_pt > 0.");
+   crystal_tree->Draw("gen_pt >> newAlgTurnOnNumerator", ("gen_pt > 0. && passed && cluster_pt > 20./"+std::to_string(pt_threshold_scale_factor)).c_str());
+   auto newAlgCorrectedGenPtHist20 = new TGraphAsymmErrors(newAlgTurnOnNumerator, newAlgTurnOnDenom);
+   newAlgCorrectedGenPtHist20->SetName("divide_dyncrystalEG_threshold20_efficiency_gen_pt_by_gen_pt_2");
+   newAlgCorrectedGenPtHist20->SetTitle("Crystal Algorithm");
+   newAlgCorrectedGenPtHist20->GetXaxis()->SetTitle("Gen. pT");
+   newAlgCorrectedGenPtHist20->GetYaxis()->SetTitle("Efficiency");
+   crystal_tree->Draw("gen_pt >> newAlgTurnOnNumerator", ("gen_pt > 0. && passed && cluster_pt > 30./"+std::to_string(pt_threshold_scale_factor)).c_str());
+   auto newAlgCorrectedGenPtHist30 = new TGraphAsymmErrors(newAlgTurnOnNumerator, newAlgTurnOnDenom);
+   newAlgCorrectedGenPtHist30->SetName("divide_dyncrystalEG_threshold30_efficiency_gen_pt_by_gen_pt_2");
+   newAlgCorrectedGenPtHist30->SetTitle("Crystal Algorithm");
+   newAlgCorrectedGenPtHist30->GetXaxis()->SetTitle("Gen. pT");
+   newAlgCorrectedGenPtHist30->GetYaxis()->SetTitle("Efficiency");
 
    // Draw shifted rate hist too...
    auto dyncrystalCorrectedRateHist = (TH1F *) newAlgRateHist->Clone("dyncrystalEG_corrected_rate");
@@ -493,39 +509,41 @@ void drawRateEff() {
    dccr_xaxis->Set(dccr_xaxis->GetNbins(), dccr_xaxis->GetXmin()*pt_threshold_scale_factor, dccr_xaxis->GetXmax()*pt_threshold_scale_factor);
    c->SetLogy(1);
    c->SetName("dyncrystalEG_corrected_rate");
-   drawRates({dyncrystalCorrectedRateHist, dynAlgRateHist}, c, 40000., {0., 50.});
+   drawRates({dyncrystalCorrectedRateHist, UCTAlgRateHist}, c, 40000., {0., 50.});
    c->SetName("dyncrystalEG_corrected_rate_UW");
    c->SetTitle("EG Rates (UW only)");
-   drawRates({dyncrystalCorrectedRateHist, run1AlgRateHist, dynAlgRateHist, dyncrystalProdCorrectedRateHist, UCTAlgRateHist}, c, 40000., {0., 50.});
+   drawRates({dyncrystalCorrectedRateHist, UCTAlgRateHist, dynAlgRateHist}, c, 40000., {0., 50.});
    c->SetLogy(0);
 
    c->SetName("dyncrystalEG_efficiency_eta");
    c->SetTitle("EG Efficiencies");
-   drawEfficiency({newAlgEtaHist, run1AlgEtaHist, dynAlgEtaHist}, c, 1.2, {-2.5, 2.5});
+   drawEfficiency({newAlgEtaHist, UCTAlgEtaHist, dynAlgEtaHist}, c, 1.2, {-2.5, 2.5});
    c->SetName("dyncrystalEG_efficiency_pt_UW");
    c->SetTitle("EG Efficiencies (UW only)");
-   drawEfficiency({newAlgPtHist, run1AlgPtHist, dynAlgPtHist, crystalAlgPtHist, UCTAlgPtHist}, c, 1.2, {0., 50.}, true, {0.9, 2., 1., 0.});
+   drawEfficiency({newAlgPtHist, UCTAlgPtHist, dynAlgPtHist}, c, 1.2, {0., 50.}, true, {0.9, 2., 1., 0.});
    c->SetName("dyncrystalEG_efficiency_pt");
    c->SetTitle("");
-   drawEfficiency({newAlgPtHist}, c, 1.2, {0., 50.}, true, {0.9, 2., 1., 0.});
-   c->SetName("dyncrystalEG_threshold20_efficiency_reco_pt");
-   c->SetTitle("EG Turn-On Efficiencies, 20GeV Threshold");
-   drawEfficiency({newAlgCorrectedRecoPtHist20, run1AlgRecoPtHists[0], dynAlgRecoPtHists[0]}, c, 1.2, {0., 50.}, true, {0.9, 20., 1., 0.});
-   c->SetName("dyncrystalEG_threshold30_efficiency_reco_pt");
-   c->SetTitle("EG Turn-On Efficiencies, 30GeV Threshold");
-   drawEfficiency({newAlgCorrectedRecoPtHist30, run1AlgRecoPtHists[1], dynAlgRecoPtHists[1]}, c, 1.2, {0., 50.}, true, {0.95, 30., 1., 0.});
+   drawEfficiency({newAlgPtHist, UCTAlgPtHist}, c, 1.2, {0., 50.}, true, {0.9, 2., 1., 0.});
    c->SetName("dyncrystalEG_threshold20_efficiency_gen_pt");
-   //c->SetTitle("EG Turn-On Efficiencies");
-   c->SetTitle("");
-   drawEfficiency({newAlgGenPtTurnOn20}, c, 1.2, {0., 50.}, true, {0.95, 20., 1., 0.});
-   c->SetName("dyncrystalEG_threshold20_efficiency_gen_pt_comparison");
-   drawEfficiency({newAlgGenPtTurnOn20, newAlgPtHist}, c, 1.2, {0., 50.}, true, {0.95, 20., 1., 0.});
+   c->SetTitle("EG Turn-On Efficiencies, 20GeV Threshold");
+   drawEfficiency({newAlgCorrectedGenPtHist20, UCTAlgGenPtHists[0]}, c, 1.2, {0., 50.}, true, {0.9, 20., 1., 0.});
+   c->SetName("dyncrystalEG_threshold30_efficiency_gen_pt");
+   c->SetTitle("EG Turn-On Efficiencies, 30GeV Threshold");
+   drawEfficiency({newAlgCorrectedGenPtHist30, UCTAlgGenPtHists[1]}, c, 1.2, {0., 50.}, true, {0.95, 30., 1., 0.});
+
+   // DeltaR stuff
    c->SetGridx(0);
    c->SetGridy(0);
    c->SetName("dyncrystalEG_deltaR");
-   //c->SetTitle("#DeltaR Distribution");
    c->SetTitle("");
-   drawDRHists({newAlgDRHist, dynAlgDRHist}, c, 0.);
+   drawDRHists({newAlgDRHist, UCTAlgDRHist}, c, 0.);
+   c->SetName("dyncrystalEG_deltaR_UW");
+   c->SetTitle("");
+   drawDRHists({newAlgDRHist, UCTAlgDRHist, dynAlgDRHist}, c, 0.);
+   TH1F * newAlgDRCutsHist = new TH1F("newAlgDRCutsHist", "L1EGamma_Crystal", 50, 0., .25);
+   crystal_tree->Draw("deltaR >> newAlgDRCutsHist", "passed && gen_pt > 20.", "goff");
+   c->SetName("dyncrystalEG_deltaR_ptcut");
+   drawDRHists({newAlgDRCutsHist}, c, 0.);
 
    c->Clear();
    auto bremHist = (TH2F *) eff->Get("analyzer/brem_dphi_hist");
@@ -560,8 +578,8 @@ void drawRateEff() {
    delete cmsString;
 
    c->Clear();
-   auto oldAlgrecoGenPtHist = (TH2F *) eff->Get("analyzer/SLHCL1ExtraParticles:EGamma_reco_gen_pt");
-   // auto oldAlgrecoGenPtHist = (TH2F *) eff->Get("analyzer/l1extraParticles:All_reco_gen_pt");
+   // auto oldAlgrecoGenPtHist = (TH2F *) eff->Get("analyzer/SLHCL1ExtraParticles:EGamma_reco_gen_pt");
+   auto oldAlgrecoGenPtHist = (TH2F *) eff->Get("analyzer/l1extraParticlesUCT:All_reco_gen_pt");
    oldAlgrecoGenPtHist->SetTitle("Tower EG alg. momentum error");
    oldAlgrecoGenPtHist->GetYaxis()->SetTitle("Relative Error (reco-gen)/gen");
    oldAlgrecoGenPtHist->SetMaximum(50);
