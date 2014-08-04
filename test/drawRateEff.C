@@ -578,6 +578,7 @@ void drawRateEff() {
    delete cmsString;
 
    c->Clear();
+   recoGenPtHist->SetTitle("Crystal EG algorithm pT resolution");
    // auto oldAlgrecoGenPtHist = (TH2F *) eff->Get("analyzer/SLHCL1ExtraParticles:EGamma_reco_gen_pt");
    auto oldAlgrecoGenPtHist = (TH2F *) eff->Get("analyzer/l1extraParticlesUCT:All_reco_gen_pt");
    oldAlgrecoGenPtHist->SetTitle("Tower EG alg. momentum error");

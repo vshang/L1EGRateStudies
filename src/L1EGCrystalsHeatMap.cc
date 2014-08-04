@@ -138,6 +138,7 @@ class L1EGCrystalsHeatMap : public edm::EDAnalyzer {
       bool cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster);
       void fillHeatmap(std::string name, SimpleCaloHit &centerHit);
       SimpleCaloHit& findClosestHit(reco::Candidate &cluster);
+      SimpleCaloHit& findClosestHit(l1slhc::L1EGCrystalCluster &cluster);
 
       // ----------member data ---------------------------
       CaloGeometryHelper geometryHelper;
@@ -324,6 +325,21 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
          // Don't consider generated electrons in the endcap
          return;
       }
+
+      for(auto& cluster : crystalClusters)
+      {
+         if ( reco::deltaR(trueElectron, cluster) < 0.1 )
+         {
+            if ( cluster.pt() < 20. && trueElectron.pt() > 20. )
+            {
+               std::cout << "find_me!" << std::endl;
+               fillHeatmap("cluster_pt<20,gen_pt>20", findClosestHit(cluster));
+            }
+            if ( cluster.pt() < 20. && trueElectron.pt() > 20. && trueElectron.pt() < 30. )
+               fillHeatmap("cluster_pt<20,20<gen_pt<30", findClosestHit(cluster));
+            break;
+         }
+      }
    }
    else // !kUseGenMatch
    {
@@ -456,6 +472,21 @@ L1EGCrystalsHeatMap::findClosestHit(reco::Candidate &cluster)
       if ( reco::deltaR(ecalhit.position, cluster) < dRmin )
       {
          dRmin = reco::deltaR(ecalhit.position, cluster);
+         centerhit = &ecalhit;
+      }
+   }
+   // centerhit should never be null as long as ecalhits_ has entries
+   return *centerhit;
+}
+
+L1EGCrystalsHeatMap::SimpleCaloHit&
+L1EGCrystalsHeatMap::findClosestHit(l1slhc::L1EGCrystalCluster &cluster)
+{
+   SimpleCaloHit *centerhit = &ecalhits_[0];
+   for(auto& ecalhit : ecalhits_)
+   {
+      if ( ecalhit.id == cluster.seedCrystal() )
+      {
          centerhit = &ecalhit;
       }
    }
