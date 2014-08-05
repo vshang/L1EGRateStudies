@@ -407,16 +407,6 @@ void drawRateEff() {
    auto UCTAlgRateHist = (TH1F *) rates->Get("analyzer/l1extraParticlesUCT:All_rate");
    UCTAlgRateHist->SetTitle("Phase 1 TDR");
 
-   c->SetLogy(1);
-   c->SetGridx(1);
-   c->SetGridy(1);
-   gStyle->SetGridStyle(2);
-   gStyle->SetGridColor(kGray+1);
-   c->SetName("dyncrystalEG_rate");
-   //c->SetTitle("EG Fake Rates");
-   c->SetTitle("");
-   drawRates({newAlgRateHist, run1AlgRateHist, dynAlgRateHist, crystalAlgRateHist}, c, 40000., {0., 50.});
-
    auto effHistKeys = rootools::getKeysofClass(eff, "analyzer", "TGraphAsymmErrors");
 
    auto newAlgEtaHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_dyncrystalEG_efficiency_eta_by_gen_eta");
@@ -459,6 +449,10 @@ void drawRateEff() {
 
    auto crystalAlgPtHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_L1EGammaCrystalsProducer:EGammaCrystal_efficiency_pt_by_gen_pt");
    crystalAlgPtHist->SetTitle("Crystal Trigger (prod.)");
+   auto crystalAlgRecoPtHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_L1EGammaCrystalsProducer:EGammaCrystal_threshold*_reco_pt");
+   for(auto& hist : crystalAlgRecoPtHists) hist->SetTitle("Crystal Algorithm");
+   auto crystalAlgGenPtHists = rootools::loadObjectsMatchingPattern<TGraphAsymmErrors>(effHistKeys, "divide_L1EGammaCrystalsProducer:EGammaCrystal_threshold*_gen_pt");
+   for(auto& hist : crystalAlgGenPtHists) hist->SetTitle("L1EGamma_Crystal");
 
    const char * title = "Phase 1 TDR";
    auto UCTAlgEtaHist = (TGraphAsymmErrors *) eff->Get("analyzer/divide_l1extraParticlesUCT:All_efficiency_eta_by_gen_eta");
@@ -472,47 +466,17 @@ void drawRateEff() {
    auto UCTAlgDRHist = (TH1F *) eff->Get("analyzer/l1extraParticlesUCT:All_deltaR");
    UCTAlgDRHist->SetTitle(title);
 
-   // Use crystal tree to adjust turn-on plot for incorrect offline pt reconstruction
-   auto crystal_tree = (TTree *) eff->Get("analyzer/crystal_tree");
-   auto newAlgTurnOnNumerator = new TH1F("newAlgTurnOnNumerator", "Crystal Trigger (pT corrected)", 60, 0., 50.);
-   auto newAlgTurnOnDenom = new TH1F("newAlgTurnOnDenom", "Dynamic Crystal Trigger", 60, 0., 50.);
-   auto offlineRecoHist = new TH2F("offlineRecoHist", "Offline reco to gen. comparison;Gen. pT (GeV);(reco-gen)/gen;Counts", 60, 0., 50., 60, -0.5, 0.5);
-   crystal_tree->Draw("(reco_pt-gen_pt)/gen_pt:gen_pt >> offlineRecoHist", "reco_pt>0", "colz");
-   c->SetLogy(0);
-   offlineRecoHist->Draw("colz");
-   c->Print("plots/offlineReco_vs_gen.png");
-   c->Clear();
-   double pt_threshold_scale_factor = 1.135;
-
-   crystal_tree->Draw("gen_pt >> newAlgTurnOnDenom", "gen_pt > 0.");
-   crystal_tree->Draw("gen_pt >> newAlgTurnOnNumerator", ("gen_pt > 0. && passed && cluster_pt > 20./"+std::to_string(pt_threshold_scale_factor)).c_str());
-   auto newAlgCorrectedGenPtHist20 = new TGraphAsymmErrors(newAlgTurnOnNumerator, newAlgTurnOnDenom);
-   newAlgCorrectedGenPtHist20->SetName("divide_dyncrystalEG_threshold20_efficiency_gen_pt_by_gen_pt_2");
-   newAlgCorrectedGenPtHist20->SetTitle("Crystal Algorithm");
-   newAlgCorrectedGenPtHist20->GetXaxis()->SetTitle("Gen. pT");
-   newAlgCorrectedGenPtHist20->GetYaxis()->SetTitle("Efficiency");
-   crystal_tree->Draw("gen_pt >> newAlgTurnOnNumerator", ("gen_pt > 0. && passed && cluster_pt > 30./"+std::to_string(pt_threshold_scale_factor)).c_str());
-   auto newAlgCorrectedGenPtHist30 = new TGraphAsymmErrors(newAlgTurnOnNumerator, newAlgTurnOnDenom);
-   newAlgCorrectedGenPtHist30->SetName("divide_dyncrystalEG_threshold30_efficiency_gen_pt_by_gen_pt_2");
-   newAlgCorrectedGenPtHist30->SetTitle("Crystal Algorithm");
-   newAlgCorrectedGenPtHist30->GetXaxis()->SetTitle("Gen. pT");
-   newAlgCorrectedGenPtHist30->GetYaxis()->SetTitle("Efficiency");
-
-   // Draw shifted rate hist too...
-   auto dyncrystalCorrectedRateHist = (TH1F *) newAlgRateHist->Clone("dyncrystalEG_corrected_rate");
-   dyncrystalCorrectedRateHist->SetTitle("L1EGamma_Crystal");
-   auto dccr_xaxis = dyncrystalCorrectedRateHist->GetXaxis();
-   dccr_xaxis->Set(dccr_xaxis->GetNbins(), dccr_xaxis->GetXmin()*pt_threshold_scale_factor, dccr_xaxis->GetXmax()*pt_threshold_scale_factor);
-   auto dyncrystalProdCorrectedRateHist = (TH1F *) crystalAlgRateHist->Clone("dyncrystalEG_prod_corrected_rate");
-   dyncrystalProdCorrectedRateHist->SetTitle("Crystal Trigger (prod.)");
-   dccr_xaxis = dyncrystalProdCorrectedRateHist->GetXaxis();
-   dccr_xaxis->Set(dccr_xaxis->GetNbins(), dccr_xaxis->GetXmin()*pt_threshold_scale_factor, dccr_xaxis->GetXmax()*pt_threshold_scale_factor);
    c->SetLogy(1);
-   c->SetName("dyncrystalEG_corrected_rate");
-   drawRates({dyncrystalCorrectedRateHist, UCTAlgRateHist}, c, 40000., {0., 50.});
-   c->SetName("dyncrystalEG_corrected_rate_UW");
+   c->SetGridx(1);
+   c->SetGridy(1);
+   gStyle->SetGridStyle(2);
+   gStyle->SetGridColor(kGray+1);
+   c->SetName("dyncrystalEG_rate");
+   c->SetTitle("");
+   drawRates({newAlgRateHist, UCTAlgRateHist}, c, 40000., {0., 50.});
+   c->SetName("dyncrystalEG_rate_UW");
    c->SetTitle("EG Rates (UW only)");
-   drawRates({dyncrystalCorrectedRateHist, UCTAlgRateHist, dynAlgRateHist}, c, 40000., {0., 50.});
+   drawRates({newAlgRateHist, UCTAlgRateHist, dynAlgRateHist}, c, 40000., {0., 50.});
    c->SetLogy(0);
 
    c->SetName("dyncrystalEG_efficiency_eta");
@@ -525,11 +489,23 @@ void drawRateEff() {
    c->SetTitle("");
    drawEfficiency({newAlgPtHist, UCTAlgPtHist}, c, 1.2, {0., 50.}, true, {0.9, 2., 1., 0.});
    c->SetName("dyncrystalEG_threshold20_efficiency_gen_pt");
-   c->SetTitle("EG Turn-On Efficiencies, 20GeV Threshold");
-   drawEfficiency({newAlgCorrectedGenPtHist20, UCTAlgGenPtHists[0]}, c, 1.2, {0., 50.}, true, {0.9, 20., 1., 0.});
+   //c->SetTitle("EG Turn-On Efficiencies, 20GeV Threshold");
+   drawEfficiency({crystalAlgGenPtHists[0], UCTAlgGenPtHists[0]}, c, 1.2, {0., 50.}, true, {0.9, 20., 1., 0.});
    c->SetName("dyncrystalEG_threshold30_efficiency_gen_pt");
-   c->SetTitle("EG Turn-On Efficiencies, 30GeV Threshold");
-   drawEfficiency({newAlgCorrectedGenPtHist30, UCTAlgGenPtHists[1]}, c, 1.2, {0., 50.}, true, {0.95, 30., 1., 0.});
+   //c->SetTitle("EG Turn-On Efficiencies, 30GeV Threshold");
+   drawEfficiency({crystalAlgGenPtHists[1], UCTAlgGenPtHists[1]}, c, 1.2, {0., 50.}, true, {0.95, 30., 1., 0.});
+   c->SetName("dyncrystalEG_threshold16_efficiency_gen_pt");
+   //c->SetTitle("EG Turn-On Efficiencies, 16GeV Threshold");
+   drawEfficiency({crystalAlgGenPtHists[2], UCTAlgGenPtHists[2]}, c, 1.2, {0., 50.}, true, {0.95, 16., 1., 0.});
+
+   // Offline reco pt
+   auto crystal_tree = (TTree *) eff->Get("analyzer/crystal_tree");
+   auto offlineRecoHist = new TH2F("offlineRecoHist", "Offline reco to gen. comparison;Gen. pT (GeV);(reco-gen)/gen;Counts", 60, 0., 50., 60, -0.5, 0.5);
+   crystal_tree->Draw("(reco_pt-gen_pt)/gen_pt:gen_pt >> offlineRecoHist", "reco_pt>0", "colz");
+   c->SetLogy(0);
+   offlineRecoHist->Draw("colz");
+   c->Print("plots/offlineReco_vs_gen.png");
+   c->Clear();
 
    // DeltaR stuff
    c->SetGridx(0);

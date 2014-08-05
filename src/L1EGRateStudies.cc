@@ -151,6 +151,9 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          bool  passed = false;
          int   nthCandidate = -1;
          bool  endcap = false;
+         float uslE = 0.;
+         float lslE = 0.;
+         float raw_pt = 0.;
       } treeinfo;
 
       // (pt_reco-pt_gen)/pt_gen plot
@@ -268,6 +271,9 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("passed", &treeinfo.passed);
    crystal_tree->Branch("nthCandidate", &treeinfo.nthCandidate);
    crystal_tree->Branch("endcap", &treeinfo.endcap);
+   crystal_tree->Branch("uslE", &treeinfo.uslE);
+   crystal_tree->Branch("lslE", &treeinfo.lslE);
+   crystal_tree->Branch("raw_pt", &treeinfo.raw_pt);
 }
 
 
@@ -661,26 +667,30 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
    treeinfo.hovere = cluster.hovere();
    treeinfo.iso = cluster.isolation();
    treeinfo.passed = cluster_passes_cuts(cluster);
+   treeinfo.uslE = cluster.GetExperimentalParam("upperSideLobeEnergy");
+   treeinfo.lslE = cluster.GetExperimentalParam("lowerSideLobeEnergy");
+   treeinfo.raw_pt = cluster.GetExperimentalParam("uncorrectedPt");
    // Gen and reco pt get filled earlier
    crystal_tree->Fill();
 }
 
 bool
 L1EGRateStudies::cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster) const {
+   float cut_pt = cluster.GetExperimentalParam("uncorrectedPt");
    if ( fabs(cluster.eta()) > 1.479 )
    {
-      if ( cluster.hovere() < 22./cluster.pt()
-           && cluster.isolation() < 64./cluster.pt()+0.1
-           && cluster.GetCrystalPt(4)/(cluster.GetCrystalPt(0)+cluster.GetCrystalPt(1)) < ( (cluster.pt() < 40) ? 0.18*(1-cluster.pt()/70.):0.18*3/7. ) )
+      if ( cluster.hovere() < 22./cut_pt
+           && cluster.isolation() < 64./cut_pt+0.1
+           && cluster.GetCrystalPt(4)/(cluster.GetCrystalPt(0)+cluster.GetCrystalPt(1)) < ( (cut_pt < 40) ? 0.18*(1-cut_pt/70.):0.18*3/7. ) )
       {
          return true;
       }
    }
    else
    {
-      if ( cluster.hovere() < 14./cluster.pt()+0.05
-           && cluster.isolation() < 40./cluster.pt()+0.1
-           && cluster.GetCrystalPt(4)/(cluster.GetCrystalPt(0)+cluster.GetCrystalPt(1)) < ( (cluster.pt() < 30) ? 0.18*(1-cluster.pt()/100.):0.18*0.7 ) )
+      if ( cluster.hovere() < 14./cut_pt+0.05
+           && cluster.isolation() < 40./cut_pt+0.1
+           && cluster.GetCrystalPt(4)/(cluster.GetCrystalPt(0)+cluster.GetCrystalPt(1)) < ( (cut_pt < 30) ? 0.18*(1-cut_pt/100.):0.18*0.7 ) )
       {
          return true;
       }

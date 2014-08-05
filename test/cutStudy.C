@@ -22,7 +22,7 @@ void drawCDFs(TCanvas * c, TTree * rate, TTree * eff, std::string variable, std:
     c->cd(2);
     gPad->SetRightMargin(0.13);
     TH2F * rate_cdf = new TH2F((prefix+"_rate_cdf").c_str(), ("Background;Cluster pT;"+var_name).c_str(), 60, 0., 50., 50, 0., max);
-    rate->Draw((variable+":cluster_pt >> "+prefix+"_rate_cdf").c_str(), var_cuts.c_str(), "goff");
+    rate->Draw((variable+":raw_pt >> "+prefix+"_rate_cdf").c_str(), var_cuts.c_str(), "goff");
     rate_cdf->GetYaxis()->SetTitleOffset(1.4);
     rate_cdf->Draw("colz");
     cutFunction->Draw("lsame");
@@ -30,7 +30,7 @@ void drawCDFs(TCanvas * c, TTree * rate, TTree * eff, std::string variable, std:
     c->cd(1);
     gPad->SetRightMargin(0.13);
     TH2F * eff_cdf = new TH2F((prefix+"_eff_cdf").c_str(), ("Single Electron signal;Cluster pT;"+var_name).c_str(), 60, 0., 50., 50, 0., max);
-    eff->Draw((variable+":cluster_pt >> "+prefix+"_eff_cdf").c_str(), var_cuts.c_str(), "goff");
+    eff->Draw((variable+":raw_pt >> "+prefix+"_eff_cdf").c_str(), var_cuts.c_str(), "goff");
     eff_cdf->GetYaxis()->SetTitleOffset(1.4);
     eff_cdf->Draw("colz");
     cutFunction->Draw("lsame");
