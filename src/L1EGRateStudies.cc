@@ -55,6 +55,10 @@
 #include "FastSimulation/BaseParticlePropagator/interface/BaseParticlePropagator.h"
 #include "FastSimulation/Particle/interface/ParticleTable.h"
 
+#include "SimDataFormats/SLHC/interface/StackedTrackerTypes.h"
+#include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
+#include "SLHCUpgradeSimulations/L1TrackTrigger/interface/L1TkElectronTrackMatchAlgo.h"
+
 #include "DataFormats/EcalDigi/interface/EcalDigiCollections.h"
 #include "DataFormats/EcalRecHit/interface/EcalRecHit.h"
 #include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
@@ -62,6 +66,8 @@
 // class declaration
 //
 class L1EGRateStudies : public edm::EDAnalyzer {
+   typedef std::vector<TTTrack<Ref_PixelDigi_>> L1TkTrackCollectionType;
+
    public:
       explicit L1EGRateStudies(const edm::ParameterSet&);
       ~L1EGRateStudies();
@@ -99,6 +105,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       std::vector<edm::InputTag> L1EGammaInputTags;
       edm::InputTag L1CrystalClustersInputTag;
       edm::InputTag offlineRecoClusterInputTag;
+      edm::InputTag L1TrackInputTag;
             
       int nHistBins, nHistEtaBins;
       double histLow;
@@ -142,6 +149,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       struct {
          std::array<float, 6> crystal_pt;
          float cluster_pt;
+         float cluster_energy;
          float hovere;
          float iso;
          float deltaR = 0.;
@@ -154,6 +162,10 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float uslE = 0.;
          float lslE = 0.;
          float raw_pt = 0.;
+         float trackDeltaR;
+         float trackP;
+         float trackRInv;         
+         float trackChi2;
       } treeinfo;
 
       // (pt_reco-pt_gen)/pt_gen plot
@@ -193,6 +205,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    L1EGammaInputTags.push_back(edm::InputTag("l1extraParticles:All"));
    L1EGammaInputTags.push_back(edm::InputTag("l1extraParticlesUCT:All"));
    L1CrystalClustersInputTag = iConfig.getParameter<edm::InputTag>("L1CrystalClustersInputTag");
+   L1TrackInputTag = iConfig.getParameter<edm::InputTag>("L1TrackInputTag");
    
    edm::Service<TFileService> fs;
    
@@ -262,6 +275,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree = fs->make<TTree>("crystal_tree", "Crystal cluster individual crystal pt values");
    crystal_tree->Branch("pt", &treeinfo.crystal_pt, "1:2:3:4:5:6");
    crystal_tree->Branch("cluster_pt", &treeinfo.cluster_pt);
+   crystal_tree->Branch("cluster_energy", &treeinfo.cluster_energy);
    crystal_tree->Branch("cluster_hovere", &treeinfo.hovere);
    crystal_tree->Branch("cluster_iso", &treeinfo.iso);
    crystal_tree->Branch("deltaR", &treeinfo.deltaR);
@@ -274,6 +288,10 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("uslE", &treeinfo.uslE);
    crystal_tree->Branch("lslE", &treeinfo.lslE);
    crystal_tree->Branch("raw_pt", &treeinfo.raw_pt);
+   crystal_tree->Branch("trackDeltaR", &treeinfo.trackDeltaR);
+   crystal_tree->Branch("trackP", &treeinfo.trackP);
+   crystal_tree->Branch("trackRInv", &treeinfo.trackRInv);
+   crystal_tree->Branch("trackChi2", &treeinfo.trackChi2);
 }
 
 
@@ -343,12 +361,17 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    iEvent.getByLabel("ecalRecHit","EcalRecHitsEB",pcalohits);
    EcalRecHitCollection ecalRecHits = *pcalohits.product();
 
+   // L1 Tracks
+   edm::Handle<L1TkTrackCollectionType> l1trackHandle;
+   iEvent.getByLabel(L1TrackInputTag, l1trackHandle);
+
    // Sort clusters so we can always pick highest pt cluster matching cuts
    std::sort(begin(crystalClusters), end(crystalClusters), [](const l1slhc::L1EGCrystalCluster& a, const l1slhc::L1EGCrystalCluster& b){return a.pt() > b.pt();});
    // also sort old algorithm products
    for(auto& collection : eGammaCollections)
       std::sort(begin(collection.second), end(collection.second), [](const l1extra::L1EmParticle& a, const l1extra::L1EmParticle& b){return a.pt() > b.pt();});
    
+   int clusterCount = 0;
    if ( doEfficiencyCalc )
    {
       reco::Candidate::PolarLorentzVector trueElectron;
@@ -441,8 +464,6 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       {
          treeinfo.reco_pt = 0.;
       }
-
-      int clusterCount = 0;
       for(const auto& cluster : crystalClusters)
       {
          clusterCount++;
@@ -451,6 +472,24 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          {
             treeinfo.nthCandidate = clusterCount;
             treeinfo.deltaR = reco::deltaR(cluster, trueElectron);
+            // track matching stuff
+            double min_track_dr = 999.;
+            edm::Ptr<TTTrack<Ref_PixelDigi_>> matched_track;
+            for(size_t track_index=0; track_index<l1trackHandle->size(); ++track_index)
+            {
+               edm::Ptr<TTTrack<Ref_PixelDigi_>> ptr(l1trackHandle, track_index);
+               double dr = L1TkElectronTrackMatchAlgo::deltaR(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), ptr);
+               if ( dr < min_track_dr )
+               {
+                  min_track_dr = dr;
+                  matched_track = ptr;
+               }
+            }
+            treeinfo.trackDeltaR = min_track_dr;
+            treeinfo.trackP = matched_track->getMomentum().mag();
+            treeinfo.trackRInv = matched_track->getRInv();
+            treeinfo.trackChi2 = matched_track->getChi2();
+            std::cout << "Track dr: " << min_track_dr << ", chi2: " << matched_track->getChi2() << ", dp: " << (treeinfo.trackP-cluster.energy())/cluster.energy() << std::endl;
             fill_tree(cluster);
             checkRecHitsFlags(cluster, triggerPrimitives, ecalRecHits);
 
@@ -529,7 +568,6 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    }
    else // !doEfficiencyCalc
    {
-      int clusterCount = 0;
       for(const auto& cluster : crystalClusters)
       {
          if ( !useEndcap && fabs(cluster.eta()) >= 1.479 ) continue;
@@ -664,6 +702,7 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
       treeinfo.crystal_pt[i] = cluster.GetCrystalPt(i);
    }
    treeinfo.cluster_pt = cluster.pt();
+   treeinfo.cluster_energy = cluster.energy();
    treeinfo.hovere = cluster.hovere();
    treeinfo.iso = cluster.isolation();
    treeinfo.passed = cluster_passes_cuts(cluster);

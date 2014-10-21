@@ -85,6 +85,16 @@ process.egcrystal_producer = cms.Path(process.l1ExtraCrystalProducer)
 process.load('RecoEcal.Configuration.RecoEcal_cff')
 process.ecalClusters = cms.Path(process.ecalClustersNoPFBox)
 
+
+# ---------------------------------------------------------------------------
+#
+# --- Create the collection of special tracks for electrons
+#
+
+process.load("SLHCUpgradeSimulations.L1TrackTrigger.L1TrackingSequence_cfi")
+process.pTracking = cms.Path( process.ElectronTrackingSequence )
+
+
 # ----------------------------------------------------------------------------------------------
 # 
 # Analyzer starts here
@@ -106,6 +116,7 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    ),
    L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer","EGCrystalCluster"),
    OfflineRecoClustersInputTag = cms.InputTag("correctedHybridSuperClusters"),
+   L1TrackInputTag = cms.InputTag("TTTracksFromPixelDigisLargerPhi","Level1TTTracks"),
    doEfficiencyCalc = cms.untracked.bool(True),
    useOfflineClusters = cms.untracked.bool(False),
    useEndcap = cms.untracked.bool(False),

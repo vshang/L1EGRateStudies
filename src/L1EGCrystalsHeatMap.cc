@@ -3,7 +3,7 @@
 // Package:    L1EGCrystalsHeatMap
 // Class:      L1EGCrystalsHeatMap
 // 
-/**\class L1EGCrystalsHeatMap L1EGCrystalsHeatMap.cc SLHCUpgradeSimulations/L1EGCrystalsHeatMap/src/L1EGCrystalsHeatMap.cc
+/**\class L1EGCrystalsHeatMap L1EGCrystalsHeatMap.cc SLHCUpgradeSimulations/L1EGRateStudies/src/L1EGCrystalsHeatMap.cc
 
  Description: [one line class summary]
 
