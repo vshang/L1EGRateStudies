@@ -150,9 +150,11 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          std::array<float, 6> crystal_pt;
          float cluster_pt;
          float cluster_energy;
+         float eta;
          float hovere;
          float iso;
          float deltaR = 0.;
+         float deltaPhi = 0.;
          float gen_pt = 0.;
          float denom_pt = 0.;
          float reco_pt = 0.;
@@ -163,6 +165,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float lslE = 0.;
          float raw_pt = 0.;
          float trackDeltaR;
+         float trackDeltaPhi;
          float trackP;
          float trackRInv;         
          float trackChi2;
@@ -276,9 +279,11 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("pt", &treeinfo.crystal_pt, "1:2:3:4:5:6");
    crystal_tree->Branch("cluster_pt", &treeinfo.cluster_pt);
    crystal_tree->Branch("cluster_energy", &treeinfo.cluster_energy);
+   crystal_tree->Branch("eta", &treeinfo.eta);
    crystal_tree->Branch("cluster_hovere", &treeinfo.hovere);
    crystal_tree->Branch("cluster_iso", &treeinfo.iso);
    crystal_tree->Branch("deltaR", &treeinfo.deltaR);
+   crystal_tree->Branch("deltaPhi", &treeinfo.deltaPhi);
    crystal_tree->Branch("gen_pt", &treeinfo.gen_pt);
    crystal_tree->Branch("denom_pt", &treeinfo.denom_pt);
    crystal_tree->Branch("reco_pt", &treeinfo.reco_pt);
@@ -289,6 +294,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("lslE", &treeinfo.lslE);
    crystal_tree->Branch("raw_pt", &treeinfo.raw_pt);
    crystal_tree->Branch("trackDeltaR", &treeinfo.trackDeltaR);
+   crystal_tree->Branch("trackDeltaPhi", &treeinfo.trackDeltaPhi);
    crystal_tree->Branch("trackP", &treeinfo.trackP);
    crystal_tree->Branch("trackRInv", &treeinfo.trackRInv);
    crystal_tree->Branch("trackChi2", &treeinfo.trackChi2);
@@ -472,6 +478,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          {
             treeinfo.nthCandidate = clusterCount;
             treeinfo.deltaR = reco::deltaR(cluster, trueElectron);
+            treeinfo.deltaPhi = reco::deltaPhi(cluster, trueElectron);
             // track matching stuff
             double min_track_dr = 999.;
             edm::Ptr<TTTrack<Ref_PixelDigi_>> matched_track;
@@ -486,6 +493,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                }
             }
             treeinfo.trackDeltaR = min_track_dr;
+            treeinfo.trackDeltaPhi = L1TkElectronTrackMatchAlgo::deltaPhi(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), matched_track);
             treeinfo.trackP = matched_track->getMomentum().mag();
             treeinfo.trackRInv = matched_track->getRInv();
             treeinfo.trackChi2 = matched_track->getChi2();
@@ -703,6 +711,7 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
    }
    treeinfo.cluster_pt = cluster.pt();
    treeinfo.cluster_energy = cluster.energy();
+   treeinfo.eta = cluster.eta();
    treeinfo.hovere = cluster.hovere();
    treeinfo.iso = cluster.isolation();
    treeinfo.passed = cluster_passes_cuts(cluster);
