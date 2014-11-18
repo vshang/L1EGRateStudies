@@ -147,6 +147,7 @@ class L1EGCrystalsHeatMap : public edm::EDAnalyzer {
       bool useOfflineClusters;
       bool kDebug;
       bool kUseGenMatch;
+      bool kSaveAllClusters;
       double kClusterPtCut; 
       edm::InputTag L1CrystalClustersInputTag;
       std::vector<edm::InputTag> L1EGammaOtherAlgs;
@@ -156,19 +157,6 @@ class L1EGCrystalsHeatMap : public edm::EDAnalyzer {
       std::map<std::string, int> heatmap_nevents_;
       std::vector<SimpleCaloHit> ecalhits_;
       std::vector<SimpleCaloHit> hcalhits_;
-
-      // Crystal pt stuff
-      TTree * crystal_tree;
-      struct {
-         std::array<float, 6> crystal_pt;
-         float cluster_pt;
-         float hovere;
-         float iso;
-         float run1_pt = 0.;
-         bool  passed = false;
-         int   nthCandidate = -1;
-      } treeinfo;
-
 };
 
 //
@@ -188,6 +176,7 @@ L1EGCrystalsHeatMap::L1EGCrystalsHeatMap(const edm::ParameterSet& iConfig):
    useOfflineClusters(iConfig.getUntrackedParameter<bool>("useOfflineClusters", false)),
    kDebug(iConfig.getUntrackedParameter<bool>("debug", false)),
    kUseGenMatch(iConfig.getUntrackedParameter<bool>("useGenMatch", true)),
+   kSaveAllClusters(iConfig.getUntrackedParameter<bool>("saveAllClusters", false)),
    kClusterPtCut(iConfig.getUntrackedParameter<double>("clusterPtCut", 10.))
 {
    L1CrystalClustersInputTag = iConfig.getParameter<edm::InputTag>("L1CrystalClustersInputTag");
@@ -195,16 +184,7 @@ L1EGCrystalsHeatMap::L1EGCrystalsHeatMap(const edm::ParameterSet& iConfig):
    edm::Service<TFileService> fs;
    fakeStatus = fs->make<TH1I>("fakeStatus", "Fake statuses", 10, 0, 9);
    crystalTowerComparison = fs->make<TH2F>("crystalTowerComparison", "Crystal cluster pt vs. nearest tower pt", 50, 0., 50., 50, 0., 50.);
-
-   crystal_tree = fs->make<TTree>("crystal_tree", "Crystal cluster individual crystal pt values");
-   crystal_tree->Branch("pt", &treeinfo.crystal_pt, "1:2:3:4:5:6");
-   crystal_tree->Branch("cluster_pt", &treeinfo.cluster_pt);
-   crystal_tree->Branch("cluster_hovere", &treeinfo.hovere);
-   crystal_tree->Branch("cluster_iso", &treeinfo.iso);
-   crystal_tree->Branch("run1_pt", &treeinfo.run1_pt);
-   crystal_tree->Branch("passed", &treeinfo.passed);
-   crystal_tree->Branch("nthCandidate", &treeinfo.nthCandidate);
-}
+ }
 
 
 L1EGCrystalsHeatMap::~L1EGCrystalsHeatMap()
@@ -337,6 +317,8 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
             }
             if ( cluster.pt() < 20. && trueElectron.pt() > 20. && trueElectron.pt() < 30. )
                fillHeatmap("cluster_pt<20,20<gen_pt<30", findClosestHit(cluster));
+            if ( kSaveAllClusters )
+               fillHeatmap("evt"+std::to_string(iEvent.id().event())+"_cluster"+std::to_string(reco::deltaR(trueElectron, cluster)), findClosestHit(cluster));
             break;
          }
       }
@@ -384,18 +366,6 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
                   {
                      fillHeatmap("crystal_towerEt", seedHit);
                      fakeStatus->Fill(2);
-
-                     for(Size_t i=0; i<treeinfo.crystal_pt.size(); ++i)
-                     {
-                        treeinfo.crystal_pt[i] = cluster.GetCrystalPt(i);
-                     }
-                     treeinfo.cluster_pt = cluster.pt();
-                     treeinfo.hovere = cluster.hovere();
-                     treeinfo.iso = cluster.isolation();
-                     treeinfo.run1_pt = run1Cand.pt();
-                     treeinfo.passed = true;
-                     treeinfo.nthCandidate = clusterIndex;
-                     crystal_tree->Fill();
                   }
                   double etSum = 0.;
                   for(const auto& hit : ecalhits_)
