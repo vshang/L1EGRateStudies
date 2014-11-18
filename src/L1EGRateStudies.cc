@@ -470,71 +470,89 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       {
          treeinfo.reco_pt = 0.;
       }
-      for(const auto& cluster : crystalClusters)
+      if ( crystalClusters.size() > 0 )
       {
-         clusterCount++;
-         if ( reco::deltaR(cluster, trueElectron) < genMatchDeltaRcut
-              && fabs(cluster.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
+         auto bestCluster = *std::min_element(begin(crystalClusters), end(crystalClusters), [trueElectron](const l1slhc::L1EGCrystalCluster& a, const l1slhc::L1EGCrystalCluster& b){return reco::deltaR(a, trueElectron) < reco::deltaR(b, trueElectron);});
+         bool clusterFound = false;
+         bool bestClusterUsed = false;
+         for(const auto& cluster : crystalClusters)
          {
-            treeinfo.nthCandidate = clusterCount;
-            treeinfo.deltaR = reco::deltaR(cluster, trueElectron);
-            treeinfo.deltaPhi = reco::deltaPhi(cluster, trueElectron);
-            // track matching stuff
-            double min_track_dr = 999.;
-            edm::Ptr<TTTrack<Ref_PixelDigi_>> matched_track;
-            for(size_t track_index=0; track_index<l1trackHandle->size(); ++track_index)
+            clusterCount++;
+            if ( reco::deltaR(cluster, trueElectron) < genMatchDeltaRcut
+                 && fabs(cluster.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
             {
-               edm::Ptr<TTTrack<Ref_PixelDigi_>> ptr(l1trackHandle, track_index);
-               double dr = L1TkElectronTrackMatchAlgo::deltaR(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), ptr);
-               if ( dr < min_track_dr )
+               clusterFound = true;
+               if ( cluster.eta() != bestCluster.eta() || cluster.phi() != bestCluster.phi() ) // why don't I have a comparison op
+                  continue;
+               bestClusterUsed = true;
+               if ( debug ) std::cout << "using cluster dr = " << reco::deltaR(cluster, trueElectron) << std::endl;
+               treeinfo.nthCandidate = clusterCount;
+               treeinfo.deltaR = reco::deltaR(cluster, trueElectron);
+               treeinfo.deltaPhi = reco::deltaPhi(cluster, trueElectron);
+               // track matching stuff
+               double min_track_dr = 999.;
+               edm::Ptr<TTTrack<Ref_PixelDigi_>> matched_track;
+               if ( l1trackHandle.isValid() )
                {
-                  min_track_dr = dr;
-                  matched_track = ptr;
+                  for(size_t track_index=0; track_index<l1trackHandle->size(); ++track_index)
+                  {
+                     edm::Ptr<TTTrack<Ref_PixelDigi_>> ptr(l1trackHandle, track_index);
+                     double dr = L1TkElectronTrackMatchAlgo::deltaR(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), ptr);
+                     if ( dr < min_track_dr )
+                     {
+                        min_track_dr = dr;
+                        matched_track = ptr;
+                     }
+                  }
+                  treeinfo.trackDeltaR = min_track_dr;
+                  treeinfo.trackDeltaPhi = L1TkElectronTrackMatchAlgo::deltaPhi(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), matched_track);
+                  treeinfo.trackP = matched_track->getMomentum().mag();
+                  treeinfo.trackRInv = matched_track->getRInv();
+                  treeinfo.trackChi2 = matched_track->getChi2();
+                  if ( debug ) std::cout << "Track dr: " << min_track_dr << ", chi2: " << matched_track->getChi2() << ", dp: " << (treeinfo.trackP-cluster.energy())/cluster.energy() << std::endl;
                }
-            }
-            treeinfo.trackDeltaR = min_track_dr;
-            treeinfo.trackDeltaPhi = L1TkElectronTrackMatchAlgo::deltaPhi(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), matched_track);
-            treeinfo.trackP = matched_track->getMomentum().mag();
-            treeinfo.trackRInv = matched_track->getRInv();
-            treeinfo.trackChi2 = matched_track->getChi2();
-            std::cout << "Track dr: " << min_track_dr << ", chi2: " << matched_track->getChi2() << ", dp: " << (treeinfo.trackP-cluster.energy())/cluster.energy() << std::endl;
-            fill_tree(cluster);
-            checkRecHitsFlags(cluster, triggerPrimitives, ecalRecHits);
+               fill_tree(cluster);
+               checkRecHitsFlags(cluster, triggerPrimitives, ecalRecHits);
 
-            if ( cluster_passes_cuts(cluster) )
-            {
-               dyncrystal_efficiency_hist->Fill(trueElectron.pt());
-               dyncrystal_efficiency_eta_hist->Fill(trueElectron.eta());
-               if ( offlineRecoFound )
+               if ( cluster_passes_cuts(cluster) )
                {
-                  for(auto& pair : dyncrystal_efficiency_reco_hists)
+                  dyncrystal_efficiency_hist->Fill(trueElectron.pt());
+                  dyncrystal_efficiency_eta_hist->Fill(trueElectron.eta());
+                  if ( offlineRecoFound )
+                  {
+                     for(auto& pair : dyncrystal_efficiency_reco_hists)
+                     {
+                        // (threshold, histogram)
+                        if (cluster.pt() > pair.first)
+                           pair.second->Fill(reco_electron_pt);
+                     }
+                  }
+                  for(auto& pair : dyncrystal_efficiency_gen_hists)
                   {
                      // (threshold, histogram)
                      if (cluster.pt() > pair.first)
-                        pair.second->Fill(reco_electron_pt);
+                        pair.second->Fill(trueElectron.pt());
                   }
-               }
-               for(auto& pair : dyncrystal_efficiency_gen_hists)
-               {
-                  // (threshold, histogram)
-                  if (cluster.pt() > pair.first)
-                     pair.second->Fill(trueElectron.pt());
-               }
-               dyncrystal_deltaR_hist->Fill(reco::deltaR(cluster, trueElectron));
-               dyncrystal_deta_hist->Fill(trueElectron.eta()-cluster.eta());
-               dyncrystal_dphi_hist->Fill(reco::deltaPhi(cluster.phi(), trueElectron.phi()));
-               if ( cluster.bremStrength() < 0.2 )
-               {
-                  dyncrystal_efficiency_bremcut_hist->Fill(trueElectron.pt());
-                  dyncrystal_deltaR_bremcut_hist->Fill(reco::deltaR(cluster, trueElectron));
-                  dyncrystal_dphi_bremcut_hist->Fill(reco::deltaPhi(cluster.phi(), trueElectron.phi()));
-               }
-               dyncrystal_2DdeltaR_hist->Fill(trueElectron.eta()-cluster.eta(), reco::deltaPhi(cluster, trueElectron));
+                  dyncrystal_deltaR_hist->Fill(reco::deltaR(cluster, trueElectron));
+                  dyncrystal_deta_hist->Fill(trueElectron.eta()-cluster.eta());
+                  dyncrystal_dphi_hist->Fill(reco::deltaPhi(cluster.phi(), trueElectron.phi()));
+                  if ( cluster.bremStrength() < 0.2 )
+                  {
+                     dyncrystal_efficiency_bremcut_hist->Fill(trueElectron.pt());
+                     dyncrystal_deltaR_bremcut_hist->Fill(reco::deltaR(cluster, trueElectron));
+                     dyncrystal_dphi_bremcut_hist->Fill(reco::deltaPhi(cluster.phi(), trueElectron.phi()));
+                  }
+                  dyncrystal_2DdeltaR_hist->Fill(trueElectron.eta()-cluster.eta(), reco::deltaPhi(cluster, trueElectron));
 
-               reco_gen_pt_hist->Fill( trueElectron.pt(), (cluster.pt() - trueElectron.pt())/trueElectron.pt() );
-               brem_dphi_hist->Fill( cluster.bremStrength(), reco::deltaPhi(cluster, trueElectron) );
-               break;
+                  reco_gen_pt_hist->Fill( trueElectron.pt(), (cluster.pt() - trueElectron.pt())/trueElectron.pt() );
+                  brem_dphi_hist->Fill( cluster.bremStrength(), reco::deltaPhi(cluster, trueElectron) );
+                  break;
+               }
             }
+         }
+         if ( clusterFound && !bestClusterUsed )
+         {
+            std::cerr << "Found a cluster but it wasn't the best so I lost efficiency!" << std::endl;
          }
       }
       
