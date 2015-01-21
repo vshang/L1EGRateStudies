@@ -129,7 +129,9 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    genMatchRelPtcut = cms.untracked.double(0.5)
 )
 
-process.panalyzer = cms.Path(process.analyzer)
+process.load("SLHCUpgradeSimulations.L1EGRateStudies.L1EGCrystalsHeatMap_cff")
+process.L1EGCrystalsHeatMap.saveAllClusters = cms.untracked.bool(True)
+process.panalyzer = cms.Path(process.analyzer+process.L1EGCrystalsHeatMap)
 
 process.TFileService = cms.Service("TFileService", 
    fileName = cms.string("$outputFileName"), 

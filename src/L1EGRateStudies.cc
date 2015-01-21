@@ -91,6 +91,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       bool cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
       bool checkTowerExists(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps) const;
       void checkRecHitsFlags(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps, const EcalRecHitCollection &ecalRecHits) const;
+      void doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm::Handle<L1TkTrackCollectionType> l1trackHandle);
       
       // ----------member data ---------------------------
       bool doEfficiencyCalc;
@@ -148,22 +149,30 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       TTree * crystal_tree;
       struct {
          std::array<float, 6> crystal_pt;
+         int   crystalCount;
          float cluster_pt;
          float cluster_energy;
          float eta;
          float hovere;
          float iso;
+         float bremStrength;
          float deltaR = 0.;
          float deltaPhi = 0.;
          float gen_pt = 0.;
+         float E_gen = 0.;
          float denom_pt = 0.;
          float reco_pt = 0.;
          bool  passed = false;
          int   nthCandidate = -1;
          bool  endcap = false;
-         float uslE = 0.;
-         float lslE = 0.;
-         float raw_pt = 0.;
+         float uslPt = 0.;
+         float lslPt = 0.;
+         float corePt = 0.;
+         float E_core = 0.;
+         float phiStripContiguous0;
+         float phiStripOneHole0;
+         float phiStripContiguous3p;
+         float phiStripOneHole3p;
          float trackDeltaR;
          float trackDeltaPhi;
          float trackP;
@@ -277,22 +286,30 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
 
    crystal_tree = fs->make<TTree>("crystal_tree", "Crystal cluster individual crystal pt values");
    crystal_tree->Branch("pt", &treeinfo.crystal_pt, "1:2:3:4:5:6");
+   crystal_tree->Branch("crystalCount", &treeinfo.crystalCount);
    crystal_tree->Branch("cluster_pt", &treeinfo.cluster_pt);
    crystal_tree->Branch("cluster_energy", &treeinfo.cluster_energy);
    crystal_tree->Branch("eta", &treeinfo.eta);
    crystal_tree->Branch("cluster_hovere", &treeinfo.hovere);
    crystal_tree->Branch("cluster_iso", &treeinfo.iso);
+   crystal_tree->Branch("bremStrength", &treeinfo.bremStrength);
    crystal_tree->Branch("deltaR", &treeinfo.deltaR);
    crystal_tree->Branch("deltaPhi", &treeinfo.deltaPhi);
    crystal_tree->Branch("gen_pt", &treeinfo.gen_pt);
+   crystal_tree->Branch("E_gen", &treeinfo.E_gen);
    crystal_tree->Branch("denom_pt", &treeinfo.denom_pt);
    crystal_tree->Branch("reco_pt", &treeinfo.reco_pt);
    crystal_tree->Branch("passed", &treeinfo.passed);
    crystal_tree->Branch("nthCandidate", &treeinfo.nthCandidate);
    crystal_tree->Branch("endcap", &treeinfo.endcap);
-   crystal_tree->Branch("uslE", &treeinfo.uslE);
-   crystal_tree->Branch("lslE", &treeinfo.lslE);
-   crystal_tree->Branch("raw_pt", &treeinfo.raw_pt);
+   crystal_tree->Branch("uslPt", &treeinfo.uslPt);
+   crystal_tree->Branch("lslPt", &treeinfo.lslPt);
+   crystal_tree->Branch("corePt", &treeinfo.corePt);
+   crystal_tree->Branch("E_core", &treeinfo.E_core);
+   crystal_tree->Branch("phiStripContiguous0", &treeinfo.phiStripContiguous0);
+   crystal_tree->Branch("phiStripOneHole0", &treeinfo.phiStripOneHole0);
+   crystal_tree->Branch("phiStripContiguous3p", &treeinfo.phiStripContiguous3p);
+   crystal_tree->Branch("phiStripOneHole3p", &treeinfo.phiStripOneHole3p);
    crystal_tree->Branch("trackDeltaR", &treeinfo.trackDeltaR);
    crystal_tree->Branch("trackDeltaPhi", &treeinfo.trackDeltaPhi);
    crystal_tree->Branch("trackP", &treeinfo.trackP);
@@ -370,6 +387,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    // L1 Tracks
    edm::Handle<L1TkTrackCollectionType> l1trackHandle;
    iEvent.getByLabel(L1TrackInputTag, l1trackHandle);
+
 
    // Sort clusters so we can always pick highest pt cluster matching cuts
    std::sort(begin(crystalClusters), end(crystalClusters), [](const l1slhc::L1EGCrystalCluster& a, const l1slhc::L1EGCrystalCluster& b){return a.pt() > b.pt();});
@@ -456,6 +474,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       }
       efficiency_denominator_hist->Fill(trueElectron.pt());
       treeinfo.gen_pt = genParticles[0].pt();
+      treeinfo.E_gen = genParticles[0].pt()*cosh(genParticles[0].eta());
       treeinfo.denom_pt = trueElectron.pt();
       if ( fabs(trueElectron.eta()) > 1.479 )
          treeinfo.endcap = true;
@@ -486,31 +505,11 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                   continue;
                bestClusterUsed = true;
                if ( debug ) std::cout << "using cluster dr = " << reco::deltaR(cluster, trueElectron) << std::endl;
+               doTrackMatching(cluster, l1trackHandle);
                treeinfo.nthCandidate = clusterCount;
                treeinfo.deltaR = reco::deltaR(cluster, trueElectron);
                treeinfo.deltaPhi = reco::deltaPhi(cluster, trueElectron);
-               // track matching stuff
-               double min_track_dr = 999.;
-               edm::Ptr<TTTrack<Ref_PixelDigi_>> matched_track;
-               if ( l1trackHandle.isValid() )
-               {
-                  for(size_t track_index=0; track_index<l1trackHandle->size(); ++track_index)
-                  {
-                     edm::Ptr<TTTrack<Ref_PixelDigi_>> ptr(l1trackHandle, track_index);
-                     double dr = L1TkElectronTrackMatchAlgo::deltaR(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), ptr);
-                     if ( dr < min_track_dr )
-                     {
-                        min_track_dr = dr;
-                        matched_track = ptr;
-                     }
-                  }
-                  treeinfo.trackDeltaR = min_track_dr;
-                  treeinfo.trackDeltaPhi = L1TkElectronTrackMatchAlgo::deltaPhi(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), matched_track);
-                  treeinfo.trackP = matched_track->getMomentum().mag();
-                  treeinfo.trackRInv = matched_track->getRInv();
-                  treeinfo.trackChi2 = matched_track->getChi2();
-                  if ( debug ) std::cout << "Track dr: " << min_track_dr << ", chi2: " << matched_track->getChi2() << ", dp: " << (treeinfo.trackP-cluster.energy())/cluster.energy() << std::endl;
-               }
+               
                fill_tree(cluster);
                checkRecHitsFlags(cluster, triggerPrimitives, ecalRecHits);
 
@@ -603,6 +602,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             treeinfo.endcap = true;
          else
             treeinfo.endcap = false;
+         doTrackMatching(cluster, l1trackHandle);
          fill_tree(cluster);
          checkRecHitsFlags(cluster, triggerPrimitives, ecalRecHits);
 
@@ -728,14 +728,21 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
       treeinfo.crystal_pt[i] = cluster.GetCrystalPt(i);
    }
    treeinfo.cluster_pt = cluster.pt();
+   treeinfo.crystalCount = cluster.GetExperimentalParam("crystalCount");
    treeinfo.cluster_energy = cluster.energy();
    treeinfo.eta = cluster.eta();
    treeinfo.hovere = cluster.hovere();
    treeinfo.iso = cluster.isolation();
+   treeinfo.bremStrength = cluster.bremStrength();
    treeinfo.passed = cluster_passes_cuts(cluster);
-   treeinfo.uslE = cluster.GetExperimentalParam("upperSideLobeEnergy");
-   treeinfo.lslE = cluster.GetExperimentalParam("lowerSideLobeEnergy");
-   treeinfo.raw_pt = cluster.GetExperimentalParam("uncorrectedPt");
+   treeinfo.uslPt = cluster.GetExperimentalParam("upperSideLobePt");
+   treeinfo.lslPt = cluster.GetExperimentalParam("lowerSideLobePt");
+   treeinfo.corePt = cluster.GetExperimentalParam("uncorrectedPt");
+   treeinfo.E_core = cluster.GetExperimentalParam("uncorrectedE");
+   treeinfo.phiStripContiguous0 = cluster.GetExperimentalParam("phiStripContiguous0");
+   treeinfo.phiStripOneHole0 = cluster.GetExperimentalParam("phiStripOneHole0");
+   treeinfo.phiStripContiguous3p = cluster.GetExperimentalParam("phiStripContiguous3p");
+   treeinfo.phiStripOneHole3p = cluster.GetExperimentalParam("phiStripOneHole3p");
    // Gen and reco pt get filled earlier
    crystal_tree->Fill();
 }
@@ -833,5 +840,31 @@ L1EGRateStudies::checkRecHitsFlags(const l1slhc::L1EGCrystalCluster &cluster, co
    }
 }
 
+void
+L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm::Handle<L1TkTrackCollectionType> l1trackHandle)
+{
+  // track matching stuff
+  double min_track_dr = 999.;
+  edm::Ptr<TTTrack<Ref_PixelDigi_>> matched_track;
+  if ( l1trackHandle.isValid() )
+  {
+     for(size_t track_index=0; track_index<l1trackHandle->size(); ++track_index)
+     {
+        edm::Ptr<TTTrack<Ref_PixelDigi_>> ptr(l1trackHandle, track_index);
+        double dr = L1TkElectronTrackMatchAlgo::deltaR(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), ptr);
+        if ( dr < min_track_dr )
+        {
+           min_track_dr = dr;
+           matched_track = ptr;
+        }
+     }
+     treeinfo.trackDeltaR = min_track_dr;
+     treeinfo.trackDeltaPhi = L1TkElectronTrackMatchAlgo::deltaPhi(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), matched_track);
+     treeinfo.trackP = matched_track->getMomentum().mag();
+     treeinfo.trackRInv = matched_track->getRInv();
+     treeinfo.trackChi2 = matched_track->getChi2();
+     if ( debug ) std::cout << "Track dr: " << min_track_dr << ", chi2: " << matched_track->getChi2() << ", dp: " << (treeinfo.trackP-cluster.energy())/cluster.energy() << std::endl;
+  }
+}
 //define this as a plug-in
 DEFINE_FWK_MODULE(L1EGRateStudies);

@@ -77,6 +77,16 @@ process.l1ExtraCrystalProducer = cms.EDProducer("L1ExtraCrystalPosition",
 )
 process.egcrystal_producer = cms.Path(process.l1ExtraCrystalProducer)
 
+# ---------------------------------------------------------------------------
+#
+# --- Create the collection of special tracks for electrons
+#
+
+process.load("SLHCUpgradeSimulations.L1TrackTrigger.L1TrackingSequence_cfi")
+process.pTracking = cms.Path( process.ElectronTrackingSequence )
+
+
+
 # ----------------------------------------------------------------------------------------------
 # 
 # Analyzer starts here
@@ -97,6 +107,7 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
       cms.InputTag("L1EGammaCrystalsProducer","EGammaCrystal")
    ),
    L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer","EGCrystalCluster"),
+   L1TrackInputTag = cms.InputTag("TTTracksFromPixelDigisLargerPhi","Level1TTTracks"),
    doEfficiencyCalc = cms.untracked.bool(False),
    useEndcap = cms.untracked.bool(False),
    histogramBinCount = cms.untracked.int32(40),
