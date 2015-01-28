@@ -76,6 +76,7 @@
 #include "TH1.h"
 #include "TH2.h"
 #include "TVector3.h"
+#include "TRandom3.h"
 
 #include "FastSimulation/BaseParticlePropagator/interface/BaseParticlePropagator.h"
 #include "FastSimulation/Particle/interface/ParticleTable.h"
@@ -157,6 +158,7 @@ class L1EGCrystalsHeatMap : public edm::EDAnalyzer {
       std::map<std::string, int> heatmap_nevents_;
       std::vector<SimpleCaloHit> ecalhits_;
       std::vector<SimpleCaloHit> hcalhits_;
+      std::unique_ptr<TRandom3> rng;
 };
 
 //
@@ -184,6 +186,7 @@ L1EGCrystalsHeatMap::L1EGCrystalsHeatMap(const edm::ParameterSet& iConfig):
    edm::Service<TFileService> fs;
    fakeStatus = fs->make<TH1I>("fakeStatus", "Fake statuses", 10, 0, 9);
    crystalTowerComparison = fs->make<TH2F>("crystalTowerComparison", "Crystal cluster pt vs. nearest tower pt", 50, 0., 50., 50, 0., 50.);
+   rng= std::move(std::unique_ptr<TRandom3>(new TRandom3()));
  }
 
 
@@ -317,8 +320,8 @@ L1EGCrystalsHeatMap::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
             }
             if ( cluster.pt() < 20. && trueElectron.pt() > 20. && trueElectron.pt() < 30. )
                fillHeatmap("cluster_pt<20,20<gen_pt<30", findClosestHit(cluster));
-            if ( kSaveAllClusters )
-               fillHeatmap("evt"+std::to_string(iEvent.id().event())+"_cluster"+std::to_string(reco::deltaR(trueElectron, cluster)), findClosestHit(cluster));
+            if ( kSaveAllClusters && (cluster.GetExperimentalParam("uncorrectedPt")/trueElectron.pt() < 0.6) && cluster.pt() > 15. )
+               fillHeatmap("evt"+std::to_string(iEvent.id().event())+"_cluster"+std::to_string(reco::deltaR(trueElectron, cluster))+"_pt"+std::to_string(cluster.pt())+"_nCrystals"+std::to_string(cluster.GetExperimentalParam("crystalCount")), findClosestHit(cluster));
             break;
          }
       }
