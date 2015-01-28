@@ -522,12 +522,10 @@ void drawRateEff() {
    drawDRHists({newAlgDRCutsHist}, c, 0.);
 
    c->Clear();
-   auto bremHist = (TH2F *) eff->Get("analyzer/brem_dphi_hist");
-   bremHist->Draw("colz");
+   auto brem_dphi = new TH2F("brem_dphi", ";d#phi;(uslE+lslE)/clusterEnergy", 50, -0.1, 0.1, 50, 0, 1);
+   crystal_tree->Draw("(uslE+lslE)/cluster_energy : deltaPhi >> brem_dphi", "passed && cluster_pt > 10", "goff");
+   brem_dphi->Draw("colz");
    c->Print("plots/brem_dphi_hist.png");
-   auto bremHistProj = bremHist->ProjectionY("brem_dphi_hist_py", 1, 4);
-   bremHistProj->Draw();
-   c->Print("plots/brem_dphi_hist_py.png");
 
    auto dynCrystal2DdeltaRHist = (TH2F *) eff->Get("analyzer/dyncrystalEG_2DdeltaR_hist");
    c->SetCanvasSize(800, 700);

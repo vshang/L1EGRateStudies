@@ -15,10 +15,10 @@ void drawHeatmaps() {
    gStyle->SetOptStat(0);
    TCanvas * c = new TCanvas();
 	
-   TFile * heatmapfile = new TFile("electronHeatmap.root");
+   TFile * heatmapfile = new TFile("egTriggerEff.root");
 
-   auto keys = rootools::getKeysofClass(heatmapfile, "analyzer", "TH2F");
-   auto heatmaps = rootools::loadObjectsMatchingPattern<TH2F>(keys, "heatmap*");
+   auto keys = rootools::getKeysofClass(heatmapfile, "L1EGCrystalsHeatMap", "TH2F");
+   auto heatmaps = rootools::loadObjectsMatchingPattern<TH2F>(keys, "evt*");
 
    for(auto heatmap : heatmaps) {
       c->Clear();
