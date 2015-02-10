@@ -178,6 +178,8 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float trackP;
          float trackRInv;         
          float trackChi2;
+         float trackIsoConeTrackCount;
+         float trackIsoConePtSum;
       } treeinfo;
 
       // (pt_reco-pt_gen)/pt_gen plot
@@ -315,6 +317,8 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("trackP", &treeinfo.trackP);
    crystal_tree->Branch("trackRInv", &treeinfo.trackRInv);
    crystal_tree->Branch("trackChi2", &treeinfo.trackChi2);
+   crystal_tree->Branch("trackIsoConeTrackCount", &treeinfo.trackIsoConeTrackCount);
+   crystal_tree->Branch("trackIsoConePtSum", &treeinfo.trackIsoConePtSum);
 }
 
 
@@ -858,11 +862,25 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
            matched_track = ptr;
         }
      }
+     float isoConeTrackCount(-1); // matched track will be in deltaR cone
+     float isoConePtSum(-1*matched_track->getMomentum().perp());
+     for(size_t track_index=0; track_index<l1trackHandle->size(); ++track_index)
+     {
+        edm::Ptr<TTTrack<Ref_PixelDigi_>> ptr(l1trackHandle, track_index);
+        // dR cone of .3 or .4, momentum at least 1GeV
+        if ( reco::deltaR(ptr->getMomentum(), matched_track->getMomentum()) < 0.3 && ptr->getMomentum().mag() > 1. )
+        {
+          isoConeTrackCount++;
+          isoConePtSum += ptr->getMomentum().perp();
+        }
+     }
      treeinfo.trackDeltaR = min_track_dr;
      treeinfo.trackDeltaPhi = L1TkElectronTrackMatchAlgo::deltaPhi(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), matched_track);
      treeinfo.trackP = matched_track->getMomentum().mag();
      treeinfo.trackRInv = matched_track->getRInv();
      treeinfo.trackChi2 = matched_track->getChi2();
+     treeinfo.trackIsoConeTrackCount = isoConeTrackCount;
+     treeinfo.trackIsoConePtSum = isoConePtSum;
      if ( debug ) std::cout << "Track dr: " << min_track_dr << ", chi2: " << matched_track->getChi2() << ", dp: " << (treeinfo.trackP-cluster.energy())/cluster.energy() << std::endl;
   }
 }
