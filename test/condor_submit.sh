@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Never forget to build again!
-pushd $CMSSW_BASE/src
-scram b
-popd
+#pushd $CMSSW_BASE/src
+#scram b
+#popd
 
 jobopts=''
 doeff=true
@@ -43,8 +43,8 @@ done
 
 if $doeff; then
     if $rmold; then
-        rm /nfs_scratch/nsmith/egalg_eff* -r
-        gsido rm /hdfs/store/user/nsmith/egalg_eff* -r
+        rm /nfs_scratch/${USER}/egalg_eff* -r
+        gsido rm /hdfs/store/user/${USER}/egalg_eff* -r
     fi
     farmoutAnalysisJobs \
         --input-dir=/store/mc/TTI2023Upg14D/SingleElectronFlatPt0p2To50/GEN-SIM-DIGI-RAW/PU140bx25_PH2_1K_FB_V3-v2/00000 \
@@ -54,8 +54,8 @@ fi
 
 if $dorate; then
     if $rmold; then
-        rm /nfs_scratch/nsmith/egalg_rate* -r
-        gsido rm /hdfs/store/user/nsmith/egalg_rate* -r
+        rm /nfs_scratch/${USER}/egalg_rate* -r
+        gsido rm /hdfs/store/user/${USER}/egalg_rate* -r
     fi
     farmoutAnalysisJobs \
         --input-dir=/store/mc/TTI2023Upg14D/Neutrino_Pt2to20_gun/GEN-SIM-DIGI-RAW/PU140bx25_PH2_1K_FB_V3-v2/00000 \
@@ -65,8 +65,8 @@ fi
 
 if $dofakes; then
     if $rmold; then
-        rm /nfs_scratch/nsmith/egalg_fakes* -r
-        gsido rm /hdfs/store/user/nsmith/egalg_fakes* -r
+        rm /nfs_scratch/${USER}/egalg_fakes* -r
+        gsido rm /hdfs/store/user/${USER}/egalg_fakes* -r
     fi
     farmoutAnalysisJobs \
         --input-dir=/store/mc/TTI2023Upg14D/Neutrino_Pt2to20_gun/GEN-SIM-DIGI-RAW/PU140bx25_PH2_1K_FB_V3-v2/00000 \
