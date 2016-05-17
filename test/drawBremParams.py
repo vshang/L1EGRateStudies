@@ -1,4 +1,5 @@
 import ROOT
+from ROOT import gROOT
 
 
 def drawBremParams() :
@@ -45,4 +46,5 @@ def drawBremParams() :
 
 
 if __name__ == '__main__' :
+    ROOT.gROOT.SetBatch(True)
     drawBremParams()

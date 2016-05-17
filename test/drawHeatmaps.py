@@ -1,5 +1,5 @@
 import ROOT
-from ROOT import gStyle
+from ROOT import gStyle, gROOT
 import trigHelpers
 
 def drawHeatmaps() :
@@ -18,6 +18,7 @@ def drawHeatmaps() :
 
 
 if __name__ == '__main__' :
+    ROOT.gROOT.SetBatch(True)
     drawHeatmaps()
 
 
