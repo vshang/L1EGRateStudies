@@ -54,9 +54,11 @@ def drawBremNoBrem(rocFunction) :
   ROOT.gPad.Update()
   return mg
 
+c = ROOT.TCanvas('c','c',600,600)
 mg = drawBremNoBrem(trackIsoroc)
 
-leg = ROOT.gPad.BuildLegend()
+leg = ROOT.gPad.BuildLegend(0.15,0.7,0.6,0.88)
 leg.SetFillColor(ROOT.kWhite)
 leg.SetLineColor(ROOT.kWhite)
 ROOT.gPad.Update()
+c.Print('plots/'+'roc'+'.png')
