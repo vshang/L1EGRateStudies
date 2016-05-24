@@ -302,7 +302,7 @@ def draw2DdeltaRHist(hist, c) :
     gStyle.SetOptTitle(1)
 
 
-def drawDRHists(hists, c, ymax, xrange = [0.0, 0.25]) :
+def drawDRHists(hists, c, ymax, doFit = False) :
     c.cd()
     colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray]
     marker_styles = [20, 24, 25, 26, 32]
@@ -316,19 +316,12 @@ def drawDRHists(hists, c, ymax, xrange = [0.0, 0.25]) :
         hist.SetMarkerSize(0.8)
         hs.Add(hist, "ex0 hist")
 
-    #hs.GetXaxis().SetRangeUser( xrange[0], xrange[1] )
-    #print hs.GetStack().Last().GetXaxis()
-    #hs.GetStack().Last().GetXaxis().SetRangeUser( 0.0, 0.1 )
-
     c.Clear()
     if c.GetLogy() == 0 : # linear
         hs.SetMinimum(0.)
     if ymax != 0. :
         hs.SetMaximum(ymax)
     if ymax == 0. :
-        #max = 0.
-        #for h in hs :
-        #    if h.GetMaximum() > max : max == h.GetMaximum()
         hs.SetMaximum( hs.GetMaximum() * 1.2 )
  
     hs.Draw("nostack")
@@ -358,7 +351,7 @@ def drawDRHists(hists, c, ymax, xrange = [0.0, 0.25]) :
     cmsString = drawCMSString("CMS Simulation, <PU>=140 bx=25, Single Electron")
                 
     c.Print("plots/"+c.GetName()+".png")
-    c.Clear()
+
     # Don't produce CDFs at the moment
     #del markers
     #markers = []
@@ -382,6 +375,37 @@ def drawDRHists(hists, c, ymax, xrange = [0.0, 0.25]) :
     #leg.Draw("same")
     #cmsString2 = drawCMSString("CMS Simulation, <PU>=140 bx=25, Single Electron")
     #c.Print( "plots/"+c.GetName()+"_cdf.png" )
+
+    if doFit :
+        gStyle.SetOptFit(0)
+        # Poorly done hard coding for fit suggestions
+        # and fit ranges, sorry
+        fitHints = [[.17, -0.025, 0.07],
+                    [.08, 0.1, .1 ]]
+        fitRanges = [[-.1, .1],
+                    [-0.05, .2]]
+        fitResults = []
+        for i, hist in enumerate(hists) :
+            shape = ROOT.TF1("shape", "gaus(0)", fitRanges[i][0], fitRanges[i][1])
+            shape.SetParameters(fitHints[i][0], fitHints[i][1], fitHints[i][2])
+            hist.Fit(shape, "R")
+            hist.GetFunction("shape").SetLineColor(hist.GetLineColor())
+            hist.GetFunction("shape").SetLineWidth(hist.GetLineWidth()*2)
+
+            fitResult = hist.GetFunction("shape")
+            fitResults.append( ROOT.TLatex(.75, .7-i*.12, "scale %.2E" % fitResult.GetParameter(0)))
+            fitResults.append( ROOT.TLatex(.75, .66-i*.12, "avg. %.2E" % fitResult.GetParameter(1)))
+            fitResults.append( ROOT.TLatex(.75, .62-i*.12, "#sigma %.2E" % fitResult.GetParameter(2)))
+        for i in range( len(fitResults) ) :
+            fitResults[i].SetTextSize(0.035)
+            fitResults[i].SetTextFont(42)
+            fitResults[i].SetNDC()
+            if i > 2 : fitResults[i].SetTextColor(ROOT.kRed)
+            fitResults[i].Draw()
+
+        c.Print( "plots/"+c.GetName()+"_fit.png" )
+
+    c.Clear()
  
 
 
@@ -572,11 +596,11 @@ if __name__ == '__main__' :
     #c.SetName("dyncrystalEG_deltaEta_UW")
     #drawDRHists([effHists['newAlgDEtaHist'], effHists['UCTAlgDEtaHist'], effHists['dynAlgDEtaHist']], c, 0., [-0.5, 0.5])
     c.SetName("dyncrystalEG_deltaEta")
-    drawDRHists([effHists['newAlgDEtaHist'], effHists['UCTAlgDEtaHist']], c, 0., [-0.5, 0.5])
+    drawDRHists([effHists['newAlgDEtaHist'], effHists['UCTAlgDEtaHist']], c, 0.)
     #c.SetName("dyncrystalEG_deltaPhi_UW")
     #drawDRHists([effHists['newAlgDPhiHist'], effHists['UCTAlgDPhiHist'], effHists['dynAlgDPhiHist']], c, 0., [-0.5, 0.5])
     c.SetName("dyncrystalEG_deltaPhi")
-    drawDRHists([effHists['newAlgDPhiHist'], effHists['UCTAlgDPhiHist']], c, 0., [-0.5, 0.5])
+    drawDRHists([effHists['newAlgDPhiHist'], effHists['UCTAlgDPhiHist']], c, 0.)
 
     # Back to DeltaR stuff
     #newAlgDRCutsHist = ROOT.TH1F("newAlgDRCutsHist", "L1EGamma Crystal", 50, 0., .25)
@@ -589,7 +613,8 @@ if __name__ == '__main__' :
     #c.SetName("dyncrystalEG_RecoGenPt_UW")
     #drawDRHists([effHists['newAlgGenRecoPtHist'], effHists['UCTAlgGenRecoPtHist'], effHists['dynAlgGenRecoPtHist']], c, 0., [-1., 1.])
     c.SetName("dyncrystalEG_RecoGenPt")
-    drawDRHists([effHists['newAlgGenRecoPtHist'], effHists['UCTAlgGenRecoPtHist']], c, 0., [-1., 1.])
+    effHists['newAlgGenRecoPtHist'].GetXaxis().SetTitle("(reco-gen)/gen P_{T} (GeV)")
+    drawDRHists([effHists['newAlgGenRecoPtHist'], effHists['UCTAlgGenRecoPtHist']], c, 0., True, [-.2, .2], [99., 99., 99.])
     
 
  
