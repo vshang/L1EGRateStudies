@@ -2,6 +2,7 @@ import ROOT
 import trigHelpers
 from array import array
 from ROOT import gStyle, gPad
+import CMS_lumi, tdrstyle
 
 def loadHists( file_, histMap = {}, eff=False ) :
     hists = {}
@@ -71,7 +72,7 @@ def drawRates( hists, c, ymax, xrange = [0., 0.] ) :
     if ymax != 0. :
         mg.SetMaximum( ymax ) 
     
-    leg = setLegStyle(0.5,0.76,0.9,0.9)
+    leg = setLegStyle(0.53,0.78,0.95,0.92)
     for graph in graphs :
         leg.AddEntry(graph, graph.GetTitle(),"lpe")
     leg.Draw("same")
@@ -118,6 +119,7 @@ def drawEfficiency( hists, c, ymax, xTitle, xrange = [0., 0.], fit = False, fitH
     
 
     if ( fit and xrange[1] != xrange[0] ) :
+       gStyle.SetOptFit(0)
        for j, graph in enumerate(graphs) :
           shape = ROOT.TF1("shape", "[0]/2*(1+TMath::Erf((x-[1])/([2]*sqrt(x))))+[3]*x", xrange[0], xrange[1])
           shape.SetParameters(fitHint[0], fitHint[1], fitHint[2], fitHint[3])
@@ -125,9 +127,8 @@ def drawEfficiency( hists, c, ymax, xTitle, xrange = [0., 0.], fit = False, fitH
           graph.Fit(shape)
           graph.GetFunction("shape").SetLineColor(graph.GetLineColor())
           graph.GetFunction("shape").SetLineWidth(graph.GetLineWidth()*2)
-          graph.GetFunction("shape").SetLineStyle(lines[j])
  
-    leg = setLegStyle(0.5,0.76,0.9,0.9)
+    leg = setLegStyle(0.53,0.80,0.95,0.92)
     for graph in graphs :
         leg.AddEntry(graph, graph.GetTitle(),"lpe")
     leg.Draw("same")
@@ -149,15 +150,17 @@ def draw2DdeltaRHist(hist, c) :
     c.Clear()
     c.cd()
     gStyle.SetOptTitle(0)
-    margin = 0.07
-    histpad_size = 0.7
-    hist_pad = ROOT.TPad( c.GetName()+"_hist", "subpad", margin, margin, histpad_size+margin, histpad_size+margin, c.GetFillColor())
+    txtSize = 0.028
+    margin = 0.08
+    histpad_sizeX = 0.6
+    histpad_sizeY = 0.7
+    hist_pad = ROOT.TPad( c.GetName()+"_hist", "subpad", margin, margin, histpad_sizeX+margin, histpad_sizeY+margin, c.GetFillColor())
     hist_pad.SetMargin(0., 0., 0., 0.)
     hist_pad.Draw()
-    xprojection_pad = ROOT.TPad(c.GetName()+"_xprojection", "subpad", margin, histpad_size+margin, histpad_size+margin, 1-margin, c.GetFillColor())
+    xprojection_pad = ROOT.TPad(c.GetName()+"_xprojection", "subpad", margin, histpad_sizeY+margin, histpad_sizeX+margin, 1-margin, c.GetFillColor())
     xprojection_pad.SetMargin(0., 0., 0., 0.)
     xprojection_pad.Draw()
-    yprojection_pad = ROOT.TPad(c.GetName()+"_yprojection", "subpad", histpad_size+margin, margin, 1-margin, histpad_size+margin, c.GetFillColor())
+    yprojection_pad = ROOT.TPad(c.GetName()+"_yprojection", "subpad", histpad_sizeX+margin, margin, 1-2.5*margin, histpad_sizeY+margin, c.GetFillColor())
     yprojection_pad.SetMargin(0., 0., 0., 0.)
     yprojection_pad.Draw()
  
@@ -189,9 +192,11 @@ def draw2DdeltaRHist(hist, c) :
     shape.SetParameters(0.003, 0., 3.769e4, 0., 4.215e4, -1.763e4)
     hist.Fit(shape, "n")
     max_ = shape.GetParameter(0)
-    contours = [max_*ROOT.TMath.exp(-4.5), max_*ROOT.TMath.exp(-2), max_*ROOT.TMath.exp(-0.5)]
-    for i, contour in enumerate( contours ) :
-        shape.SetContourLevel( i, contour )
+    contours = array('d', [])
+    contours.append( max_*ROOT.TMath.exp(-4.5))
+    contours.append( max_*ROOT.TMath.exp(-2))
+    contours.append( max_*ROOT.TMath.exp(-0.5))
+    shape.SetContour(3, contours)
     shape.SetNpx(100)
     shape.SetNpy(100)
     shape.SetLineWidth(2)
@@ -253,7 +258,7 @@ def draw2DdeltaRHist(hist, c) :
  
     # CMS info string
     cmsString = ROOT.TLatex(
-       histpad_size+margin-0.005, 
+       histpad_sizeX+margin-0.005, 
        1-margin-0.005, 
        "CMS Simulation, <PU>=140 bx=25, Single Electron")
     cmsString.SetTextFont(42)
@@ -264,13 +269,13 @@ def draw2DdeltaRHist(hist, c) :
  
     # Stats
     stats = []
-    stats.append( ROOT.TLatex(histpad_size+margin+0.01, histpad_size+margin+0.13, "#mu_#eta = "+str(shape.GetParameter(1))) )
-    stats.append( ROOT.TLatex(histpad_size+margin+0.01, histpad_size+margin+0.1,"#mu_#phi = "+str(shape.GetParameter(3))) )
-    stats.append( ROOT.TLatex(histpad_size+margin+0.01, histpad_size+margin+0.07, "#sigma_#eta#eta = "+str(ROOT.TMath.sqrt(0.5/shape.GetParameter(2)))) )
-    stats.append( ROOT.TLatex(histpad_size+margin+0.01, histpad_size+margin+0.04, "#sigma_#phi#phi = "+str(ROOT.TMath.sqrt(0.5/shape.GetParameter(4)))) )
-    stats.append( ROOT.TLatex(histpad_size+margin+0.01, histpad_size+margin+0.01, "#sigma_#eta#phi = "+str(ROOT.TMath.sqrt(-0.5/shape.GetParameter(5)))) )
+    stats.append( ROOT.TLatex(histpad_sizeX+margin+0.01, histpad_sizeY+margin+0.13, "#mu_#eta = %.2E" % shape.GetParameter(1)) )
+    stats.append( ROOT.TLatex(histpad_sizeX+margin+0.01, histpad_sizeY+margin+0.1,"#mu_#phi = %.2E" % shape.GetParameter(3)) )
+    stats.append( ROOT.TLatex(histpad_sizeX+margin+0.01, histpad_sizeY+margin+0.07, "#sigma_#eta#eta = %.2E" % (ROOT.TMath.sqrt(0.5/shape.GetParameter(2)))) )
+    stats.append( ROOT.TLatex(histpad_sizeX+margin+0.01, histpad_sizeY+margin+0.04, "#sigma_#phi#phi = %.2E" % (ROOT.TMath.sqrt(0.5/shape.GetParameter(4)))) )
+    stats.append( ROOT.TLatex(histpad_sizeX+margin+0.01, histpad_sizeY+margin+0.01, "#sigma_#eta#phi = %.2E" % (ROOT.TMath.sqrt(-0.5/shape.GetParameter(5)))) )
     for i in range( 0, 5 ) :
-       stats[i].SetTextSize(0.024)
+       stats[i].SetTextSize(txtSize-0.002)
        stats[i].SetTextFont(42)
        stats[i].SetNDC()
        stats[i].Draw()
@@ -278,7 +283,16 @@ def draw2DdeltaRHist(hist, c) :
     # Draw palette
     # (not working)
     gPad.Update()
-    palette = ROOT.TPaletteAxis(1-margin+0.01, margin, 1-0.01, histpad_size+margin, hist)
+    palette = ROOT.TPaletteAxis(1-2.5*margin+0.01, margin, 1-1.5*margin, histpad_sizeY+margin, hist)
+    hist.GetXaxis().SetTitleOffset( .8 )
+    hist.GetXaxis().SetLabelSize( txtSize*1.35 )
+    hist.GetXaxis().SetTitleSize( txtSize*2 )
+    hist.GetYaxis().SetTitleOffset( 1.1 )
+    hist.GetYaxis().SetLabelSize( txtSize*1.35 )
+    hist.GetYaxis().SetTitleSize( txtSize*2 )
+    hist.GetZaxis().SetTitleOffset( 1.4 )
+    hist.GetZaxis().SetLabelSize( txtSize )
+    hist.GetZaxis().SetTitleSize( txtSize )
     palette.Draw()
     gPad.Modified()
     gPad.Update()
@@ -311,6 +325,11 @@ def drawDRHists(hists, c, ymax, xrange = [0.0, 0.25]) :
         hs.SetMinimum(0.)
     if ymax != 0. :
         hs.SetMaximum(ymax)
+    if ymax == 0. :
+        #max = 0.
+        #for h in hs :
+        #    if h.GetMaximum() > max : max == h.GetMaximum()
+        hs.SetMaximum( hs.GetMaximum() * 1.2 )
  
     hs.Draw("nostack")
  
@@ -324,7 +343,7 @@ def drawDRHists(hists, c, ymax, xrange = [0.0, 0.25]) :
     #hists[0].Fit(fit, "n")
     #fit.Draw("lsame")
  
-    leg = setLegStyle(0.5,0.76,0.9,0.9)
+    leg = setLegStyle(0.53,0.78,0.95,0.92)
     for hist in hists :
         leg.AddEntry(hist, hist.GetTitle(),"elp")
     leg.Draw("same")
@@ -340,28 +359,29 @@ def drawDRHists(hists, c, ymax, xrange = [0.0, 0.25]) :
                 
     c.Print("plots/"+c.GetName()+".png")
     c.Clear()
-    del markers
-    markers = []
+    # Don't produce CDFs at the moment
+    #del markers
+    #markers = []
  
-    # Now for integral
-    for  hist in hists :
-       hs.RecursiveRemove(hist)
-       intHist = hist.Clone( hist.GetName()+"_cdf" )
-       integral = 0.
-       for bin in range(0, intHist.GetNbinsX()+1) :
-          integral += intHist.GetBinContent(bin)
-          intHist.SetBinContent(bin, integral)
+    ## Now for integral
+    #for  hist in hists :
+    #   hs.RecursiveRemove(hist)
+    #   intHist = hist.Clone( hist.GetName()+"_cdf" )
+    #   integral = 0.
+    #   for bin in range(0, intHist.GetNbinsX()+1) :
+    #      integral += intHist.GetBinContent(bin)
+    #      intHist.SetBinContent(bin, integral)
 
-       hs.Add(intHist, "ex0 hist")
-       markers.append(intHist)
+    #   hs.Add(intHist, "ex0 hist")
+    #   markers.append(intHist)
 
-    hs.SetMaximum(1.2)
-    hs.GetYaxis().SetTitle( "Cumulative "+hs.GetYaxis().GetTitle() )
-    hs.Draw("nostack")
-    for  m in markers : m.Draw("psame")
-    leg.Draw("same")
-    cmsString2 = drawCMSString("CMS Simulation, <PU>=140 bx=25, Single Electron")
-    c.Print( "plots/"+c.GetName()+"_cdf.png" )
+    #hs.SetMaximum(1.2)
+    #hs.GetYaxis().SetTitle( "Cumulative "+hs.GetYaxis().GetTitle() )
+    #hs.Draw("nostack")
+    #for  m in markers : m.Draw("psame")
+    #leg.Draw("same")
+    #cmsString2 = drawCMSString("CMS Simulation, <PU>=140 bx=25, Single Electron")
+    #c.Print( "plots/"+c.GetName()+"_cdf.png" )
  
 
 
@@ -448,14 +468,48 @@ if __name__ == '__main__' :
     UCTAlgGenPtHists = trigHelpers.loadObjectsMatchingPattern( effFile, "analyzer", effHistsKeys, "divide_l1extraParticlesUCT:All_threshold*_gen_pt")
     for h in UCTAlgGenPtHists : h.SetTitle("Phase 1 TDR")
     
+    ''' Do 2D color plots 1st b/c of TDR style '''
+    # TDR Style does not play well with 2D color plots
+    # 1) 2D delta Eta vs delta Phi plot
+    dynCrystal2DdeltaRHist = effFile.Get("analyzer/dyncrystalEG_2DdeltaR_hist")
+    c = ROOT.TCanvas('c', 'c', 800, 700)
+    #c.SetCanvasSize(800, 700)
+    c.SetName("dyncrystalEG_2D_deltaR")
+    #c.SetTitle("#Delta R Distribution Fit")
+    c.SetTitle("")
+    draw2DdeltaRHist(dynCrystal2DdeltaRHist, c)
+ 
+    # 2) 2D pt resolution vs. gen pt
+    c.Clear()
+    c.SetCanvasSize(700, 600)
+    #c.SetGridx(1)
+    #c.SetGridy(1)
+    c.SetRightMargin(0.14)
+    c.SetTopMargin(0.10)
+    recoGenPtHist = effFile.Get("analyzer/reco_gen_pt")
+    #recoGenPtHist.SetTitle("Crystal EG algorithm pT resolution")
+    recoGenPtHist.SetTitle("")
+    recoGenPtHist.GetYaxis().SetTitle("Relative Error (reco-gen)/gen")
+    recoGenPtHist.GetYaxis().SetTitleOffset(1.3)
+    recoGenPtHist.SetMaximum(50)
+    recoGenPtHist.Draw("colz")
+    cmsString = drawCMSString("CMS Simulation, <PU>=140 bx=25, Single Electron")
+    c.Print("plots/dyncrystalEG_reco_gen_pt.png")
+    del cmsString
+ 
+
+    del c
+    tdrstyle.setTDRStyle()
+    gStyle.SetOptStat(0)
+
     
     xrange = [0., 50.]
     c = ROOT.TCanvas('c', 'c', 800, 600)
     c.SetLogy(1)
-    c.SetGridx(1)
-    c.SetGridy(1)
-    gStyle.SetGridStyle(2)
-    gStyle.SetGridColor(ROOT.kGray+1)
+    #c.SetGridx(1)
+    #c.SetGridy(1)
+    #gStyle.SetGridStyle(2)
+    #gStyle.SetGridColor(ROOT.kGray+1)
     
     ''' RATE SECTION '''    
     c.SetName('dyncrystalEG_rate')
@@ -544,30 +598,6 @@ if __name__ == '__main__' :
     #crystal_tree.Draw("(uslE+lslE)/cluster_energy : deltaPhi >> brem_dphi", "passed && cluster_pt > 10", "goff")
     #brem_dphi.Draw("colz")
     #c.Print("plots/brem_dphi_hist.png")
- 
-    dynCrystal2DdeltaRHist = effFile.Get("analyzer/dyncrystalEG_2DdeltaR_hist")
-    c.SetCanvasSize(800, 700)
-    c.SetName("dyncrystalEG_2D_deltaR")
-    #c.SetTitle("#Delta R Distribution Fit")
-    c.SetTitle("")
-    draw2DdeltaRHist(dynCrystal2DdeltaRHist, c)
- 
-    c.Clear()
-    c.SetCanvasSize(700, 600)
-    c.SetGridx(1)
-    c.SetGridy(1)
-    c.SetRightMargin(0.14)
-    c.SetTopMargin(0.13)
-    recoGenPtHist = effFile.Get("analyzer/reco_gen_pt")
-    #recoGenPtHist.SetTitle("Crystal EG algorithm pT resolution")
-    recoGenPtHist.SetTitle("")
-    recoGenPtHist.GetYaxis().SetTitle("Relative Error (reco-gen)/gen")
-    recoGenPtHist.GetYaxis().SetTitleOffset(1.3)
-    recoGenPtHist.SetMaximum(50)
-    recoGenPtHist.Draw("colz")
-    cmsString = drawCMSString("CMS Simulation, <PU>=140 bx=25, Single Electron")
-    c.Print("plots/dyncrystalEG_reco_gen_pt.png")
-    del cmsString
  
     c.Clear()
     recoGenPtHist.SetTitle("Crystal EG algorithm pT resolution")
