@@ -97,7 +97,6 @@ def drawEfficiency( hists, c, ymax, xTitle, xrange = [0., 0.], fit = False, fitH
     
     graphs = []
     for i, hist in enumerate(hists) :
-        print hist
         #hist.Scale( 1./hist.GetEntries() )
         graph = ROOT.TGraphAsymmErrors( hist )
         graph.SetLineColor( colors[i] )
@@ -295,26 +294,30 @@ def drawDRHists(hists, c, ymax, xrange = [0.0, 0.25]) :
     marker_styles = [20, 24, 25, 26, 32]
     hs = ROOT.THStack("hs", c.GetTitle())
     for i, hist in enumerate(hists) :
-       hist.Sumw2()
-       hist.Scale(1./hist.Integral())
-       hist.SetLineColor(colors[i])
-       hist.SetMarkerColor(colors[i])
-       hist.SetMarkerStyle(marker_styles[i])
-       hist.SetMarkerSize(0.8)
-       hs.Add(hist, "ex0 hist")
+        hist.Sumw2()
+        hist.Scale(1./hist.Integral())
+        hist.SetLineColor(colors[i])
+        hist.SetMarkerColor(colors[i])
+        hist.SetMarkerStyle(marker_styles[i])
+        hist.SetMarkerSize(0.8)
+        hs.Add(hist, "ex0 hist")
+
+    #hs.GetXaxis().SetRangeUser( xrange[0], xrange[1] )
+    #print hs.GetStack().Last().GetXaxis()
+    #hs.GetStack().Last().GetXaxis().SetRangeUser( 0.0, 0.1 )
 
     c.Clear()
     if c.GetLogy() == 0 : # linear
-       hs.SetMinimum(0.)
+        hs.SetMinimum(0.)
     if ymax != 0. :
-       hs.SetMaximum(ymax)
+        hs.SetMaximum(ymax)
  
     hs.Draw("nostack")
  
     markers = []
     for hist in hists :
-       markers.append( hist )
-       markers[-1].Draw("psame")
+        markers.append( hist )
+        markers[-1].Draw("psame")
  
     fit = ROOT.TF1("doublegaus", "gaus+gaus(3)", 0., 0.25)
     fit.SetParameters(0.3, 0., 0.003, 0.1, 0., 0.02)
@@ -376,7 +379,7 @@ if __name__ == '__main__' :
 
     
     ratesMap = {
-        'L1EGamma_Crystal' : 'analyzer/dyncrystalEG_rate',
+        'L1EGamma Crystal' : 'analyzer/dyncrystalEG_rate',
         'Original L2 Algorithm' : 'analyzer/SLHCL1ExtraParticles:EGamma_rate',
         'Phase 1 TDR' : 'analyzer/l1extraParticlesUCT:All_rate',
         'LLR Alg.' : 'analyzer/SLHCL1ExtraParticlesNewClustering:EGamma_rate',
@@ -384,31 +387,37 @@ if __name__ == '__main__' :
         'Crystal Trigger (prod.)' : 'analyzer/L1EGammaCrystalsProducer:EGammaCrystal_rate',}
 
     effMap = {
-        'newAlgEtaHist' : ('L1EGamma_Crystal', 'analyzer/divide_dyncrystalEG_efficiency_eta_by_gen_eta'),
-        'newAlgPtHist' : ('L1EGamma_Crystal', 'analyzer/divide_dyncrystalEG_efficiency_pt_by_gen_pt'),
-        'newAlgDRHist' : ('L1EGamma_Crystal', 'analyzer/dyncrystalEG_deltaR'),
-        'newAlgDEtaHist' : ('L1EGamma_Crystal', 'analyzer/dyncrystalEG_deta'),
-        'newAlgDPhiHist' : ('L1EGamma_Crystal', 'analyzer/dyncrystalEG_dphi'),
+        'newAlgEtaHist' : ('L1EGamma Crystal', 'analyzer/divide_dyncrystalEG_efficiency_eta_by_gen_eta'),
+        'newAlgPtHist' : ('L1EGamma Crystal', 'analyzer/divide_dyncrystalEG_efficiency_pt_by_gen_pt'),
+        'newAlgDRHist' : ('L1EGamma Crystal', 'analyzer/dyncrystalEG_deltaR'),
+        'newAlgDEtaHist' : ('L1EGamma Crystal', 'analyzer/dyncrystalEG_deta'),
+        'newAlgDPhiHist' : ('L1EGamma Crystal', 'analyzer/dyncrystalEG_dphi'),
+        'newAlgDPhiHist' : ('L1EGamma Crystal', 'analyzer/dyncrystalEG_dphi'),
+        'newAlgGenRecoPtHist' : ('L1EGamma Crystal', 'analyzer/1d_reco_gen_pt'),
         'oldAlgEtaHist' : ('Original L2 Algorithm', 'analyzer/divide_SLHCL1ExtraParticles:EGamma_efficiency_eta_by_gen_eta'),
         'oldAlgPtHist' : ('Original L2 Algorithm', 'analyzer/divide_SLHCL1ExtraParticles:EGamma_efficiency_pt_by_gen_pt'),
         'oldAlgDRHist' : ('Original L2 Algorithm', 'analyzer/SLHCL1ExtraParticles:EGamma_deltaR'),
         'oldAlgDEtaHist' : ('Original L2 Algorithm', 'analyzer/SLHCL1ExtraParticles:EGamma_deta'),
         'oldAlgDPhiHist' : ('Original L2 Algorithm', 'analyzer/SLHCL1ExtraParticles:EGamma_dphi'),
+        'oldAlgGenRecoPtHist' : ('Original L2 Algorithm', 'analyzer/SLHCL1ExtraParticles:EGamma_1d_reco_gen_pt'),
         'dynAlgEtaHist' : ('LLR Alg.', 'analyzer/divide_SLHCL1ExtraParticlesNewClustering:EGamma_efficiency_eta_by_gen_eta'),
         'dynAlgPtHist' : ('LLR Alg.', 'analyzer/divide_SLHCL1ExtraParticlesNewClustering:EGamma_efficiency_pt_by_gen_pt'),
         'dynAlgDRHist' : ('LLR Alg.', 'analyzer/SLHCL1ExtraParticlesNewClustering:EGamma_deltaR'),
         'dynAlgDEtaHist' : ('LLR Alg.', 'analyzer/SLHCL1ExtraParticlesNewClustering:EGamma_deta'),
         'dynAlgDPhiHist' : ('LLR Alg.', 'analyzer/SLHCL1ExtraParticlesNewClustering:EGamma_dphi'),
+        'dynAlgGenRecoPtHist' : ('LLR Alg.', 'analyzer/SLHCL1ExtraParticlesNewClustering:EGamma_1d_reco_gen_pt'),
         'run1AlgEtaHist' : ('Run 1 Alg.', 'analyzer/divide_l1extraParticles:All_efficiency_eta_by_gen_eta'),
         'run1AlgPtHist' : ('Run 1 Alg.', 'analyzer/divide_l1extraParticles:All_efficiency_pt_by_gen_pt'),
         'run1AlgDRHist' : ('Run 1 Alg.', 'analyzer/l1extraParticles:All_deltaR'),
         'run1AlgDEtaHist' : ('Run 1 Alg.', 'analyzer/l1extraParticles:All_deta'),
         'run1AlgDPhiHist' : ('Run 1 Alg.', 'analyzer/l1extraParticles:All_dphi'),
+        'run1AlgGenRecoPtHist' : ('Run 1 Alg.', 'analyzer/l1extraParticles:All_1d_reco_gen_pt'),
         'UCTAlgEtaHist' : ('Phase 1 TDR', 'analyzer/divide_l1extraParticlesUCT:All_efficiency_eta_by_gen_eta'),
         'UCTAlgPtHist' : ('Phase 1 TDR', 'analyzer/divide_l1extraParticlesUCT:All_efficiency_pt_by_gen_pt'),
         'UCTAlgDRHist' : ('Phase 1 TDR', 'analyzer/l1extraParticlesUCT:All_deltaR'),
         'UCTAlgDEtaHist' : ('Phase 1 TDR', 'analyzer/l1extraParticlesUCT:All_deta'),
         'UCTAlgDPhiHist' : ('Phase 1 TDR', 'analyzer/l1extraParticlesUCT:All_dphi'),
+        'UCTAlgGenRecoPtHist' : ('Phase 1 TDR', 'analyzer/l1extraParticlesUCT:All_1d_reco_gen_pt'),
     }
     
     rateFile = ROOT.TFile( 'egTriggerRates.root', 'r' )
@@ -433,7 +442,7 @@ if __name__ == '__main__' :
     crystalAlgRecoPtHists = trigHelpers.loadObjectsMatchingPattern( effFile, "analyzer", effHistsKeys, "divide_L1EGammaCrystalsProducer:EGammaCrystal_threshold*_reco_pt")
     for h in crystalAlgRecoPtHists : h.SetTitle("Crystal Algorithm")
     crystalAlgGenPtHists = trigHelpers.loadObjectsMatchingPattern( effFile, "analyzer", effHistsKeys, "divide_L1EGammaCrystalsProducer:EGammaCrystal_threshold*_gen_pt")
-    for h in crystalAlgGenPtHists : h.SetTitle("L1EGamma_Crystal")
+    for h in crystalAlgGenPtHists : h.SetTitle("L1EGamma Crystal")
     UCTAlgRecoPtHists = trigHelpers.loadObjectsMatchingPattern( effFile, "analyzer", effHistsKeys, "divide_l1extraParticlesUCT:All_threshold*_reco_pt")
     for h in UCTAlgRecoPtHists : h.SetTitle("Phase 1 TDR")
     UCTAlgGenPtHists = trigHelpers.loadObjectsMatchingPattern( effFile, "analyzer", effHistsKeys, "divide_l1extraParticlesUCT:All_threshold*_gen_pt")
@@ -451,22 +460,22 @@ if __name__ == '__main__' :
     ''' RATE SECTION '''    
     c.SetName('dyncrystalEG_rate')
     c.SetTitle('')
-    toDraw = [ hists['L1EGamma_Crystal'], hists['Phase 1 TDR'] ]
+    toDraw = [ hists['L1EGamma Crystal'], hists['Phase 1 TDR'] ]
     drawRates( toDraw, c, 40000., xrange)
     
-    c.SetName('dyncrystalEG_rate_UW')
-    c.SetTitle('EG Rates (UW only)')
-    toDraw = [ hists['L1EGamma_Crystal'], hists['Phase 1 TDR'], hists['LLR Alg.'] ]
-    drawRates( toDraw, c, 40000., xrange)
+    #c.SetName('dyncrystalEG_rate_UW')
+    #c.SetTitle('EG Rates (UW only)')
+    #toDraw = [ hists['L1EGamma Crystal'], hists['Phase 1 TDR'], hists['LLR Alg.'] ]
+    #drawRates( toDraw, c, 40000., xrange)
     
     ''' EFFICIENCY SECTION '''
     c.SetLogy(0)
     c.SetName("dyncrystalEG_efficiency_eta")
     c.SetTitle("EG Efficiencies")
-    drawEfficiency([effHists['newAlgEtaHist'], effHists['UCTAlgEtaHist'], effHists['dynAlgEtaHist']], c, 1.2, "Eta", [-3.,3.] , False, [-2.5, 2.5])
-    c.SetName("dyncrystalEG_efficiency_pt_UW")
-    c.SetTitle("EG Efficiencies (UW only)")
-    drawEfficiency([effHists['newAlgPtHist'], effHists['UCTAlgPtHist'], effHists['dynAlgPtHist']], c, 1.2, "Pt (GeV)", xrange, True, [0.9, 2., 1., 0.])
+    drawEfficiency([effHists['newAlgEtaHist'], effHists['UCTAlgEtaHist']], c, 1.2, "Eta", [-3.,3.] , False, [-2.5, 2.5])
+    #c.SetName("dyncrystalEG_efficiency_pt_UW")
+    #c.SetTitle("EG Efficiencies (UW only)")
+    #drawEfficiency([effHists['newAlgPtHist'], effHists['UCTAlgPtHist'], effHists['dynAlgPtHist']], c, 1.2, "Pt (GeV)", xrange, True, [0.9, 2., 1., 0.])
     c.SetName("dyncrystalEG_efficiency_pt")
     c.SetTitle("")
     drawEfficiency([effHists['newAlgPtHist'], effHists['UCTAlgPtHist']], c, 1.2, "Pt (GeV)", xrange, True, [0.9, 2., 1., 0.])
@@ -494,33 +503,47 @@ if __name__ == '__main__' :
     c.Print("plots/offlineReco_vs_gen.png")
     c.Clear()
  
-    # DeltaR stuff
+    ''' POSITION RECONSTRUCTION '''
+    # Delta R Stuff
     c.SetGridx(0)
     c.SetGridy(0)
     c.SetName("dyncrystalEG_deltaR")
     c.SetTitle("")
     drawDRHists([effHists['newAlgDRHist'], effHists['UCTAlgDRHist']], c, 0.)
-    c.SetName("dyncrystalEG_deltaR_UW")
-    c.SetTitle("")
-    drawDRHists([effHists['newAlgDRHist'], effHists['UCTAlgDRHist'], effHists['dynAlgDRHist']], c, 0.)
-    # Delta Eta / Phi in the middle
-    c.SetName("dyncrystalEG_deltaEta_UW")
+    #c.SetName("dyncrystalEG_deltaR_UW")
+    #c.SetTitle("")
+    #drawDRHists([effHists['newAlgDRHist'], effHists['UCTAlgDRHist'], effHists['dynAlgDRHist']], c, 0.)
+
+    # Delta Eta / Phi
+    #c.SetName("dyncrystalEG_deltaEta_UW")
     #drawDRHists([effHists['newAlgDEtaHist'], effHists['UCTAlgDEtaHist'], effHists['dynAlgDEtaHist']], c, 0., [-0.5, 0.5])
-    drawDRHists([effHists['newAlgDEtaHist'], effHists['dynAlgDEtaHist']], c, 0., [-0.5, 0.5])
-    c.SetName("dyncrystalEG_deltaPhi_UW")
+    c.SetName("dyncrystalEG_deltaEta")
+    drawDRHists([effHists['newAlgDEtaHist'], effHists['UCTAlgDEtaHist']], c, 0., [-0.5, 0.5])
+    #c.SetName("dyncrystalEG_deltaPhi_UW")
     #drawDRHists([effHists['newAlgDPhiHist'], effHists['UCTAlgDPhiHist'], effHists['dynAlgDPhiHist']], c, 0., [-0.5, 0.5])
-    drawDRHists([effHists['newAlgDPhiHist'], effHists['dynAlgDPhiHist']], c, 0., [-0.5, 0.5])
+    c.SetName("dyncrystalEG_deltaPhi")
+    drawDRHists([effHists['newAlgDPhiHist'], effHists['UCTAlgDPhiHist']], c, 0., [-0.5, 0.5])
+
     # Back to DeltaR stuff
-    newAlgDRCutsHist = ROOT.TH1F("newAlgDRCutsHist", "L1EGamma_Crystal", 50, 0., .25)
-    crystal_tree.Draw("deltaR >> newAlgDRCutsHist", "passed && gen_pt > 20.", "goff")
-    c.SetName("dyncrystalEG_deltaR_ptcut")
-    drawDRHists([newAlgDRCutsHist], c, 0.)
+    #newAlgDRCutsHist = ROOT.TH1F("newAlgDRCutsHist", "L1EGamma Crystal", 50, 0., .25)
+    #crystal_tree.Draw("deltaR >> newAlgDRCutsHist", "passed && gen_pt > 20.", "goff")
+    #c.SetName("dyncrystalEG_deltaR_ptcut")
+    #drawDRHists([newAlgDRCutsHist], c, 0.)
+
+
+    ''' PT RECONSTRUCTION: (reco-gen) / reco '''
+    #c.SetName("dyncrystalEG_RecoGenPt_UW")
+    #drawDRHists([effHists['newAlgGenRecoPtHist'], effHists['UCTAlgGenRecoPtHist'], effHists['dynAlgGenRecoPtHist']], c, 0., [-1., 1.])
+    c.SetName("dyncrystalEG_RecoGenPt")
+    drawDRHists([effHists['newAlgGenRecoPtHist'], effHists['UCTAlgGenRecoPtHist']], c, 0., [-1., 1.])
+    
+
  
     c.Clear()
-    brem_dphi = ROOT.TH2F("brem_dphi", "d#phi(uslE+lslE)/clusterEnergy", 50, -0.1, 0.1, 50, 0, 1)
-    crystal_tree.Draw("(uslE+lslE)/cluster_energy : deltaPhi >> brem_dphi", "passed && cluster_pt > 10", "goff")
-    brem_dphi.Draw("colz")
-    c.Print("plots/brem_dphi_hist.png")
+    #brem_dphi = ROOT.TH2F("brem_dphi", "d#phi(uslE+lslE)/clusterEnergy", 50, -0.1, 0.1, 50, 0, 1)
+    #crystal_tree.Draw("(uslE+lslE)/cluster_energy : deltaPhi >> brem_dphi", "passed && cluster_pt > 10", "goff")
+    #brem_dphi.Draw("colz")
+    #c.Print("plots/brem_dphi_hist.png")
  
     dynCrystal2DdeltaRHist = effFile.Get("analyzer/dyncrystalEG_2DdeltaR_hist")
     c.SetCanvasSize(800, 700)
