@@ -45,6 +45,42 @@ def setLegStyle( x1,y1,x2,y2 ) :
     return leg
 
 
+def draw2DSets(c, tree1, cut, title1, tree2, title2, xaxis, xinfo, yaxis, yinfo) :
+    print cut
+    c.cd(1)
+    h1 = ROOT.TH2F("h1", title1, xinfo[0], xinfo[1], xinfo[2], yinfo[0], yinfo[1], yinfo[2])
+    tree1.Draw( cut + " >> h1" )
+    h1.GetXaxis().SetTitle( xaxis )
+    h1.GetYaxis().SetTitle( yaxis )
+    h1.Draw("colz")
+    c.cd(2)
+    h2 = ROOT.TH2F("h2", title2, xinfo[0], xinfo[1], xinfo[2], yinfo[0], yinfo[1], yinfo[2])
+    tree2.Draw( cut + " >> h2" )
+    h2.GetXaxis().SetTitle( xaxis )
+    h2.GetYaxis().SetTitle( yaxis )
+    h2.Draw("colz")
+    c.Print("plots/"+c.GetTitle()+".png")
+    del h1
+    del h2
+
+def draw2DPtRes( hist, c, name ) :
+    c.Clear()
+    c.SetCanvasSize(700, 600)
+    #c.SetGridx(1)
+    #c.SetGridy(1)
+    c.SetRightMargin(0.14)
+    c.SetTopMargin(0.10)
+    #recoGenPtHist.SetTitle("Crystal EG algorithm pT resolution")
+    hist.SetTitle("")
+    hist.GetYaxis().SetTitle("Relative Error in P_{T} (reco-gen)/gen")
+    hist.GetYaxis().SetTitleOffset(1.3)
+    hist.SetMaximum(50)
+    hist.Draw("colz")
+    cmsString = drawCMSString("CMS Simulation, <PU>=140 bx=25, Single Electron")
+    c.Print("plots/"+name+"_reco_gen_pt.png")
+    del cmsString
+
+
 def drawRates( hists, c, ymax, xrange = [0., 0.] ) :
     c.cd()
     colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray]
@@ -139,7 +175,7 @@ def drawEfficiency( hists, c, ymax, xTitle, xrange = [0., 0.], fit = False, fitH
     if ( xrange[0] != 0. or xrange[1] != 0 ) :
         mg.GetXaxis().SetRangeUser(xrange[0], xrange[1])
     #mg.GetYaxis().SetTitle(graphs[0].GetYaxis().GetTitle())
-    mg.GetYaxis().SetTitle("Eff. (L1 Reco/Gen)")
+    mg.GetYaxis().SetTitle("Eff. (L1 Algo./Generated)")
  
     cmsString = drawCMSString("CMS Simulation, <PU>=140 bx=25, Single Electron")
  
@@ -269,11 +305,11 @@ def draw2DdeltaRHist(hist, c) :
  
     # Stats
     stats = []
-    stats.append( ROOT.TLatex(histpad_sizeX+margin+0.01, histpad_sizeY+margin+0.13, "#mu_#eta = %.2E" % shape.GetParameter(1)) )
-    stats.append( ROOT.TLatex(histpad_sizeX+margin+0.01, histpad_sizeY+margin+0.1,"#mu_#phi = %.2E" % shape.GetParameter(3)) )
-    stats.append( ROOT.TLatex(histpad_sizeX+margin+0.01, histpad_sizeY+margin+0.07, "#sigma_#eta#eta = %.2E" % (ROOT.TMath.sqrt(0.5/shape.GetParameter(2)))) )
-    stats.append( ROOT.TLatex(histpad_sizeX+margin+0.01, histpad_sizeY+margin+0.04, "#sigma_#phi#phi = %.2E" % (ROOT.TMath.sqrt(0.5/shape.GetParameter(4)))) )
-    stats.append( ROOT.TLatex(histpad_sizeX+margin+0.01, histpad_sizeY+margin+0.01, "#sigma_#eta#phi = %.2E" % (ROOT.TMath.sqrt(-0.5/shape.GetParameter(5)))) )
+    stats.append( ROOT.TLatex(histpad_sizeX+margin+0.01, histpad_sizeY+margin+0.13, "#mu_#eta = "+format(shape.GetParameter(1), '.2g' )) )
+    stats.append( ROOT.TLatex(histpad_sizeX+margin+0.01, histpad_sizeY+margin+0.1,"#mu_#phi = "+format(shape.GetParameter(3), '.2g')) )
+    stats.append( ROOT.TLatex(histpad_sizeX+margin+0.01, histpad_sizeY+margin+0.07, "#sigma_#eta#eta = "+format(ROOT.TMath.sqrt(0.5/shape.GetParameter(2)), '.2g')) )
+    stats.append( ROOT.TLatex(histpad_sizeX+margin+0.01, histpad_sizeY+margin+0.04, "#sigma_#phi#phi = "+format(ROOT.TMath.sqrt(0.5/shape.GetParameter(4)), '.2g')) )
+    stats.append( ROOT.TLatex(histpad_sizeX+margin+0.01, histpad_sizeY+margin+0.01, "#sigma_#eta#phi = "+format(ROOT.TMath.sqrt(-0.5/shape.GetParameter(5)), '.2g')) )
     for i in range( 0, 5 ) :
        stats[i].SetTextSize(txtSize-0.002)
        stats[i].SetTextFont(42)
@@ -382,9 +418,10 @@ def drawDRHists(hists, c, ymax, doFit = False) :
         # and fit ranges, sorry
         fitHints = [[.17, -0.025, 0.07],
                     [.08, 0.1, .1 ]]
-        fitRanges = [[-.1, .1],
-                    [-0.05, .2]]
+        fitRanges = [[-.15, .08],
+                    [-0.09, .3]]
         fitResults = []
+        fitResults.append( ROOT.TLatex(.7, .7, "Gaussian Fits:" ))
         for i, hist in enumerate(hists) :
             shape = ROOT.TF1("shape", "gaus(0)", fitRanges[i][0], fitRanges[i][1])
             shape.SetParameters(fitHints[i][0], fitHints[i][1], fitHints[i][2])
@@ -393,11 +430,10 @@ def drawDRHists(hists, c, ymax, doFit = False) :
             hist.GetFunction("shape").SetLineWidth(hist.GetLineWidth()*2)
 
             fitResult = hist.GetFunction("shape")
-            fitResults.append( ROOT.TLatex(.75, .7-i*.12, "scale %.2E" % fitResult.GetParameter(0)))
-            fitResults.append( ROOT.TLatex(.75, .66-i*.12, "avg. %.2E" % fitResult.GetParameter(1)))
-            fitResults.append( ROOT.TLatex(.75, .62-i*.12, "#sigma %.2E" % fitResult.GetParameter(2)))
+            fitResults.append( ROOT.TLatex(.7, .66-i*.09, "#mu: "+format(fitResult.GetParameter(1), '.2g')))
+            fitResults.append( ROOT.TLatex(.7, .62-i*.09, "#sigma: "+format(ROOT.TMath.sqrt(.5*abs(fitResult.GetParameter(2))), '.2g')))
         for i in range( len(fitResults) ) :
-            fitResults[i].SetTextSize(0.035)
+            fitResults[i].SetTextSize(0.045)
             fitResults[i].SetTextFont(42)
             fitResults[i].SetNDC()
             if i > 2 : fitResults[i].SetTextColor(ROOT.kRed)
@@ -492,6 +528,8 @@ if __name__ == '__main__' :
     UCTAlgGenPtHists = trigHelpers.loadObjectsMatchingPattern( effFile, "analyzer", effHistsKeys, "divide_l1extraParticlesUCT:All_threshold*_gen_pt")
     for h in UCTAlgGenPtHists : h.SetTitle("Phase 1 TDR")
     
+    crystal_tree = effFile.Get("analyzer/crystal_tree")
+    rate_tree = rateFile.Get("analyzer/crystal_tree")
     ''' Do 2D color plots 1st b/c of TDR style '''
     # TDR Style does not play well with 2D color plots
     # 1) 2D delta Eta vs delta Phi plot
@@ -504,23 +542,93 @@ if __name__ == '__main__' :
     draw2DdeltaRHist(dynCrystal2DdeltaRHist, c)
  
     # 2) 2D pt resolution vs. gen pt
-    c.Clear()
-    c.SetCanvasSize(700, 600)
-    #c.SetGridx(1)
-    #c.SetGridy(1)
-    c.SetRightMargin(0.14)
-    c.SetTopMargin(0.10)
     recoGenPtHist = effFile.Get("analyzer/reco_gen_pt")
-    #recoGenPtHist.SetTitle("Crystal EG algorithm pT resolution")
-    recoGenPtHist.SetTitle("")
-    recoGenPtHist.GetYaxis().SetTitle("Relative Error (reco-gen)/gen")
-    recoGenPtHist.GetYaxis().SetTitleOffset(1.3)
-    recoGenPtHist.SetMaximum(50)
-    recoGenPtHist.Draw("colz")
-    cmsString = drawCMSString("CMS Simulation, <PU>=140 bx=25, Single Electron")
-    c.Print("plots/dyncrystalEG_reco_gen_pt.png")
-    del cmsString
+    draw2DPtRes( recoGenPtHist, c, "dyncrystalEG" )
+    tdrRecoGenPtHist = effFile.Get("analyzer/l1extraParticlesUCT:All_reco_gen_pt")
+    draw2DPtRes( tdrRecoGenPtHist, c, "tdr" )
+
+    ''' Track to cluster reco resolution '''
+    c.SetCanvasSize(1200,600)
+    c.Divide(2)
+    # 3) 2D position resolution vs. reco pt
+    # dEta
+    cut = "cluster_pt:trackDeltaEta"
+    title1 = "L1EGamma Crystal (Electrons)"
+    title2 = "L1EGamma Crystal (Fake)"
+    xaxis = "d#eta (L1Trk, L1EG Crystal)"
+    xinfo = [80, -0.05, 0.05]
+    yaxis = "Cluster P_{T} (GeV)"
+    yinfo = [50, 0, 50]
+    c.SetTitle("trkDEta2D_Pt")
+    draw2DSets(c, crystal_tree, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
+
+    cut = "cluster_hovere:trackDeltaEta"
+    yaxis = "Cluster H/E"
+    yinfo = [50, 0, 10]
+    c.SetTitle("trkDEta2D_HoverE")
+    draw2DSets(c, crystal_tree, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
+
+    cut = "cluster_iso:trackDeltaEta"
+    yaxis = "Cluster Isolation (GeV)"
+    yinfo = [50, 0, 25]
+    c.SetTitle("trkDEta2D_Iso")
+    draw2DSets(c, crystal_tree, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
+
+    # dPhi
+    cut = "cluster_pt:trackDeltaPhi"
+    title1 = "L1EGamma Crystal (Electrons)"
+    title2 = "L1EGamma Crystal (Fake)"
+    xaxis = "d#phi (L1Trk, L1EG Crystal)"
+    xinfo = [80, -0.2, 0.2]
+    yaxis = "Cluster P_{T} (GeV)"
+    yinfo = [50, 0, 50]
+    c.SetTitle("trkDPhi2D_Pt")
+    draw2DSets(c, crystal_tree, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
+
+    cut = "cluster_hovere:trackDeltaPhi"
+    yaxis = "Cluster H/E"
+    yinfo = [50, 0, 10]
+    c.SetTitle("trkDPhi2D_HoverE")
+    draw2DSets(c, crystal_tree, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
+
+    cut = "cluster_iso:trackDeltaPhi"
+    yaxis = "Cluster Isolation (GeV)"
+    yinfo = [50, 0, 25]
+    c.SetTitle("trkDPhi2D_Iso")
+    draw2DSets(c, crystal_tree, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
+    c.Clear()
+
+
  
+    # Offline reco pt
+    offlineRecoHist = ROOT.TH2F("offlineRecoHist", "Offline reco to gen. comparisonGen. pT (GeV)(reco-gen)/genCounts", 60, 0., 50., 60, -0.5, 0.5)
+    crystal_tree.Draw("(reco_pt-gen_pt)/gen_pt:gen_pt >> offlineRecoHist", "reco_pt>0", "colz")
+    c.SetLogy(0)
+    offlineRecoHist.Draw("colz")
+    c.Print("plots/offlineReco_vs_gen.png")
+    c.Clear()
+ 
+    recoGenPtHist.SetTitle("Crystal EG algorithm pT resolution")
+    # oldAlgrecoGenPtHist = (TH2F *) effFile.Get("analyzer/SLHCL1ExtraParticles:EGamma_reco_gen_pt")
+    oldAlgrecoGenPtHist = effFile.Get("analyzer/l1extraParticlesUCT:All_reco_gen_pt")
+    oldAlgrecoGenPtHist.SetTitle("Tower EG alg. momentum error")
+    oldAlgrecoGenPtHist.GetYaxis().SetTitle("Relative Error (reco-gen)/gen")
+    oldAlgrecoGenPtHist.SetMaximum(50)
+    oldAlgrecoGenPtHist.SetLineColor(ROOT.kRed)
+    c.SetCanvasSize(1200,600)
+    c.Divide(2,1)
+    c.cd(1)
+    gPad.SetGridx(1)
+    gPad.SetGridy(1)
+    recoGenPtHist.Draw("colz")
+    recoGenPtHist.GetYaxis().SetTitleOffset(1.4)
+    c.cd(2)
+    gPad.SetGridx(1)
+    gPad.SetGridy(1)
+    oldAlgrecoGenPtHist.Draw("colz")
+    oldAlgrecoGenPtHist.GetYaxis().SetTitleOffset(1.4)
+    c.Print("plots/reco_gen_pt.png")
+
 
     del c
     tdrstyle.setTDRStyle()
@@ -550,13 +658,13 @@ if __name__ == '__main__' :
     c.SetLogy(0)
     c.SetName("dyncrystalEG_efficiency_eta")
     c.SetTitle("EG Efficiencies")
-    drawEfficiency([effHists['newAlgEtaHist'], effHists['UCTAlgEtaHist']], c, 1.2, "Eta", [-3.,3.] , False, [-2.5, 2.5])
+    drawEfficiency([effHists['newAlgEtaHist'], effHists['UCTAlgEtaHist']], c, 1.2, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
     #c.SetName("dyncrystalEG_efficiency_pt_UW")
     #c.SetTitle("EG Efficiencies (UW only)")
     #drawEfficiency([effHists['newAlgPtHist'], effHists['UCTAlgPtHist'], effHists['dynAlgPtHist']], c, 1.2, "Pt (GeV)", xrange, True, [0.9, 2., 1., 0.])
     c.SetName("dyncrystalEG_efficiency_pt")
     c.SetTitle("")
-    drawEfficiency([effHists['newAlgPtHist'], effHists['UCTAlgPtHist']], c, 1.2, "Pt (GeV)", xrange, True, [0.9, 2., 1., 0.])
+    drawEfficiency([effHists['newAlgPtHist'], effHists['UCTAlgPtHist']], c, 1.2, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
 
     # Map of possible pt values from file with suggested fit function params
     possiblePts = {'16' : [0.9, 20., 1., 0.], '20' : [0.95, 30., 1., 0.], '30': [0.95, 16., 1., 0.]}
@@ -569,18 +677,9 @@ if __name__ == '__main__' :
                     print pt, crystalPt.GetName(), UCTPt.GetName()
                     toPlot.append( UCTPt )
                     c.SetName("dyncrystalEG_threshold"+pt+"_efficiency_gen_pt")
-                    drawEfficiency( toPlot, c, 1.2, "Pt (GeV)", xrange, True, possiblePts[pt])
+                    drawEfficiency( toPlot, c, 1.2, "Gen P_{T} (GeV)", xrange, True, possiblePts[pt])
 
 
-    # Offline reco pt
-    crystal_tree = effFile.Get("analyzer/crystal_tree")
-    offlineRecoHist = ROOT.TH2F("offlineRecoHist", "Offline reco to gen. comparisonGen. pT (GeV)(reco-gen)/genCounts", 60, 0., 50., 60, -0.5, 0.5)
-    crystal_tree.Draw("(reco_pt-gen_pt)/gen_pt:gen_pt >> offlineRecoHist", "reco_pt>0", "colz")
-    c.SetLogy(0)
-    offlineRecoHist.Draw("colz")
-    c.Print("plots/offlineReco_vs_gen.png")
-    c.Clear()
- 
     ''' POSITION RECONSTRUCTION '''
     # Delta R Stuff
     c.SetGridx(0)
@@ -601,6 +700,18 @@ if __name__ == '__main__' :
     #drawDRHists([effHists['newAlgDPhiHist'], effHists['UCTAlgDPhiHist'], effHists['dynAlgDPhiHist']], c, 0., [-0.5, 0.5])
     c.SetName("dyncrystalEG_deltaPhi")
     drawDRHists([effHists['newAlgDPhiHist'], effHists['UCTAlgDPhiHist']], c, 0.)
+    # Draw L1EG Crystal dEta, dPhi with track matching
+    c.SetLogy(0)
+    c.SetName("dyncrystalEG_trkDeltaEta")
+    trkDEta = ROOT.TH1F("trkDEta", "L1EGamma Crystal", 80, -0.05, 0.05)
+    crystal_tree.Draw("trackDeltaEta >> trkDEta")
+    trkDEta.GetXaxis().SetTitle("d#eta (L1Trk, L1EG Crystal)")
+    drawDRHists( [trkDEta,], c, 0.15 )
+    c.SetName("dyncrystalEG_trkDeltaPhi")
+    trkDPhi = ROOT.TH1F("trkDPhi", "L1EGamma Crystal", 80, -0.2, 0.2)
+    crystal_tree.Draw("trackDeltaPhi >> trkDPhi")
+    trkDPhi.GetXaxis().SetTitle("d#phi (L1Trk, L1EG Crystal)")
+    drawDRHists( [trkDPhi,], c, 0.5 )
 
     # Back to DeltaR stuff
     #newAlgDRCutsHist = ROOT.TH1F("newAlgDRCutsHist", "L1EGamma Crystal", 50, 0., .25)
@@ -613,8 +724,8 @@ if __name__ == '__main__' :
     #c.SetName("dyncrystalEG_RecoGenPt_UW")
     #drawDRHists([effHists['newAlgGenRecoPtHist'], effHists['UCTAlgGenRecoPtHist'], effHists['dynAlgGenRecoPtHist']], c, 0., [-1., 1.])
     c.SetName("dyncrystalEG_RecoGenPt")
-    effHists['newAlgGenRecoPtHist'].GetXaxis().SetTitle("(reco-gen)/gen P_{T} (GeV)")
-    drawDRHists([effHists['newAlgGenRecoPtHist'], effHists['UCTAlgGenRecoPtHist']], c, 0., True, [-.2, .2], [99., 99., 99.])
+    effHists['newAlgGenRecoPtHist'].GetXaxis().SetTitle("P_{T} (reco-gen)/gen")
+    drawDRHists([effHists['newAlgGenRecoPtHist'], effHists['UCTAlgGenRecoPtHist']], c, 0., True)
     
 
  
@@ -624,26 +735,4 @@ if __name__ == '__main__' :
     #brem_dphi.Draw("colz")
     #c.Print("plots/brem_dphi_hist.png")
  
-    c.Clear()
-    recoGenPtHist.SetTitle("Crystal EG algorithm pT resolution")
-    # oldAlgrecoGenPtHist = (TH2F *) effFile.Get("analyzer/SLHCL1ExtraParticles:EGamma_reco_gen_pt")
-    oldAlgrecoGenPtHist = effFile.Get("analyzer/l1extraParticlesUCT:All_reco_gen_pt")
-    oldAlgrecoGenPtHist.SetTitle("Tower EG alg. momentum error")
-    oldAlgrecoGenPtHist.GetYaxis().SetTitle("Relative Error (reco-gen)/gen")
-    oldAlgrecoGenPtHist.SetMaximum(50)
-    oldAlgrecoGenPtHist.SetLineColor(ROOT.kRed)
-    c.SetCanvasSize(1200,600)
-    c.Divide(2,1)
-    c.cd(1)
-    gPad.SetGridx(1)
-    gPad.SetGridy(1)
-    recoGenPtHist.Draw("colz")
-    recoGenPtHist.GetYaxis().SetTitleOffset(1.4)
-    c.cd(2)
-    gPad.SetGridx(1)
-    gPad.SetGridy(1)
-    oldAlgrecoGenPtHist.Draw("colz")
-    oldAlgrecoGenPtHist.GetYaxis().SetTitleOffset(1.4)
-    c.Print("plots/reco_gen_pt.png")
-
 

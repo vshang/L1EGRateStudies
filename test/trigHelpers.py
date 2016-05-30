@@ -17,7 +17,7 @@ def getKeysOfClass( file_, dir_, class_ ) :
 def loadObjectsMatchingPattern( file_, dir_, keys, matchString ) :
     hists = []
     parts = matchString.split('*')
-    for p in parts : print p
+    #for p in parts : print p
     for key in keys :
         allSuccess = True
         for part in parts :
