@@ -140,6 +140,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       std::map<std::string, TH1F *> EGalg_rate_hists;
       std::map<std::string, TH2F *> EGalg_2DdeltaR_hists;
       std::map<std::string, TH2F *> EGalg_reco_gen_pt_hists;
+      std::map<std::string, TH1F *> EGalg_reco_gen_pt_1dHists;
 
       // EcalRecHits flags
       TH1I * RecHitFlagsTowerHist;
@@ -153,12 +154,16 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float cluster_pt;
          float cluster_energy;
          float eta;
+         float phi;
          float hovere;
          float iso;
          float bremStrength;
          float deltaR = 0.;
          float deltaPhi = 0.;
          float gen_pt = 0.;
+         float gen_eta = 0.;
+         float gen_phi = 0.;
+         float gen_energy = 0.;
          float E_gen = 0.;
          float denom_pt = 0.;
          float reco_pt = 0.;
@@ -174,8 +179,12 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float phiStripContiguous3p;
          float phiStripOneHole3p;
          float trackDeltaR;
+         float trackEta;
+         float trackPhi;
          float trackDeltaPhi;
+         float trackDeltaEta;
          float trackP;
+         float trackPt;
          float trackRInv;         
          float trackChi2;
          float trackIsoConeTrackCount;
@@ -184,6 +193,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
 
       // (pt_reco-pt_gen)/pt_gen plot
       TH2F * reco_gen_pt_hist;
+      TH1F * reco_gen_pt_1dHist;
 
       // dphi vs. brem
       TH2F * brem_dphi_hist;
@@ -244,8 +254,8 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       }
       dyncrystal_deltaR_hist = fs->make<TH1F>("dyncrystalEG_deltaR", ("Dynamic Crystal Trigger;#Delta R "+drLabel).c_str(), 50, 0., genMatchDeltaRcut);
       dyncrystal_deltaR_bremcut_hist = fs->make<TH1F>("dyncrystalEG_deltaR_bremcut", ("Dynamic Crystal Trigger;#Delta R "+drLabel).c_str(), 50, 0., genMatchDeltaRcut);
-      dyncrystal_deta_hist = fs->make<TH1F>("dyncrystalEG_deta", ("Dynamic Crystal Trigger;d#eta "+drLabel).c_str(), 50, -0.1, 0.1);
-      dyncrystal_dphi_hist = fs->make<TH1F>("dyncrystalEG_dphi", ("Dynamic Crystal Trigger;d#phi "+drLabel).c_str(), 50, -0.1, 0.1);
+      dyncrystal_deta_hist = fs->make<TH1F>("dyncrystalEG_deta", ("Dynamic Crystal Trigger;d#eta "+drLabel).c_str(), 100, -0.25, 0.25);
+      dyncrystal_dphi_hist = fs->make<TH1F>("dyncrystalEG_dphi", ("Dynamic Crystal Trigger;d#phi "+drLabel).c_str(), 100, -0.25, 0.25);
       dyncrystal_dphi_bremcut_hist = fs->make<TH1F>("dyncrystalEG_dphi_bremcut", ("Dynamic Crystal Trigger;d#phi "+drLabel).c_str(), 50, -0.1, 0.1);
       dyncrystal_2DdeltaR_hist = fs->make<TH2F>("dyncrystalEG_2DdeltaR_hist", "Dynamic Crystal Trigger;d#eta;d#phi;Counts", 50, -0.05, 0.05, 50, -0.05, 0.05);
 
@@ -261,13 +271,15 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
             EGalg_efficiency_gen_hists[name][threshold] = fs->make<TH1F>((name+"_threshold"+std::to_string(threshold)+"_efficiency_gen_pt").c_str(), (name+";Gen. pT (GeV);Efficiency").c_str(), nHistBins, histLow, histHigh);
          }
          EGalg_deltaR_hists[name] = fs->make<TH1F>((name+"_deltaR").c_str(), (name+";#Delta R "+drLabel).c_str(), 50, 0., genMatchDeltaRcut);
-         EGalg_deta_hists[name] = fs->make<TH1F>((name+"_deta").c_str(), (name+";d#eta "+drLabel).c_str(), 50, -0.1, 0.1);
-         EGalg_dphi_hists[name] = fs->make<TH1F>((name+"_dphi").c_str(), (name+";d#phi "+drLabel).c_str(), 50, -0.1, 0.1);
+         EGalg_deta_hists[name] = fs->make<TH1F>((name+"_deta").c_str(), (name+";d#eta "+drLabel).c_str(), 100, -0.25, 0.25);
+         EGalg_dphi_hists[name] = fs->make<TH1F>((name+"_dphi").c_str(), (name+";d#phi "+drLabel).c_str(), 100, -0.25, 0.25);
          EGalg_2DdeltaR_hists[name] = fs->make<TH2F>((name+"_2DdeltaR").c_str(), ";d#eta;d#phi;Counts", 50, -0.05, 0.05, 50, -0.05, 0.05);
          EGalg_reco_gen_pt_hists[name] = fs->make<TH2F>((name+"_reco_gen_pt").c_str(), (name+";Gen. pT (GeV);(reco-gen)/gen;Counts").c_str(), 40, 0., 50., 40, -0.3, 0.3); 
+         EGalg_reco_gen_pt_1dHists[name] = fs->make<TH1F>((name+"_1d_reco_gen_pt").c_str(), (name+";(reco-gen)/gen;Counts").c_str(), 100, -1., 1.); 
       }
 
       reco_gen_pt_hist = fs->make<TH2F>("reco_gen_pt" , "EG relative momentum error;Gen. pT (GeV);(reco-gen)/gen;Counts", 40, 0., 50., 40, -0.3, 0.3); 
+      reco_gen_pt_1dHist = fs->make<TH1F>("1d_reco_gen_pt" , "EG relative momentum error;(reco-gen)/gen;Counts", 100, -1., 1.); 
       brem_dphi_hist = fs->make<TH2F>("brem_dphi_hist" , "Brem. strength vs. d#phi;Brem. Strength;d#phi;Counts", 40, 0., 2., 40, -0.05, 0.05); 
 
       efficiency_denominator_hist = fs->make<TH1F>("gen_pt", "Gen. pt;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
@@ -292,12 +304,16 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("cluster_pt", &treeinfo.cluster_pt);
    crystal_tree->Branch("cluster_energy", &treeinfo.cluster_energy);
    crystal_tree->Branch("eta", &treeinfo.eta);
+   crystal_tree->Branch("phi", &treeinfo.phi);
    crystal_tree->Branch("cluster_hovere", &treeinfo.hovere);
    crystal_tree->Branch("cluster_iso", &treeinfo.iso);
    crystal_tree->Branch("bremStrength", &treeinfo.bremStrength);
    crystal_tree->Branch("deltaR", &treeinfo.deltaR);
    crystal_tree->Branch("deltaPhi", &treeinfo.deltaPhi);
    crystal_tree->Branch("gen_pt", &treeinfo.gen_pt);
+   crystal_tree->Branch("gen_eta", &treeinfo.gen_eta);
+   crystal_tree->Branch("gen_phi", &treeinfo.gen_phi);
+   crystal_tree->Branch("gen_energy", &treeinfo.gen_energy);
    crystal_tree->Branch("E_gen", &treeinfo.E_gen);
    crystal_tree->Branch("denom_pt", &treeinfo.denom_pt);
    crystal_tree->Branch("reco_pt", &treeinfo.reco_pt);
@@ -313,8 +329,12 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("phiStripContiguous3p", &treeinfo.phiStripContiguous3p);
    crystal_tree->Branch("phiStripOneHole3p", &treeinfo.phiStripOneHole3p);
    crystal_tree->Branch("trackDeltaR", &treeinfo.trackDeltaR);
+   crystal_tree->Branch("trackEta", &treeinfo.trackEta);
+   crystal_tree->Branch("trackPhi", &treeinfo.trackPhi);
    crystal_tree->Branch("trackDeltaPhi", &treeinfo.trackDeltaPhi);
+   crystal_tree->Branch("trackDeltaEta", &treeinfo.trackDeltaEta);
    crystal_tree->Branch("trackP", &treeinfo.trackP);
+   crystal_tree->Branch("trackPt", &treeinfo.trackPt);
    crystal_tree->Branch("trackRInv", &treeinfo.trackRInv);
    crystal_tree->Branch("trackChi2", &treeinfo.trackChi2);
    crystal_tree->Branch("trackIsoConeTrackCount", &treeinfo.trackIsoConeTrackCount);
@@ -478,6 +498,9 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       }
       efficiency_denominator_hist->Fill(trueElectron.pt());
       treeinfo.gen_pt = genParticles[0].pt();
+      treeinfo.gen_eta = genParticles[0].eta();
+      treeinfo.gen_phi = genParticles[0].phi();
+      treeinfo.gen_energy = genParticles[0].energy();
       treeinfo.E_gen = genParticles[0].pt()*cosh(genParticles[0].eta());
       treeinfo.denom_pt = trueElectron.pt();
       if ( fabs(trueElectron.eta()) > 1.479 )
@@ -548,6 +571,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                   dyncrystal_2DdeltaR_hist->Fill(trueElectron.eta()-cluster.eta(), reco::deltaPhi(cluster, trueElectron));
 
                   reco_gen_pt_hist->Fill( trueElectron.pt(), (cluster.pt() - trueElectron.pt())/trueElectron.pt() );
+                  reco_gen_pt_1dHist->Fill( (cluster.pt() - trueElectron.pt())/trueElectron.pt() );
                   brem_dphi_hist->Fill( cluster.bremStrength(), reco::deltaPhi(cluster, trueElectron) );
                   break;
                }
@@ -589,6 +613,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                EGalg_deta_hists[name]->Fill(trueElectron.eta()-EGCandidate.eta());
                EGalg_dphi_hists[name]->Fill(reco::deltaPhi(EGCandidate.phi(), trueElectron.phi()));
                EGalg_reco_gen_pt_hists[name]->Fill( trueElectron.pt(), (EGCandidate.pt() - trueElectron.pt())/trueElectron.pt() );
+               EGalg_reco_gen_pt_1dHists[name]->Fill( (EGCandidate.pt() - trueElectron.pt())/trueElectron.pt() );
                EGalg_2DdeltaR_hists[name]->Fill(trueElectron.eta()-EGCandidate.eta(), reco::deltaPhi(EGCandidate, trueElectron));
                break;
             }
@@ -735,6 +760,7 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
    treeinfo.crystalCount = cluster.GetExperimentalParam("crystalCount");
    treeinfo.cluster_energy = cluster.energy();
    treeinfo.eta = cluster.eta();
+   treeinfo.phi = cluster.phi();
    treeinfo.hovere = cluster.hovere();
    treeinfo.iso = cluster.isolation();
    treeinfo.bremStrength = cluster.bremStrength();
@@ -867,15 +893,24 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
      for(size_t track_index=0; track_index<l1trackHandle->size(); ++track_index)
      {
         edm::Ptr<TTTrack<Ref_PixelDigi_>> ptr(l1trackHandle, track_index);
+	// don't double count the matched_track
+	if ( ptr == matched_track ) {
+	  continue;
+	}
         // dR cone of .3 or .4, momentum at least 1GeV
-        if ( reco::deltaR(ptr->getMomentum(), matched_track->getMomentum()) < 0.3 && ptr->getMomentum().mag() > 1. )
+        double dr_2 = reco::deltaR(ptr->getMomentum(), matched_track->getMomentum());
+        if ( dr_2 < 0.3 && ptr->getMomentum().mag() > 1. )
         {
           isoConeTrackCount++;
           isoConePtSum += ptr->getMomentum().perp();
         }
      }
      treeinfo.trackDeltaR = min_track_dr;
+     treeinfo.trackEta = matched_track->getMomentum().eta();
+     treeinfo.trackPhi = matched_track->getMomentum().phi();
+     treeinfo.trackPt = matched_track->getMomentum().perp();
      treeinfo.trackDeltaPhi = L1TkElectronTrackMatchAlgo::deltaPhi(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), matched_track);
+     treeinfo.trackDeltaEta = L1TkElectronTrackMatchAlgo::deltaEta(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), matched_track);
      treeinfo.trackP = matched_track->getMomentum().mag();
      treeinfo.trackRInv = matched_track->getRInv();
      treeinfo.trackChi2 = matched_track->getChi2();
