@@ -355,10 +355,12 @@ def drawDRHists(hists, c, ymax, doFit = False) :
     c.Clear()
     if c.GetLogy() == 0 : # linear
         hs.SetMinimum(0.)
-    if ymax != 0. :
-        hs.SetMaximum(ymax)
     if ymax == 0. :
         hs.SetMaximum( hs.GetMaximum() * 1.2 )
+    elif ymax == -1 :
+        hs.SetMaximum( hs.GetMaximum() * 1.3 )
+    elif ymax != 0. :
+        hs.SetMaximum(ymax)
  
     hs.Draw("nostack")
  
@@ -706,12 +708,35 @@ if __name__ == '__main__' :
     trkDEta = ROOT.TH1F("trkDEta", "L1EGamma Crystal", 80, -0.05, 0.05)
     crystal_tree.Draw("trackDeltaEta >> trkDEta")
     trkDEta.GetXaxis().SetTitle("d#eta (L1Trk, L1EG Crystal)")
-    drawDRHists( [trkDEta,], c, 0.15 )
+    drawDRHists( [trkDEta,], c, -1 )
+    del trkDEta
+    c.SetName("dyncrystalEG_trkDeltaEtaGen")
+    trkDEta = ROOT.TH1F("trkDEta", "L1EGamma Crystal", 80, -0.05, 0.05)
+    crystal_tree.Draw("trackEta-gen_eta >> trkDEta")
+    trkDEta.GetXaxis().SetTitle("d#eta (L1Trk, Gen Particle)")
+    drawDRHists( [trkDEta,], c, -1 )
     c.SetName("dyncrystalEG_trkDeltaPhi")
     trkDPhi = ROOT.TH1F("trkDPhi", "L1EGamma Crystal", 80, -0.2, 0.2)
     crystal_tree.Draw("trackDeltaPhi >> trkDPhi")
     trkDPhi.GetXaxis().SetTitle("d#phi (L1Trk, L1EG Crystal)")
-    drawDRHists( [trkDPhi,], c, 0.5 )
+    drawDRHists( [trkDPhi,], c, -1 )
+    del trkDPhi
+    c.SetName("dyncrystalEG_trkDeltaPhiGen")
+    trkDPhi = ROOT.TH1F("trkDPhi", "L1EGamma Crystal", 80, -0.2, 0.2)
+    crystal_tree.Draw("trackPhi-gen_phi >> trkDPhi")
+    trkDPhi.GetXaxis().SetTitle("d#phi (L1Trk, Gen Particle)")
+    drawDRHists( [trkDPhi,], c, -1 )
+    c.SetName("dyncrystalEG_trkDeltaPt")
+    trkDPt = ROOT.TH1F("trkDPt", "L1EGamma Crystal", 80, -1., 1.)
+    crystal_tree.Draw("(trackPt-cluster_pt)/trackPt >> trkDPt")
+    trkDPt.GetXaxis().SetTitle("#delta P_{T} (L1Trk - L1EG Crystal)/L1Trk")
+    drawDRHists( [trkDPt,], c, -1 )
+    del trkDPt
+    c.SetName("dyncrystalEG_trkDeltaPtGen")
+    trkDPt = ROOT.TH1F("trkDPt", "L1EGamma Crystal", 80, -1., 1.)
+    crystal_tree.Draw("(trackPt-gen_pt)/trackPt >> trkDPt")
+    trkDPt.GetXaxis().SetTitle("#delta P_{T} (L1Trk - Gen Particle)/L1Trk")
+    drawDRHists( [trkDPt,], c, -1 )
 
     # Back to DeltaR stuff
     #newAlgDRCutsHist = ROOT.TH1F("newAlgDRCutsHist", "L1EGamma Crystal", 50, 0., .25)
