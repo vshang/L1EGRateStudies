@@ -45,17 +45,17 @@ def setLegStyle( x1,y1,x2,y2 ) :
     return leg
 
 
-def draw2DSets(c, tree1, cut, title1, tree2, title2, xaxis, xinfo, yaxis, yinfo) :
+def draw2DSets(c, tree1, var, cut, title1, tree2, title2, xaxis, xinfo, yaxis, yinfo) :
     print cut
     c.cd(1)
     h1 = ROOT.TH2F("h1", title1, xinfo[0], xinfo[1], xinfo[2], yinfo[0], yinfo[1], yinfo[2])
-    tree1.Draw( cut + " >> h1" )
+    tree1.Draw( var + " >> h1", cut )
     h1.GetXaxis().SetTitle( xaxis )
     h1.GetYaxis().SetTitle( yaxis )
     h1.Draw("colz")
     c.cd(2)
     h2 = ROOT.TH2F("h2", title2, xinfo[0], xinfo[1], xinfo[2], yinfo[0], yinfo[1], yinfo[2])
-    tree2.Draw( cut + " >> h2" )
+    tree2.Draw( var + " >> h2", cut )
     h2.GetXaxis().SetTitle( xaxis )
     h2.GetYaxis().SetTitle( yaxis )
     h2.Draw("colz")
@@ -554,7 +554,10 @@ if __name__ == '__main__' :
     c.Divide(2)
     # 3) 2D position resolution vs. reco pt
     # dEta
-    cut = "cluster_pt:trackDeltaEta"
+    #cut = "((cluster_iso<2 && abs(trackDeltaPhi)<0.02) || cluster_pt > 20)"
+    cut = "((cluster_iso<2 && abs(trackDeltaPhi)<0.02 && abs(trackDeltaEta)<0.015) || (cluster_pt > 20 && abs(trackDeltaEta)<0.015) || cluster_pt > 30)"
+    #cut = ""
+    var = "cluster_pt:trackDeltaEta"
     title1 = "L1EGamma Crystal (Electrons)"
     title2 = "L1EGamma Crystal (Fake)"
     xaxis = "d#eta (L1Trk, L1EG Crystal)"
@@ -562,22 +565,28 @@ if __name__ == '__main__' :
     yaxis = "Cluster P_{T} (GeV)"
     yinfo = [50, 0, 50]
     c.SetTitle("trkDEta2D_Pt")
-    draw2DSets(c, crystal_tree, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
+    draw2DSets(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
 
-    cut = "cluster_hovere:trackDeltaEta"
+    var = "cluster_hovere:trackDeltaEta"
     yaxis = "Cluster H/E"
     yinfo = [50, 0, 10]
     c.SetTitle("trkDEta2D_HoverE")
-    draw2DSets(c, crystal_tree, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
+    draw2DSets(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
 
-    cut = "cluster_iso:trackDeltaEta"
+    var = "cluster_iso:trackDeltaEta"
     yaxis = "Cluster Isolation (GeV)"
     yinfo = [50, 0, 25]
     c.SetTitle("trkDEta2D_Iso")
-    draw2DSets(c, crystal_tree, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
+    draw2DSets(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
+
+    var = "trackChi2:trackDeltaEta"
+    yaxis = "Track Chi2"
+    yinfo = [50, 0, 300]
+    c.SetTitle("trkDEta2D_trkChi2")
+    draw2DSets(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
 
     # dPhi
-    cut = "cluster_pt:trackDeltaPhi"
+    var = "cluster_pt:trackDeltaPhi"
     title1 = "L1EGamma Crystal (Electrons)"
     title2 = "L1EGamma Crystal (Fake)"
     xaxis = "d#phi (L1Trk, L1EG Crystal)"
@@ -585,19 +594,31 @@ if __name__ == '__main__' :
     yaxis = "Cluster P_{T} (GeV)"
     yinfo = [50, 0, 50]
     c.SetTitle("trkDPhi2D_Pt")
-    draw2DSets(c, crystal_tree, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
+    draw2DSets(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
 
-    cut = "cluster_hovere:trackDeltaPhi"
+    var = "cluster_hovere:trackDeltaPhi"
     yaxis = "Cluster H/E"
     yinfo = [50, 0, 10]
     c.SetTitle("trkDPhi2D_HoverE")
-    draw2DSets(c, crystal_tree, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
+    draw2DSets(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
 
-    cut = "cluster_iso:trackDeltaPhi"
+    var = "cluster_iso:trackDeltaPhi"
     yaxis = "Cluster Isolation (GeV)"
     yinfo = [50, 0, 25]
     c.SetTitle("trkDPhi2D_Iso")
-    draw2DSets(c, crystal_tree, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
+    draw2DSets(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
+
+    var = "trackChi2:trackDeltaPhi"
+    yaxis = "Track Chi2"
+    yinfo = [50, 0, 300]
+    c.SetTitle("trkDPhi2D_trkChi2")
+    draw2DSets(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
+
+    var = "trackDeltaEta:trackDeltaPhi"
+    yaxis = "Track d#eta"
+    yinfo = [50, -.2, .2]
+    c.SetTitle("trkDPhi2D_trkDEta")
+    draw2DSets(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
     c.Clear()
 
 
