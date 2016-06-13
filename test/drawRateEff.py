@@ -84,7 +84,7 @@ def draw2DPtRes( hist, c, name ) :
 def drawRates( hists, c, ymax, xrange = [0., 0.] ) :
     c.cd()
     colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray]
-    marker_styles = [20, 24, 25, 26, 32]
+    marker_styles = [20, 24, 25, 26, 32, 35]
     c.Clear()
     mg = ROOT.TMultiGraph("mg", c.GetTitle())
     
@@ -341,7 +341,7 @@ def draw2DdeltaRHist(hist, c) :
 def drawDRHists(hists, c, ymax, doFit = False) :
     c.cd()
     colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray]
-    marker_styles = [20, 24, 25, 26, 32]
+    marker_styles = [20, 24, 25, 26, 32, 35]
     hs = ROOT.THStack("hs", c.GetTitle())
     for i, hist in enumerate(hists) :
         hist.Sumw2()
@@ -555,8 +555,8 @@ if __name__ == '__main__' :
     # 3) 2D position resolution vs. reco pt
     # dEta
     #cut = "((cluster_iso<2 && abs(trackDeltaPhi)<0.02) || cluster_pt > 20)"
-    cut = "((cluster_iso<2 && abs(trackDeltaPhi)<0.02 && abs(trackDeltaEta)<0.015) || (cluster_pt > 20 && abs(trackDeltaEta)<0.015) || cluster_pt > 30)"
-    #cut = ""
+    #cut = "((cluster_iso<2 && abs(trackDeltaPhi)<0.02 && abs(trackDeltaEta)<0.015) || (cluster_pt > 20 && abs(trackDeltaEta)<0.015) || cluster_pt > 30)"
+    cut = ""
     var = "cluster_pt:trackDeltaEta"
     title1 = "L1EGamma Crystal (Electrons)"
     title2 = "L1EGamma Crystal (Fake)"
@@ -618,6 +618,30 @@ if __name__ == '__main__' :
     yaxis = "Track d#eta"
     yinfo = [50, -.2, .2]
     c.SetTitle("trkDPhi2D_trkDEta")
+    draw2DSets(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
+
+    var = "trackDeltaR:(trackPt-cluster_pt)/trackPt"
+    yaxis = "Track #delta R"
+    xaxis = "P_{T} Resolution (trk-cluster)/trk"
+    yinfo = [50, 0., 0.1]
+    xinfo = [50, -5., 2.]
+    c.SetTitle("trkDR2D_ptRes")
+    draw2DSets(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
+
+    var = "cluster_iso:cluster_hovere"
+    yaxis = "Cluster Iso (GeV)"
+    xaxis = "Cluster H/E"
+    yinfo = [50, 0., 10.]
+    xinfo = [70, 0., 7.]
+    c.SetTitle("clusterIsoVclusterHoverE")
+    draw2DSets(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
+
+    var = "cluster_pt:trackPt"
+    yaxis = "Cluster P_{T} (GeV)"
+    xaxis = "Track P_{T} (GeV)"
+    yinfo = [50, 0., 50.]
+    xinfo = [50, 0., 50.]
+    c.SetTitle("clusterPtVTrkPt")
     draw2DSets(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo)
     c.Clear()
 
@@ -725,39 +749,148 @@ if __name__ == '__main__' :
     drawDRHists([effHists['newAlgDPhiHist'], effHists['UCTAlgDPhiHist']], c, 0.)
     # Draw L1EG Crystal dEta, dPhi with track matching
     c.SetLogy(0)
+
+    cut15 = "cluster_pt > 15"
+    cut30 = "cluster_pt > 30"
+    c.SetName("dyncrystalEG_trkDeltaEtaFake")
+    trkDEtaF = ROOT.TH1F("trkDEtaF", "L1EGamma Crystal - Fakes", 80, -0.05, 0.05)
+    rate_tree.Draw("trackDeltaEta >> trkDEtaF")
+    trkDEtaF2 = ROOT.TH1F("trkDEtaF2", "L1EGamma Crystal - Fakes gtr 30p_{T}", 80, -0.05, 0.05)
+    rate_tree.Draw("trackDeltaEta >> trkDEtaF2", cut30)
+    trkDEtaF.GetXaxis().SetTitle("d#eta (L1Trk, L1EG Crystal)")
+    #drawDRHists( [trkDEtaF,], c, -1 )
     c.SetName("dyncrystalEG_trkDeltaEta")
     trkDEta = ROOT.TH1F("trkDEta", "L1EGamma Crystal", 80, -0.05, 0.05)
     crystal_tree.Draw("trackDeltaEta >> trkDEta")
+    trkDEta2 = ROOT.TH1F("trkDEta2", "L1EGamma Crystal gtr 30p_{T}", 80, -0.05, 0.05)
+    crystal_tree.Draw("trackDeltaEta >> trkDEta2", cut30)
     trkDEta.GetXaxis().SetTitle("d#eta (L1Trk, L1EG Crystal)")
-    drawDRHists( [trkDEta,], c, -1 )
-    del trkDEta
+    #drawDRHists( [trkDEta,], c, -1 )
+    c.SetName("dyncrystalEG_trkDeltaEtaComp")
+    drawDRHists( [trkDEta, trkDEta2, trkDEtaF, trkDEtaF2], c, .2 )
+    del trkDEta, trkDEta2, trkDEtaF, trkDEtaF2
     c.SetName("dyncrystalEG_trkDeltaEtaGen")
     trkDEta = ROOT.TH1F("trkDEta", "L1EGamma Crystal", 80, -0.05, 0.05)
     crystal_tree.Draw("trackEta-gen_eta >> trkDEta")
     trkDEta.GetXaxis().SetTitle("d#eta (L1Trk, Gen Particle)")
     drawDRHists( [trkDEta,], c, -1 )
+    del trkDEta
+
+    c.SetName("dyncrystalEG_trkDeltaPhiFake")
+    trkDPhiF = ROOT.TH1F("trkDPhiF", "L1EGamma Crystal - Fakes", 80, -0.2, 0.2)
+    rate_tree.Draw("trackDeltaPhi >> trkDPhiF")
+    trkDPhiF2 = ROOT.TH1F("trkDPhiF2", "L1EGamma Crystal - Fakes gtr 30p_{T}", 80, -0.2, 0.2)
+    rate_tree.Draw("trackDeltaPhi >> trkDPhiF2", cut30)
+    trkDPhiF.GetXaxis().SetTitle("d#phi (L1Trk, L1EG Crystal)")
+    #drawDRHists( [trkDPhiF,], c, -1 )
     c.SetName("dyncrystalEG_trkDeltaPhi")
     trkDPhi = ROOT.TH1F("trkDPhi", "L1EGamma Crystal", 80, -0.2, 0.2)
     crystal_tree.Draw("trackDeltaPhi >> trkDPhi")
+    trkDPhi2 = ROOT.TH1F("trkDPhi2", "L1EGamma Crystal gtr 30p_{T}", 80, -0.2, 0.2)
+    crystal_tree.Draw("trackDeltaPhi >> trkDPhi2", cut30)
     trkDPhi.GetXaxis().SetTitle("d#phi (L1Trk, L1EG Crystal)")
-    drawDRHists( [trkDPhi,], c, -1 )
-    del trkDPhi
+    #drawDRHists( [trkDPhi,], c, -1 )
+    c.SetName("dyncrystalEG_trkDeltaPhiComp")
+    drawDRHists( [trkDPhi,trkDPhi2,trkDPhiF,trkDPhiF2], c, .55 )
+    del trkDPhi, trkDPhi2, trkDPhiF, trkDPhiF2
+
     c.SetName("dyncrystalEG_trkDeltaPhiGen")
     trkDPhi = ROOT.TH1F("trkDPhi", "L1EGamma Crystal", 80, -0.2, 0.2)
     crystal_tree.Draw("trackPhi-gen_phi >> trkDPhi")
     trkDPhi.GetXaxis().SetTitle("d#phi (L1Trk, Gen Particle)")
     drawDRHists( [trkDPhi,], c, -1 )
+    del trkDPhi
+
+    # delta R
+    trkDRF = ROOT.TH1F("trkDRF", "L1EGamma Crystal - Fakes", 80, 0., 0.25)
+    rate_tree.Draw("trackDeltaR >> trkDRF")
+    trkDRF2 = ROOT.TH1F("trkDRF2", "L1EGamma Crystal - Fakes gtr 30p_{T}", 80, 0., 0.25)
+    rate_tree.Draw("trackDeltaR >> trkDRF2", cut30)
+    trkDR = ROOT.TH1F("trkDR", "L1EGamma Crystal", 80, 0., 0.25)
+    crystal_tree.Draw("trackDeltaR >> trkDR")
+    trkDR2 = ROOT.TH1F("trkDR2", "L1EGamma Crystal gtr 30p_{T}", 80, 0., 0.25)
+    crystal_tree.Draw("trackDeltaR >> trkDR2", cut30)
+    trkDR.GetXaxis().SetTitle("#Delta R (L1Trk, L1EG Crystal)")
+    c.SetName("dyncrystalEG_trkDeltaRComp")
+    drawDRHists( [trkDR,trkDR2,trkDRF,trkDRF2], c, .40 )
+    del trkDR, trkDR2, trkDRF, trkDRF2
+
     c.SetName("dyncrystalEG_trkDeltaPt")
     trkDPt = ROOT.TH1F("trkDPt", "L1EGamma Crystal", 80, -1., 1.)
     crystal_tree.Draw("(trackPt-cluster_pt)/trackPt >> trkDPt")
     trkDPt.GetXaxis().SetTitle("#delta P_{T} (L1Trk - L1EG Crystal)/L1Trk")
-    drawDRHists( [trkDPt,], c, -1 )
+    #drawDRHists( [trkDPt,], c, -1 )
     del trkDPt
+    # do this one two ways once .../trk Pt other .../cluster_pt
+    trkDPtF = ROOT.TH1F("trkDPtF", "L1EGamma Crystal - Fakes", 80, -2., 5.)
+    rate_tree.Draw("(trackPt-cluster_pt)/cluster_pt >> trkDPtF")
+    trkDPtF2 = ROOT.TH1F("trkDPtF2", "L1EGamma Crystal - Fakes gtr 30p_{T}", 80, -2., 5.)
+    rate_tree.Draw("(trackPt-cluster_pt)/cluster_pt >> trkDPtF2", cut30)
+    trkDPt = ROOT.TH1F("trkDPt", "L1EGamma Crystal", 80, -2., 5.)
+    crystal_tree.Draw("(trackPt-cluster_pt)/cluster_pt >> trkDPt")
+    trkDPt2 = ROOT.TH1F("trkDPt2", "L1EGamma Crystal gtr 30p_{T}", 80, -2., 5.)
+    crystal_tree.Draw("(trackPt-cluster_pt)/cluster_pt >> trkDPt2", cut30)
+    trkDPt.GetXaxis().SetTitle("P_{T} Resolution (GeV)  (L1Trk - L1EG Crystal)/L1EG Crystal")
+    c.SetName("dyncrystalEG_trkDeltaClusterPtOverClusterComp")
+    drawDRHists( [trkDPt,trkDPt2,trkDPtF,trkDPtF2], c, .6 )
+    del trkDPt, trkDPt2, trkDPtF, trkDPtF2
+    c.SetName("dyncrystalEG_trkDeltaPtFakes")
+    trkDPtF = ROOT.TH1F("trkDPtF", "L1EGamma Crystal - Fakes", 80, -6., 2.)
+    rate_tree.Draw("(trackPt-cluster_pt)/trackPt >> trkDPtF")
+    trkDPtF2 = ROOT.TH1F("trkDPtF2", "L1EGamma Crystal - Fakes gtr 30p_{T}", 80, -6., 2.)
+    rate_tree.Draw("(trackPt-cluster_pt)/trackPt >> trkDPtF2", cut30)
+    trkDPt = ROOT.TH1F("trkDPt", "L1EGamma Crystal", 80, -6., 2.)
+    crystal_tree.Draw("(trackPt-cluster_pt)/trackPt >> trkDPt")
+    trkDPt.GetXaxis().SetTitle("P_{T} Resolution (GeV)  (L1Trk - L1EG Crystal)/L1Trk")
+    trkDPt2 = ROOT.TH1F("trkDPt2", "L1EGamma Crystal gtr 30p_{T}", 80, -6., 2.)
+    crystal_tree.Draw("(trackPt-cluster_pt)/trackPt >> trkDPt2", cut30)
+    trkDPtF.GetXaxis().SetTitle("#delta P_{T} (L1Trk - L1EG Crystal)/L1Trk")
+    #drawDRHists( [trkDPtF,], c, -1 )
+    c.SetName("dyncrystalEG_trkDeltaPtComp")
+    drawDRHists( [trkDPt,trkDPt2,trkDPtF,trkDPtF2], c, .6 )
+    del trkDPt, trkDPt2, trkDPtF, trkDPtF2
     c.SetName("dyncrystalEG_trkDeltaPtGen")
     trkDPt = ROOT.TH1F("trkDPt", "L1EGamma Crystal", 80, -1., 1.)
     crystal_tree.Draw("(trackPt-gen_pt)/trackPt >> trkDPt")
     trkDPt.GetXaxis().SetTitle("#delta P_{T} (L1Trk - Gen Particle)/L1Trk")
-    drawDRHists( [trkDPt,], c, -1 )
+    #drawDRHists( [trkDPt,], c, -1 )
+    del trkDPt
+
+    # Iso Comparisons
+    clusterIso = ROOT.TH1F("clusterIso", "L1EGamma Crystal", 80, 0., 10.)
+    crystal_tree.Draw("cluster_iso >> clusterIso")
+    clusterIso2 = ROOT.TH1F("clusterIso2", "L1EGamma Crystal gtr 15p_{T}", 80, 0., 10.)
+    crystal_tree.Draw("cluster_iso >> clusterIso2", cut15)
+    clusterIso3 = ROOT.TH1F("clusterIso3", "L1EGamma Crystal gtr 30p_{T}", 80, 0., 10.)
+    crystal_tree.Draw("cluster_iso >> clusterIso3", cut30)
+    clusterIsoF = ROOT.TH1F("clusterIsoF", "L1EGamma Crystal - Fakes", 80, 0., 10.)
+    rate_tree.Draw("cluster_iso >> clusterIsoF")
+    clusterIsoF2 = ROOT.TH1F("clusterIsoF2", "L1EGamma Crystal - Fakes gtr 15p_{T}", 80, 0., 10.)
+    rate_tree.Draw("cluster_iso >> clusterIsoF2", cut15)
+    clusterIsoF3 = ROOT.TH1F("clusterIsoF3", "L1EGamma Crystal - Fakes gtr 30p_{T}", 80, 0., 10.)
+    rate_tree.Draw("cluster_iso >> clusterIsoF3", cut30)
+    c.SetName("dyncrystalEG_clusterIsoComp")
+    clusterIso.GetXaxis().SetTitle("Cluster Isolation (GeV)")
+    drawDRHists( [clusterIso,clusterIso2,clusterIso3,clusterIsoF,clusterIsoF2,clusterIsoF3], c, .3 )
+    del clusterIso, clusterIso2, clusterIso3, clusterIsoF, clusterIsoF2, clusterIsoF3
+
+    # H/E Comparisons
+    clusterHoE = ROOT.TH1F("clusterHoE", "L1EGamma Crystal", 80, 0., 5.)
+    crystal_tree.Draw("cluster_hovere >> clusterHoE")
+    clusterHoE2 = ROOT.TH1F("clusterHoE2", "L1EGamma Crystal gtr 15p_{T}", 80, 0., 5.)
+    crystal_tree.Draw("cluster_hovere >> clusterHoE2", cut15)
+    clusterHoE3 = ROOT.TH1F("clusterHoE3", "L1EGamma Crystal gtr 30p_{T}", 80, 0., 5.)
+    crystal_tree.Draw("cluster_hovere >> clusterHoE3", cut30)
+    clusterHoEF = ROOT.TH1F("clusterHoEF", "L1EGamma Crystal - Fakes", 80, 0., 5.)
+    rate_tree.Draw("cluster_hovere >> clusterHoEF")
+    clusterHoEF2 = ROOT.TH1F("clusterHoEF2", "L1EGamma Crystal - Fakes gtr 15p_{T}", 80, 0., 5.)
+    rate_tree.Draw("cluster_hovere >> clusterHoEF2", cut15)
+    clusterHoEF3 = ROOT.TH1F("clusterHoEF3", "L1EGamma Crystal - Fakes gtr 30p_{T}", 80, 0., 5.)
+    rate_tree.Draw("cluster_hovere >> clusterHoEF3", cut30)
+    c.SetName("dyncrystalEG_clusterHoEComp")
+    clusterHoE.GetXaxis().SetTitle("Cluster H/E")
+    drawDRHists( [clusterHoE,clusterHoE2,clusterHoE3,clusterHoEF,clusterHoEF2,clusterHoEF3], c, .35 )
+    del clusterHoE, clusterHoE2, clusterHoE3, clusterHoEF, clusterHoEF2, clusterHoEF3
 
     # Back to DeltaR stuff
     #newAlgDRCutsHist = ROOT.TH1F("newAlgDRCutsHist", "L1EGamma Crystal", 50, 0., .25)
