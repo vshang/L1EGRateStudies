@@ -12,7 +12,8 @@ def normalizeHists() :
     effEtaDenom = eff.Get("analyzer/gen_eta")
     effRecoPtDenom = eff.Get("analyzer/reco_pt")
     if effPtDenom != None :
-        print "Dividing efficiency histograms by gen/reco hists"
+        print "Creating efficiency histograms"
+	print "Eff hists in 2 categories 1) gen / gen and 2) reco / reco"
         print "Total event count: %f" % effPtDenom.Integral()
         print "Total offline reco event count: %f" % effRecoPtDenom.Integral()
 
@@ -58,8 +59,45 @@ def normalizeHists() :
             hist.Scale(30000./nEvents)
         #dir_.Delete("eventCount*")
         rates.Write("", ROOT.TObject.kOverwrite)
-    
+
+    # Add a mass hypothesis based on L1 Track pt, eta, phi, and cluster_energy
+    # This does not necessairly result in a positive Mass if E^2 < P^2
+    # This is just for testing
+    print "Adding mass hypothesis to crystal_tree"
+    from array import array
+    effTree = eff.Get('analyzer/crystal_tree')
+    rateTree = rates.Get('analyzer/crystal_tree')
+    rateMass = array('f', [ 0 ] )
+    rateMassB = rateTree.Branch('mass', rateMass, 'mass/F')
+    effMass = array('f', [ 0 ] )
+    effMassB = effTree.Branch('mass', effMass, 'mass/F')
+
+    cnt = 0
+    for i in range(0, rateTree.GetEntries() ) :
+        rateTree.GetEntry( i )
+        cnt += 1
+        if cnt % 1000 == 0 : print "Rates Tree: %i" % cnt
+        vec = ROOT.TLorentzVector()
+        vec.SetPtEtaPhiE(rateTree.trackPt, rateTree.trackEta, rateTree.trackPhi, rateTree.cluster_energy)
+        rateMass[0] = vec.M()
+        rateTree.Fill()
+    rates.Write("", ROOT.TObject.kOverwrite)
+    rates.Close() 
+
+    cnt = 0
+    for i in range(0, effTree.GetEntries() ) :
+        effTree.GetEntry( i )
+        cnt += 1
+        if cnt % 1000 == 0 : print "Efficiency Tree: %i" % cnt
+        vec = ROOT.TLorentzVector()
+        vec.SetPtEtaPhiE(effTree.trackPt, effTree.trackEta, effTree.trackPhi, effTree.cluster_energy)
+        effMass[0] = vec.M()
+        effTree.Fill()
+    eff.Write("", ROOT.TObject.kOverwrite)
+    eff.Close() 
 
 
 if __name__ == '__main__' :
     normalizeHists()
+
+
