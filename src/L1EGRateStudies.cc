@@ -779,6 +779,7 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
 
 bool
 L1EGRateStudies::cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster) const {
+   return true;
    float cut_pt = cluster.GetExperimentalParam("uncorrectedPt");
    if ( fabs(cluster.eta()) > 1.479 )
    {
@@ -874,7 +875,10 @@ void
 L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm::Handle<L1TkTrackCollectionType> l1trackHandle)
 {
   // track matching stuff
+  // match to closes track up to delta R = 0.3
+  // then match to the highest pt track < 0.3
   double min_track_dr = 999.;
+  double max_track_pt = 0.;
   edm::Ptr<TTTrack<Ref_PixelDigi_>> matched_track;
   if ( l1trackHandle.isValid() )
   {
@@ -882,14 +886,22 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
      {
         edm::Ptr<TTTrack<Ref_PixelDigi_>> ptr(l1trackHandle, track_index);
         double dr = L1TkElectronTrackMatchAlgo::deltaR(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), ptr);
-        if ( dr < min_track_dr )
+	double pt = ptr->getMomentum().perp();
+        if ( dr < min_track_dr && min_track_dr > 0.3 )
         {
            min_track_dr = dr;
+           max_track_pt = pt;
+           matched_track = ptr;
+        }
+        else if ( dr < 0.3 && pt > max_track_pt )
+        {
+           min_track_dr = dr;
+           max_track_pt = pt;
            matched_track = ptr;
         }
      }
-     float isoConeTrackCount(-1); // matched track will be in deltaR cone
-     float isoConePtSum(-1*matched_track->getMomentum().perp());
+     float isoConeTrackCount = 0.; // matched track will be in deltaR cone
+     float isoConePtSum = 0.;
      for(size_t track_index=0; track_index<l1trackHandle->size(); ++track_index)
      {
         edm::Ptr<TTTrack<Ref_PixelDigi_>> ptr(l1trackHandle, track_index);
