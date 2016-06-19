@@ -158,12 +158,15 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float hovere;
          float iso;
          float bremStrength;
+         float e2x5;
+         float e5x5;
          float deltaR = 0.;
          float deltaPhi = 0.;
          float gen_pt = 0.;
          float gen_eta = 0.;
          float gen_phi = 0.;
          float gen_energy = 0.;
+         float gen_charge = 0.;
          float E_gen = 0.;
          float denom_pt = 0.;
          float reco_pt = 0.;
@@ -308,12 +311,15 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("cluster_hovere", &treeinfo.hovere);
    crystal_tree->Branch("cluster_iso", &treeinfo.iso);
    crystal_tree->Branch("bremStrength", &treeinfo.bremStrength);
+   crystal_tree->Branch("e2x5", &treeinfo.e2x5);
+   crystal_tree->Branch("e5x5", &treeinfo.e5x5);
    crystal_tree->Branch("deltaR", &treeinfo.deltaR);
    crystal_tree->Branch("deltaPhi", &treeinfo.deltaPhi);
    crystal_tree->Branch("gen_pt", &treeinfo.gen_pt);
    crystal_tree->Branch("gen_eta", &treeinfo.gen_eta);
    crystal_tree->Branch("gen_phi", &treeinfo.gen_phi);
    crystal_tree->Branch("gen_energy", &treeinfo.gen_energy);
+   crystal_tree->Branch("gen_charge", &treeinfo.gen_charge);
    crystal_tree->Branch("E_gen", &treeinfo.E_gen);
    crystal_tree->Branch("denom_pt", &treeinfo.denom_pt);
    crystal_tree->Branch("reco_pt", &treeinfo.reco_pt);
@@ -501,6 +507,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       treeinfo.gen_eta = genParticles[0].eta();
       treeinfo.gen_phi = genParticles[0].phi();
       treeinfo.gen_energy = genParticles[0].energy();
+      treeinfo.gen_charge = genParticles[0].q();
       treeinfo.E_gen = genParticles[0].pt()*cosh(genParticles[0].eta());
       treeinfo.denom_pt = trueElectron.pt();
       if ( fabs(trueElectron.eta()) > 1.479 )
@@ -764,6 +771,8 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
    treeinfo.hovere = cluster.hovere();
    treeinfo.iso = cluster.isolation();
    treeinfo.bremStrength = cluster.bremStrength();
+   treeinfo.e2x5 = cluster.GetExperimentalParam("E2x5");
+   treeinfo.e5x5 = cluster.GetExperimentalParam("E5x5");
    treeinfo.passed = cluster_passes_cuts(cluster);
    treeinfo.uslPt = cluster.GetExperimentalParam("upperSideLobePt");
    treeinfo.lslPt = cluster.GetExperimentalParam("lowerSideLobePt");
@@ -780,25 +789,33 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
 bool
 L1EGRateStudies::cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster) const {
    return true;
-   float cut_pt = cluster.GetExperimentalParam("uncorrectedPt");
-   if ( fabs(cluster.eta()) > 1.479 )
-   {
-      if ( cluster.hovere() < 22./cut_pt
-           && cluster.isolation() < 64./cut_pt+0.1
-           && cluster.GetCrystalPt(4)/(cluster.GetCrystalPt(0)+cluster.GetCrystalPt(1)) < ( (cut_pt < 40) ? 0.18*(1-cut_pt/70.):0.18*3/7. ) )
-      {
-         return true;
-      }
-   }
-   else
-   {
-      if ( cluster.hovere() < 14./cut_pt+0.05
-           && cluster.isolation() < 40./cut_pt+0.1
-           && cluster.GetCrystalPt(4)/(cluster.GetCrystalPt(0)+cluster.GetCrystalPt(1)) < ( (cut_pt < 30) ? 0.18*(1-cut_pt/100.):0.18*0.7 ) )
-      {
-         return true;
-      }
-   }
+   //float cut_pt = cluster.GetExperimentalParam("uncorrectedPt");
+   //float cut_pt = cluster.pt();
+   //float cut_iso = cluster.isolation();
+   //float cut_hovere = cluster.hovere();
+   //bool passIso = false;
+   //bool passHoverE = false;
+   //if ( (0.483021 + 3.9432*TMath::Exp( -0.198946 * cut_pt )) > cut_hovere ) passHoverE = true;
+   //if ( (1.45325 + 6.09201*TMath::Exp( -0.0893736 * cut_pt )) > cut_iso ) passIso = true;
+   //if ( passIso && passHoverE ) return true;
+   //if ( fabs(cluster.eta()) > 1.479 )
+   //{
+   //   if ( cluster.hovere() < 22./cut_pt
+   //        && cluster.isolation() < 64./cut_pt+0.1
+   //        && cluster.GetCrystalPt(4)/(cluster.GetCrystalPt(0)+cluster.GetCrystalPt(1)) < ( (cut_pt < 40) ? 0.18*(1-cut_pt/70.):0.18*3/7. ) )
+   //   {
+   //      return true;
+   //   }
+   //}
+   //else
+   //{
+   //   if ( cluster.hovere() < 14./cut_pt+0.05
+   //        && cluster.isolation() < 40./cut_pt+0.1
+   //        && cluster.GetCrystalPt(4)/(cluster.GetCrystalPt(0)+cluster.GetCrystalPt(1)) < ( (cut_pt < 30) ? 0.18*(1-cut_pt/100.):0.18*0.7 ) )
+   //   {
+   //      return true;
+   //   }
+   //}
    return false;
 }
 
