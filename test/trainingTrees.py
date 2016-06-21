@@ -8,22 +8,8 @@ rateFile = ROOT.TFile( 'egTriggerRates.root', 'r' )
 eTree = effFile.Get("analyzer/crystal_tree")
 rTree = rateFile.Get("analyzer/crystal_tree")
 
-#goodElec = ROOT.TFile('goodElec.root','RECREATE')
-#tmpTree = eTree.CloneTree()
-#goodElec.cd()
-#tmpTree.Write()
-#goodElec.Close()
-#del tmpTree
-#
-#badElec = ROOT.TFile('badElec.root','RECREATE')
-#tmpTree = eTree.CloneTree()
-#badElec.cd()
-#tmpTree.Write()
-#badElec.Close()
-
-
-#cut = "cluster_pt < 30 && cluster_pt > 10"
-cut = "cluster_pt > 40"
+cut = "cluster_pt > 10"
+#cut = "(0.000889811 + 0.0078119*TMath::Exp(-0.19245*cluster_pt)) < abs(trackRInv)"
 trainingTrees = ROOT.TFile('trainingTrees.root','RECREATE')
 #ETree = eTree.CloneTree( cut )
 ETree = eTree.CopyTree( cut )
