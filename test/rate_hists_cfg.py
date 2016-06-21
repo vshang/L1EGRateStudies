@@ -86,6 +86,12 @@ process.load("SLHCUpgradeSimulations.L1TrackTrigger.L1TrackingSequence_cfi")
 process.pTracking = cms.Path( process.ElectronTrackingSequence )
 
 
+# --- Produce the L1TkPrimaryVertex
+
+process.load("SLHCUpgradeSimulations.L1TrackTrigger.L1TkPrimaryVertexProducer_cfi")
+process.pL1TkPrimaryVertex = cms.Path( process.L1TkPrimaryVertex )
+
+
 
 # ----------------------------------------------------------------------------------------------
 # 
@@ -108,6 +114,7 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    ),
    L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer","EGCrystalCluster"),
    L1TrackInputTag = cms.InputTag("TTTracksFromPixelDigisLargerPhi","Level1TTTracks"),
+   L1TrackPrimaryVertexTag = cms.InputTag("L1TkPrimaryVertex"),
    doEfficiencyCalc = cms.untracked.bool(False),
    useEndcap = cms.untracked.bool(False),
    histogramBinCount = cms.untracked.int32(40),
