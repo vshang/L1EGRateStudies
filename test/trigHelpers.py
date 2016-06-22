@@ -32,6 +32,23 @@ def loadObjectsMatchingPattern( file_, dir_, keys, matchString ) :
 
 
 
+def makeNewCutTrees( ifileName, ofileName, cut ) :
+    effFile = ROOT.TFile( ifileName, 'r' )
+    #rateFile = ROOT.TFile( 'egTriggerRates.root', 'r' )
+    eTree = effFile.Get("analyzer/crystal_tree")
+    #rTree = rateFile.Get("analyzer/crystal_tree")
+    
+    newEffFile = ROOT.TFile(ofileName,'RECREATE')
+    ETree = eTree.CopyTree( cut )
+    ETree.SetName('events')
+    print "Post Cut - New tree has %i events" % ETree.GetEntries()
+    newEffFile.cd()
+    ETree.Write()
+    newEffFile.Close()
+
+
+
+
 if __name__ == '__main__' :
     f = ROOT.TFile('egTriggerEff.root','r')
     dir_ = 'analyzer'
