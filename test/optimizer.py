@@ -3,8 +3,9 @@ from ROOT import gStyle, gPad
 import math
 from drawRateEff import setLegStyle, drawCMSString
 import CMS_lumi, tdrstyle
-from efficiencyTrees import makeNewCutTrees
+from trigHelpers import makeNewCutTrees
 gStyle.SetOptStat(0)
+ROOT.gROOT.SetBatch(True)
 
 canvasSize = 800
 
@@ -38,7 +39,7 @@ def tryCut( etree, rtree, var, cut, preCut="" ) :
     print "\n"
 
 
-def makeRatePlot( rateFile, tree, name, cut='', rateLimit=90 ) :
+def makeRatePlot( rateFile, tree, name, cut='', rateLimit=50 ) :
     c = ROOT.TCanvas('c','c',canvasSize,canvasSize)
     
     h1 = ROOT.TH1F('h1', name,rateLimit,0,rateLimit)
@@ -70,12 +71,13 @@ def makeRatePlot( rateFile, tree, name, cut='', rateLimit=90 ) :
     return h2
 
 def plotRateHists( name, hists=[] ) :
-    colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray, ROOT.kCyan, ROOT.kYellow, ROOT.kPink]
+    #colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange+7, ROOT.kMagenta, ROOT.kCyan, ROOT.kYellow+1, ROOT.kGreen-2]
+    colors = [1, 2, 3, 4, ROOT.kYellow+1, 6, 7, 8, 46]
     c = ROOT.TCanvas('c','c',canvasSize,canvasSize)
     c.SetLogy()
     c.SetGrid()
     if len(hists) > 5 : yStart = 0.60
-    else : 0.78
+    else : yStart = 0.78
     leg = setLegStyle(0.53,yStart,0.95,0.92)
     leg.SetFillStyle(1001)
     leg.SetFillColor(ROOT.kWhite)
@@ -84,9 +86,12 @@ def plotRateHists( name, hists=[] ) :
     for i, h in enumerate(hists) :
         if h.GetBinContent(1) > max_ : max_ = h.GetBinContent(1)
         h.SetLineColor( colors[i] )
+        h.SetLineWidth( 2 )
         h.Draw('SAME')
         leg.AddEntry(h, h.GetTitle(),"lpe")
 
+    # Redraw RCT on top
+    hists[0].Draw('SAME')
     print "max",max_
     hists[0].SetMaximum( max_ * 2. )
     leg.Draw("same")
@@ -96,22 +101,27 @@ def plotRateHists( name, hists=[] ) :
     c.Print('plotsOpt/rates_'+name+'.png')    
     del c
     
-def makeEffPlot( ntree, otree, name, cut='', effLimit=50 ) :
+def makeEffPlot( ntree, otree, name, cut='', preCut='', yLabel='Eff. (L1 / Gen)', effLimit=50 ) :
     binSize = 5
     c = ROOT.TCanvas('c','c',canvasSize,canvasSize)
     p = ROOT.TPad('p','p',0,0,1,1)
     p.Draw()
     
+    if preCut == '' :
+        neumCut = cut
+    else : 
+        neumCut = cut+"*"+preCut
+
     denom = ROOT.TH1F('denom'+name, name,int(effLimit/binSize),0,effLimit)
-    otree.Draw('gen_pt >> denom'+name)
+    otree.Draw('gen_pt >> denom'+name, preCut)
     neum = ROOT.TH1F('neum'+name, name,int(effLimit/binSize),0,effLimit)
-    ntree.Draw('gen_pt >> neum'+name, cut)
+    ntree.Draw('gen_pt >> neum'+name, neumCut)
     graph = ROOT.TGraphAsymmErrors(neum, denom)
     graph.SetMarkerSize(0)
     graph.SetLineWidth(2)
     
     graph.Draw()
-    graph.GetYaxis().SetTitle('Eff. (L1 / Gen)')
+    graph.GetYaxis().SetTitle(yLabel)
     graph.GetXaxis().SetTitle('Gen P_{T}')
     #c.Print('plotsOpt/eff_'+name+'.png')    
     del denom, neum
@@ -119,17 +129,17 @@ def makeEffPlot( ntree, otree, name, cut='', effLimit=50 ) :
     return graph
 
 def plotEffHists( name, graphs=[], nCol = 1 ) :
-    colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray, ROOT.kCyan, ROOT.kYellow, ROOT.kPink]
+    #colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange+7, ROOT.kMagenta, ROOT.kCyan, ROOT.kYellow+1, ROOT.kGreen-2]
+    #colors = [1, 2, 3, 4, 5, 6, 7, 8, 46]
+    colors = [1, 2, 3, 4, ROOT.kYellow+1, 6, 7, 8, 46]
     c = ROOT.TCanvas('c','c',canvasSize,canvasSize)
     c.SetTitle( name )
     c.SetGrid()
-    leg = setLegStyle(0.53,0.78,0.95,0.92)
+    leg = setLegStyle(0.4,0.78,0.95,0.92)
     leg.SetNColumns(nCol)
 
 
     mg = ROOT.TMultiGraph("mg", c.GetTitle())
-    #graphs[0].GetXaxis().SetTitle("Gen P_{T}")
-    #graphs[0].GetYaxis().SetTitle("Eff. (L1/offline)")
     for i, g in enumerate(graphs) :
         g.SetLineColor( colors[int(math.floor(i/2.))] )
         g.SetMarkerStyle(20)
@@ -141,7 +151,7 @@ def plotEffHists( name, graphs=[], nCol = 1 ) :
 
     mg.Draw("aplez")
     mg.GetXaxis().SetTitle("Gen P_{T}")
-    mg.GetYaxis().SetTitle("Eff. (L1/offline)")
+    mg.GetYaxis().SetTitle( graphs[0].GetYaxis().GetTitle() )
     mg.SetMaximum( 1.3 )
     leg.Draw("same")
     cms = drawCMSString("CMS Simulation, <PU>=140 bx=25, Single Electron")
@@ -150,7 +160,7 @@ def plotEffHists( name, graphs=[], nCol = 1 ) :
     del c
 
 
-def makeComparisons( Cut, name ) :
+def makeComparisons( Cut, name, trkDetails=False, changeDenom=["",""] ) :
     oldRateFile = ROOT.TFile('egTriggerRates.root','r')
     oldRateTrackFile = ROOT.TFile('egTriggerRateTracks.root','r')
     oldRateTree = oldRateFile.Get('analyzer/crystal_tree')
@@ -161,10 +171,6 @@ def makeComparisons( Cut, name ) :
     makeNewCutTrees( 'egTriggerEff.root', 'effTree.root', Cut )
     makeNewCutTrees( 'egTriggerRates.root', 'rateTree.root', Cut )
     makeNewCutTrees( 'egTriggerRateTracks.root', 'rateTreeTracks.root', 'trackPt > 10' )
-    #fillUniqueEvents( 'rateTree.root', 'rateTreeUnique.root' )
-    #fillUniqueEvents( 'effTree.root', 'effTreeUnique.root' )
-    #fillUniqueEvents( 'rateTreeTracks.root', 'rateTreeTracksUnique.root' )
-    # Grab the new trees with a single cluster / event
     effFile = ROOT.TFile( 'effTree.root', 'r' )
     eTree = effFile.Get("events")
     newRateFile = ROOT.TFile('rateTree.root','r')
@@ -177,25 +183,42 @@ def makeComparisons( Cut, name ) :
     pt20 = "*(cluster_pt > 20)"
     pt30 = "*(cluster_pt > 30)"
 
-    rTracks10 = makeRatePlot( oldRateTrackFile, rTreeTracks, "tracks p_{T}>10 GeV", "trackPt>10" )
-    rTracks15 = makeRatePlot( oldRateTrackFile, rTreeTracks, "tracks p_{T}>15 GeV", "trackPt>15" )
+    if trkDetails :
+        trackIso2 = "((0.130534 + 0.0131326*cluster_pt) > (trackIsoConePtSum/trackPt))"
+        rTracks10 = makeRatePlot( oldRateTrackFile, rTreeTracks, "tracks p_{T}>10 GeV", "trackPt>10" )
+        rTracks15 = makeRatePlot( oldRateTrackFile, rTreeTracks, "tracks p_{T}>15 GeV", "trackPt>15" )
+        rTracks10Iso = makeRatePlot( oldRateTrackFile, rTreeTracks, "Iso tracks p_{T}>10 GeV", "trackPt>10 && "+trackIso2 )
+        rTracks15Iso = makeRatePlot( oldRateTrackFile, rTreeTracks, "Iso tracks p_{T}>15 GeV", "trackPt>15 && "+trackIso2 )
+        rTracks10egIso = makeRatePlot( oldRateFile, oldRateTree, "Iso tracks p_{T}>10 GeV - EG Matched", "trackPt>10 &&"+trackIso2 )
+        rTracks15egIso = makeRatePlot( oldRateFile, oldRateTree, "Iso tracks p_{T}>15 GeV - EG Matched", "trackPt>15 &&"+trackIso2 )
     rTracks10eg = makeRatePlot( oldRateFile, oldRateTree, "tracks p_{T}>10 GeV - EG Matched", "trackPt>10" )
     rTracks15eg = makeRatePlot( oldRateFile, oldRateTree, "tracks p_{T}>15 GeV - EG Matched", "trackPt>15" )
     noCuts = makeRatePlot( oldRateFile, oldRateTree, "Raw Rate - No Cuts", "" )
     r5 = makeRatePlot( oldRateFile, rTree, name, Cut )
     #r5_16 = makeRatePlot( oldRateFile, rTree, name+"_16", Cut+pt16 )
-    r5_20 = makeRatePlot( oldRateFile, rTree, name+"_20", Cut+pt20 )
-    r5_30 = makeRatePlot( oldRateFile, rTree, name+"_30", Cut+pt30 )
+    r5_20 = makeRatePlot( oldRateFile, rTree, name+" p_{T}>20", Cut+pt20 )
+    r5_30 = makeRatePlot( oldRateFile, rTree, name+" p_{T}>30", Cut+pt30 )
     rTDR = oldRateFile.Get('analyzer/l1extraParticlesUCT:All_rate')
     rTDR.SetTitle('RCT 2015')
-    plotRateHists(  name+"_raw_track_rate", [rTDR, noCuts, rTracks10, rTracks15, rTracks10eg, rTracks15eg] )
-    plotRateHists(  name+"_turnons16_20_30", [rTDR, noCuts, rTracks10eg, rTracks15eg, r5, r5_20, r5_30] )
+    if trkDetails and changeDenom == ["",""] :
+        plotRateHists(  name+"_track_details", [noCuts, rTracks10, rTracks15, rTracks10eg, rTracks15eg] )
+        plotRateHists(  name+"_track_details_iso", [noCuts, rTracks10, rTracks15, rTracks10eg, rTracks15eg, rTracks10Iso, rTracks15Iso, rTracks10egIso, rTracks15egIso] )
+    if changeDenom == ["",""] : 
+        plotRateHists(  name+"_turnons_20_30", [rTDR, r5, r5_20, r5_30] )
+    #plotRateHists(  name+"_turnons16_20_30", [rTDR, noCuts, rTracks10eg, rTracks15eg, r5, r5_20, r5_30] )
     #plotRateHists(  name+"_turnons16_20_30", [rTDR, noCuts, rTracks10, rTracks15, rTracks10eg, rTracks15eg, r5, r5_20, r5_30] )
 
-    e5 = makeEffPlot( eTree, oldEffTree, name, Cut )
-    #e5_16 = makeEffPlot( eTree, oldEffTree, name+"_16", Cut+pt16 )
-    e5_20 = makeEffPlot( eTree, oldEffTree, name+"_20", Cut+pt20 )
-    e5_30 = makeEffPlot( eTree, oldEffTree, name+"_30", Cut+pt30 )
+    preCut = ""
+    yEffLabel = "Eff. (L1/ Gen)"
+    saveName = name
+    if changeDenom != ["",""] : 
+        preCut = changeDenom[0]
+        yEffLabel = changeDenom[1]
+        saveName = name+"_modDenom"
+    e5 = makeEffPlot( eTree, oldEffTree, name, Cut, preCut, yEffLabel )
+    #e5_16 = makeEffPlot( eTree, oldEffTree, name+"_16", Cut+pt16, preCut, yEffLabel )
+    e5_20 = makeEffPlot( eTree, oldEffTree, name+" p_{T}>20", Cut+pt20, preCut, yEffLabel )
+    e5_30 = makeEffPlot( eTree, oldEffTree, name+" p_{T}>30", Cut+pt30, preCut, yEffLabel )
     neum = oldEffFile.Get('analyzer/l1extraParticlesUCT:All_efficiency_pt')
     #neum16 = oldEffFile.Get('analyzer/l1extraParticlesUCT:All_threshold16_efficiency_gen_pt')
     neum20 = oldEffFile.Get('analyzer/l1extraParticlesUCT:All_threshold20_efficiency_gen_pt')
@@ -215,8 +238,10 @@ def makeComparisons( Cut, name ) :
     eTDR30.SetTitle('RCT 2015: pt 30')
     #graphs = [eTDRall, e5, eTDR16, e5_16, eTDR20, e5_20, eTDR30, e5_30] 
     graphs = [eTDRall, e5, eTDR20, e5_20, eTDR30, e5_30] 
+    for graph in graphs :
+        graph.GetYaxis().SetTitle(yEffLabel)
     #plotEffHists(  name+"_turnons16_20_30", [eTDRall, e5, eTDR16, e5_16, eTDR20, e5_20, eTDR30, e5_30], 2 )
-    plotEffHists(  name+"_turnons16_20_30", graphs, 2 )
+    plotEffHists(  saveName+"_turnons16_20_30", graphs, 2 )
 
 
 def findPercentage( cnt, tree, var, targetPercent=0.99, cut="", startNeg=True, xRange=[0.,0.] ) :
@@ -307,118 +332,118 @@ if __name__ == '__main__' :
     
     tdrstyle.setTDRStyle()
     c = ROOT.TCanvas('c','c',canvasSize,canvasSize)
-    #### H/E - June 18 morning
-    ###tryCut( eTree, rTree, "cluster_pt", "(0.430519 + 2.92122*TMath::Exp(-0.130031 * cluster_pt)>cluster_hovere )")
-    #### Iso - June 18 morning
-    ###tryCut( eTree, rTree, "cluster_pt", "(1.27405 + 6.25368*TMath::Exp(-0.0747614 * cluster_pt)>cluster_iso )")
-    #### E2x5/E5x5 - June 18 morning
-    ###tryCut( eTree, rTree, "cluster_pt", "(-0.893248 + 0.187355*TMath::Exp(-0.069526 * cluster_pt)>((-1)*e2x5/e5x5) )")
-    # E2x5/E5x5 - June 18 morning
-    showerShape = "(-0.892035+ 0.240369*TMath::Exp(-0.0791789 * cluster_pt)>((-1)*e2x5/e5x5) )"
-    showerShape2 = "(-0.94097+ 0.208548*TMath::Exp(-0.0383287 * cluster_pt)>((-1)*e2x5/e5x5) )" # Aggressive cuts
-##    tryCut( eTree, rTree, "cluster_pt", showerShape)
-##    tryCut( eTree, rTree, "cluster_pt", showerShape2)
-    # H/E - June 18 morning
-    hovere = "(0.430149 +3.28952*TMath::Exp(-0.128499 * cluster_pt)>cluster_hovere )"
-##    tryCut( eTree, rTree, "cluster_pt", hovere+"*"+showerShape, showerShape)
-    # Iso - June 18 morning
-    iso = "(1.22987+ 7.24192*TMath::Exp(-0.0760816 * cluster_pt)>cluster_iso )"
-##    tryCut( eTree, rTree, "cluster_pt", iso+"*"+showerShape+"*"+hovere, showerShape+"*"+hovere)
-##    tryCut( eTree, rTree, "cluster_pt", iso+"*"+showerShape+"*"+hovere)
-    cut19 = iso+"*"+showerShape+"*"+hovere
 
-    #trackPt = "(15+cluster_pt*2) > trackPt"
-    #tryCut( eTree, rTree, "cluster_pt", trackPt)
-    trackRInv = "(((0.0044272 + -0.00673545*TMath::Exp( -0.192441 * cluster_pt))>abs(trackRInv)) || cluster_pt > 15)"
-#    tryCut( eTree, rTree, "cluster_pt", trackRInv+"*"+cut19, cut19)
-    trackIso = "((trackIsoConePtSum / trackPt) < 2.)"
-#    tryCut( eTree, rTree, "cluster_pt", trackIso+"*"+cut19, cut19)
-    trackRInvPtRes = "((abs(trackRInv)<0.0035 && ((trackPt-cluster_pt)/trackPt)>-4.5))"
-#    tryCut( eTree, rTree, "cluster_pt", trackRInvPtRes)
-#    tryCut( eTree, rTree, "cluster_pt", trackRInvPtRes+"*"+cut19, cut19)
+    makeSet = False
+    if makeSet :
+        makeComparisons( "(1)", "No_Cuts", True )
 
-    cut20 = cut19+"*"+trackRInv
-    cut21 = cut19+"*"+trackIso
+        showerShapes = "(-0.921128 + 0.180511*TMath::Exp(-0.0400725*cluster_pt)>(-1)*(e2x5/e5x5))"
+        previousCut = ""
+        cut = showerShapes
+        tryCut( eTree, rTree, "cluster_pt", cut, previousCut)
+        makeComparisons( cut, "e2x5Overe5x5" )
 
-    #trackNum5 = "(trackIsoConeTrackCount<5)"
-    #tryCut( eTree, rTree, "cluster_pt", trackNum5)
-    #trackNum4 = "(trackIsoConeTrackCount<4)"
-    #tryCut( eTree, rTree, "cluster_pt", trackNum4)
-    trackNum3 = "(trackIsoConeTrackCount<3)"
-    #tryCut( eTree, rTree, "cluster_pt", trackNum3)
-    #trackIso2 = "(trackIsoConePtSum/trackPt<2)"
-    #tryCut( eTree, rTree, "cluster_pt", trackIso2)
-    #trackIso1 = "(trackIsoConePtSum/trackPt<1)"
-    #tryCut( eTree, rTree, "cluster_pt", trackIso1)
-    trackIso = "(trackIsoConePtSum/trackPt<((1.5/50.)*cluster_pt))"
-    trackIsoX = "((0.0642778 + 0.0185707*cluster_pt)> (trackIsoConePtSum/trackPt))"
-    #tryCut( eTree, rTree, "cluster_pt", trackIsoX)
-    bremChi2 = "( (0.85-(0.15/50.)*trackChi2)<bremStrength )"
-    #tryCut( eTree, rTree, "cluster_pt", bremChi2)
-    bremChi2_2 = "( (0.75-(0.15/50.)*trackChi2)<bremStrength )"
-    #tryCut( eTree, rTree, "cluster_pt", bremChi2_2)
-    bremChi2_3 = "( (0.75-(0.25/50.)*trackChi2)<bremStrength )"
-    #tryCut( eTree, rTree, "cluster_pt", bremChi2_3)
-    #bremChi2_4 = "( (-0.649285 + -0.319116*TMath::Exp(-0.0772114*trackChi2))>(-1)*bremStrength )"
-    #bremChi2_4 = "( (-0.586479 + -0.32731*TMath::Exp(-0.0396343*trackChi2))>(-1)*bremStrength )"
-    bremChi2_4 = "( (-0.593921 + -0.170821*TMath::Exp(-0.0606166*trackChi2))>(-1)*bremStrength )" # .975 all chi2
-    #tryCut( eTree, rTree, "cluster_pt", bremChi2_4)
+        Isolation = "((0.990748 + 5.64259*TMath::Exp(-0.0613952*cluster_pt))>cluster_iso)"
+        previousCut = cut
+        cut += "*"+Isolation
+        tryCut( eTree, rTree, "cluster_pt", cut, previousCut)
+        makeComparisons( cut, "e2x5Overe5x5 Iso" )
 
-    cut23 = cut19+"*"+trackNum3+"*"+trackIso
-    cut24 = cut19+"*"+trackNum3+"*"+trackIso+"*"+bremChi2_3
-    cut25 = cut19+"*"+trackNum3+"*"+trackIsoX+"*"+bremChi2_4
+        trackIso = "((0.130534 + 0.0131326*cluster_pt) > (trackIsoConePtSum/trackPt))"
+        previousCut = cut
+        cut += "*"+trackIso
+        tryCut( eTree, rTree, "cluster_pt", cut, previousCut)
+        makeComparisons( cut, "e2x5Overe5x5 Iso TrkIso" )
 
+        ptRes = "( ((trackPt-cluster_pt)/trackPt)>-2. )"
+        previousCut = cut
+        cut += "*"+ptRes
+        tryCut( eTree, rTree, "cluster_pt", cut, previousCut)
+        makeComparisons( cut, "e2x5Overe5x5 Iso TrkIso PtRes" )
 
+#tryCut( eTree, rTree, "cluster_pt", "trackDeltaR<0.1", "")
 
-    cut18 = "(((0.415233 + 1.51272 * TMath::Exp(-0.10266*cluster_pt)) > cluster_hovere) && ((1.08154 + 4.28457 *TMath::Exp(-0.0556304*cluster_pt)) > cluster_iso))"
-    cut18 += "*(( cluster_pt>25 || (trackDeltaR < 0.35)*(abs(trackDeltaPhi)<.3)*(abs(trackDeltaEta)<.3)*(((trackPt - cluster_pt)/trackPt)>-2)))"
-    cut18 += "*( (-0.474475 + cluster_pt*-0.00613679) < bremStrength )"
-    cut18 += "*(trackIsoConeTrackCount < 7)"
-    cut18 += "*( (-0.909573 + 0.145691 * TMath::Exp( -0.0403391 * cluster_pt)) > (-1)*(e2x5/e5x5))"
-
-    cut22 = cut18+"*"+trackIso
-
-#makeComparisons( cut17, "cut17" )
-#makeComparisons( cut16, "cut16" )
-#makeComparisons( cut15, "cut15" )
-#makeComparisons( cut9, "cut9" )
-#makeComparisons( cut7, "cut8" )
-#makeComparisons( cut10, "cut10" )
-#makeComparisons( cut18, "cut18" )
-#makeComparisons( cut19, "cut19" )
-#makeComparisons( cut20, "cut20" )
-#makeComparisons( cut22, "cut22" )
-#makeComparisons( cut23, "cut23" )
-#makeComparisons( cut24, "cut24" )
-#makeComparisons( "(1)", "NoCuts" )
-##tryCut( eTree, rTree, "cluster_pt", cut23, cut19)
+#makeComparisons( "(1)", "No_Cuts", True )
 showerShapes = "(-0.921128 + 0.180511*TMath::Exp(-0.0400725*cluster_pt)>(-1)*(e2x5/e5x5))"
-#tryCut( eTree, rTree, "cluster_pt", showerShapes, "")
-makeComparisons( showerShapes, "e2x5Overe5x5" )
+cut = showerShapes
 Isolation = "((0.990748 + 5.64259*TMath::Exp(-0.0613952*cluster_pt))>cluster_iso)"
-#tryCut( eTree, rTree, "cluster_pt", Isolation+"*"+showerShapes, showerShapes)
-makeComparisons( Isolation+"*"+showerShapes, "e2x5Overe5x5_Iso" )
-hovere = "((0.40633 + 2.17848*TMath::Exp(-0.114384*cluster_pt))>cluster_hovere)"
-prevcut = showerShapes+"*"+Isolation
-cut = showerShapes+"*"+Isolation+"*"+hovere
-#tryCut( eTree, rTree, "cluster_pt", cut, prevcut)
-makeComparisons( cut, "e2x5Overe5x5_Iso_HoE" )
-trackIso = "((0.0947627 + 0.0135767*cluster_pt) > (trackIsoConePtSum/trackPt))"
-trackIso2 = "((0.130534 + 0.0131326*cluster_pt) > (trackIsoConePtSum/trackPt))"
-cut = showerShapes+"*"+Isolation+"*"+trackIso
-cut2 = showerShapes+"*"+Isolation+"*"+trackIso2
-#tryCut( eTree, rTree, "cluster_pt", cut, prevcut)
-#tryCut( eTree, rTree, "cluster_pt", cut2, prevcut)
-makeComparisons( cut2, "e2x5Overe5x5_Iso_TrkIso" )
-hovere = "((0.426413 +2.62318 *TMath::Exp(-0.105685*cluster_pt))>cluster_hovere)"
-prevcut = cut2 
-cut2 += "*"+hovere
-tryCut( eTree, rTree, "cluster_pt", cut2, prevcut)
-makeComparisons( cut2, "e2x5Overe5x5_Iso_TrkIso_HoE" )
-###bremTkChi2 = "((-0.622523 + -0.171795*TMath::Exp(-0.097391*trackChi2))>(-1)*bremStrength)"
-###prevcut = cut2 
-###cut2 += "*"+bremTkChi2
-###tryCut( eTree, rTree, "cluster_pt", cut2, prevcut)
+cut += "*"+Isolation
+#tryCut( eTree, rTree, "cluster_pt", cut+"*(trackDeltaR<0.1)", cut)
+""" consider matched tracks """
+#tkIsoMatched = "((0.13549 + 0.0129428*cluster_pt)>(trackIsoConePtSum/trackPt))" # Calculated without the track matching dR < 0.1 req
+tkIsoMatched = "((0.106544 + 0.00316748*cluster_pt)>(trackIsoConePtSum/trackPt))"
+tkMatched = "(trackDeltaR<.1)"
+cutMatch = cut+"*"+tkMatched
+#tryCut( eTree, rTree, "cluster_pt", cutMatch+"*(( bremStrength == 1 && cluster_iso<1.5) || bremStrength < 1.)", cutMatch)
+#tryCut( eTree, rTree, "cluster_pt", cutMatch+"*(bremStrength > .8)", cutMatch)
+
+makeComparisons( cutMatch, "e2x5Overe5x5 Iso TkMatch", False, [tkMatched, "L1Tk Match #DeltaR<0.1, Eff. (L1/Gen)"] )
+makeComparisons( cutMatch, "e2x5Overe5x5 Iso TkMatch", False )
+previousCut = cut+"*"+tkMatched
+cutMatch += "*"+tkIsoMatched
+#tryCut( eTree, rTree, "cluster_pt", cut, previousCut)
+makeComparisons( cutMatch, "e2x5Overe5x5 Iso TkMatch TkIso", False, [tkMatched, "L1Tk Match #DeltaR<0.1, Eff. (L1/Gen)"] )
+makeComparisons( cutMatch, "e2x5Overe5x5 Iso TkMatch TkIso", False )
+
+""" consider non-matched tracks """
+noTkMatched = "(trackDeltaR>.1)"
+cutNoMatch = cut+"*"+noTkMatched
+makeComparisons( cutNoMatch, "e2x5Overe5x5 Iso noTkMatched modDenom", False, [noTkMatched, "L1Tk No Match #DeltaR>0.1, Eff. (L1/Gen)"] )
+makeComparisons( cutNoMatch, "e2x5Overe5x5 Iso noTkMatched", False )
+#tryCut( eTree, rTree, "cluster_pt", cutNoMatch+"*(cluster_iso<2.)", cutNoMatch)
+#tryCut( eTree, rTree, "cluster_pt", cutNoMatch+"*(bremStrength > .8)", cutNoMatch)
+
+
+
+
+
+#trackIso = "((0.130534 + 0.0131326*cluster_pt) > (trackIsoConePtSum/trackPt))"
+#ptRes = "( ((trackPt-cluster_pt)/trackPt)>-2. )"
+#previousCut = cut
+#cut += "*"+ptRes
+#tryCut( eTree, rTree, "cluster_pt", cut, previousCut)
+#makeComparisons( cut, "e2x5Overe5x5_Iso_TkMatched_TkIso_ptRes_modDenom", False, True )
+#makeComparisons( cut, "e2x5Overe5x5_Iso_TkMatched_TkIso_ptRes", False, False )
+
+
+
+#XXX #trackIso = "((0.0947627 + 0.0135767*cluster_pt) > (trackIsoConePtSum/trackPt))"
+#XXX #hovere = "((0.40633 + 2.17848*TMath::Exp(-0.114384*cluster_pt))>cluster_hovere)"
+#XXX prevcut = showerShapes+"*"+Isolation
+#XXX #cut = showerShapes+"*"+Isolation+"*"+hovere
+#XXX #tryCut( eTree, rTree, "cluster_pt", cut, prevcut)
+#XXX #XXX makeComparisons( cut, "e2x5Overe5x5_Iso_HoE" )
+#XXX hovere = "((0.426413 +2.62318 *TMath::Exp(-0.105685*cluster_pt))>cluster_hovere)"
+#XXX prevcut = cut2 
+#XXX cut2 += "*"+hovere
+#XXX #XXX tryCut( eTree, rTree, "cluster_pt", cut2, prevcut)
+#XXX #XXX makeComparisons( cut2, "e2x5Overe5x5_Iso_TrkIso_HoE" )
+#XXX ###bremTkChi2 = "((-0.622523 + -0.171795*TMath::Exp(-0.097391*trackChi2))>(-1)*bremStrength)"
+#XXX ###prevcut = cut2 
+#XXX ###cut2 += "*"+bremTkChi2
+#XXX ###tryCut( eTree, rTree, "cluster_pt", cut2, prevcut)
+#XXX 
+#XXX ptRes3 = "( ((trackPt-cluster_pt)/trackPt)>-3. )"
+#XXX cut3 = prevcut+"*"+ptRes3
+#XXX cut4 = prevcut+"*"+ptRes2
+#XXX #tryCut( eTree, rTree, "cluster_pt", cut3, prevcut)
+#XXX #tryCut( eTree, rTree, "cluster_pt", cut4, prevcut)
+#XXX #tryCut( eTree, rTree, "cluster_pt", ptRes, "")
+#XXX #makeComparisons( cut4, "e2x5Overe5x5_Iso_TrkIso_PtRes" )
+#XXX bremVChi2 = "((-0.622523 + -0.171795*TMath::Exp(-0.097391*trackChi2))>(-1)*(bremStrength))"
+#XXX #cut5 = prevcut+"*"+bremVChi2
+#XXX #tryCut( eTree, rTree, "cluster_pt", cut5, prevcut)
+#XXX deltaPosition = "((abs(trackDeltaPhi)<.3 && abs(trackDeltaEta)<.3 && trackDeltaR<.3) || cluster_pt>25)" 
+#XXX cut5 = prevcut+"*"+deltaPosition
+#XXX #tryCut( eTree, rTree, "cluster_pt", cut5, prevcut)
+#XXX #cut5 += "*"+ptRes2
+#XXX #makeComparisons( cut5, "e2x5Overe5x5_Iso_TrkIso_PtRes_dPos" )
+#XXX bremStr = "((-0.645727 + -0.00170667*cluster_pt)>(-1)*bremStrength)" 
+#XXX cut5 = prevcut+"*"+bremStr
+#XXX #tryCut( eTree, rTree, "cluster_pt", cut5, prevcut)
+#XXX bremStr2 = "((-0.697673 + -0.00130133*cluster_pt)>(-1)*bremStrength)" 
+#XXX cut5 = prevcut+"*"+bremStr2
+#XXX #tryCut( eTree, rTree, "cluster_pt", cut5, prevcut)
 
 
 
