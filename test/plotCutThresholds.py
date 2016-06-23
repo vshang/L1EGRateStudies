@@ -37,10 +37,6 @@ def drawPoints(c, tree1, var, cut, title1, tree2, title2, xaxis, xinfo, yaxis, y
         f1.SetParameter( 1, 2.5 )
         f1.SetParameter( 2, .15 )
         rslt = g1.Fit('f1', 'S')
-        rslt.Draw('SAME')
-        #f2 = rslt.Clone()
-        #print rslt.ls()
-        #print f2.ls()
     if linear and doFit :
         f1 = ROOT.TF1( 'f1', '([0] + [1]*x)', mini, maxi)
         f1.SetParName( 0, "y intercept" )
@@ -48,8 +44,6 @@ def drawPoints(c, tree1, var, cut, title1, tree2, title2, xaxis, xinfo, yaxis, y
         f1.SetParameter( 0, .0 )
         f1.SetParameter( 1, 1. )
         rslt = g1.Fit('f1', 'S')
-        rslt.Draw('SAME')
-        #f2 = rslt.Clone()
     
     c.cd(2)
     h2 = ROOT.TH2F("h2", title2, xinfo[0], xinfo[1], xinfo[2], yinfo[0], yinfo[1], yinfo[2])
@@ -57,7 +51,6 @@ def drawPoints(c, tree1, var, cut, title1, tree2, title2, xaxis, xinfo, yaxis, y
     h2.GetXaxis().SetTitle( xaxis )
     h2.GetYaxis().SetTitle( yaxis )
     h2.Draw("colz")
-    #del g1
     if doFit :
         g1.Draw('SAME')
     c.Print("plotsTmp/"+c.GetTitle()+".pdf")
@@ -130,13 +123,29 @@ if __name__ == '__main__' :
     title2 = "L1EGamma Crystal (Fake)"
 
     cut = ""
-    var = "(-1)*(e2x5/e5x5):cluster_pt"
+    var = "(-(e2x5)/(e5x5)):cluster_pt"
     xaxis = "Cluster P_{T} (GeV)"
-    yaxis = "Energy 2x5/5x5"
+    yaxis = "Negative Energy 2x5/5x5"
     xinfo = [20, 0., 50.]
-    yinfo = [250, 0., -1.]
+    yinfo = [100, -1.1, -0.4]
     c.SetTitle("clusterPtVE2x5OverE5x5")
     drawPoints(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
+
+    #var = "(-e2x5/cluster_pt):cluster_pt"
+    #xaxis = "Cluster P_{T} (GeV)"
+    #yaxis = "Energy 2x5/3x5"
+    #xinfo = [20, 0., 50.]
+    #yinfo = [100, -1.1, -0.4]
+    #c.SetTitle("clusterPtVE2x5OverE3x5")
+    #drawPoints(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
+
+    #var = "(-1)*(e2x5/corePt):cluster_pt"
+    #xaxis = "Cluster P_{T} (GeV)"
+    #yaxis = "Energy 2x5/(3x5 uncorrected)"
+    #xinfo = [20, 0., 50.]
+    #yinfo = [100, -1.1, -0.4]
+    #c.SetTitle("clusterPtVE2x5OverUnCorPt")
+    #drawPoints(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
 
     showerShapes = "(-0.921128 + 0.180511*TMath::Exp(-0.0400725*cluster_pt)>(-1)*(e2x5/e5x5))"
     cut += showerShapes
@@ -215,6 +224,24 @@ if __name__ == '__main__' :
     c.SetTitle("clusterPtVTrackPt_matchedTracks")
     drawPoints(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points, True, False)
 
+    tkIsoMatched = "((0.106544 + 0.00316748*cluster_pt)>(trackIsoConePtSum/trackPt))"
+    cut += "*"+tkIsoMatched
+    var = "(-1)*((trackPt-cluster_pt)/trackPt):trackPt"
+    xaxis = "Track P_{T} (GeV)"
+    yaxis = "P_{T} Resoluciton (Trk-L1)/Trk"
+    xinfo = [20, 0., 50.]
+    yinfo = [500, -1., 20.]
+    c.SetTitle("trackPtVPtRes")
+    drawPoints(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points, True)
+
+    var = "(-1)*((trackPt-cluster_pt)/trackPt):cluster_pt"
+    xaxis = "Cluster P_{T} (GeV)"
+    yaxis = "P_{T} Resoluciton (Trk-L1)/Trk"
+    xinfo = [20, 0., 50.]
+    yinfo = [500, -1., 15.]
+    c.SetTitle("clusterPtVPtRes")
+    drawPoints(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points, True)
+
 #    trackIso2 = "((0.130534 + 0.0131326*cluster_pt) > (trackIsoConePtSum/trackPt))"
 #    cut += "*"+trackIso2
 #    var = "cluster_hovere:cluster_pt"
@@ -272,22 +299,6 @@ if __name__ == '__main__' :
 #    xinfo = [20, 0., 50.]
 #    yinfo = [500, 0., 1.]
 #    c.SetTitle("clusterPtVDPhi")
-#    drawPoints(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points, True)
-#
-#    var = "(-1)*((trackPt-cluster_pt)/trackPt):trackPt"
-#    xaxis = "Track P_{T} (GeV)"
-#    yaxis = "Pt Res"
-#    xinfo = [20, 0., 50.]
-#    yinfo = [500, -1., 35.]
-#    c.SetTitle("trackPtVPtRes")
-#    drawPoints(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points, True)
-#
-#    var = "(-1)*((trackPt-cluster_pt)/trackPt):cluster_pt"
-#    xaxis = "Cluster P_{T} (GeV)"
-#    yaxis = "Pt Res"
-#    xinfo = [20, 0., 50.]
-#    yinfo = [500, -1., 35.]
-#    c.SetTitle("clusterPtVPtRes")
 #    drawPoints(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points, True)
 #
 #    var = "abs(trackDeltaEta):cluster_pt"
