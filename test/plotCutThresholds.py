@@ -4,7 +4,7 @@ from ROOT import gStyle
 
 gStyle.SetOptStat(0)
 
-def drawPoints(c, tree1, var, cut, title1, tree2, title2, xaxis, xinfo, yaxis, yinfo, points, linear=False, doFit=True) :
+def drawPoints(c, tree1, var, cut, title1, tree2, title2, xaxis, xinfo, yaxis, yinfo, points, linear=False, doFit=True, includeLine=False) :
     print cut
     c.cd(1)
     h1 = ROOT.TH2F("h1", title1, xinfo[0], xinfo[1], xinfo[2], yinfo[0], yinfo[1], yinfo[2])
@@ -20,14 +20,16 @@ def drawPoints(c, tree1, var, cut, title1, tree2, title2, xaxis, xinfo, yaxis, y
     #print xVals1
     #print yVals1
     g1 = ROOT.TGraph(len(xVals1), xVals1, yVals1)
-    if doFit :
-        #g1.SetLineWidth(0)
-        #g1.SetLineStyle(0)
-        #g1.SetLineColor(ROOT.kViolet+5)
-        g1.Draw('SAME')
     mini = points[0][0]
     maxi = points[-1][0]
-    f2 = ROOT.TF1()
+
+    # Allow option to show the jagged fitting line for optimization
+    # And clean version for presentations
+    fitCode = 'S 0'
+    if includeLine : 
+        g1.Draw('SAME')
+        fitCode = 'S'
+
     if not linear and doFit :
         f1 = ROOT.TF1( 'f1', '([0] + [1]*TMath::Exp(-[2]*x))', mini, maxi)
         f1.SetParName( 0, "y rise" )
@@ -36,14 +38,20 @@ def drawPoints(c, tree1, var, cut, title1, tree2, title2, xaxis, xinfo, yaxis, y
         f1.SetParameter( 0, .5 )
         f1.SetParameter( 1, 2.5 )
         f1.SetParameter( 2, .15 )
-        rslt = g1.Fit('f1', 'S')
+        g1.Fit('f1', fitCode )
     if linear and doFit :
         f1 = ROOT.TF1( 'f1', '([0] + [1]*x)', mini, maxi)
         f1.SetParName( 0, "y intercept" )
         f1.SetParName( 1, "slope" )
         f1.SetParameter( 0, .0 )
         f1.SetParameter( 1, 1. )
-        rslt = g1.Fit('f1', 'S')
+        g1.Fit('f1', fitCode )
+    if doFit :
+        f2 = ROOT.TF1( 'f2', '([0] + [1]*TMath::Exp(-[2]*x))', mini, maxi)
+        f2.SetParameter( 0, f1.GetParameter( 0 ) )
+        f2.SetParameter( 1, f1.GetParameter( 1 ) )
+        f2.SetParameter( 2, f1.GetParameter( 2 ) )
+        f2.Draw('SAME')
     
     c.cd(2)
     h2 = ROOT.TH2F("h2", title2, xinfo[0], xinfo[1], xinfo[2], yinfo[0], yinfo[1], yinfo[2])
@@ -51,10 +59,82 @@ def drawPoints(c, tree1, var, cut, title1, tree2, title2, xaxis, xinfo, yaxis, y
     h2.GetXaxis().SetTitle( xaxis )
     h2.GetYaxis().SetTitle( yaxis )
     h2.Draw("colz")
-    if doFit :
+    if includeLine : 
         g1.Draw('SAME')
+    if doFit :
+        f2.Draw('SAME')
     c.Print("plotsTmp/"+c.GetTitle()+".pdf")
     del h1, h2, g1
+
+
+def drawPointsHists(c, h1, h2, title1, title2, xaxis, yaxis) :
+    c.cd(1)
+    h1.GetXaxis().SetTitle( xaxis )
+    h1.GetYaxis().SetTitle( yaxis )
+    h1.Draw("colz")
+    xVals1 = array('f', [])
+    yVals1 = array('f', [])
+
+    points = []
+    for i in range(7, 50) : points.append( i )
+    for point in points :
+        xVals1.append( point )
+        yVals1.append( getAverage( h1, point ) )
+    #print xVals1
+    #print yVals1
+    g1 = ROOT.TGraph(len(xVals1), xVals1, yVals1)
+    g1.Draw('SAME')
+    mini = points[0]
+    maxi = points[-1]
+    f1 = ROOT.TF1( 'f1', '([0] + [1]*TMath::Exp(-[2]*x))', mini, maxi)
+    f1.SetParName( 0, "y rise" )
+    f1.SetParName( 1, "scale" )
+    f1.SetParName( 2, "decay" )
+    f1.SetParameter( 0, .5 )
+    f1.SetParameter( 1, 2.5 )
+    f1.SetParameter( 2, .15 )
+    fit1 = g1.Fit('f1', 'R S')
+    
+    c.cd(2)
+    h2.Draw("colz")
+    h2.GetXaxis().SetTitle( xaxis )
+    h2.GetYaxis().SetTitle( yaxis )
+    xVals2 = array('f', [])
+    yVals2 = array('f', [])
+    for point in points :
+        xVals2.append( point )
+        yVals2.append( getAverage( h2, point ) )
+    #print xVals2
+    #print yVals2
+    g2 = ROOT.TGraph(len(xVals2), xVals2, yVals2)
+    g2.Draw('SAME')
+    f2 = ROOT.TF1( 'f2', '([0] + [1]*TMath::Exp(-[2]*x))', mini, maxi)
+    f2.SetParName( 0, "y rise" )
+    f2.SetParName( 1, "scale" )
+    f2.SetParName( 2, "decay" )
+    f2.SetParameter( 0, .5 )
+    f2.SetParameter( 1, 2.5 )
+    f2.SetParameter( 2, .15 )
+    fit2 = g2.Fit('f2', 'R S')
+
+    # Just to show the resulting fit
+    c.Print("plotsTmp/"+c.GetTitle()+".pdf")
+    cx = ROOT.TCanvas('cx','cx',600,600)
+    cx.SetGridx()
+    cx.SetGridy()
+    f3 = ROOT.TF1( 'f3', '(-([0] + [1]*TMath::Exp(-[2]*x))+([3] + [4]*TMath::Exp(-[5]*x)))', mini, maxi)
+    f3.SetParameter( 0, f1.GetParameter( 0 ) )
+    f3.SetParameter( 1, f1.GetParameter( 1 ) )
+    f3.SetParameter( 2, f1.GetParameter( 2 ) )
+    f3.SetParameter( 3, f2.GetParameter( 0 ) )
+    f3.SetParameter( 4, f2.GetParameter( 1 ) )
+    f3.SetParameter( 5, f2.GetParameter( 2 ) )
+    f3.Draw()
+    g1.Draw('SAME')
+    g2.Draw('SAME')
+    
+    cx.Print("plotsTmp/"+c.GetTitle()+"_fits.pdf")
+    del h1, h2, g1, g2, cx
 
 
 
@@ -73,6 +153,27 @@ def getPoint( h, xVal, percentage ) :
             #print "Reached target of %.3f at ybin %i with yval %.2f" % (percentage, i, yVal )
             return yVal
     print "Error, not supposed to get here"
+
+
+
+def getAverage( h, xVal ) :
+    val = 0.
+    weightedTot = 0.
+    tot = 0.
+    xBin = h.GetXaxis().FindBin( xVal )
+    for i in range( 1, h.GetNbinsY() ) :
+        weightedTot += h.GetBinContent( xBin, i )*h.GetYaxis().GetBinCenter( i )
+        tot += h.GetBinContent( xBin, i )
+        #print weightedTot
+    avgTot = weightedTot/tot
+    #print "Final average total: ",avgTot
+    
+    answer = h.GetYaxis().FindBin( avgTot )
+    #print "Associated bin: ",answer
+    return avgTot
+    print "Error, not supposed to get here"
+
+
 
 if __name__ == '__main__' :
     rateFile = ROOT.TFile( 'egTriggerRates.root', 'r' )
@@ -122,8 +223,15 @@ if __name__ == '__main__' :
     title1 = "L1EGamma Crystal (Electrons)"
     title2 = "L1EGamma Crystal (Fake)"
 
+    recoGenPtHist = effFile.Get("analyzer/reco_gen_pt")
+    tdrRecoGenPtHist = effFile.Get("analyzer/l1extraParticlesUCT:All_reco_gen_pt")
+    xaxis = "Gen P_{T} (GeV)"
+    yaxis = "Relative Error in P_{T} (reco-gen)/gen"
+    c.SetTitle("genPtVPtResFit")
+    drawPointsHists(c, recoGenPtHist, tdrRecoGenPtHist, title1, title2, xaxis, yaxis)
+
     cut = ""
-    var = "(-(e2x5)/(e5x5)):cluster_pt"
+    var = "(-e2x5/e5x5):cluster_pt"
     xaxis = "Cluster P_{T} (GeV)"
     yaxis = "Negative Energy 2x5/5x5"
     xinfo = [20, 0., 50.]
@@ -131,21 +239,29 @@ if __name__ == '__main__' :
     c.SetTitle("clusterPtVE2x5OverE5x5")
     drawPoints(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
 
-    #var = "(-e2x5/cluster_pt):cluster_pt"
-    #xaxis = "Cluster P_{T} (GeV)"
-    #yaxis = "Energy 2x5/3x5"
-    #xinfo = [20, 0., 50.]
-    #yinfo = [100, -1.1, -0.4]
-    #c.SetTitle("clusterPtVE2x5OverE3x5")
-    #drawPoints(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
+    var = "(-e2x5/e3x5):cluster_pt"
+    xaxis = "Cluster P_{T} (GeV)"
+    yaxis = "Negative Energy 2x5/3x5"
+    xinfo = [20, 0., 50.]
+    yinfo = [100, -1.1, -0.4]
+    c.SetTitle("clusterPtVE2x5OverE3x5")
+    drawPoints(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
 
-    #var = "(-1)*(e2x5/corePt):cluster_pt"
-    #xaxis = "Cluster P_{T} (GeV)"
-    #yaxis = "Energy 2x5/(3x5 uncorrected)"
-    #xinfo = [20, 0., 50.]
-    #yinfo = [100, -1.1, -0.4]
-    #c.SetTitle("clusterPtVE2x5OverUnCorPt")
-    #drawPoints(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
+    var = "(-pt2x5/pt5x5):cluster_pt"
+    xaxis = "Cluster P_{T} (GeV)"
+    yaxis = "Negative P_{T} 2x5/5x5"
+    xinfo = [20, 0., 50.]
+    yinfo = [100, -1.1, -0.4]
+    c.SetTitle("clusterPtVPt2x5OverPt5x5")
+    drawPoints(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
+
+    var = "(-pt2x5/pt3x5):cluster_pt"
+    xaxis = "Cluster P_{T} (GeV)"
+    yaxis = "Negative P_{T} 2x5/3x5"
+    xinfo = [20, 0., 50.]
+    yinfo = [100, -1.1, -0.4]
+    c.SetTitle("clusterPtVPt2x5OverPt3x5")
+    drawPoints(c, crystal_tree, var, cut, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
 
     showerShapes = "(-0.921128 + 0.180511*TMath::Exp(-0.0400725*cluster_pt)>(-1)*(e2x5/e5x5))"
     cut += showerShapes
@@ -159,6 +275,21 @@ if __name__ == '__main__' :
 
     Isolation = "((0.990748 + 5.64259*TMath::Exp(-0.0613952*cluster_pt))>cluster_iso)"
     cut += "*"+Isolation
+
+    # Used to check if poor dR match is likely due to a brem, or not
+    # Conclusion: we just didn't find the right track (or it didn't exist)
+    #for val in range( 0, 10 ) :
+    #    v = val*0.05
+    #    var = "bremStrength:((trackPt-cluster_pt)/cluster_pt)"
+    #    top = v + 0.05
+    #    bottom = v
+    #    yaxis = "Brem Strength"
+    #    xaxis = "%.2f < #DeltaR < %.2f Cut: P_{T} Res (L1Tk-L1EG)/L1EG" % (bottom, top)
+    #    yinfo = [60, 0., 1.1]
+    #    xinfo = [25, -1., 5.]
+    #    c.SetTitle("clusterPtResVBremStr_dRCuts_%i" % val)
+    #    cutNew = cut+"*( trackDeltaR > %f && trackDeltaR < %f)" % (bottom, top)
+    #    drawPoints(c, crystal_tree, var, cutNew, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points, True, False)
 
     var = "trackDeltaR:cluster_pt"
     xaxis = "Cluster P_{T} (GeV)"
