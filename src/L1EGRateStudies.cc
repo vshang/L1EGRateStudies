@@ -164,7 +164,11 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float iso;
          float bremStrength;
          float e2x5;
+         float pt2x5;
+         float e3x5;
+         float pt3x5;
          float e5x5;
+         float pt5x5;
          float deltaR = 0.;
          float deltaPhi = 0.;
          float gen_pt = 0.;
@@ -195,6 +199,14 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float trackDeltaEta;
          float trackP;
          float trackPt;
+         float trackHighestPt;
+         float trackHighestPtEta;
+         float trackHighestPtPhi;
+         float trackHighestPtChi2;
+         float trackHighestPtCutChi2;
+         float trackHighestPtCutChi2Eta;
+         float trackHighestPtCutChi2Phi;
+         float trackHighestPtCutChi2Chi2;
          float trackRInv;         
          float trackChi2;
          float trackIsoConeTrackCount;
@@ -325,7 +337,11 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("cluster_iso", &treeinfo.iso);
    crystal_tree->Branch("bremStrength", &treeinfo.bremStrength);
    crystal_tree->Branch("e2x5", &treeinfo.e2x5);
+   crystal_tree->Branch("pt2x5", &treeinfo.pt2x5);
+   crystal_tree->Branch("e3x5", &treeinfo.e3x5);
+   crystal_tree->Branch("pt3x5", &treeinfo.pt3x5);
    crystal_tree->Branch("e5x5", &treeinfo.e5x5);
+   crystal_tree->Branch("pt5x5", &treeinfo.pt5x5);
    crystal_tree->Branch("deltaR", &treeinfo.deltaR);
    crystal_tree->Branch("deltaPhi", &treeinfo.deltaPhi);
    crystal_tree->Branch("gen_pt", &treeinfo.gen_pt);
@@ -356,6 +372,14 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("trackDeltaEta", &treeinfo.trackDeltaEta);
    crystal_tree->Branch("trackP", &treeinfo.trackP);
    crystal_tree->Branch("trackPt", &treeinfo.trackPt);
+   crystal_tree->Branch("trackHighestPt", &treeinfo.trackHighestPt);
+   crystal_tree->Branch("trackHighestPtEta", &treeinfo.trackHighestPtEta);
+   crystal_tree->Branch("trackHighestPtPhi", &treeinfo.trackHighestPtPhi);
+   crystal_tree->Branch("trackHighestPtChi2", &treeinfo.trackHighestPtChi2);
+   crystal_tree->Branch("trackHighestPtCutChi2", &treeinfo.trackHighestPtCutChi2);
+   crystal_tree->Branch("trackHighestPtCutChi2Eta", &treeinfo.trackHighestPtCutChi2Eta);
+   crystal_tree->Branch("trackHighestPtCutChi2Phi", &treeinfo.trackHighestPtCutChi2Phi);
+   crystal_tree->Branch("trackHighestPtCutChi2Chi2", &treeinfo.trackHighestPtCutChi2Chi2);
    crystal_tree->Branch("trackRInv", &treeinfo.trackRInv);
    crystal_tree->Branch("trackChi2", &treeinfo.trackChi2);
    crystal_tree->Branch("trackIsoConeTrackCount", &treeinfo.trackIsoConeTrackCount);
@@ -809,7 +833,11 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
    treeinfo.iso = cluster.isolation();
    treeinfo.bremStrength = cluster.bremStrength();
    treeinfo.e2x5 = cluster.GetExperimentalParam("E2x5");
+   treeinfo.pt2x5 = cluster.GetExperimentalParam("Pt2x5");
+   treeinfo.e3x5 = cluster.GetExperimentalParam("E3x5");
+   treeinfo.pt3x5 = cluster.GetExperimentalParam("Pt3x5");
    treeinfo.e5x5 = cluster.GetExperimentalParam("E5x5");
+   treeinfo.pt5x5 = cluster.GetExperimentalParam("Pt5x5");
    treeinfo.passed = cluster_passes_cuts(cluster);
    treeinfo.uslPt = cluster.GetExperimentalParam("upperSideLobePt");
    treeinfo.lslPt = cluster.GetExperimentalParam("lowerSideLobePt");
@@ -933,20 +961,47 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
   // then match to the highest pt track < 0.3
   double min_track_dr = 999.;
   double max_track_pt = 0.;
+  double max_track_pt_all_tracks = 0.;
+  double max_track_pt_all_tracksEta = 0.;
+  double max_track_pt_all_tracksPhi = 0.;
+  double max_track_pt_all_tracksChi2 = 0.;
+  double max_track_pt_all_chi2_cut = 0.;
+  double max_track_pt_all_chi2_cutEta = 0.;
+  double max_track_pt_all_chi2_cutPhi = 0.;
+  double max_track_pt_all_chi2_cutChi2 = 0.;
   double matched_z = 999.;
   edm::Ptr<TTTrack<Ref_PixelDigi_>> matched_track;
   if ( l1trackHandle.isValid() )
   {
      for(size_t track_index=0; track_index<l1trackHandle->size(); ++track_index)
      {
+        edm::Ptr<TTTrack<Ref_PixelDigi_>> ptr(l1trackHandle, track_index);
+	double pt = ptr->getMomentum().perp();
+
+        // Don't consider tracks with pt < 2 for studies, might be increased to 3 later
+        if (pt < 2.) continue;
+
+        // Record the highest pt track per event
+        // And, highest pt passing chi2 cut
+        // to see if brem is an issues for mis-matched tracks
+        double chi2 = ptr->getChi2();
+        if (pt > max_track_pt_all_tracks) {
+          max_track_pt_all_tracks = pt;
+          max_track_pt_all_tracksEta = ptr->getMomentum().eta();
+          max_track_pt_all_tracksPhi = ptr->getMomentum().phi();
+          max_track_pt_all_tracksChi2 = chi2;}
+        if (pt > max_track_pt_all_chi2_cut && chi2 < 100) {
+          max_track_pt_all_chi2_cut = pt;
+          max_track_pt_all_chi2_cutEta = ptr->getMomentum().eta();
+          max_track_pt_all_chi2_cutPhi = ptr->getMomentum().phi();
+          max_track_pt_all_chi2_cutChi2 = chi2;}
+        
+
         // L1 Tracks are considered mis-measured if pt > 50
         // Therefore pt -> 50 if pt > 50
         // Only consider tracks if chi2 > 100
-        edm::Ptr<TTTrack<Ref_PixelDigi_>> ptr(l1trackHandle, track_index);
         double dr = L1TkElectronTrackMatchAlgo::deltaR(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), ptr);
-	double pt = ptr->getMomentum().perp();
         if (pt > 50.) pt = 50;
-        double chi2 = ptr->getChi2();
         // Choose closest track until dR < 0.3
         if ( dr < min_track_dr && min_track_dr > 0.3 && chi2 < 100. )
         {
@@ -973,16 +1028,19 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
 	if ( ptr == matched_track ) {
 	  continue;
 	}
+        // Don't consider tracks with pt < 2 for studies, might be increased to 3 later
+	double pt = ptr->getMomentum().perp();
+        if (pt < 2.) continue;
+
         // Track Isolation cuts have been updated based on the recommendations here:
         // https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1TrackTriggerObjects62X#Matching_L1EG_objects_with_L1Tra
-        // Inner dR cone of .0.03, outer dR cone 0.2, momentum at least 2GeV
+        // Inner dR cone of 0.03, outer dR cone 0.2, momentum at least 2GeV
         // L1 Tracks are considered mis-measured if pt > 50
         // Therefore pt -> 50 if pt > 50
-        // Only consider tracks if chi2 > 100
+        // Only consider tracks if chi2 < 100
         // Only consider iso tracks from within dZ < 0.6
         double dr_2 = reco::deltaR(ptr->getMomentum(), matched_track->getMomentum());
 	double chi2 = ptr->getChi2();
-	double pt = ptr->getMomentum().perp();
 	if (pt > 50.) pt = 50;
         double this_z = ptr->getPOCA().z();
 	double deltaZ = abs(matched_z - this_z);
@@ -997,6 +1055,14 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
      treeinfo.trackEta = matched_track->getMomentum().eta();
      treeinfo.trackPhi = matched_track->getMomentum().phi();
      treeinfo.trackPt = max_track_pt;
+     treeinfo.trackHighestPt = max_track_pt_all_tracks;
+     treeinfo.trackHighestPtEta = max_track_pt_all_tracksEta;
+     treeinfo.trackHighestPtPhi = max_track_pt_all_tracksPhi;
+     treeinfo.trackHighestPtChi2 = max_track_pt_all_tracksChi2;
+     treeinfo.trackHighestPtCutChi2 = max_track_pt_all_chi2_cut;
+     treeinfo.trackHighestPtCutChi2Eta = max_track_pt_all_chi2_cutEta;
+     treeinfo.trackHighestPtCutChi2Phi = max_track_pt_all_chi2_cutPhi;
+     treeinfo.trackHighestPtCutChi2Chi2 = max_track_pt_all_chi2_cutChi2;
      treeinfo.trackDeltaPhi = L1TkElectronTrackMatchAlgo::deltaPhi(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), matched_track);
      treeinfo.trackDeltaEta = L1TkElectronTrackMatchAlgo::deltaEta(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), matched_track);
      treeinfo.trackP = matched_track->getMomentum().mag();
