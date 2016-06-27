@@ -100,6 +100,33 @@ process.load("SLHCUpgradeSimulations.L1TrackTrigger.L1TkPrimaryVertexProducer_cf
 process.pL1TkPrimaryVertex = cms.Path( process.L1TkPrimaryVertex )
 
 
+############################################################
+# pixel stuff, uncomment if needed
+############################################################
+# from ./SLHCUpgradeSimulations/L1TrackTrigger/test/L1TrackNtupleMaker_cfg.py
+
+
+# pixel additions
+process.load('Configuration.StandardSequences.RawToDigi_cff')
+process.load('Configuration.StandardSequences.Reconstruction_cff')
+process.load('SimGeneral.MixingModule.mixNoPU_cfi')
+
+
+from RecoLocalTracker.SiPixelRecHits.SiPixelRecHits_cfi import *
+process.siPixelRecHits = siPixelRecHits
+
+process.pixRec = cms.Path(
+    process.RawToDigi+
+    process.siPixelRecHits
+)
+
+process.L1PixelTrackFit = cms.EDProducer("L1PixelTrackFit")
+process.pixTrk = cms.Path(process.L1PixelTrackFit)
+
+#process.raw2digi_step = cms.Path(process.RawToDigi)
+
+
+
 # ----------------------------------------------------------------------------------------------
 # 
 # Analyzer starts here
@@ -122,6 +149,7 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer","EGCrystalCluster"),
    OfflineRecoClustersInputTag = cms.InputTag("correctedHybridSuperClusters"),
    L1TrackInputTag = cms.InputTag("TTTracksFromPixelDigisLargerPhi","Level1TTTracks"),
+   L1PixelTrackInputTag = cms.InputTag("L1PixelTrackFit","Level1PixelTracks"),
    L1TrackPrimaryVertexTag = cms.InputTag("L1TkPrimaryVertex"),
    doEfficiencyCalc = cms.untracked.bool(True),
    useOfflineClusters = cms.untracked.bool(False),
