@@ -62,6 +62,51 @@ def normalizeHists() :
 
 
 
+    # Add a variable to scale L1EG cluster pt to
+    # RCT 2015 pt 
+    print "Adding crystal_pt_to_RCT2015 to crystal_tree"
+    from array import array
+    effTree = eff.Get('analyzer/crystal_tree')
+    rateTree = rates.Get('analyzer/crystal_tree')
+    rateCorPt = array('f', [ 0 ] )
+    rateCorPtB = rateTree.Branch('crystal_pt_to_RCT2015', rateCorPt, 'crystal_pt_to_RCT2015/F')
+    effCorPt = array('f', [ 0 ] )
+    effCorPtB = effTree.Branch('crystal_pt_to_RCT2015', effCorPt, 'crystal_pt_to_RCT2015/F')
+
+    # For fit parameter values, run "drawPointsHists" in plotCutThresholds.py
+    corFunc = ROOT.TF1('f1', '(-([0] + [1]*TMath::Exp(-[2]*x))+([3] + [4]*TMath::Exp(-[5]*x)))')
+    corFunc.SetParameter( 0, -0.041252 )
+    corFunc.SetParameter( 1, 0.252128 )
+    corFunc.SetParameter( 2, 0.088619 )
+    corFunc.SetParameter( 3, 0.113996 )
+    corFunc.SetParameter( 4, -0.268292 )
+    corFunc.SetParameter( 5, 0.072791 )
+
+    cnt = 0
+    for i in range(0, rateTree.GetEntries() ) :
+        rateTree.GetEntry( i )
+        cnt += 1
+        if cnt % 1000 == 0 : print "Rates Tree: %i" % cnt
+        pt = rateTree.cluster_pt
+        rateCorPt[0] = pt + corFunc( pt )*pt
+        rateCorPtB.Fill()
+    rates.Write("", ROOT.TObject.kOverwrite)
+    rates.Close() 
+
+    cnt = 0
+    for i in range(0, effTree.GetEntries() ) :
+        effTree.GetEntry( i )
+        cnt += 1
+        if cnt % 1000 == 0 : print "Efficiency Tree: %i" % cnt
+	pt = effTree.cluster_pt
+        effCorPt[0] = pt + corFunc( pt )*pt
+        effCorPtB.Fill()
+    eff.Write("", ROOT.TObject.kOverwrite)
+    eff.Close()
+
+
+
+
 if __name__ == '__main__' :
     normalizeHists()
 
