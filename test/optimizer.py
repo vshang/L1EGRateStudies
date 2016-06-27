@@ -51,11 +51,11 @@ def tryCut( etree, rtree, var, cut, preCut="", verbose=True ) :
     return returnMap
 
 
-def makeRatePlot( rateFile, tree, name, cut='', rateLimit=50 ) :
+def makeRatePlot( rateFile, tree, name, cut='', rateLimit=50, var='cluster_pt' ) :
     c = ROOT.TCanvas('c','c',canvasSize,canvasSize)
     
     h1 = ROOT.TH1F('h1', name,rateLimit,0,rateLimit)
-    tree.Draw('cluster_pt >> h1', cut)
+    tree.Draw( var+' >> h1', cut)
     h2 = ROOT.TH1F('h2'+name, name,rateLimit,0,rateLimit)
     h2.Sumw2()
     
@@ -174,7 +174,7 @@ def plotEffHists( name, graphs=[], nCol = 1 ) :
     del c
 
 
-def makeComparisons( Cut, name, trkDetails=False, changeDenom=["",""] ) :
+def makeComparisons( Cut, name, trkDetails=False, changeDenom=["",""], var='cluster_pt' ) :
     oldRateFile = ROOT.TFile('egTriggerRates.root','r')
     oldRateTrackFile = ROOT.TFile('egTriggerRateTracks.root','r')
     oldRateTree = oldRateFile.Get('analyzer/crystal_tree')
@@ -193,9 +193,9 @@ def makeComparisons( Cut, name, trkDetails=False, changeDenom=["",""] ) :
     rTreeTracks = newRateFileTracks.Get("events")
 
     # Additional pt cuts
-    pt16 = "*(cluster_pt > 16)"
-    pt20 = "*(cluster_pt > 20)"
-    pt30 = "*(cluster_pt > 30)"
+    pt16 = "*("+var+" > 16)"
+    pt20 = "*("+var+" > 20)"
+    pt30 = "*("+var+" > 30)"
 
     if trkDetails :
         trackIso2 = "((0.130534 + 0.0131326*cluster_pt) > (trackIsoConePtSum/trackPt))"
@@ -205,6 +205,10 @@ def makeComparisons( Cut, name, trkDetails=False, changeDenom=["",""] ) :
         rTracks15Iso = makeRatePlot( oldRateTrackFile, rTreeTracks, "Iso tracks p_{T}>15 GeV", "trackPt>15 && "+trackIso2 )
         rTracks10egIso = makeRatePlot( oldRateFile, oldRateTree, "Iso tracks p_{T}>10 GeV - EG Matched", "trackPt>10 &&"+trackIso2 )
         rTracks15egIso = makeRatePlot( oldRateFile, oldRateTree, "Iso tracks p_{T}>15 GeV - EG Matched", "trackPt>15 &&"+trackIso2 )
+    if var != 'cluster_pt' :
+        r5adj = makeRatePlot( oldRateFile, rTree, name+" ptAdj", Cut, 50, var )
+        r5_20adj = makeRatePlot( oldRateFile, rTree, name+" p_{T}>20 ptAdj", Cut+pt20, 50, var )
+        r5_30adj = makeRatePlot( oldRateFile, rTree, name+" p_{T}>30 ptAdj", Cut+pt30, 50, var )
     rTracks10eg = makeRatePlot( oldRateFile, oldRateTree, "tracks p_{T}>10 GeV - EG Matched", "trackPt>10" )
     rTracks15eg = makeRatePlot( oldRateFile, oldRateTree, "tracks p_{T}>15 GeV - EG Matched", "trackPt>15" )
     noCuts = makeRatePlot( oldRateFile, oldRateTree, "Raw Rate - No Cuts", "" )
@@ -217,10 +221,14 @@ def makeComparisons( Cut, name, trkDetails=False, changeDenom=["",""] ) :
     if trkDetails and changeDenom == ["",""] :
         plotRateHists(  name+"_track_details", [noCuts, rTracks10, rTracks15, rTracks10eg, rTracks15eg] )
         plotRateHists(  name+"_track_details_iso", [noCuts, rTracks10, rTracks15, rTracks10eg, rTracks15eg, rTracks10Iso, rTracks15Iso, rTracks10egIso, rTracks15egIso] )
-    if changeDenom == ["",""] : 
+    if changeDenom == ["",""] and var == 'cluster_pt' : 
         plotRateHists(  name+"_turnons_20_30", [rTDR, r5, r5_20, r5_30] )
     #plotRateHists(  name+"_turnons16_20_30", [rTDR, noCuts, rTracks10eg, rTracks15eg, r5, r5_20, r5_30] )
     #plotRateHists(  name+"_turnons16_20_30", [rTDR, noCuts, rTracks10, rTracks15, rTracks10eg, rTracks15eg, r5, r5_20, r5_30] )
+    if var != 'cluster_pt' : 
+        plotRateHists(  name+"_turnons_20_30_ptAdjust", [rTDR, r5adj, r5_20adj, r5_30adj] )
+        plotRateHists(  name+"_turnons_20_30", [rTDR, r5, r5_20, r5_30] )
+        return
 
     preCut = ""
     yEffLabel = "Eff. (L1/ Gen)"
@@ -378,26 +386,38 @@ if __name__ == '__main__' :
     
     tdrstyle.setTDRStyle()
     c = ROOT.TCanvas('c','c',canvasSize,canvasSize)
+    showerShapes = "(-0.921128 + 0.180511*TMath::Exp(-0.0400725*cluster_pt)>(-1)*(e2x5/e5x5))"
+    Isolation = "((0.990748 + 5.64259*TMath::Exp(-0.0613952*cluster_pt))>cluster_iso)"
+    tkIsoMatched = "((0.106544 + 0.00316748*cluster_pt)>(trackIsoConePtSum/trackPt))"
+
+    cut_none = ""
+    cut_ss = showerShapes
+    cut_ss_cIso = showerShapes+"*"+Isolation
+    cut_ss_cIso_tkNoM = cut_ss_cIso+"*(trackDeltaR>0.1)"
+    cut_ss_cIso_tkM = cut_ss_cIso+"*(trackDeltaR<0.1)"
+    cut_ss_cIso_tkM_tkIso = cut_ss_cIso_tkM+"*"+tkIsoMatched
+    tkMatched = "(trackDeltaR<.1)"
+    tkNoMatched = "(trackDeltaR>.1)"
 
     makeSet = True
     if makeSet :
         makeComparisons( "(1)", "No_Cuts", True )
+        makeComparisons( cut_ss, "e2x5OverE5x5", False, ["",""], 'crystal_pt_to_RCT2015' )
+        makeComparisons( cut_ss_cIso, "e2x5OverE5x5 Iso", False, ["",""], 'crystal_pt_to_RCT2015' )
+        makeComparisons( cut_ss_cIso_tkM, "e2x5OverE5x5 Iso TkMatch", False, [tkMatched, "L1Tk Match #DeltaR<0.1, Eff. (L1/Gen)"] )
+        makeComparisons( cut_ss_cIso_tkM, "e2x5OverE5x5 Iso TkMatch", False, ["",""], 'crystal_pt_to_RCT2015' )
+        #tryCut( eTree, rTree, "cluster_pt", cutMatch, previousCut)
+        makeComparisons( cut_ss_cIso_tkM_tkIso, "e2x5OverE5x5 Iso TkMatch TkIso", False, [tkMatched, "L1Tk Match #DeltaR<0.1, Eff. (L1/Gen)"] )
+        makeComparisons( cut_ss_cIso_tkM_tkIso, "e2x5OverE5x5 Iso TkMatch TkIso", False, ["",""], 'crystal_pt_to_RCT2015'  )
 
-        showerShapes = "(-0.921128 + 0.180511*TMath::Exp(-0.0400725*cluster_pt)>(-1)*(e2x5/e5x5))"
-        showerShapes2 = "(-4.18786 + 3.65495*TMath::Exp(-0.000623946*cluster_pt)>(-1)*(e2x5/cluster_pt))"
-        previousCut = ""
-        cut = showerShapes
-        tryCut( eTree, rTree, "cluster_pt", cut, previousCut)
+        #tryCut( eTree, rTree, "cluster_pt", cut_ss, cut_none)
         #tryCut( eTree, rTree, "cluster_pt", showerShapes2, "")
         #tryCut( eTree, rTree, "cluster_pt", "((e2x5/cluster_pt)>.9)", "")
-        makeComparisons( cut, "e2x5OverE5x5" )
-        makeComparisons( cut, "e2x5OverE3x5" )
+        #makeComparisons( cut, "e2x5OverE5x5" )
+        #makeComparisons( cut, "e2x5OverE3x5" )
 
-        Isolation = "((0.990748 + 5.64259*TMath::Exp(-0.0613952*cluster_pt))>cluster_iso)"
-        previousCut = cut
-        cut += "*"+Isolation
-        tryCut( eTree, rTree, "cluster_pt", cut, previousCut)
-        makeComparisons( cut, "e2x5OverE5x5 Iso" )
+        #tryCut( eTree, rTree, "cluster_pt", cut, previousCut)
+        #makeComparisons( cut, "e2x5OverE5x5 Iso" )
 
         #trackIso = "((0.130534 + 0.0131326*cluster_pt) > (trackIsoConePtSum/trackPt))"
         #previousCut = cut
@@ -414,25 +434,12 @@ if __name__ == '__main__' :
 #tryCut( eTree, rTree, "cluster_pt", "trackDeltaR<0.1", "")
 
 #makeComparisons( "(1)", "No_Cuts", True )
-showerShapes = "(-0.921128 + 0.180511*TMath::Exp(-0.0400725*cluster_pt)>(-1)*(e2x5/e5x5))"
-cut = showerShapes
-Isolation = "((0.990748 + 5.64259*TMath::Exp(-0.0613952*cluster_pt))>cluster_iso)"
-cut += "*"+Isolation
-tryCut( eTree, rTree, "cluster_pt", cut+"*(trackDeltaR<0.1)", cut)
+#tryCut( eTree, rTree, "cluster_pt", cut+"*(trackDeltaR<0.1)", cut)
 """ consider matched tracks """
-tkIsoMatched = "((0.106544 + 0.00316748*cluster_pt)>(trackIsoConePtSum/trackPt))"
-tkMatched = "(trackDeltaR<.1)"
-cutMatch = cut+"*"+tkMatched
-tryCut( eTree, rTree, "cluster_pt", cutMatch, cut)
+#tryCut( eTree, rTree, "cluster_pt", cutMatch, cut)
+#tryCut( eTree, rTree, "cluster_pt", cut+"*( (cluster_pt*2>trackPt && cluster_pt*0.5<trackPt))", cut) # Check agreement between Pt's
 #tryCut( eTree, rTree, "cluster_pt", cutMatch+"*(bremStrength > .8)", cutMatch)
 
-makeComparisons( cutMatch, "e2x5OverE5x5 Iso TkMatch", False, [tkMatched, "L1Tk Match #DeltaR<0.1, Eff. (L1/Gen)"] )
-makeComparisons( cutMatch, "e2x5OverE5x5 Iso TkMatch", False )
-previousCut = cut+"*"+tkMatched
-cutMatch += "*"+tkIsoMatched
-tryCut( eTree, rTree, "cluster_pt", cutMatch, previousCut)
-makeComparisons( cutMatch, "e2x5OverE5x5 Iso TkMatch TkIso", False, [tkMatched, "L1Tk Match #DeltaR<0.1, Eff. (L1/Gen)"] )
-makeComparisons( cutMatch, "e2x5OverE5x5 Iso TkMatch TkIso", False )
 
 ## Need to include the non-matched tracks as well to get a TRUE RATE
 #noTkMatched = "(trackDeltaR>.1)"
