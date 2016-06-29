@@ -54,9 +54,9 @@ def tryCut( etree, rtree, var, cut, preCut="", verbose=True ) :
 def makeRatePlot( rateFile, tree, name, cut='', rateLimit=50, var='cluster_pt' ) :
     c = ROOT.TCanvas('c','c',canvasSize,canvasSize)
     
-    h1 = ROOT.TH1F('h1', name,rateLimit,0,rateLimit)
+    h1 = ROOT.TH1F('h1', name,int(rateLimit*.8),0,rateLimit)
     tree.Draw( var+' >> h1', cut)
-    h2 = ROOT.TH1F('h2'+name, name,rateLimit,0,rateLimit)
+    h2 = ROOT.TH1F('h2'+name, name,int(rateLimit*.8),0,rateLimit)
     h2.Sumw2()
     
     for i in range(1, h1.GetNbinsX()+1) :
