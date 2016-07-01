@@ -57,6 +57,7 @@
 
 #include "SimDataFormats/SLHC/interface/StackedTrackerTypes.h"
 #include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
+#include "DataFormats/L1TrackTrigger/interface/TTPixelTrack.h"
 #include "DataFormats/L1TrackTrigger/interface/L1TkPrimaryVertex.h"
 #include "SLHCUpgradeSimulations/L1TrackTrigger/interface/L1TkElectronTrackMatchAlgo.h"
 
@@ -68,6 +69,7 @@
 //
 class L1EGRateStudies : public edm::EDAnalyzer {
    typedef std::vector<TTTrack<Ref_PixelDigi_>> L1TkTrackCollectionType;
+   typedef std::vector<TTPixelTrack> L1TTPixelTrackCollection;
 
    public:
       explicit L1EGRateStudies(const edm::ParameterSet&);
@@ -108,6 +110,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       edm::InputTag L1CrystalClustersInputTag;
       edm::InputTag offlineRecoClusterInputTag;
       edm::InputTag L1TrackInputTag;
+      //edm::InputTag L1PixelTrackInputTag;
       edm::InputTag L1TrackPrimaryVertexTag;
             
       int nHistBins, nHistEtaBins;
@@ -254,6 +257,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    L1EGammaInputTags.push_back(edm::InputTag("l1extraParticlesUCT:All"));
    L1CrystalClustersInputTag = iConfig.getParameter<edm::InputTag>("L1CrystalClustersInputTag");
    L1TrackInputTag = iConfig.getParameter<edm::InputTag>("L1TrackInputTag");
+   //L1PixelTrackInputTag = iConfig.getParameter<edm::InputTag>("L1PixelTrackInputTag");
    L1TrackPrimaryVertexTag = iConfig.getParameter<edm::InputTag>("L1TrackPrimaryVertexTag");
    
    edm::Service<TFileService> fs;
@@ -458,6 +462,19 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    // L1 Tracks
    edm::Handle<L1TkTrackCollectionType> l1trackHandle;
    iEvent.getByLabel(L1TrackInputTag, l1trackHandle);
+
+   // L1 Tracks from pixels
+   //edm::Handle< std::vector< TTPixelTrack> > l1PixelTrackHandle;
+   //iEvent.getByLabel(L1PixelTrackInputTag, l1PixelTrackHandle);
+   //L1TTPixelTrackCollection l1TTPixelTracks_;
+   //l1TTPixelTracks_ = (*l1PixelTrackHandle.product());
+   //L1TTPixelTrackCollection::const_iterator iterL1PixelTrack;
+   //for ( L1TTPixelTrackCollection::const_iterator pxTrk = l1TTPixelTracks_.begin(); pxTrk != l1TTPixelTracks_.end(); pxTrk++ ) {
+   //  double pt        = pxTrk->getMomentum().perp();
+   //  double eta        = pxTrk->getMomentum().eta();
+   //  double phi       = pxTrk->getMomentum().phi();
+   //  std::cout << "Pixel Tracks - pt: " <<pt<< " eta: " <<eta<< " phi: " <<phi<<std::endl;
+   //}
 
    // L1 Track based primary vertex
    edm::Handle<L1TkPrimaryVertexCollection> l1PrimaryVertexHandle;

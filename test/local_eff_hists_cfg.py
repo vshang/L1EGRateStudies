@@ -2,7 +2,9 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("test")
 
+process.load('Configuration.StandardSequences.Services_cff')
 process.load("FWCore.MessageService.MessageLogger_cfi")
+process.load('Configuration.EventContent.EventContent_cff')
 process.MessageLogger.categories = cms.untracked.vstring('L1EGRateStudies', 'FwkReport')
 process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
    reportEvery = cms.untracked.int32(1)
@@ -22,6 +24,11 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'PH2_1K_FB_V3::All', '')
 
 process.load('Configuration.Geometry.GeometryExtended2023TTIReco_cff')
+process.load('Configuration.StandardSequences.MagneticField_38T_PostLS1_cff')
+process.load('Configuration.StandardSequences.L1TrackTrigger_cff')
+process.load('Geometry.TrackerGeometryBuilder.StackedTrackerGeometry_cfi')
+process.load('IOMC.EventVertexGenerators.VtxSmearedHLLHC_cfi')
+process.load('IOMC.EventVertexGenerators.VtxSmearedHLLHC_cfi')
 
 process.load('Configuration/StandardSequences/L1HwVal_cff')
 process.load('Configuration.StandardSequences.RawToDigi_cff')
@@ -105,24 +112,26 @@ process.pL1TkPrimaryVertex = cms.Path( process.L1TkPrimaryVertex )
 ############################################################
 # from ./SLHCUpgradeSimulations/L1TrackTrigger/test/L1TrackNtupleMaker_cfg.py
 
-
-# pixel additions
-process.load('Configuration.StandardSequences.RawToDigi_cff')
-process.load('Configuration.StandardSequences.Reconstruction_cff')
-process.load('SimGeneral.MixingModule.mixNoPU_cfi')
-
-
-from RecoLocalTracker.SiPixelRecHits.SiPixelRecHits_cfi import *
-process.siPixelRecHits = siPixelRecHits
-
-process.pixRec = cms.Path(
-    process.RawToDigi+
-    process.siPixelRecHits
-)
-
-process.L1PixelTrackFit = cms.EDProducer("L1PixelTrackFit")
-process.pixTrk = cms.Path(process.L1PixelTrackFit)
-
+#BeamSpotFromSim =cms.EDProducer("VtxSmeared")
+#process.pBeamSpot = cms.Path( process.BeamSpotFromSim )
+#
+## pixel additions
+#process.load('Configuration.StandardSequences.RawToDigi_cff')
+#process.load('Configuration.StandardSequences.Reconstruction_cff')
+#process.load('SimGeneral.MixingModule.mixNoPU_cfi')
+#
+#
+#from RecoLocalTracker.SiPixelRecHits.SiPixelRecHits_cfi import *
+#process.siPixelRecHits = siPixelRecHits
+#
+#process.L1PixelTrackFit = cms.EDProducer("L1PixelTrackFit")
+#process.pixTrk = cms.Path(process.siPixelRecHits +  process.L1PixelTrackFit)
+#
+#process.pixRec = cms.Path(
+#    process.RawToDigi+
+#    process.siPixelRecHits
+#)
+#
 #process.raw2digi_step = cms.Path(process.RawToDigi)
 
 
@@ -149,7 +158,7 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer","EGCrystalCluster"),
    OfflineRecoClustersInputTag = cms.InputTag("correctedHybridSuperClusters"),
    L1TrackInputTag = cms.InputTag("TTTracksFromPixelDigisLargerPhi","Level1TTTracks"),
-   L1PixelTrackInputTag = cms.InputTag("L1PixelTrackFit","Level1PixelTracks"),
+   #L1PixelTrackInputTag = cms.InputTag("L1PixelTrackFit","Level1PixelTracks"),
    L1TrackPrimaryVertexTag = cms.InputTag("L1TkPrimaryVertex"),
    doEfficiencyCalc = cms.untracked.bool(True),
    useOfflineClusters = cms.untracked.bool(False),
