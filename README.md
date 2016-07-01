@@ -16,7 +16,7 @@ git clone https://github.com/uwcms/UCT2015.git L1Trigger/UCT2015
 scramv1 b -j 8
 
 ```
-Then, assuming all is well in your enviroment, you will need to copy some auto-generated python files and checkout this repository.  These auto-generated python files need to be included in the user code which is sent with farmed out jobs.
+Then, assuming all is well in your enviroment, you will need to copy some auto-generated python files and checkout this repository.  These auto-generated python files need to be included in the user code which is sent with farmed out jobs (Specific to HT Condor/UWisconsin).
 
 ```bash
 cp ../cfipython/slc6_amd64_gcc472/Geometry/TrackerGeometryBuilder/tracker*.py Geometry/TrackerGeometryBuilder/python/ 
@@ -29,3 +29,26 @@ scramv1 b -j 8
 ```
 
 Some example run configurations are in `test/`
+
+```
+cd test
+cmsRun local_eff_hists_cfg.py
+```
+
+Submit jobs (UW Specific)
+```
+. condor_submit.sh
+```
+You will need to merge the files and do some additional histogram production
+```
+. condor_combine.sh
+```
+With the merged root files, there are a variety of plotting tools (they will likely ask you to make the directory structure to hold the png files)
+```
+python drawRateEff.py
+python optimizer.py
+python plotCutThresholds.py
+```
+
+
+
