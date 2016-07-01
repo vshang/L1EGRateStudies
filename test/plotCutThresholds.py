@@ -227,32 +227,39 @@ if __name__ == '__main__' :
     title1 = "L1EGamma Crystal (Electrons)"
     title2 = "L1EGamma Crystal (Fake)"
 
-    recoGenPtHist = effFile.Get("analyzer/reco_gen_pt")
-    tdrRecoGenPtHist = effFile.Get("analyzer/l1extraParticlesUCT:All_reco_gen_pt")
-    xaxis = "Gen P_{T} (GeV)"
-    yaxis = "Relative Error in P_{T} (reco-gen)/gen"
-    c.SetTitle("genPtVPtResFit")
-    drawPointsHists(recoGenPtHist, tdrRecoGenPtHist, title1, title2, xaxis, yaxis)
+    #recoGenPtHist = effFile.Get("analyzer/reco_gen_pt")
+    #tdrRecoGenPtHist = effFile.Get("analyzer/l1extraParticlesUCT:All_reco_gen_pt")
+    #xaxis = "Gen P_{T} (GeV)"
+    #yaxis = "Relative Error in P_{T} (reco-gen)/gen"
+    #c.SetTitle("genPtVPtResFit")
+    #drawPointsHists(recoGenPtHist, tdrRecoGenPtHist, title1, title2, xaxis, yaxis)
 
-    c.SetTitle("genPtVPtResFit_CrystalsAdjusted")
-    h1 = ROOT.TH2F('h1_', 'EG Relative Momentum Error', 50, 0, 50, 60, -.3, .3)
-    crystal_tree.Draw('((crystal_pt_to_RCT2015 - gen_pt)/gen_pt):gen_pt >> h1_')
-    drawPointsHists(h1, tdrRecoGenPtHist, title1, title2, xaxis, yaxis)
-    del h1
-#
-#
-#    """ Our different cuts """
-#    showerShapes = "(-0.921128 + 0.180511*TMath::Exp(-0.0400725*cluster_pt)>(-1)*(e2x5/e5x5))"
-#    Isolation = "((0.990748 + 5.64259*TMath::Exp(-0.0613952*cluster_pt))>cluster_iso)"
-#    tkIsoMatched = "((0.106544 + 0.00316748*cluster_pt)>(trackIsoConePtSum/trackPt))"
-#
-#    cut_none = ""
-#    cut_ss = showerShapes
-#    cut_ss_cIso = showerShapes+"*"+Isolation
-#    cut_ss_cIso_tkNoM = cut_ss_cIso+"*(trackDeltaR>0.1)"
-#    cut_ss_cIso_tkM = cut_ss_cIso+"*(trackDeltaR<0.1)"
-#    cut_ss_cIso_tkM_tkIso = cut_ss_cIso_tkM+"*"+tkIsoMatched
-#
+    #c.SetTitle("genPtVPtResFit_CrystalsAdjusted")
+    #h1 = ROOT.TH2F('h1_', 'EG Relative Momentum Error', 50, 0, 50, 60, -.3, .3)
+    #crystal_tree.Draw('((crystal_pt_to_RCT2015 - gen_pt)/gen_pt):gen_pt >> h1_')
+    #drawPointsHists(h1, tdrRecoGenPtHist, title1, title2, xaxis, yaxis)
+    #del h1
+
+
+    """ Our different cuts """
+    showerShapes = "(-0.921128 + 0.180511*TMath::Exp(-0.0400725*cluster_pt)>(-1)*(e2x5/e5x5))"
+    Isolation = "((0.990748 + 5.64259*TMath::Exp(-0.0613952*cluster_pt))>cluster_iso)"
+    tkIsoMatched = "((0.106544 + 0.00316748*cluster_pt)>(trackIsoConePtSum/trackPt))"
+
+    cut_none = ""
+    cut_ss = showerShapes
+    cut_ss_cIso = showerShapes+"*"+Isolation
+    cut_ss_cIso_tkNoM = cut_ss_cIso+"*(trackDeltaR>0.1)"
+    cut_ss_cIso_tkM = cut_ss_cIso+"*(trackDeltaR<0.1)"
+    cut_ss_cIso_tkM_tkIso = cut_ss_cIso_tkM+"*"+tkIsoMatched
+
+    var = "abs(trackDeltaPhi):cluster_pt"
+    xaxis = "Cluster P_{T} (GeV)"
+    yaxis = "abs( #delta#phi )"
+    xinfo = [20, 0., 50.]
+    yinfo = [500, 0., 1.]
+    c.SetTitle("clusterPtVDPhi_TIGHT_ETA")
+    drawPoints(c, crystal_tree, var, cut_ss_cIso+"*(trackDeltaEta<0.001)", title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points, True, False)
 #
 #
 #    var = "(-e2x5/e5x5):cluster_pt"

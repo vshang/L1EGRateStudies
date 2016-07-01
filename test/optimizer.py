@@ -371,12 +371,22 @@ def makeCutROC( name, eTree, rTree, var, rocAry, prevCut, baseCut='', text='') :
     h2 = ROOT.TH1F('h2','h2',rocAry[0],rocAry[1],rocAry[2])
     rTree.Draw( var + ' >> h2', prevCut )
 
-    for b in range( 1, h1.GetNbinsX()+1 ) :
+    #for b in range( 1, h1.GetNbinsX()+1 ) :
+    for b in range( 0, h1.GetNbinsX() ) :
         paramVals.append( h1.GetXaxis().GetBinCenter( b ) )
         eInt = h1.Integral( 0, b )
         rInt = h2.Integral( 0, b )
+        #if b < 10 :
+        #    print "Eff: %f    Rate: %f" % (eInt,rInt)
         sigVals.append( eInt / sigInit )
         bkgVals.append( 1. - rInt / bkgInit )
+        if abs( sigVals[-1] - .9 ) < 0.001 :
+            print "Cut: %f    Sig: %f    Bkg: %f" % (paramVals[-1], sigVals[-1], bkgVals[-1])
+        if 'PtMatch' in name :
+            if abs( sigVals[-1] - .9 ) < 0.01 :
+                print "Cut: %f    Sig: %f    Bkg: %f" % (paramVals[-1], sigVals[-1], bkgVals[-1])
+            if abs( sigVals[-1] - .95 ) < 0.01 :
+                print "Cut: %f    Sig: %f    Bkg: %f" % (paramVals[-1], sigVals[-1], bkgVals[-1])
 
 
     c = ROOT.TCanvas('c','c',800,800)
@@ -386,8 +396,13 @@ def makeCutROC( name, eTree, rTree, var, rocAry, prevCut, baseCut='', text='') :
     g.Draw()
     g.GetXaxis().SetTitle('Signal Efficiency')
     g.GetYaxis().SetTitle('Background Rejection')
+    g.SetMarkerStyle(0)
+    g.SetLineColor(2)
+    g.SetLineWidth(2)
     g.SetMaximum( 1.05 )
     g.SetMinimum( 0.5 )
+    if "BaselineCut" in name :
+        g.SetMinimum( 0.0 )
     g.GetXaxis().SetLimits( 0.0, 1. )
     g.Draw()
     c.Update()
@@ -404,8 +419,8 @@ def makeCutROCPlus( name, eTree, rTree, var, rocAry, prevCut, baseCut='', text='
 
     # Mapping for renaming aspects depending on if dPhi or dEta is the 'leading' cut
     nameMap = {
-        'trackDeltaEta' : ['trackDeltaPhi', 'phi', 'eta'],
-        'trackDeltaPhi' : ['trackDeltaEta', 'eta', 'phi']}
+        'abs(trackDeltaEta)' : ['abs(trackDeltaPhi)', 'phi', 'eta'],
+        'abs(trackDeltaPhi)' : ['abs(trackDeltaEta)', 'eta', 'phi']}
 
     # Get our total # of events for sig and bkg
     eTree.Draw( var, baseCut )
@@ -419,6 +434,7 @@ def makeCutROCPlus( name, eTree, rTree, var, rocAry, prevCut, baseCut='', text='
     dXCuts = []
     for i in range( 1, 8 ) :
         dXCuts.append( i*.01 )
+    dXCuts = [0.01, 0.02, 0.03, 0.04, 0.05, 0.08, 0.12, 0.2, 0.5]
     
     sigs = {}
     bkgs = {}
@@ -437,7 +453,8 @@ def makeCutROCPlus( name, eTree, rTree, var, rocAry, prevCut, baseCut='', text='
         h2 = ROOT.TH1F('h2','h2',rocAry[0],rocAry[1],rocAry[2])
         rTree.Draw( var + ' >> h2', prevCut+addition )
 
-        for b in range( 1, h1.GetNbinsX()+1 ) :
+        #for b in range( 1, h1.GetNbinsX()+1 ) :
+        for b in range( 0, h1.GetNbinsX() ) :
             eInt = h1.Integral( 0, b )
             rInt = h2.Integral( 0, b )
             sigs[cut].append( eInt / sigInit )
@@ -459,12 +476,15 @@ def makeCutROCPlus( name, eTree, rTree, var, rocAry, prevCut, baseCut='', text='
     graphs[dXCuts[0]].Draw()
     graphs[dXCuts[0]].GetXaxis().SetTitle('Signal Efficiency')
     graphs[dXCuts[0]].GetYaxis().SetTitle('Background Rejection')
-    graphs[dXCuts[0]].SetMaximum( 0.95 )
-    graphs[dXCuts[0]].SetMinimum( 0.6 )
-    if 'Baseline' in name :
-        graphs[dXCuts[0]].SetMinimum( 0.1 )
-    graphs[dXCuts[0]].GetXaxis().SetLimits( 0.3, 1. )
-    graphs[dXCuts[0]].SetLineColor(ROOT.kRed-10)
+    #graphs[dXCuts[0]].SetMaximum( 0.95 )
+    #graphs[dXCuts[0]].SetMinimum( 0.6 )
+    #graphs[dXCuts[0]].GetXaxis().SetLimits( 0.3, 1. )
+    #if 'Baseline' in name :
+    graphs[dXCuts[0]].SetMaximum( 1.05 )
+    graphs[dXCuts[0]].SetMinimum( 0.0 )
+    graphs[dXCuts[0]].GetXaxis().SetLimits( 0.0, 1. )
+    #graphs[dXCuts[0]].SetLineColor(ROOT.kRed-10)
+    graphs[dXCuts[0]].SetLineColor(1)
     graphs[dXCuts[0]].SetLineWidth(2)
     graphs[dXCuts[0]].SetMarkerStyle(0)
     graphs[dXCuts[0]].Draw()
@@ -472,11 +492,12 @@ def makeCutROCPlus( name, eTree, rTree, var, rocAry, prevCut, baseCut='', text='
     dXCuts.remove( dXCuts[0] )
 
     for i, cut in enumerate(dXCuts) :
-        graphs[cut].Draw('SAME')
-        if i < 5 :
-            graphs[cut].SetLineColor(ROOT.kRed-10+2*(i+1) )
-        else :
-            graphs[cut].SetLineColor(ROOT.kBlue-10+2*(i+1) )
+        #graphs[cut].Draw('SAME')
+        #if i < 5 :
+        #    graphs[cut].SetLineColor(ROOT.kRed-10+2*(i+1) )
+        #else :
+        #    graphs[cut].SetLineColor(ROOT.kBlue-10+2*(i+1) )
+        graphs[cut].SetLineColor(2+i)
         graphs[cut].SetLineWidth(2)
         graphs[cut].Draw('SAME')
         leg.AddEntry(graphs[cut], graphs[cut].GetTitle(),"lpe")
@@ -488,7 +509,7 @@ def makeCutROCPlus( name, eTree, rTree, var, rocAry, prevCut, baseCut='', text='
         txt1 = ROOT.TLatex(.2, .80,"x")
         txt1.SetTextSize(0.04)
         txt1.DrawLatexNDC(.2, .15, text )
-        if baseCut != '' : 
+        if baseCut != '' and "Baseline" not in name : 
             txt2 = ROOT.TLatex(.2, .80,"x")
             txt2.SetTextSize(0.035)
             text2 = "All considered events passing: %s" % baseCut
@@ -526,24 +547,41 @@ if __name__ == '__main__' :
     rebaseAll = cut_ss_cIso
 
     #makeCutROC( "testDRCuts_ss_cIso", eTree, rTree, "trackDeltaR", rocAry, cut_ss_cIso, cut_none, textR )
-    #makeCutROC( "testDPhiCuts_ss_cIso", eTree, rTree, "trackDeltaPhi", rocAry, cut_ss_cIso, cut_none, textPhi )
-    #makeCutROC( "testDEtaCuts_ss_cIso", eTree, rTree, "trackDeltaEta", rocAry, cut_ss_cIso, cut_none, textEta )
+    #makeCutROC( "testDPhiCuts_ss_cIso", eTree, rTree, "abs(trackDeltaPhi)", rocAry, cut_ss_cIso, cut_none, textPhi )
+    #makeCutROC( "testDEtaCuts_ss_cIso", eTree, rTree, "abs(trackDeltaEta)", rocAry, cut_ss_cIso, cut_none, textEta )
     #makeCutROC( "testDRCutsBase20_ss_cIso", eTree, rTree, "trackDeltaR", rocAry, cut_ss_cIso, rebase20, textR )
-    #makeCutROC( "testDPhiCutsBase20_ss_cIso", eTree, rTree, "trackDeltaPhi", rocAry, cut_ss_cIso, rebase20, textPhi )
-    #makeCutROC( "testDEtaCutsBase20_ss_cIso", eTree, rTree, "trackDeltaEta", rocAry, cut_ss_cIso, rebase20, textEta )
+    #makeCutROC( "testDPhiCutsBase20_ss_cIso", eTree, rTree, "abs(trackDeltaPhi)", rocAry, cut_ss_cIso, rebase20, textPhi )
+    #makeCutROC( "testDEtaCutsBase20_ss_cIso", eTree, rTree, "abs(trackDeltaEta)", rocAry, cut_ss_cIso, rebase20, textEta )
     #makeCutROC( "testDRCutsBase30_ss_cIso", eTree, rTree, "trackDeltaR", rocAry, cut_ss_cIso, rebase30, textR )
-    #makeCutROC( "testDPhiCutsBase30_ss_cIso", eTree, rTree, "trackDeltaPhi", rocAry, cut_ss_cIso, rebase30, textPhi )
-    #makeCutROC( "testDEtaCutsBase30_ss_cIso", eTree, rTree, "trackDeltaEta", rocAry, cut_ss_cIso, rebase30, textEta )
+    #makeCutROC( "testDPhiCutsBase30_ss_cIso", eTree, rTree, "abs(trackDeltaPhi)", rocAry, cut_ss_cIso, rebase30, textPhi )
+    #makeCutROC( "testDEtaCutsBase30_ss_cIso", eTree, rTree, "abs(trackDeltaEta)", rocAry, cut_ss_cIso, rebase30, textEta )
+    #makeCutROC( "testDRCutsBaselineCuts_ss_cIso", eTree, rTree, "trackDeltaR", rocAry, cut_ss_cIso, rebaseAll, textR )
+    #makeCutROC( "testDPhiCutsBaselineCuts_ss_cIso", eTree, rTree, "abs(trackDeltaPhi)", rocAry, cut_ss_cIso, rebaseAll, textPhi )
+    #makeCutROC( "testDEtaCutsBaselineCuts_ss_cIso", eTree, rTree, "abs(trackDeltaEta)", rocAry, cut_ss_cIso, rebaseAll, textEta )
+    #makeCutROC( "testDRCutsBaselineCuts", eTree, rTree, "trackDeltaR", rocAry, cut_none, cut_none, textR )
+
+    ptRes = "(abs(((cluster_pt - trackPt) / cluster_pt )) < .5)"
+    #makeCutROC( "testDRCutsBaselineCuts20_ss_cIso", eTree, rTree, "trackDeltaR", rocAry, cut_ss_cIso+"*"+rebase20, rebaseAll+"*"+rebase20, textR )
+    makeCutROC( "testDRCutsBaselineCuts20PtMatch_ss_cIso", eTree, rTree, "trackDeltaR", rocAry, cut_ss_cIso+"*"+rebase20+"*"+ptRes, rebaseAll+"*"+rebase20+"*"+ptRes, textR )
+
+    #makeCutROC( "testDRCutsBaselineCuts20_ss_cIso", eTree, rTree, "trackDeltaR", rocAry, cut_ss_cIso, rebaseAll+"*"+rebase20, textR )
+    #makeCutROC( "testDEtaCutsBaselineCuts20_ss_cIso", eTree, rTree, "abs(trackDeltaEta)", rocAry, cut_ss_cIso, rebaseAll+"*"+rebase20, textEta )
+    #makeCutROC( "testDPhiCutsBaselineCuts20_ss_cIso", eTree, rTree, "abs(trackDeltaPhi)", rocAry, cut_ss_cIso, rebaseAll+"*"+rebase20, textPhi )
 
 
-    #makeCutROCPlus( "testDPhiCuts_ss_cIso", eTree, rTree, "trackDeltaPhi", rocAry, cut_ss_cIso, cut_none, textPhi )
-    #makeCutROCPlus( "testDEtaCuts_ss_cIso", eTree, rTree, "trackDeltaEta", rocAry, cut_ss_cIso, cut_none, textEta )
-    #makeCutROCPlus( "testDPhiCutsBase20_ss_cIso", eTree, rTree, "trackDeltaPhi", rocAry, cut_ss_cIso, rebase20, textPhi )
-    #makeCutROCPlus( "testDEtaCutsBase20_ss_cIso", eTree, rTree, "trackDeltaEta", rocAry, cut_ss_cIso, rebase20, textEta )
-    #makeCutROCPlus( "testDPhiCutsBase30_ss_cIso", eTree, rTree, "trackDeltaPhi", rocAry, cut_ss_cIso, rebase30, textPhi )
-    #makeCutROCPlus( "testDEtaCutsBase30_ss_cIso", eTree, rTree, "trackDeltaEta", rocAry, cut_ss_cIso, rebase30, textEta )
-    makeCutROCPlus( "testDPhiCutsBaseline_ss_cIso", eTree, rTree, "trackDeltaPhi", rocAry, cut_ss_cIso, rebaseAll+"*"+rebase20, textPhi )
-    makeCutROCPlus( "testDEtaCutsBaseline_ss_cIso", eTree, rTree, "trackDeltaEta", rocAry, cut_ss_cIso, rebaseAll+"*"+rebase20, textEta )
+    #makeCutROCPlus( "testDPhiCuts_ss_cIso", eTree, rTree, "abs(trackDeltaPhi)", rocAry, cut_ss_cIso, cut_none, textPhi )
+    #makeCutROCPlus( "testDEtaCuts_ss_cIso", eTree, rTree, "abs(trackDeltaEta)", rocAry, cut_ss_cIso, cut_none, textEta )
+    #makeCutROCPlus( "testDPhiCutsBase20_ss_cIso", eTree, rTree, "abs(trackDeltaPhi)", rocAry, cut_ss_cIso, rebase20, textPhi )
+    #makeCutROCPlus( "testDEtaCutsBase20_ss_cIso", eTree, rTree, "abs(trackDeltaEta)", rocAry, cut_ss_cIso, rebase20, textEta )
+    #makeCutROCPlus( "testDPhiCutsBase30_ss_cIso", eTree, rTree, "abs(trackDeltaPhi)", rocAry, cut_ss_cIso, rebase30, textPhi )
+    #makeCutROCPlus( "testDEtaCutsBase30_ss_cIso", eTree, rTree, "abs(trackDeltaEta)", rocAry, cut_ss_cIso, rebase30, textEta )
+#XXX    makeCutROCPlus( "testDPhiCutsBaseline20_ss_cIso", eTree, rTree, "abs(trackDeltaPhi)", rocAry, cut_ss_cIso+"*"+rebase20, rebaseAll+"*"+rebase20, textPhi )
+#XXX    makeCutROCPlus( "testDEtaCutsBaseline20_ss_cIso", eTree, rTree, "abs(trackDeltaEta)", rocAry, cut_ss_cIso+"*"+rebase20, rebaseAll+"*"+rebase20, textEta )
+#XXX    makeCutROCPlus( "testDPhiCutsBaseline20PtMatch_ss_cIso", eTree, rTree, "abs(trackDeltaPhi)", rocAry, cut_ss_cIso, rebaseAll+"*"+rebase20+"*"+ptRes, textPhi )
+#XXX    makeCutROCPlus( "testDEtaCutsBaseline20PtMatch_ss_cIso", eTree, rTree, "abs(trackDeltaEta)", rocAry, cut_ss_cIso, rebaseAll+"*"+rebase20+"*"+ptRes, textEta )
+    #makeCutROCPlus( "testDPhiCutsBaseline_ss_cIso", eTree, rTree, "abs(trackDeltaPhi)", rocAry, cut_ss_cIso, rebaseAll, textPhi )
+    #makeCutROCPlus( "testDEtaCutsBaseline_ss_cIso", eTree, rTree, "abs(trackDeltaEta)", rocAry, cut_ss_cIso, rebaseAll, textEta )
+
 
 
     makeSet = False
