@@ -22,7 +22,7 @@ Then, assuming all is well in your enviroment, you will need to copy some auto-g
 cp ../cfipython/slc6_amd64_gcc472/Geometry/TrackerGeometryBuilder/tracker*.py Geometry/TrackerGeometryBuilder/python/ 
 
 pushd SLHCUpgradeSimulations
-git clone https://github.com/truggles/L1EGRateStudies.git
+git clone -b 62X_SLHC_L1EGCrystals https://github.com/truggles/L1EGRateStudies.git
 popd
 
 scramv1 b -j 8
