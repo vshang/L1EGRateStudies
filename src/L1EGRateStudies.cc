@@ -861,34 +861,31 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
 
 bool
 L1EGRateStudies::cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster) const {
-   return true;
-   //float cut_pt = cluster.GetExperimentalParam("uncorrectedPt");
-   //float cut_pt = cluster.pt();
-   //float cut_iso = cluster.isolation();
-   //float cut_hovere = cluster.hovere();
-   //bool passIso = false;
-   //bool passHoverE = false;
-   //if ( (0.483021 + 3.9432*TMath::Exp( -0.198946 * cut_pt )) > cut_hovere ) passHoverE = true;
-   //if ( (1.45325 + 6.09201*TMath::Exp( -0.0893736 * cut_pt )) > cut_iso ) passIso = true;
-   //if ( passIso && passHoverE ) return true;
-   //if ( fabs(cluster.eta()) > 1.479 )
-   //{
-   //   if ( cluster.hovere() < 22./cut_pt
-   //        && cluster.isolation() < 64./cut_pt+0.1
-   //        && cluster.GetCrystalPt(4)/(cluster.GetCrystalPt(0)+cluster.GetCrystalPt(1)) < ( (cut_pt < 40) ? 0.18*(1-cut_pt/70.):0.18*3/7. ) )
-   //   {
-   //      return true;
-   //   }
-   //}
-   //else
-   //{
-   //   if ( cluster.hovere() < 14./cut_pt+0.05
-   //        && cluster.isolation() < 40./cut_pt+0.1
-   //        && cluster.GetCrystalPt(4)/(cluster.GetCrystalPt(0)+cluster.GetCrystalPt(1)) < ( (cut_pt < 30) ? 0.18*(1-cut_pt/100.):0.18*0.7 ) )
-   //   {
-   //      return true;
-   //   }
-   //}
+   // return true;
+   
+   // Currently this producer is optimized based on cluster isolation and shower shape
+   // the previous H/E cut has been removed for the moment.
+   // The following cut is based off of what was shown in the Phase-2 meeting
+   // 23 June 2016.  Only the barrel is considered.  And track isolation
+   // is not included.
+   if ( fabs(cluster.eta()) < 1.479 )
+   {
+      std::cout << "Starting passing check" << std::endl;
+      float cluster_pt = cluster.pt();
+      float clusterE2x5 = cluster.GetExperimentalParam("E2x5");
+      float clusterE5x5 = cluster.GetExperimentalParam("E5x5");
+      float cluster_iso = cluster.isolation();
+      bool passIso = false;
+      bool passShowerShape = false;
+      
+      if ( ( -0.92 + 0.18 * TMath::Exp( -0.04 * cluster_pt ) < (clusterE2x5 / clusterE5x5)) ) {
+	  passShowerShape = true; }
+      if ( (( 0.99 + 5.6 * TMath::Exp( -0.061 * cluster_pt )) > cluster_iso ) ) {
+          passIso = true; }
+      if ( passShowerShape && passIso ) {
+          std::cout << " --- Passed!" << std::endl;
+	  return true; }
+   }
    return false;
 }
 
