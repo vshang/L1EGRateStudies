@@ -167,11 +167,8 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float iso;
          float bremStrength;
          float e2x5;
-         float pt2x5;
          float e3x5;
-         float pt3x5;
          float e5x5;
-         float pt5x5;
          float deltaR = 0.;
          float deltaPhi = 0.;
          float gen_pt = 0.;
@@ -341,11 +338,8 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("cluster_iso", &treeinfo.iso);
    crystal_tree->Branch("bremStrength", &treeinfo.bremStrength);
    crystal_tree->Branch("e2x5", &treeinfo.e2x5);
-   crystal_tree->Branch("pt2x5", &treeinfo.pt2x5);
    crystal_tree->Branch("e3x5", &treeinfo.e3x5);
-   crystal_tree->Branch("pt3x5", &treeinfo.pt3x5);
    crystal_tree->Branch("e5x5", &treeinfo.e5x5);
-   crystal_tree->Branch("pt5x5", &treeinfo.pt5x5);
    crystal_tree->Branch("deltaR", &treeinfo.deltaR);
    crystal_tree->Branch("deltaPhi", &treeinfo.deltaPhi);
    crystal_tree->Branch("gen_pt", &treeinfo.gen_pt);
@@ -850,11 +844,8 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
    treeinfo.iso = cluster.isolation();
    treeinfo.bremStrength = cluster.bremStrength();
    treeinfo.e2x5 = cluster.GetExperimentalParam("E2x5");
-   treeinfo.pt2x5 = cluster.GetExperimentalParam("Pt2x5");
    treeinfo.e3x5 = cluster.GetExperimentalParam("E3x5");
-   treeinfo.pt3x5 = cluster.GetExperimentalParam("Pt3x5");
    treeinfo.e5x5 = cluster.GetExperimentalParam("E5x5");
-   treeinfo.pt5x5 = cluster.GetExperimentalParam("Pt5x5");
    treeinfo.passed = cluster_passes_cuts(cluster);
    treeinfo.uslPt = cluster.GetExperimentalParam("upperSideLobePt");
    treeinfo.lslPt = cluster.GetExperimentalParam("lowerSideLobePt");

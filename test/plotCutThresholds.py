@@ -278,22 +278,6 @@ if __name__ == '__main__' :
 #    c.SetTitle("clusterPtVE2x5OverE3x5")
 #    drawPoints(c, crystal_tree, var, cut_none, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
 #
-#    var = "(-pt2x5/pt5x5):cluster_pt"
-#    xaxis = "Cluster P_{T} (GeV)"
-#    yaxis = "Negative P_{T} 2x5/5x5"
-#    xinfo = [20, 0., 50.]
-#    yinfo = [100, -1.1, -0.4]
-#    c.SetTitle("clusterPtVPt2x5OverPt5x5")
-#    drawPoints(c, crystal_tree, var, cut_none, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
-#
-#    var = "(-pt2x5/pt3x5):cluster_pt"
-#    xaxis = "Cluster P_{T} (GeV)"
-#    yaxis = "Negative P_{T} 2x5/3x5"
-#    xinfo = [20, 0., 50.]
-#    yinfo = [100, -1.1, -0.4]
-#    c.SetTitle("clusterPtVPt2x5OverPt3x5")
-#    drawPoints(c, crystal_tree, var, cut_none, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
-#
 #    var = "cluster_iso:cluster_pt"
 #    xaxis = "Cluster P_{T} (GeV)"
 #    yaxis = "Cluster Iso"
