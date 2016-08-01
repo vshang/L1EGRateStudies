@@ -12,6 +12,7 @@ git cms-init
 git cms-addpkg SLHCUpgradeSimulations/L1TrackTrigger
 git cms-merge-topic EmanuelPerez:TTI_62X_TrackTriggerObjects
 git clone https://github.com/uwcms/UCT2015.git L1Trigger/UCT2015
+git cms-merge-topic truggles:CMSSW_6_2_SLHC12_L1EGCrystals
 
 scramv1 b -j 8
 
