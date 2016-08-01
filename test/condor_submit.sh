@@ -5,11 +5,12 @@
 #scram b
 #popd
 
+jobNum=26
 jobopts=''
 doeff=true
 dorate=true
 dofakes=false
-rmold=true
+rmold=false
 while getopts ":trefj:" opt; do
   case $opt in
     j)
@@ -49,7 +50,7 @@ if $doeff; then
     farmoutAnalysisJobs \
         --input-dir=/store/mc/TTI2023Upg14D/SingleElectronFlatPt0p2To50/GEN-SIM-DIGI-RAW/PU140bx25_PH2_1K_FB_V3-v2/00000 \
         --input-files-per-job=1 $jobopts \
-        egalg_eff_hists $CMSSW_BASE eff_hists_cfg.py
+        egalg_eff_hists${jobNum} $CMSSW_BASE eff_hists_cfg.py
 fi
 
 if $dorate; then
@@ -60,7 +61,7 @@ if $dorate; then
     farmoutAnalysisJobs \
         --input-dir=/store/mc/TTI2023Upg14D/Neutrino_Pt2to20_gun/GEN-SIM-DIGI-RAW/PU140bx25_PH2_1K_FB_V3-v2/00000 \
         --input-files-per-job=1 $jobopts \
-        egalg_rate_hists $CMSSW_BASE rate_hists_cfg.py
+        egalg_rate_hists${jobNum} $CMSSW_BASE rate_hists_cfg.py
 fi
 
 if $dofakes; then
