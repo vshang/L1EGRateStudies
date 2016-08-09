@@ -5,11 +5,12 @@
 <use name="PhysicsTools/UtilAlgos"/>
 <use name="SimDataFormats/SLHC"/>
 <use name="DataFormats/EcalDigi"/>
-<use name="DataFormats/L1TrackTrigger"/>
-<use name="SLHCUpgradeSimulations/L1TrackTrigger"/>
 <use name="SLHCUpgradeSimulations/L1CaloTrigger"/>
 <use name="FastSimulation/CaloGeometryTools"/>
+<use name="FastSimulation/Particle"/>
+<use name="FastSimulation/BaseParticlePropagator"/>
 <use name="DataFormats/JetReco"/>
 <use name="hepmc"/>
+<use name="heppdt"/>
 <use name="root"/>
 <flags EDM_PLUGIN="1"/>

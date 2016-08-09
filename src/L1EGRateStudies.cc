@@ -38,6 +38,7 @@
 #include "TH1.h"
 #include "TH2.h"
 #include "TTree.h"
+#include "TMath.h"
 
 #include "DataFormats/Math/interface/deltaR.h"
 #include "DataFormats/Candidate/interface/Candidate.h"
@@ -45,6 +46,7 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
 #include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
 #include "SimDataFormats/SLHC/interface/L1EGCrystalCluster.h"
+#include "SimDataFormats/SLHC/src/classes.h"
 
 #include "DataFormats/EgammaReco/interface/SuperCluster.h"
 #include "DataFormats/EgammaReco/interface/SuperClusterFwd.h"
@@ -53,23 +55,23 @@
 #include "DataFormats/L1Trigger/interface/L1EmParticleFwd.h"
 
 #include "FastSimulation/BaseParticlePropagator/interface/BaseParticlePropagator.h"
-#include "FastSimulation/Particle/interface/ParticleTable.h"
+//#include "FastSimulation/Particle/interface/ParticleTable.h"
 
-#include "SimDataFormats/SLHC/interface/StackedTrackerTypes.h"
-#include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
-#include "DataFormats/L1TrackTrigger/interface/TTPixelTrack.h"
-#include "DataFormats/L1TrackTrigger/interface/L1TkPrimaryVertex.h"
-#include "SLHCUpgradeSimulations/L1TrackTrigger/interface/L1TkElectronTrackMatchAlgo.h"
+//#include "SimDataFormats/SLHC/interface/StackedTrackerTypes.h"
+//#include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
+//#include "DataFormats/L1TrackTrigger/interface/TTPixelTrack.h"
+//#include "DataFormats/L1TrackTrigger/interface/L1TkPrimaryVertex.h"
+//#include "SLHCUpgradeSimulations/L1TrackTrigger/interface/L1TkElectronTrackMatchAlgo.h"
 
 #include "DataFormats/EcalDigi/interface/EcalDigiCollections.h"
 #include "DataFormats/EcalRecHit/interface/EcalRecHit.h"
 #include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
+
+#include "FastSimulation/Particle/interface/RawParticle.h"
 //
 // class declaration
 //
 class L1EGRateStudies : public edm::EDAnalyzer {
-   typedef std::vector<TTTrack<Ref_PixelDigi_>> L1TkTrackCollectionType;
-   typedef std::vector<TTPixelTrack> L1TTPixelTrackCollection;
 
    public:
       explicit L1EGRateStudies(const edm::ParameterSet&);
@@ -93,8 +95,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       void fill_tree(const l1slhc::L1EGCrystalCluster& cluster);
       bool cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
       bool checkTowerExists(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps) const;
-      void checkRecHitsFlags(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps, const EcalRecHitCollection &ecalRecHits) const;
-      void doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm::Handle<L1TkTrackCollectionType> l1trackHandle);
+      //void checkRecHitsFlags(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps, const EcalRecHitCollection &ecalRecHits) const;
       
       // ----------member data ---------------------------
       bool doEfficiencyCalc;
@@ -106,12 +107,21 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       double genMatchRelPtcut;
       
       int eventCount;
-      std::vector<edm::InputTag> L1EGammaInputTags;
+      //std::vector<edm::InputTag> L1EGammaInputTags;
       edm::InputTag L1CrystalClustersInputTag;
       edm::InputTag offlineRecoClusterInputTag;
-      edm::InputTag L1TrackInputTag;
-      //edm::InputTag L1PixelTrackInputTag;
-      edm::InputTag L1TrackPrimaryVertexTag;
+
+      edm::EDGetTokenT<l1slhc::L1EGCrystalClusterCollection> crystalClustersToken_;
+      l1slhc::L1EGCrystalClusterCollection crystalClusters;
+      edm::Handle<l1slhc::L1EGCrystalClusterCollection> crystalClustersHandle;      
+
+      edm::EDGetTokenT<reco::GenParticleCollection> genCollectionToken_;
+      reco::GenParticleCollection genParticles;
+      //iEvent.getByLabel("genParticles", genParticleHandle);
+      edm::Handle<reco::GenParticleCollection> genParticleHandle;
+
+      edm::EDGetTokenT<EcalRecHitCollection> ecalRecHitEBToken_;
+      //edm::EDGetTokenT<EcalRecHitCollection> ecalRecHitEEToken_;
             
       int nHistBins, nHistEtaBins;
       double histLow;
@@ -207,7 +217,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float trackHighestPtCutChi2Eta;
          float trackHighestPtCutChi2Phi;
          float trackHighestPtCutChi2Chi2;
-         float trackRInv;         
+         float trackRInv;
          float trackChi2;
          float trackIsoConeTrackCount;
          float trackIsoConePtSum;
@@ -241,6 +251,10 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    useEndcap(iConfig.getUntrackedParameter<bool>("useEndcap", false)),
    genMatchDeltaRcut(iConfig.getUntrackedParameter<double>("genMatchDeltaRcut", 0.1)),
    genMatchRelPtcut(iConfig.getUntrackedParameter<double>("genMatchRelPtcut", 0.5)),
+   crystalClustersToken_(consumes<l1slhc::L1EGCrystalClusterCollection>(iConfig.getParameter<edm::InputTag>("L1CrystalClustersInputTag"))),
+   genCollectionToken_(consumes<reco::GenParticleCollection>(iConfig.getParameter<edm::InputTag>("genParticles"))),
+   ecalRecHitEBToken_(consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("ecalRecHitEB"))),
+   //ecalRecHitEEToken_(consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("ecalRecHitEE"))),
    nHistBins(iConfig.getUntrackedParameter<int>("histogramBinCount", 10)),
    nHistEtaBins(iConfig.getUntrackedParameter<int>("histogramEtaBinCount", 20)),
    histLow(iConfig.getUntrackedParameter<double>("histogramRangeLow", 0.)),
@@ -249,14 +263,11 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    histetaHigh(iConfig.getUntrackedParameter<double>("histogramRangeetaHigh", 2.5))
 {
    eventCount = 0;
-   L1EGammaInputTags = iConfig.getParameter<std::vector<edm::InputTag>>("L1EGammaInputTags");
-   L1EGammaInputTags.push_back(edm::InputTag("l1extraParticles:All"));
-   L1EGammaInputTags.push_back(edm::InputTag("l1extraParticlesUCT:All"));
-   L1CrystalClustersInputTag = iConfig.getParameter<edm::InputTag>("L1CrystalClustersInputTag");
-   L1TrackInputTag = iConfig.getParameter<edm::InputTag>("L1TrackInputTag");
-   //L1PixelTrackInputTag = iConfig.getParameter<edm::InputTag>("L1PixelTrackInputTag");
-   L1TrackPrimaryVertexTag = iConfig.getParameter<edm::InputTag>("L1TrackPrimaryVertexTag");
-   
+   //L1EGammaInputTags = iConfig.getParameter<std::vector<edm::InputTag>>("L1EGammaInputTags");
+   //L1EGammaInputTags.push_back(edm::InputTag("l1extraParticles:All"));
+   //L1EGammaInputTags.push_back(edm::InputTag("l1extraParticlesUCT:All"));
+   //L1CrystalClustersInputTag = iConfig.getParameter<edm::InputTag>("L1CrystalClustersInputTag");
+
    edm::Service<TFileService> fs;
    
    // If using offline-reco clusters, label dR & related hists appropriately
@@ -285,24 +296,24 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       dyncrystal_dphi_bremcut_hist = fs->make<TH1F>("dyncrystalEG_dphi_bremcut", ("Dynamic Crystal Trigger;d#phi "+drLabel).c_str(), 50, -0.1, 0.1);
       dyncrystal_2DdeltaR_hist = fs->make<TH2F>("dyncrystalEG_2DdeltaR_hist", "Dynamic Crystal Trigger;d#eta;d#phi;Counts", 50, -0.05, 0.05, 50, -0.05, 0.05);
 
-      for(auto& inputTag : L1EGammaInputTags)
-      {
-         const std::string &name = inputTag.encode();
-         EGalg_efficiency_hists[name] = fs->make<TH1F>((name+"_efficiency_pt").c_str(), (name+";Gen. pT (GeV);Efficiency").c_str(), nHistBins, histLow, histHigh);
-         EGalg_efficiency_eta_hists[name] = fs->make<TH1F>((name+"_efficiency_eta").c_str(), (name+";Gen. #eta;Efficiency").c_str(), nHistEtaBins, histetaLow, histetaHigh);
-         // Implicit conversion from int to double
-         for(int threshold : thresholds)
-         {
-            EGalg_efficiency_reco_hists[name][threshold] = fs->make<TH1F>((name+"_threshold"+std::to_string(threshold)+"_efficiency_reco_pt").c_str(), (name+";Offline reco. pT (GeV);Efficiency").c_str(), nHistBins, histLow, histHigh);
-            EGalg_efficiency_gen_hists[name][threshold] = fs->make<TH1F>((name+"_threshold"+std::to_string(threshold)+"_efficiency_gen_pt").c_str(), (name+";Gen. pT (GeV);Efficiency").c_str(), nHistBins, histLow, histHigh);
-         }
-         EGalg_deltaR_hists[name] = fs->make<TH1F>((name+"_deltaR").c_str(), (name+";#Delta R "+drLabel).c_str(), 50, 0., genMatchDeltaRcut);
-         EGalg_deta_hists[name] = fs->make<TH1F>((name+"_deta").c_str(), (name+";d#eta "+drLabel).c_str(), 100, -0.25, 0.25);
-         EGalg_dphi_hists[name] = fs->make<TH1F>((name+"_dphi").c_str(), (name+";d#phi "+drLabel).c_str(), 100, -0.25, 0.25);
-         EGalg_2DdeltaR_hists[name] = fs->make<TH2F>((name+"_2DdeltaR").c_str(), ";d#eta;d#phi;Counts", 50, -0.05, 0.05, 50, -0.05, 0.05);
-         EGalg_reco_gen_pt_hists[name] = fs->make<TH2F>((name+"_reco_gen_pt").c_str(), (name+";Gen. pT (GeV);(reco-gen)/gen;Counts").c_str(), 40, 0., 50., 40, -0.3, 0.3); 
-         EGalg_reco_gen_pt_1dHists[name] = fs->make<TH1F>((name+"_1d_reco_gen_pt").c_str(), (name+";(reco-gen)/gen;Counts").c_str(), 100, -1., 1.); 
-      }
+      //for(auto& inputTag : L1EGammaInputTags)
+      //{
+      //   const std::string &name = inputTag.encode();
+      //   EGalg_efficiency_hists[name] = fs->make<TH1F>((name+"_efficiency_pt").c_str(), (name+";Gen. pT (GeV);Efficiency").c_str(), nHistBins, histLow, histHigh);
+      //   EGalg_efficiency_eta_hists[name] = fs->make<TH1F>((name+"_efficiency_eta").c_str(), (name+";Gen. #eta;Efficiency").c_str(), nHistEtaBins, histetaLow, histetaHigh);
+      //   // Implicit conversion from int to double
+      //   for(int threshold : thresholds)
+      //   {
+      //      EGalg_efficiency_reco_hists[name][threshold] = fs->make<TH1F>((name+"_threshold"+std::to_string(threshold)+"_efficiency_reco_pt").c_str(), (name+";Offline reco. pT (GeV);Efficiency").c_str(), nHistBins, histLow, histHigh);
+      //      EGalg_efficiency_gen_hists[name][threshold] = fs->make<TH1F>((name+"_threshold"+std::to_string(threshold)+"_efficiency_gen_pt").c_str(), (name+";Gen. pT (GeV);Efficiency").c_str(), nHistBins, histLow, histHigh);
+      //   }
+      //   EGalg_deltaR_hists[name] = fs->make<TH1F>((name+"_deltaR").c_str(), (name+";#Delta R "+drLabel).c_str(), 50, 0., genMatchDeltaRcut);
+      //   EGalg_deta_hists[name] = fs->make<TH1F>((name+"_deta").c_str(), (name+";d#eta "+drLabel).c_str(), 100, -0.25, 0.25);
+      //   EGalg_dphi_hists[name] = fs->make<TH1F>((name+"_dphi").c_str(), (name+";d#phi "+drLabel).c_str(), 100, -0.25, 0.25);
+      //   EGalg_2DdeltaR_hists[name] = fs->make<TH2F>((name+"_2DdeltaR").c_str(), ";d#eta;d#phi;Counts", 50, -0.05, 0.05, 50, -0.05, 0.05);
+      //   EGalg_reco_gen_pt_hists[name] = fs->make<TH2F>((name+"_reco_gen_pt").c_str(), (name+";Gen. pT (GeV);(reco-gen)/gen;Counts").c_str(), 40, 0., 50., 40, -0.3, 0.3); 
+      //   EGalg_reco_gen_pt_1dHists[name] = fs->make<TH1F>((name+"_1d_reco_gen_pt").c_str(), (name+";(reco-gen)/gen;Counts").c_str(), 100, -1., 1.); 
+      //}
 
       reco_gen_pt_hist = fs->make<TH2F>("reco_gen_pt" , "EG relative momentum error;Gen. pT (GeV);(reco-gen)/gen;Counts", 40, 0., 50., 40, -0.3, 0.3); 
       reco_gen_pt_1dHist = fs->make<TH1F>("1d_reco_gen_pt" , "EG relative momentum error;(reco-gen)/gen;Counts", 100, -1., 1.); 
@@ -315,11 +326,11 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    else
    {
       dyncrystal_rate_hist = fs->make<TH1F>("dyncrystalEG_rate" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
-      for(auto& inputTag : L1EGammaInputTags)
-      {
-         const std::string &name = inputTag.encode();
-         EGalg_rate_hists[name] = fs->make<TH1F>((name+"_rate").c_str() , (name+";ET Threshold (GeV);Rate (kHz)").c_str(), nHistBins, histLow, histHigh);
-      }
+      //for(auto& inputTag : L1EGammaInputTags)
+      //{
+      //   const std::string &name = inputTag.encode();
+      //   EGalg_rate_hists[name] = fs->make<TH1F>((name+"_rate").c_str() , (name+";ET Threshold (GeV);Rate (kHz)").c_str(), nHistBins, histLow, histHigh);
+      //}
    }
    RecHitFlagsTowerHist = fs->make<TH1I>("recHitFlags_tower", "EcalRecHit status flags when tower exists;Flag;Counts", 20, 0, 19);
    RecHitFlagsNoTowerHist = fs->make<TH1I>("recHitFlags_notower", "EcalRecHit status flags when tower exists;Flag;Counts", 20, 0, 19);
@@ -407,83 +418,53 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
    // electron candidates
    std::map<std::string, l1extra::L1EmParticleCollection> eGammaCollections;
-   for(const auto& inputTag : L1EGammaInputTags)
-   {
-      if (inputTag.encode().compare("l1extraParticles:All") == 0) continue;
-      if (inputTag.encode().compare("l1extraParticlesUCT:All") == 0) continue;
-      edm::Handle<l1extra::L1EmParticleCollection> handle;
-      iEvent.getByLabel(inputTag, handle);
-      if ( handle.product() == nullptr )
-         std::cout << "There is no product of type " << inputTag.encode() << std::endl;
-      else
-         eGammaCollections[inputTag.encode()] = *handle.product();
+   //for(const auto& inputTag : L1EGammaInputTags)
+   //{
+   //   if (inputTag.encode().compare("l1extraParticles:All") == 0) continue;
+   //   if (inputTag.encode().compare("l1extraParticlesUCT:All") == 0) continue;
+   //   edm::Handle<l1extra::L1EmParticleCollection> handle;
+   //   iEvent.getByLabel(inputTag, handle);
+   //   if ( handle.product() == nullptr )
+   //      std::cout << "There is no product of type " << inputTag.encode() << std::endl;
+   //   else
+   //      eGammaCollections[inputTag.encode()] = *handle.product();
 
-      // Special case: Run 1, UCT alg. iso/niso are exclusive, we want to make inclusive EGamma available too
-      if (inputTag.encode().find("l1extraParticlesUCT") != std::string::npos)
-      {
-         auto& collection = eGammaCollections["l1extraParticlesUCT:All"];
-         collection.insert(begin(collection), begin(*handle.product()), end(*handle.product()));
-      }
-      else if (inputTag.encode().find("l1extraParticles") != std::string::npos)
-      {
-         auto& collection = eGammaCollections["l1extraParticles:All"];
-         collection.insert(begin(collection), begin(*handle.product()), end(*handle.product()));
-      }
-   }
+   //   // Special case: Run 1, UCT alg. iso/niso are exclusive, we want to make inclusive EGamma available too
+   //   if (inputTag.encode().find("l1extraParticlesUCT") != std::string::npos)
+   //   {
+   //      auto& collection = eGammaCollections["l1extraParticlesUCT:All"];
+   //      collection.insert(begin(collection), begin(*handle.product()), end(*handle.product()));
+   //   }
+   //   else if (inputTag.encode().find("l1extraParticles") != std::string::npos)
+   //   {
+   //      auto& collection = eGammaCollections["l1extraParticles:All"];
+   //      collection.insert(begin(collection), begin(*handle.product()), end(*handle.product()));
+   //   }
+   //}
 
    // electron candidate extra info from Sacha's algorithm
-   l1slhc::L1EGCrystalClusterCollection crystalClusters;
-   edm::Handle<l1slhc::L1EGCrystalClusterCollection> crystalClustersHandle;      
-   iEvent.getByLabel(L1CrystalClustersInputTag,crystalClustersHandle);
+   //l1slhc::L1EGCrystalClusterCollection crystalClusters;
+   //edm::Handle<l1slhc::L1EGCrystalClusterCollection> crystalClustersHandle;      
+   //iEvent.getByLabel(L1CrystalClustersInputTag,crystalClustersHandle);
+   iEvent.getByToken(crystalClustersToken_,crystalClustersHandle);
    crystalClusters = (*crystalClustersHandle.product());
 
    // Generator info (truth)
-   edm::Handle<reco::GenParticleCollection> genParticleHandle;
-   reco::GenParticleCollection genParticles;
-   iEvent.getByLabel("genParticles", genParticleHandle);
+   //edm::Handle<reco::GenParticleCollection> genParticleHandle;
+   //reco::GenParticleCollection genParticles;
+   iEvent.getByToken(genCollectionToken_,genParticleHandle);
    genParticles = *genParticleHandle.product();
 
    // Trigger tower info (trigger primitives)
-   edm::Handle<EcalTrigPrimDigiCollection> tpH;
-   iEvent.getByLabel(edm::InputTag("ecalDigis:EcalTriggerPrimitives"), tpH);
-   EcalTrigPrimDigiCollection triggerPrimitives = *tpH.product();
+   //edm::Handle<EcalTrigPrimDigiCollection> tpH;
+   //iEvent.getByLabel(edm::InputTag("ecalDigis:EcalTriggerPrimitives"), tpH);
+   //EcalTrigPrimDigiCollection triggerPrimitives = *tpH.product();
 
    // EcalRecHits for looking at flags in the cluster seed crystal
    edm::Handle<EcalRecHitCollection> pcalohits;
-   iEvent.getByLabel("ecalRecHit","EcalRecHitsEB",pcalohits);
+   //iEvent.getByLabel("ecalRecHit","EcalRecHitsEB",pcalohits);
+   iEvent.getByToken(ecalRecHitEBToken_,pcalohits);
    EcalRecHitCollection ecalRecHits = *pcalohits.product();
-
-   // L1 Tracks
-   edm::Handle<L1TkTrackCollectionType> l1trackHandle;
-   iEvent.getByLabel(L1TrackInputTag, l1trackHandle);
-
-   // L1 Tracks from pixels
-   //edm::Handle< std::vector< TTPixelTrack> > l1PixelTrackHandle;
-   //iEvent.getByLabel(L1PixelTrackInputTag, l1PixelTrackHandle);
-   //L1TTPixelTrackCollection l1TTPixelTracks_;
-   //l1TTPixelTracks_ = (*l1PixelTrackHandle.product());
-   //L1TTPixelTrackCollection::const_iterator iterL1PixelTrack;
-   //for ( L1TTPixelTrackCollection::const_iterator pxTrk = l1TTPixelTracks_.begin(); pxTrk != l1TTPixelTracks_.end(); pxTrk++ ) {
-   //  double pt        = pxTrk->getMomentum().perp();
-   //  double eta        = pxTrk->getMomentum().eta();
-   //  double phi       = pxTrk->getMomentum().phi();
-   //  std::cout << "Pixel Tracks - pt: " <<pt<< " eta: " <<eta<< " phi: " <<phi<<std::endl;
-   //}
-
-   // L1 Track based primary vertex
-   edm::Handle<L1TkPrimaryVertexCollection> l1PrimaryVertexHandle;
-   iEvent.getByLabel(L1TrackPrimaryVertexTag, l1PrimaryVertexHandle);
-
-   if ( l1PrimaryVertexHandle.isValid() )
-   {
-      L1TkPrimaryVertexCollection vertices = *l1PrimaryVertexHandle.product();
-      double vertexEnergy = vertices[0].getSum();
-      double z = vertices[0].getZvertex();
-      treeinfo.zVertex = z;
-      treeinfo.zVertexEnergy = vertexEnergy;
-      if (debug) std::cout << " - Vertex Position: " << z << " vertex energy: " << vertexEnergy << std::endl;
-   }
-   else std::cout << "No valid primary vertices" << std::endl;
 
    // Record the standards
    treeinfo.run = iEvent.eventAuxiliary().run();
@@ -611,13 +592,12 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                   continue;
                bestClusterUsed = true;
                if ( debug ) std::cout << "using cluster dr = " << reco::deltaR(cluster, trueElectron) << std::endl;
-               doTrackMatching(cluster, l1trackHandle);
                treeinfo.nthCandidate = clusterCount;
                treeinfo.deltaR = reco::deltaR(cluster, trueElectron);
                treeinfo.deltaPhi = reco::deltaPhi(cluster, trueElectron);
                
                fill_tree(cluster);
-               checkRecHitsFlags(cluster, triggerPrimitives, ecalRecHits);
+               //checkRecHitsFlags(cluster, triggerPrimitives, ecalRecHits);
 
                if ( cluster_passes_cuts(cluster) )
                {
@@ -710,9 +690,8 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             treeinfo.endcap = true;
          else
             treeinfo.endcap = false;
-         doTrackMatching(cluster, l1trackHandle);
          fill_tree(cluster);
-         checkRecHitsFlags(cluster, triggerPrimitives, ecalRecHits);
+         //checkRecHitsFlags(cluster, triggerPrimitives, ecalRecHits);
 
          if ( cluster_passes_cuts(cluster) )
          {
@@ -778,9 +757,9 @@ L1EGRateStudies::endJob()
 void 
 L1EGRateStudies::beginRun(edm::Run const& run, edm::EventSetup const& es)
 {
-   edm::ESHandle<HepPDT::ParticleDataTable> pdt;
-   es.getData(pdt);
-   if ( !ParticleTable::instance() ) ParticleTable::instance(&(*pdt));
+//   edm::ESHandle<HepPDT::ParticleDataTable> pdt;
+//   es.getData(pdt);
+//   if ( !ParticleTable::instance() ) ParticleTable::instance(&(*pdt));
 }
 
 // ------------ method called when ending the processing of a run  ------------
@@ -905,178 +884,58 @@ L1EGRateStudies::checkTowerExists(const l1slhc::L1EGCrystalCluster &cluster, con
    return false;
 }
 
-void
-L1EGRateStudies::checkRecHitsFlags(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps, const EcalRecHitCollection &ecalRecHits) const {
-   if ( cluster_passes_cuts(cluster) )
-   {
-      if ( debug ) std::cout << "Event (pt = " << cluster.pt() << ") passed cuts, ";
-      if ( debug && checkTowerExists(cluster, tps) )
-         std::cout << "\x1B[32mtower exists!\x1B[0m" << std::endl;
-      else if ( debug )
-         std::cout << "\x1B[31mtower does not exist!\x1B[0m" << std::endl;
-      if ( debug ) std::cout << "Here are the cluster seed crystal reco flags:" << std::endl;
-      for(auto hit : ecalRecHits)
-      {
-         if( hit.id() == cluster.seedCrystal() )
-         {
-            const std::map<int, std::string> flagDefs {
-               { EcalRecHit::kGood, "channel ok, the energy and time measurement are reliable" },
-               { EcalRecHit::kPoorReco, "the energy is available from the UncalibRecHit, but approximate (bad shape, large chi2)" },
-               { EcalRecHit::kOutOfTime, "the energy is available from the UncalibRecHit (sync reco), but the event is out of time" },
-               { EcalRecHit::kFaultyHardware, "The energy is available from the UncalibRecHit, channel is faulty at some hardware level (e.g. noisy)" },
-               { EcalRecHit::kNoisy, "the channel is very noisy" },
-               { EcalRecHit::kPoorCalib, "the energy is available from the UncalibRecHit, but the calibration of the channel is poor" },
-               { EcalRecHit::kSaturated, "saturated channel (recovery not tried)" },
-               { EcalRecHit::kLeadingEdgeRecovered, "saturated channel: energy estimated from the leading edge before saturation" },
-               { EcalRecHit::kNeighboursRecovered, "saturated/isolated dead: energy estimated from neighbours" },
-               { EcalRecHit::kTowerRecovered, "channel in TT with no data link, info retrieved from Trigger Primitive" },
-               { EcalRecHit::kDead, "channel is dead and any recovery fails" },
-               { EcalRecHit::kKilled, "MC only flag: the channel is{ EcalRecHit::killed in the real detector" },
-               { EcalRecHit::kTPSaturated, "the channel is in a region with saturated TP" },
-               { EcalRecHit::kL1SpikeFlag, "the channel is in a region with TP with sFGVB = 0" },
-               { EcalRecHit::kWeird, "the signal is believed to originate from an anomalous deposit (spike) " },
-               { EcalRecHit::kDiWeird, "the signal is anomalous, and neighbors another anomalous signal  " },
-               { EcalRecHit::kHasSwitchToGain6, "at least one data frame is in G6" },
-               { EcalRecHit::kHasSwitchToGain1, "at least one data frame is in G1" }
-            };
-            for(auto& flag : flagDefs)
-            {
-               if ( hit.checkFlag(flag.first) )
-               {
-                  if ( flag.first == EcalRecHit::kGood && debug ) std::cout << "\x1B[32m";
-                  if ( debug ) std::cout << "    " << flag.second << std::endl;
-                  if ( flag.first == EcalRecHit::kGood && debug ) std::cout << "\x1B[0m";
+//void
+//L1EGRateStudies::checkRecHitsFlags(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps, const EcalRecHitCollection &ecalRecHits) const {
+//   if ( cluster_passes_cuts(cluster) )
+//   {
+//      if ( debug ) std::cout << "Event (pt = " << cluster.pt() << ") passed cuts, ";
+//      if ( debug && checkTowerExists(cluster, tps) )
+//         std::cout << "\x1B[32mtower exists!\x1B[0m" << std::endl;
+//      else if ( debug )
+//         std::cout << "\x1B[31mtower does not exist!\x1B[0m" << std::endl;
+//      if ( debug ) std::cout << "Here are the cluster seed crystal reco flags:" << std::endl;
+//      for(auto hit : ecalRecHits)
+//      {
+//         if( hit.id() == cluster.seedCrystal() )
+//         {
+//            const std::map<int, std::string> flagDefs {
+//               { EcalRecHit::kGood, "channel ok, the energy and time measurement are reliable" },
+//               { EcalRecHit::kPoorReco, "the energy is available from the UncalibRecHit, but approximate (bad shape, large chi2)" },
+//               { EcalRecHit::kOutOfTime, "the energy is available from the UncalibRecHit (sync reco), but the event is out of time" },
+//               { EcalRecHit::kFaultyHardware, "The energy is available from the UncalibRecHit, channel is faulty at some hardware level (e.g. noisy)" },
+//               { EcalRecHit::kNoisy, "the channel is very noisy" },
+//               { EcalRecHit::kPoorCalib, "the energy is available from the UncalibRecHit, but the calibration of the channel is poor" },
+//               { EcalRecHit::kSaturated, "saturated channel (recovery not tried)" },
+//               { EcalRecHit::kLeadingEdgeRecovered, "saturated channel: energy estimated from the leading edge before saturation" },
+//               { EcalRecHit::kNeighboursRecovered, "saturated/isolated dead: energy estimated from neighbours" },
+//               { EcalRecHit::kTowerRecovered, "channel in TT with no data link, info retrieved from Trigger Primitive" },
+//               { EcalRecHit::kDead, "channel is dead and any recovery fails" },
+//               { EcalRecHit::kKilled, "MC only flag: the channel is{ EcalRecHit::killed in the real detector" },
+//               { EcalRecHit::kTPSaturated, "the channel is in a region with saturated TP" },
+//               { EcalRecHit::kL1SpikeFlag, "the channel is in a region with TP with sFGVB = 0" },
+//               { EcalRecHit::kWeird, "the signal is believed to originate from an anomalous deposit (spike) " },
+//               { EcalRecHit::kDiWeird, "the signal is anomalous, and neighbors another anomalous signal  " },
+//               { EcalRecHit::kHasSwitchToGain6, "at least one data frame is in G6" },
+//               { EcalRecHit::kHasSwitchToGain1, "at least one data frame is in G1" }
+//            };
+//            for(auto& flag : flagDefs)
+//            {
+//               if ( hit.checkFlag(flag.first) )
+//               {
+//                  if ( flag.first == EcalRecHit::kGood && debug ) std::cout << "\x1B[32m";
+//                  if ( debug ) std::cout << "    " << flag.second << std::endl;
+//                  if ( flag.first == EcalRecHit::kGood && debug ) std::cout << "\x1B[0m";
+//
+//                  if ( checkTowerExists(cluster, tps) )
+//                     RecHitFlagsTowerHist->Fill(flag.first);
+//                  else
+//                     RecHitFlagsNoTowerHist->Fill(flag.first);
+//               }
+//            }
+//         }
+//      }
+//   }
+//}
 
-                  if ( checkTowerExists(cluster, tps) )
-                     RecHitFlagsTowerHist->Fill(flag.first);
-                  else
-                     RecHitFlagsNoTowerHist->Fill(flag.first);
-               }
-            }
-         }
-      }
-   }
-}
-
-void
-L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm::Handle<L1TkTrackCollectionType> l1trackHandle)
-{
-  // track matching stuff
-  // match to closes track up to delta R = 0.3
-  // then match to the highest pt track < 0.3
-  double min_track_dr = 999.;
-  double max_track_pt = 0.;
-  double max_track_pt_all_tracks = 0.;
-  double max_track_pt_all_tracksEta = 0.;
-  double max_track_pt_all_tracksPhi = 0.;
-  double max_track_pt_all_tracksChi2 = 0.;
-  double max_track_pt_all_chi2_cut = 0.;
-  double max_track_pt_all_chi2_cutEta = 0.;
-  double max_track_pt_all_chi2_cutPhi = 0.;
-  double max_track_pt_all_chi2_cutChi2 = 0.;
-  double matched_z = 999.;
-  edm::Ptr<TTTrack<Ref_PixelDigi_>> matched_track;
-  if ( l1trackHandle.isValid() )
-  {
-     for(size_t track_index=0; track_index<l1trackHandle->size(); ++track_index)
-     {
-        edm::Ptr<TTTrack<Ref_PixelDigi_>> ptr(l1trackHandle, track_index);
-	double pt = ptr->getMomentum().perp();
-
-        // Don't consider tracks with pt < 2 for studies, might be increased to 3 later
-        if (pt < 2.) continue;
-
-        // Record the highest pt track per event
-        // And, highest pt passing chi2 cut
-        // to see if brem is an issues for mis-matched tracks
-        double chi2 = ptr->getChi2();
-        if (pt > max_track_pt_all_tracks) {
-          max_track_pt_all_tracks = pt;
-          max_track_pt_all_tracksEta = ptr->getMomentum().eta();
-          max_track_pt_all_tracksPhi = ptr->getMomentum().phi();
-          max_track_pt_all_tracksChi2 = chi2;}
-        if (pt > max_track_pt_all_chi2_cut && chi2 < 100) {
-          max_track_pt_all_chi2_cut = pt;
-          max_track_pt_all_chi2_cutEta = ptr->getMomentum().eta();
-          max_track_pt_all_chi2_cutPhi = ptr->getMomentum().phi();
-          max_track_pt_all_chi2_cutChi2 = chi2;}
-        
-
-        // L1 Tracks are considered mis-measured if pt > 50
-        // Therefore pt -> 50 if pt > 50
-        // Only consider tracks if chi2 > 100
-        double dr = L1TkElectronTrackMatchAlgo::deltaR(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), ptr);
-        if (pt > 50.) pt = 50;
-        // Choose closest track until dR < 0.3
-        if ( dr < min_track_dr && min_track_dr > 0.3 && chi2 < 100. )
-        {
-           min_track_dr = dr;
-           max_track_pt = pt;
-           matched_track = ptr;
-           matched_z = ptr->getPOCA().z();
-        }
-        // If dR < 0.3, choose highest pt track
-        else if ( dr < 0.3 && pt > max_track_pt && chi2 < 100. )
-        {
-           min_track_dr = dr;
-           max_track_pt = pt;
-           matched_track = ptr;
-           matched_z = ptr->getPOCA().z();
-        }
-     }
-     float isoConeTrackCount = 0.; // matched track will be in deltaR cone
-     float isoConePtSum = 0.;
-     for(size_t track_index=0; track_index<l1trackHandle->size(); ++track_index)
-     {
-        edm::Ptr<TTTrack<Ref_PixelDigi_>> ptr(l1trackHandle, track_index);
-	// don't double count the matched_track
-	if ( ptr == matched_track ) {
-	  continue;
-	}
-        // Don't consider tracks with pt < 2 for studies, might be increased to 3 later
-	double pt = ptr->getMomentum().perp();
-        if (pt < 2.) continue;
-
-        // Track Isolation cuts have been updated based on the recommendations here:
-        // https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1TrackTriggerObjects62X#Matching_L1EG_objects_with_L1Tra
-        // Inner dR cone of 0.03, outer dR cone 0.2, momentum at least 2GeV
-        // L1 Tracks are considered mis-measured if pt > 50
-        // Therefore pt -> 50 if pt > 50
-        // Only consider tracks if chi2 < 100
-        // Only consider iso tracks from within dZ < 0.6
-        double dr_2 = reco::deltaR(ptr->getMomentum(), matched_track->getMomentum());
-	double chi2 = ptr->getChi2();
-	if (pt > 50.) pt = 50;
-        double this_z = ptr->getPOCA().z();
-	double deltaZ = abs(matched_z - this_z);
-        if ( dr_2 < 0.2 && dr_2 > 0.03 && pt > 2. && chi2 < 100 && deltaZ < 0.6 )
-        {
-          isoConeTrackCount++;
-          isoConePtSum += pt;
-        }
-     }
-     treeinfo.trackDeltaR = min_track_dr;
-     treeinfo.trackZ = matched_track->getPOCA().z();
-     treeinfo.trackEta = matched_track->getMomentum().eta();
-     treeinfo.trackPhi = matched_track->getMomentum().phi();
-     treeinfo.trackPt = max_track_pt;
-     treeinfo.trackHighestPt = max_track_pt_all_tracks;
-     treeinfo.trackHighestPtEta = max_track_pt_all_tracksEta;
-     treeinfo.trackHighestPtPhi = max_track_pt_all_tracksPhi;
-     treeinfo.trackHighestPtChi2 = max_track_pt_all_tracksChi2;
-     treeinfo.trackHighestPtCutChi2 = max_track_pt_all_chi2_cut;
-     treeinfo.trackHighestPtCutChi2Eta = max_track_pt_all_chi2_cutEta;
-     treeinfo.trackHighestPtCutChi2Phi = max_track_pt_all_chi2_cutPhi;
-     treeinfo.trackHighestPtCutChi2Chi2 = max_track_pt_all_chi2_cutChi2;
-     treeinfo.trackDeltaPhi = L1TkElectronTrackMatchAlgo::deltaPhi(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), matched_track);
-     treeinfo.trackDeltaEta = L1TkElectronTrackMatchAlgo::deltaEta(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), matched_track);
-     treeinfo.trackP = matched_track->getMomentum().mag();
-     treeinfo.trackRInv = matched_track->getRInv();
-     treeinfo.trackChi2 = matched_track->getChi2();
-     treeinfo.trackIsoConeTrackCount = isoConeTrackCount;
-     treeinfo.trackIsoConePtSum = isoConePtSum;
-     if ( debug ) std::cout << "Track dr: " << min_track_dr << ", chi2: " << matched_track->getChi2() << ", dp: " << (treeinfo.trackP-cluster.energy())/cluster.energy() << std::endl;
-  }
-}
 //define this as a plug-in
 DEFINE_FWK_MODULE(L1EGRateStudies);
