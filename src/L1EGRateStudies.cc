@@ -122,6 +122,9 @@ class L1EGRateStudies : public edm::EDAnalyzer {
 
       edm::EDGetTokenT<EcalRecHitCollection> ecalRecHitEBToken_;
       //edm::EDGetTokenT<EcalRecHitCollection> ecalRecHitEEToken_;
+
+      edm::EDGetTokenT<reco::SuperClusterCollection> offlineRecoClusterToken_;
+      edm::Handle<reco::SuperClusterCollection> offlineRecoClustersHandle;
             
       int nHistBins, nHistEtaBins;
       double histLow;
@@ -255,6 +258,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    genCollectionToken_(consumes<reco::GenParticleCollection>(iConfig.getParameter<edm::InputTag>("genParticles"))),
    ecalRecHitEBToken_(consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("ecalRecHitEB"))),
    //ecalRecHitEEToken_(consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("ecalRecHitEE"))),
+   offlineRecoClusterToken_(consumes<reco::SuperClusterCollection>(iConfig.getParameter<edm::InputTag>("OfflineRecoClustersInputTag"))),
    nHistBins(iConfig.getUntrackedParameter<int>("histogramBinCount", 10)),
    nHistEtaBins(iConfig.getUntrackedParameter<int>("histogramEtaBinCount", 20)),
    histLow(iConfig.getUntrackedParameter<double>("histogramRangeLow", 0.)),
@@ -278,7 +282,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    if ( doEfficiencyCalc )
    {
       auto thresholds = iConfig.getUntrackedParameter<std::vector<int>>("turnOnThresholds");
-      offlineRecoClusterInputTag = iConfig.getParameter<edm::InputTag>("OfflineRecoClustersInputTag");
+      //offlineRecoClusterInputTag = iConfig.getParameter<edm::InputTag>("OfflineRecoClustersInputTag");
 
       dyncrystal_efficiency_hist = fs->make<TH1F>("dyncrystalEG_efficiency_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dyncrystal_efficiency_bremcut_hist = fs->make<TH1F>("dyncrystalEG_efficiency_bremcut_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
@@ -484,8 +488,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       float reco_electron_pt = 0.;
       
       // Get offline cluster info
-      edm::Handle<reco::SuperClusterCollection> offlineRecoClustersHandle;
-      iEvent.getByLabel(offlineRecoClusterInputTag, offlineRecoClustersHandle);
+      iEvent.getByToken(offlineRecoClusterToken_, offlineRecoClustersHandle);
       reco::SuperClusterCollection offlineRecoClusters = *offlineRecoClustersHandle.product();
 
       // Find the cluster corresponding to generated electron
@@ -525,7 +528,17 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          // Get the particle position upon entering ECal
          RawParticle particle(genParticles[0].p4());
          particle.setVertex(genParticles[0].vertex().x(), genParticles[0].vertex().y(), genParticles[0].vertex().z(), 0.);
-         particle.setID(genParticles[0].pdgId());
+         //particle.setID(genParticles[0].pdgId());
+         // Skip setID requires some external libraries working well that
+         // define HepPDT::ParticleID
+         // in the end, setID sets the mass and charge of our particle.
+         // Try doing this by hand for the moment
+         particle.setMass(.511);
+         int pdgId = genParticles[0].pdgId();
+         if (pdgId > 0) {
+            particle.setCharge( -1.0 ); }
+         if (pdgId < 0) {
+            particle.setCharge( 1.0 ); }
          BaseParticlePropagator prop(particle, 0., 0., 4.);
          BaseParticlePropagator start(prop);
          prop.propagateToEcalEntrance();
@@ -757,9 +770,9 @@ L1EGRateStudies::endJob()
 void 
 L1EGRateStudies::beginRun(edm::Run const& run, edm::EventSetup const& es)
 {
-//   edm::ESHandle<HepPDT::ParticleDataTable> pdt;
-//   es.getData(pdt);
-//   if ( !ParticleTable::instance() ) ParticleTable::instance(&(*pdt));
+   //edm::ESHandle<HepPDT::ParticleDataTable> pdt;
+   //es.getData(pdt);
+   //if ( !ParticleTable::instance() ) ParticleTable::instance(&(*pdt));
 }
 
 // ------------ method called when ending the processing of a run  ------------
@@ -849,7 +862,7 @@ L1EGRateStudies::cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster) 
    // is not included.
    if ( fabs(cluster.eta()) < 1.479 )
    {
-      std::cout << "Starting passing check" << std::endl;
+      //std::cout << "Starting passing check" << std::endl;
       float cluster_pt = cluster.pt();
       float clusterE2x5 = cluster.GetExperimentalParam("E2x5");
       float clusterE5x5 = cluster.GetExperimentalParam("E5x5");
@@ -862,7 +875,7 @@ L1EGRateStudies::cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster) 
       if ( (( 0.99 + 5.6 * TMath::Exp( -0.061 * cluster_pt )) > cluster_iso ) ) {
           passIso = true; }
       if ( passShowerShape && passIso ) {
-          std::cout << " --- Passed!" << std::endl;
+          //std::cout << " --- Passed!" << std::endl;
 	  return true; }
    }
    return false;

@@ -10,10 +10,13 @@ process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
    reportEvery = cms.untracked.int32(1)
 )
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(200) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
 
 process.source = cms.Source("PoolSource",
-   fileNames = cms.untracked.vstring('file:root://cmsxrootd.fnal.gov///store/relval/CMSSW_8_1_0_pre9/RelValSingleElectronPt35Extended/GEN-SIM-RECO/81X_mcRun2_asymptotic_v2_2023LReco-v1/10000/72FC7A8C-4E53-E611-95D6-0CC47A78A360.root')
+   fileNames = cms.untracked.vstring(
+        'file:root://cmsxrootd.fnal.gov///store/relval/CMSSW_8_1_0_pre9/RelValSingleElectronPt35Extended/GEN-SIM-RECO/81X_mcRun2_asymptotic_v2_2023LReco-v1/10000/72FC7A8C-4E53-E611-95D6-0CC47A78A360.root',
+        'file:root://cmsxrootd.fnal.gov///store/relval/CMSSW_8_1_0_pre9/RelValSingleElectronPt35Extended/GEN-SIM-RECO/81X_mcRun2_asymptotic_v2_2023LReco-v1/10000/421F5CDF-4F53-E611-B5C2-0CC47A4D7686.root',
+        'file:root://cmsxrootd.fnal.gov///store/relval/CMSSW_8_1_0_pre9/RelValSingleElectronPt35Extended/GEN-SIM-RECO/81X_mcRun2_asymptotic_v2_2023LReco-v1/10000/BACF3CE0-4F53-E611-84E4-0025905A607E.root')
    #fileNames = cms.untracked.vstring('file:root://cmsxrootd.fnal.gov///store/relval/CMSSW_8_0_5/RelValQCD_FlatPt_15_3000HS_13/GEN-SIM-RECO/PU25ns_80X_mcRun2_asymptotic_2016_miniAODv2_v0_gs71xJecGT-v1/00000/06A1518F-3311-E611-BC5A-0CC47A78A496.root')
 )
 
@@ -99,10 +102,13 @@ process.pSasha = cms.Path( process.L1EGammaCrystalsProducer )
 
 # ----------------------------------------------------------------------------------------------
 # 
-# Do offline reconstruction step to get cluster pt
+# Do offline reconstruction step for electron matching
+# First we need to run EcalSeverityLevelESProducer ES Producer
 
-#process.load('RecoEcal.Configuration.RecoEcal_cff')
-#process.ecalClusters = cms.Path(process.ecalClustersNoPFBox)
+process.load('RecoLocalCalo.EcalRecAlgos.EcalSeverityLevelESProducer_cfi')
+
+process.load('RecoEcal.Configuration.RecoEcal_cff')
+process.ecalClusters = cms.Path(process.ecalClustersNoPFBox)
 
 
 
@@ -133,8 +139,8 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    OfflineRecoClustersInputTag = cms.InputTag("correctedHybridSuperClusters"),
    ecalRecHitEB = cms.InputTag("ecalRecHit","EcalRecHitsEB","RECO"),
    #ecalRecHitEE = cms.InputTag("ecalRecHit","EcalRecHitsEE","RECO"),
-   #doEfficiencyCalc = cms.untracked.bool(True),
-   doEfficiencyCalc = cms.untracked.bool(False),
+   doEfficiencyCalc = cms.untracked.bool(True),
+   #doEfficiencyCalc = cms.untracked.bool(False),
    useOfflineClusters = cms.untracked.bool(False),
    useEndcap = cms.untracked.bool(False),
    turnOnThresholds = cms.untracked.vint32(20, 30, 16),
