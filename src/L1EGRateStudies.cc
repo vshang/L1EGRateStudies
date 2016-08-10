@@ -171,6 +171,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float e5x5;
          float deltaR = 0.;
          float deltaPhi = 0.;
+         float deltaEta = 0.;
          float gen_pt = 0.;
          float gen_z = 999.;
          float gen_eta = 0.;
@@ -180,6 +181,8 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float E_gen = 0.;
          float denom_pt = 0.;
          float reco_pt = 0.;
+         float reco_eta = -99.;
+         float reco_phi = -99.;
          bool  passed = false;
          int   nthCandidate = -1;
          bool  endcap = false;
@@ -328,6 +331,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("run", &treeinfo.run);
    crystal_tree->Branch("lumi", &treeinfo.lumi);
    crystal_tree->Branch("event", &treeinfo.event);
+   crystal_tree->Branch("passed", &treeinfo.passed);
    crystal_tree->Branch("pt", &treeinfo.crystal_pt, "1:2:3:4:5:6");
    crystal_tree->Branch("crystalCount", &treeinfo.crystalCount);
    crystal_tree->Branch("cluster_pt", &treeinfo.cluster_pt);
@@ -342,6 +346,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("e5x5", &treeinfo.e5x5);
    crystal_tree->Branch("deltaR", &treeinfo.deltaR);
    crystal_tree->Branch("deltaPhi", &treeinfo.deltaPhi);
+   crystal_tree->Branch("deltaEta", &treeinfo.deltaEta);
    crystal_tree->Branch("gen_pt", &treeinfo.gen_pt);
    crystal_tree->Branch("gen_z", &treeinfo.gen_z);
    crystal_tree->Branch("gen_eta", &treeinfo.gen_eta);
@@ -351,7 +356,8 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("E_gen", &treeinfo.E_gen);
    crystal_tree->Branch("denom_pt", &treeinfo.denom_pt);
    crystal_tree->Branch("reco_pt", &treeinfo.reco_pt);
-   crystal_tree->Branch("passed", &treeinfo.passed);
+   crystal_tree->Branch("reco_eta", &treeinfo.reco_eta);
+   crystal_tree->Branch("reco_phi", &treeinfo.reco_phi);
    crystal_tree->Branch("nthCandidate", &treeinfo.nthCandidate);
    crystal_tree->Branch("endcap", &treeinfo.endcap);
    crystal_tree->Branch("uslPt", &treeinfo.uslPt);
@@ -501,6 +507,8 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    {
       reco::Candidate::PolarLorentzVector trueElectron;
       float reco_electron_pt = 0.;
+      float reco_electron_eta = -99.;
+      float reco_electron_phi = -99.;
       
       // Get offline cluster info
       edm::Handle<reco::SuperClusterCollection> offlineRecoClustersHandle;
@@ -522,6 +530,8 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             if ( useOfflineClusters )
                trueElectron = p4;
             reco_electron_pt = p4.pt();
+            reco_electron_eta = p4.eta();
+            reco_electron_phi = p4.phi();
             offlineRecoFound = true;
             if (debug) std::cout << "Gen.-matched pBarrelCorSuperCluster: pt " 
                      << cluster.energy()/std::cosh(cluster.position().eta()) 
@@ -589,6 +599,8 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       efficiency_denominator_eta_hist->Fill(trueElectron.eta());
       if ( offlineRecoFound ) {
          treeinfo.reco_pt = reco_electron_pt;
+         treeinfo.reco_eta = reco_electron_eta;
+         treeinfo.reco_phi = reco_electron_phi;
          efficiency_denominator_reco_hist->Fill(reco_electron_pt);
       }
       else
@@ -615,6 +627,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                treeinfo.nthCandidate = clusterCount;
                treeinfo.deltaR = reco::deltaR(cluster, trueElectron);
                treeinfo.deltaPhi = reco::deltaPhi(cluster, trueElectron);
+               treeinfo.deltaEta = trueElectron.eta()-cluster.eta();
                
                fill_tree(cluster);
                checkRecHitsFlags(cluster, triggerPrimitives, ecalRecHits);
