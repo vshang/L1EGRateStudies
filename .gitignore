@@ -1,3 +1,4 @@
 *.d
 *.so
 *.pyc
+test/dump_file.py
