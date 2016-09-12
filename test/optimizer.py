@@ -90,7 +90,8 @@ def plotRateHists( name, hists=[] ) :
     c.SetGrid()
     if len(hists) > 5 : yStart = 0.60
     else : yStart = 0.78
-    leg = setLegStyle(0.53,yStart,0.95,0.92)
+    #leg = setLegStyle(0.53,yStart,0.95,0.92)
+    leg = setLegStyle(0.4,.6,0.95,0.92)
     leg.SetFillStyle(1001)
     leg.SetFillColor(ROOT.kWhite)
 
@@ -184,7 +185,7 @@ def makeComparisons( Cut, name, trkDetails=False, changeDenom=["",""], var='clus
     # to ensure that only 1 cluster per event
     makeNewCutTrees( 'egTriggerEff.root', 'effTree.root', Cut )
     makeNewCutTrees( 'egTriggerRates.root', 'rateTree.root', Cut )
-    makeNewCutTrees( 'egTriggerRateTracks.root', 'rateTreeTracks.root', 'trackPt > 10' )
+    makeNewCutTrees( 'egTriggerRates.root', 'rateTreeTracks.root', 'trackPt > 10' )
     effFile = ROOT.TFile( 'effTree.root', 'r' )
     eTree = effFile.Get("events")
     newRateFile = ROOT.TFile('rateTree.root','r')
@@ -206,6 +207,9 @@ def makeComparisons( Cut, name, trkDetails=False, changeDenom=["",""], var='clus
         rTracks10egIso = makeRatePlot( oldRateFile, oldRateTree, "Iso tracks p_{T}>10 GeV - EG Matched", "trackPt>10 &&"+trackIso2 )
         rTracks15egIso = makeRatePlot( oldRateFile, oldRateTree, "Iso tracks p_{T}>15 GeV - EG Matched", "trackPt>15 &&"+trackIso2 )
     if var != 'cluster_pt' :
+        #r5adj = makeRatePlot( oldRateFile, rTree, name, Cut, 50, var )
+        #r5_20adj = makeRatePlot( oldRateFile, rTree, name+" p_{T}>20", Cut+pt20, 50, var )
+        #r5_30adj = makeRatePlot( oldRateFile, rTree, name+" p_{T}>30", Cut+pt30, 50, var )
         r5adj = makeRatePlot( oldRateFile, rTree, name+" ptAdj", Cut, 50, var )
         r5_20adj = makeRatePlot( oldRateFile, rTree, name+" p_{T}>20 ptAdj", Cut+pt20, 50, var )
         r5_30adj = makeRatePlot( oldRateFile, rTree, name+" p_{T}>30 ptAdj", Cut+pt30, 50, var )
@@ -217,7 +221,7 @@ def makeComparisons( Cut, name, trkDetails=False, changeDenom=["",""], var='clus
     r5_20 = makeRatePlot( oldRateFile, rTree, name+" p_{T}>20", Cut+pt20 )
     r5_30 = makeRatePlot( oldRateFile, rTree, name+" p_{T}>30", Cut+pt30 )
     rTDR = oldRateFile.Get('analyzer/l1extraParticlesUCT:All_rate')
-    rTDR.SetTitle('Stage 1')
+    rTDR.SetTitle('Stage 1 Level 1 Trigger - 2015')
     if trkDetails and changeDenom == ["",""] :
         plotRateHists(  name+"_track_details", [noCuts, rTracks10, rTracks15, rTracks10eg, rTracks15eg] )
         plotRateHists(  name+"_track_details_iso", [noCuts, rTracks10, rTracks15, rTracks10eg, rTracks15eg, rTracks10Iso, rTracks15Iso, rTracks10egIso, rTracks15egIso] )
@@ -584,16 +588,17 @@ if __name__ == '__main__' :
 
 
 
-    makeSet = False
+    makeSet = True
     if makeSet :
-        makeComparisons( "(1)", "No_Cuts", True )
-        makeComparisons( cut_ss, "e2x5OverE5x5", False, ["",""], 'crystal_pt_to_RCT2015' )
-        makeComparisons( cut_ss_cIso, "e2x5OverE5x5 Iso", False, ["",""], 'crystal_pt_to_RCT2015' )
-        makeComparisons( cut_ss_cIso_tkM, "e2x5OverE5x5 Iso TkMatch", False, [tkMatched, "L1Tk Match #DeltaR<0.1, Eff. (L1/Gen)"] )
-        makeComparisons( cut_ss_cIso_tkM, "e2x5OverE5x5 Iso TkMatch", False, ["",""], 'crystal_pt_to_RCT2015' )
-        #tryCut( eTree, rTree, "cluster_pt", cutMatch, previousCut)
-        makeComparisons( cut_ss_cIso_tkM_tkIso, "e2x5OverE5x5 Iso TkMatch TkIso", False, [tkMatched, "L1Tk Match #DeltaR<0.1, Eff. (L1/Gen)"] )
-        makeComparisons( cut_ss_cIso_tkM_tkIso, "e2x5OverE5x5 Iso TkMatch TkIso", False, ["",""], 'crystal_pt_to_RCT2015'  )
+   #     makeComparisons( "(1)", "No_Cuts", True )
+   #     makeComparisons( "(passed>0)", "Passed", True )
+   #     makeComparisons( cut_ss, "e2x5OverE5x5", False, ["",""], 'crystal_pt_to_RCT2015' )
+   #     makeComparisons( cut_ss_cIso, "e2x5OverE5x5 Iso", False, ["",""], 'crystal_pt_to_RCT2015' )
+   #     makeComparisons( cut_ss_cIso_tkM, "e2x5OverE5x5 Iso TkMatch", False, [tkMatched, "L1Tk Match #DeltaR<0.1, Eff. (L1/Gen)"] )
+   #     makeComparisons( cut_ss_cIso_tkM, "e2x5OverE5x5 Iso TkMatch", False, ["",""], 'crystal_pt_to_RCT2015' )
+   #     #tryCut( eTree, rTree, "cluster_pt", cutMatch, previousCut)
+   #     makeComparisons( cut_ss_cIso_tkM_tkIso, "e2x5OverE5x5 Iso TkMatch TkIso", False, [tkMatched, "L1Tk Match #DeltaR<0.1, Eff. (L1/Gen)"] )
+        makeComparisons( cut_ss_cIso_tkM_tkIso, "SLHC Level 1 EGamma Crystal Based Algo.", False, ["",""], 'crystal_pt_to_RCT2015'  )
 
         #tryCut( eTree, rTree, "cluster_pt", cut_ss, cut_none)
         #tryCut( eTree, rTree, "cluster_pt", showerShapes2, "")

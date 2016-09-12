@@ -63,7 +63,7 @@ def drawPoints(c, tree1, var, cut, title1, tree2, title2, xaxis, xinfo, yaxis, y
         g1.Draw('SAME')
     if doFit :
         f2.Draw('SAME')
-    c.Print("plotsTmp/"+c.GetTitle()+".pdf")
+    c.Print("plotsCuts/"+c.GetTitle()+".pdf")
     del h1, h2, g1
 
 
@@ -120,7 +120,7 @@ def drawPointsHists(h1, h2, title1, title2, xaxis, yaxis) :
     fit2 = g2.Fit('f2', 'R S')
 
     # Just to show the resulting fit
-    c2.Print("plotsTmp/"+c.GetTitle()+".pdf")
+    c2.Print("plotsCuts/"+c.GetTitle()+".pdf")
     cx = ROOT.TCanvas('cx','cx',600,600)
     cx.SetGridx()
     cx.SetGridy()
@@ -137,7 +137,7 @@ def drawPointsHists(h1, h2, title1, title2, xaxis, yaxis) :
     g1.Draw('SAME')
     g2.Draw('SAME')
     
-    cx.Print("plotsTmp/"+c.GetTitle()+"_fits.pdf")
+    cx.Print("plotsCuts/"+c.GetTitle()+"_fits.pdf")
     del c2, h1, h2, g1, g2, cx
 
 
@@ -260,23 +260,23 @@ if __name__ == '__main__' :
     yinfo = [500, 0., 1.]
     c.SetTitle("clusterPtVDPhi_TIGHT_ETA")
     drawPoints(c, crystal_tree, var, cut_ss_cIso+"*(trackDeltaEta<0.001)", title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points, True, False)
-#
-#
-#    var = "(-e2x5/e5x5):cluster_pt"
-#    xaxis = "Cluster P_{T} (GeV)"
-#    yaxis = "Negative Energy 2x5/5x5"
-#    xinfo = [20, 0., 50.]
-#    yinfo = [100, -1.1, -0.4]
-#    c.SetTitle("clusterPtVE2x5OverE5x5")
-#    drawPoints(c, crystal_tree, var, cut_none, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
-#
-#    var = "(-e2x5/e3x5):cluster_pt"
-#    xaxis = "Cluster P_{T} (GeV)"
-#    yaxis = "Negative Energy 2x5/3x5"
-#    xinfo = [20, 0., 50.]
-#    yinfo = [100, -1.1, -0.4]
-#    c.SetTitle("clusterPtVE2x5OverE3x5")
-#    drawPoints(c, crystal_tree, var, cut_none, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
+
+
+    var = "(-e2x5/e5x5):cluster_pt"
+    xaxis = "Cluster P_{T} (GeV)"
+    yaxis = "Negative Energy 2x5/5x5"
+    xinfo = [20, 0., 50.]
+    yinfo = [100, -1.1, -0.4]
+    c.SetTitle("clusterPtVE2x5OverE5x5")
+    drawPoints(c, crystal_tree, var, cut_none, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
+
+    var = "(-e2x5/e3x5):cluster_pt"
+    xaxis = "Cluster P_{T} (GeV)"
+    yaxis = "Negative Energy 2x5/3x5"
+    xinfo = [20, 0., 50.]
+    yinfo = [100, -1.1, -0.4]
+    c.SetTitle("clusterPtVE2x5OverE3x5")
+    drawPoints(c, crystal_tree, var, cut_none, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
 #
 #    var = "(-pt2x5/pt5x5):cluster_pt"
 #    xaxis = "Cluster P_{T} (GeV)"
@@ -294,13 +294,14 @@ if __name__ == '__main__' :
 #    c.SetTitle("clusterPtVPt2x5OverPt3x5")
 #    drawPoints(c, crystal_tree, var, cut_none, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
 #
-#    var = "cluster_iso:cluster_pt"
-#    xaxis = "Cluster P_{T} (GeV)"
-#    yaxis = "Cluster Iso"
-#    xinfo = [20, 0., 50.]
-#    yinfo = [250, 0., 10.]
-#    c.SetTitle("clusterPtVClusterIso")
-#    drawPoints(c, crystal_tree, var, cut_ss, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
+    var = "cluster_iso:cluster_pt"
+    xaxis = "Cluster P_{T} (GeV)"
+    yaxis = "Cluster Iso"
+    xinfo = [20, 0., 50.]
+    yinfo = [250, 0., 10.]
+    c.SetTitle("clusterPtVClusterIso")
+    #drawPoints(c, crystal_tree, var, cut_ss, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
+    drawPoints(c, crystal_tree, var, cut_none, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
 #
 #    # Used to check if poor dR match is likely due to a brem, or not
 #    # Conclusion: we just didn't find the right track (or it didn't exist)
