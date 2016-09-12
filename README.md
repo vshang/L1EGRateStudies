@@ -12,17 +12,18 @@ git cms-init
 git cms-addpkg SLHCUpgradeSimulations/L1TrackTrigger
 git cms-merge-topic EmanuelPerez:TTI_62X_TrackTriggerObjects
 git clone https://github.com/uwcms/UCT2015.git L1Trigger/UCT2015
+git cms-merge-topic truggles:CMSSW_6_2_SLHC12_L1EGCrystals
 
 scramv1 b -j 8
 
 ```
-Then, assuming all is well in your enviroment, you will need to copy some auto-generated python files and checkout this repository.  These auto-generated python files need to be included in the user code which is sent with farmed out jobs (Specific to HT Condor/UWisconsin).
+Then, assuming all is well in your enviroment, you will need to copy some auto-generated python files and checkout this repository.  These auto-generated python files need to be included in the user code which is sent with farmed out jobs (Specific to HT Condor/UWisconsin).  The auto-generated files are found by CMSSW sucessfully when you run jobs locally.
 
 ```bash
 cp ../cfipython/slc6_amd64_gcc472/Geometry/TrackerGeometryBuilder/tracker*.py Geometry/TrackerGeometryBuilder/python/ 
 
 pushd SLHCUpgradeSimulations
-git clone https://github.com/truggles/L1EGRateStudies.git
+git clone -b 62X_SLHC_L1EGCrystals https://github.com/truggles/L1EGRateStudies.git
 popd
 
 scramv1 b -j 8
@@ -31,11 +32,12 @@ scramv1 b -j 8
 Some example run configurations are in `test/`
 
 ```
-cd test
+cd SLHCUpgradeSimulations/L1EGRateStudies/test
 cmsRun local_eff_hists_cfg.py
+cmsRun local_rate_hists_cfg.py
 ```
 
-Submit jobs (UW Specific)
+Submit jobs (UW Specific) using UW HTP Condor
 ```
 . condor_submit.sh
 ```
