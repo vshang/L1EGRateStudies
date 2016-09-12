@@ -338,7 +338,7 @@ def draw2DdeltaRHist(hist, c) :
     gStyle.SetOptTitle(1)
 
 
-def drawDRHists(hists, c, ymax, doFit = False) :
+def drawDRHists(hists, c, ymax, doFit = False, targetDir = 'plots' ) :
     c.cd()
     colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray]
     marker_styles = [20, 24, 25, 26, 32, 35]
@@ -375,7 +375,8 @@ def drawDRHists(hists, c, ymax, doFit = False) :
     #hists[0].Fit(fit, "n")
     #fit.Draw("lsame")
  
-    leg = setLegStyle(0.53,0.78,0.95,0.92)
+    #leg = setLegStyle(0.53,0.78,0.95,0.92)
+    leg = setLegStyle(0.43,0.72,0.95,0.92)
     for hist in hists :
         leg.AddEntry(hist, hist.GetTitle(),"elp")
     leg.Draw("same")
@@ -387,9 +388,12 @@ def drawDRHists(hists, c, ymax, doFit = False) :
     hs.GetYaxis().SetTitle("Fraction of Events")
     #hs.GetXaxis().SetRangeUser(0., 0.1)
  
-    cmsString = drawCMSString("CMS Simulation, <PU>=140 bx=25, Single Electron")
+    if "Stage2" in c.GetName() :
+        cmsString = drawCMSString("CMS Simulation")
+    else :
+        cmsString = drawCMSString("CMS Simulation, <PU>=140 bx=25, Single Electron")
                 
-    c.Print("plots/"+c.GetName()+".png")
+    c.Print(targetDir+"/"+c.GetName()+".png")
 
     # Don't produce CDFs at the moment
     #del markers
@@ -946,41 +950,41 @@ if __name__ == '__main__' :
     #gStyle.SetGridStyle(2)
     #gStyle.SetGridColor(ROOT.kGray+1)
     
-#    ''' RATE SECTION '''    
-#    c.SetName('dyncrystalEG_rate')
-#    c.SetTitle('')
-#    toDraw = [ hists['L1EGamma Crystal'], hists['Phase 1 TDR'] ]
-#    drawRates( toDraw, c, 40000., xrange)
-#    
-#    #c.SetName('dyncrystalEG_rate_UW')
-#    #c.SetTitle('EG Rates (UW only)')
-#    #toDraw = [ hists['L1EGamma Crystal'], hists['Phase 1 TDR'], hists['LLR Alg.'] ]
-#    #drawRates( toDraw, c, 40000., xrange)
-#    
-#    ''' EFFICIENCY SECTION '''
-#    c.SetLogy(0)
-#    c.SetName("dyncrystalEG_efficiency_eta")
-#    c.SetTitle("EG Efficiencies")
-#    drawEfficiency([effHists['newAlgEtaHist'], effHists['UCTAlgEtaHist']], c, 1.2, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
-#    #c.SetName("dyncrystalEG_efficiency_pt_UW")
-#    #c.SetTitle("EG Efficiencies (UW only)")
-#    #drawEfficiency([effHists['newAlgPtHist'], effHists['UCTAlgPtHist'], effHists['dynAlgPtHist']], c, 1.2, "Pt (GeV)", xrange, True, [0.9, 2., 1., 0.])
-#    c.SetName("dyncrystalEG_efficiency_pt")
-#    c.SetTitle("")
-#    drawEfficiency([effHists['newAlgPtHist'], effHists['UCTAlgPtHist']], c, 1.2, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
-#
-#    # Map of possible pt values from file with suggested fit function params
-#    possiblePts = {'16' : [0.9, 20., 1., 0.], '20' : [0.95, 30., 1., 0.], '30': [0.95, 16., 1., 0.]}
-#    for crystalPt in crystalAlgGenPtHists :
-#        toPlot = []
-#        toPlot.append( crystalPt )
-#        for UCTPt in UCTAlgGenPtHists :
-#            for pt in possiblePts.keys() :
-#                if pt in crystalPt.GetName() and pt in UCTPt.GetName() :
-#                    print pt, crystalPt.GetName(), UCTPt.GetName()
-#                    toPlot.append( UCTPt )
-#                    c.SetName("dyncrystalEG_threshold"+pt+"_efficiency_gen_pt")
-#                    drawEfficiency( toPlot, c, 1.2, "Gen P_{T} (GeV)", xrange, True, possiblePts[pt])
+    ''' RATE SECTION '''    
+    c.SetName('dyncrystalEG_rate')
+    c.SetTitle('')
+    toDraw = [ hists['L1EGamma Crystal'], hists['Phase 1 TDR'] ]
+    drawRates( toDraw, c, 40000., xrange)
+    
+    #c.SetName('dyncrystalEG_rate_UW')
+    #c.SetTitle('EG Rates (UW only)')
+    #toDraw = [ hists['L1EGamma Crystal'], hists['Phase 1 TDR'], hists['LLR Alg.'] ]
+    #drawRates( toDraw, c, 40000., xrange)
+    
+    ''' EFFICIENCY SECTION '''
+    c.SetLogy(0)
+    c.SetName("dyncrystalEG_efficiency_eta")
+    c.SetTitle("EG Efficiencies")
+    drawEfficiency([effHists['newAlgEtaHist'], effHists['UCTAlgEtaHist']], c, 1.2, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
+    #c.SetName("dyncrystalEG_efficiency_pt_UW")
+    #c.SetTitle("EG Efficiencies (UW only)")
+    #drawEfficiency([effHists['newAlgPtHist'], effHists['UCTAlgPtHist'], effHists['dynAlgPtHist']], c, 1.2, "Pt (GeV)", xrange, True, [0.9, 2., 1., 0.])
+    c.SetName("dyncrystalEG_efficiency_pt")
+    c.SetTitle("")
+    drawEfficiency([effHists['newAlgPtHist'], effHists['UCTAlgPtHist']], c, 1.2, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
+
+    # Map of possible pt values from file with suggested fit function params
+    possiblePts = {'16' : [0.9, 20., 1., 0.], '20' : [0.95, 30., 1., 0.], '30': [0.95, 16., 1., 0.]}
+    for crystalPt in crystalAlgGenPtHists :
+        toPlot = []
+        toPlot.append( crystalPt )
+        for UCTPt in UCTAlgGenPtHists :
+            for pt in possiblePts.keys() :
+                if pt in crystalPt.GetName() and pt in UCTPt.GetName() :
+                    print pt, crystalPt.GetName(), UCTPt.GetName()
+                    toPlot.append( UCTPt )
+                    c.SetName("dyncrystalEG_threshold"+pt+"_efficiency_gen_pt")
+                    drawEfficiency( toPlot, c, 1.2, "Gen P_{T} (GeV)", xrange, True, possiblePts[pt])
 #
 #
 #    ''' POSITION RECONSTRUCTION '''
@@ -997,13 +1001,66 @@ if __name__ == '__main__' :
 #    # Delta Eta / Phi
 #    #c.SetName("dyncrystalEG_deltaEta_UW")
 #    #drawDRHists([effHists['newAlgDEtaHist'], effHists['UCTAlgDEtaHist'], effHists['dynAlgDEtaHist']], c, 0., [-0.5, 0.5])
+
+    """ 81X Check """
+    Check81x = False
+    if Check81x :
+        f81x = ROOT.TFile('effTest.root','r')
+        #f81x = ROOT.TFile('effTestMassInTeV.root','r')
+        tree81X = f81x.Get('analyzer/crystal_tree')
+        dEta81X = f81x.Get('analyzer/dyncrystalEG_deta')
+        dEta81X.SetTitle('L1 EGamma Crystals 81X')
+        dPhi81X = f81x.Get('analyzer/dyncrystalEG_dphi')
+        dPhi81X.SetTitle('L1 EGamma Crystals 81X')
+        dEta62X = effHists['newAlgDEtaHist'].Clone()
+        dEta62X.SetTitle('L1 EGamma Crystals 62X')
+        dPhi62X = effHists['newAlgDPhiHist'].Clone()
+        dPhi62X.SetTitle('L1 EGamma Crystals 62X')
+        c.SetName("dyncrystalEG_deltaEta_81X_Check")
+        drawDRHists([dEta62X, dEta81X], c, 0.)
+        c.SetName("dyncrystalEG_deltaPhi_81X_Check")
+        drawDRHists([dPhi62X, dPhi81X], c, 0.)
+        tree62XdEta = ROOT.TH1F("tree62XdEta", "L1 EGamma Crystal 62X Gen p_{T} #in[30,40];d#eta(Gen - L1)", 80, -0.2, 0.2)
+        crystal_tree.Draw("(gen_eta - eta) >> tree62XdEta","(gen_pt > 30 && gen_pt < 40)")
+        tree81XdEta = ROOT.TH1F("tree81XdEta", "L1 EGamma Crystal 81X, Gen p_{T} = 35;d#eta(L1 - Reco)", 80, -0.2, 0.2)
+        tree81X.Draw("(deltaEta) >> tree81XdEta")
+        c.SetName("dyncrystalEG_deltaEta_81X_CheckPt35")
+        drawDRHists([tree62XdEta, tree81XdEta], c, 0.)
+        tree62XdPhi = ROOT.TH1F("tree62XdPhi", "L1 EGamma Crystal 62X, Gen p_{T} #in[30,40];d#phi(Reco - L1)", 80, -0.1, 0.1)
+        #crystal_tree.Draw("(gen_phi - phi) >> tree62XdPhi")
+        crystal_tree.Draw("(deltaPhi) >> tree62XdPhi","(gen_pt > 30 && gen_pt < 40)")
+        tree81XdPhi = ROOT.TH1F("tree81XdPhi", "L1 EGamma Crystal 81X, Gen p_{T} = 35;d#phi(L1 - Reco)", 60, -0.1, 0.1)
+        tree81X.Draw("(deltaPhi) >> tree81XdPhi")
+        c.SetName("dyncrystalEG_deltaPhi_81X_CheckPt35")
+        drawDRHists([tree62XdPhi, tree81XdPhi], c, 0.4)
+
+    """ Stage 2 Comparisons """
+    CheckStage2 = False
+    if CheckStage2 :
+        tree81XdEta2 = ROOT.TH1F("tree81XdEta2", "L1 EGamma Crystal 81X, Gen p_{T} = 35;d#eta(L1 - Reco)", 120, -0.15, 0.15)
+        tree81X.Draw("(deltaEta) >> tree81XdEta2")
+        tree81XdPhi2 = ROOT.TH1F("tree81XdPhi2", "L1 EGamma Crystal 81X, Gen p_{T} = 35;d#phi(L1 - Reco)", 120, -0.15, 0.15)
+        tree81X.Draw("(deltaPhi) >> tree81XdPhi2")
+        c.SetName("dyncrystalEG_deltaEta_Stage2Comp")
+        dEtaStage2 = ROOT.TFile('dEta.root','r')
+        stage2dEta = dEtaStage2.Get('dEta')
+        stage2dEta.SetTitle('Stage-2 Level 1 EGamma Algo.')
+        tree81XdEta2.SetTitle('Phase-2 Level 1 EGamma Crystal Algo.')
+        drawDRHists([tree81XdEta2, stage2dEta], c, 0.4)
+        c.SetName("dyncrystalEG_deltaPhi_Stage2Comp")
+        dPhiStage2 = ROOT.TFile('dPhi.root','r')
+        stage2dPhi = dPhiStage2.Get('dPhi')
+        stage2dPhi.SetTitle('Stage-2 Level 1 EGamma Algo.')
+        tree81XdPhi2.SetTitle('Phase-2 Level 1 EGamma Crystal Algo.')
+        drawDRHists([tree81XdPhi2, stage2dPhi], c, 0.4)
+    
+
 #    c.SetName("dyncrystalEG_deltaEta")
 #    drawDRHists([effHists['newAlgDEtaHist'], effHists['UCTAlgDEtaHist']], c, 0.)
 #    #c.SetName("dyncrystalEG_deltaPhi_UW")
 #    #drawDRHists([effHists['newAlgDPhiHist'], effHists['UCTAlgDPhiHist'], effHists['dynAlgDPhiHist']], c, 0., [-0.5, 0.5])
-#    c.SetName("dyncrystalEG_deltaPhi")
-#    drawDRHists([effHists['newAlgDPhiHist'], effHists['UCTAlgDPhiHist']], c, 0.)
-#    # Draw L1EG Crystal dEta, dPhi with track matching
+#    drawDRHists([effHists['newAlgDPhiHist'], effHists['UCTAlgDPhiHist'] ], c, 0.5)
+    # Draw L1EG Crystal dEta, dPhi with track matching
 #    c.SetLogy(0)
 #
 #    cut15 = "cluster_pt > 15"
