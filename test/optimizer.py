@@ -65,12 +65,12 @@ def makeRatePlot( rateFile, tree, name, cut='', rateLimit=50, var='cluster_pt' )
     
     # Normalize to 30 MHz
     nEvents = rateFile.Get("analyzer/eventCount").GetBinContent(1)
-    #print "n events scanned %i,   events in tree %i" % (nEvents, tree.GetEntries())
+    print "n events scanned %i,   events in tree %i" % (nEvents, tree.GetEntries())
     factor = 30000. / nEvents
-    #print "factor",factor
+    print "factor",factor
     #factor = 30000. / tree.GetEntries()
     h2.Scale( factor )
-    #print "Bin cont bin 1",h2.GetBinContent(1)
+    print name,"Bin cont bin 1",h2.GetBinContent(1)
     h2.SetMarkerSize(0)
     h2.SetLineWidth(2)
     
@@ -177,7 +177,8 @@ def plotEffHists( name, graphs=[], nCol = 1 ) :
 
 def makeComparisons( Cut, name, trkDetails=False, changeDenom=["",""], var='cluster_pt' ) :
     oldRateFile = ROOT.TFile('egTriggerRates.root','r')
-    oldRateTrackFile = ROOT.TFile('egTriggerRateTracks.root','r')
+    if trkDetails :
+        oldRateTrackFile = ROOT.TFile('egTriggerRateTracks.root','r')
     oldRateTree = oldRateFile.Get('analyzer/crystal_tree')
     oldEffFile = ROOT.TFile('egTriggerEff.root','r')
     oldEffTree = oldEffFile.Get('analyzer/crystal_tree')
@@ -530,12 +531,31 @@ if __name__ == '__main__' :
     tdrstyle.setTDRStyle()
     c = ROOT.TCanvas('c','c',canvasSize,canvasSize)
     showerShapes = "(-0.921128 + 0.180511*TMath::Exp(-0.0400725*cluster_pt)>(-1)*(e2x5/e5x5))"
+    showerShapesB = "(-0.998511 + -8.16648e-05*TMath::Exp(-0.210906*cluster_pt)>(-1)*(e2x5b/e5x5b))"
+    showerShapesC = "((-0.98 >(-1)*(e2x5/e5x5) || cluster_pt >35 ))"
     Isolation = "((0.990748 + 5.64259*TMath::Exp(-0.0613952*cluster_pt))>cluster_iso)"
+    IsolationB = "((0.42128 + -1.48187*TMath::Exp(-0.234355*cluster_pt))>cluster_isoGtr2)"
+    IsolationC = "((0.472785 + -8.17373*TMath::Exp(-0.821266*cluster_pt))>cluster_iso)"
+    Isolation1 = "((-15.2726 + 15.9463*TMath::Exp(-0.000282339*cluster_pt))>cluster_isoGtr1)"
+    Isolation2 = "((0.42128 + -1.48187*TMath::Exp(-0.234355*cluster_pt))>cluster_isoGtr2)"
+    Isolation500 = "((0.562669 + 2.01266*TMath::Exp(-0.0559235*cluster_pt))>cluster_isoGtr500)"
+    IsolationX = "((0.617738 + 2.00979*TMath::Exp(-0.056631*cluster_pt))>((cluster_iso*corePt-ecalPUtoPt*0.496)/corePt))"
+
     tkIsoMatched = "((0.106544 + 0.00316748*cluster_pt)>(trackIsoConePtSum/trackPt))"
 
     cut_none = ""
     cut_ss = showerShapes
     cut_ss_cIso = showerShapes+"*"+Isolation
+    cut_ss_cIsoB = showerShapesB+"*"+IsolationB
+    cut_ss_cIsoC = showerShapesC+"*"+IsolationC
+    cut_ss_cIso1 = showerShapes+"*"+Isolation1
+    cut_ss_cIso2 = showerShapes+"*"+Isolation2
+    cut_ss_cIso500 = showerShapes+"*"+Isolation500
+    cut_ss_cIsoX = showerShapes+"*"+IsolationX
+    #cut_ss_cIso1 = Isolation1
+    #cut_ss_cIso2 = Isolation2
+    #cut_ss_cIso500 = Isolation500
+    #cut_ss_cIsoX = IsolationX
     cut_ss_cIso_tkNoM = cut_ss_cIso+"*(trackDeltaR>0.1)"
     cut_ss_cIso_tkM = cut_ss_cIso+"*(trackDeltaR<0.1)"
     cut_ss_cIso_tkM_tkIso = cut_ss_cIso_tkM+"*"+tkIsoMatched
@@ -566,7 +586,9 @@ if __name__ == '__main__' :
 
     ptRes = "(abs(((cluster_pt - trackPt) / cluster_pt )) < .5)"
     #makeCutROC( "testDRCutsBaselineCuts20_ss_cIso", eTree, rTree, "trackDeltaR", rocAry, cut_ss_cIso+"*"+rebase20, rebaseAll+"*"+rebase20, textR )
-    makeCutROC( "testDRCutsBaselineCuts20PtMatch_ss_cIso", eTree, rTree, "trackDeltaR", rocAry, cut_ss_cIso+"*"+rebase20+"*"+ptRes, rebaseAll+"*"+rebase20+"*"+ptRes, textR )
+#XXX    makeCutROC( "testDRCutsBaselineCuts20PtMatch_ss_cIso", eTree, rTree, "trackDeltaR", rocAry, cut_ss_cIso+"*"+rebase20+"*"+ptRes, rebaseAll+"*"+rebase20+"*"+ptRes, textR )
+#XXX    makeCutROC( "testDRCutsBaselineCuts20PtMatch_ss_cIsoC", eTree, rTree, "trackDeltaR", rocAry, cut_ss_cIsoC+"*"+rebase20+"*"+ptRes, rebaseAll+"*"+rebase20+"*"+ptRes, textR )
+    #XXX makeCutROC( "testDRCutsBaselineCuts20PtMatch_ss_cIsoB", eTree, rTree, "trackDeltaR", rocAry, cut_ss_cIsoB+"*"+rebase20+"*"+ptRes, rebaseAll+"*"+rebase20+"*"+ptRes, textR )
 
     #makeCutROC( "testDRCutsBaselineCuts20_ss_cIso", eTree, rTree, "trackDeltaR", rocAry, cut_ss_cIso, rebaseAll+"*"+rebase20, textR )
     #makeCutROC( "testDEtaCutsBaselineCuts20_ss_cIso", eTree, rTree, "abs(trackDeltaEta)", rocAry, cut_ss_cIso, rebaseAll+"*"+rebase20, textEta )
@@ -594,11 +616,18 @@ if __name__ == '__main__' :
    #     makeComparisons( "(passed>0)", "Passed", True )
    #     makeComparisons( cut_ss, "e2x5OverE5x5", False, ["",""], 'crystal_pt_to_RCT2015' )
    #     makeComparisons( cut_ss_cIso, "e2x5OverE5x5 Iso", False, ["",""], 'crystal_pt_to_RCT2015' )
+        makeComparisons( cut_ss_cIso, "e2x5OverE5x5 Iso", False, ["",""], 'cluster_pt' )
+        #XXX makeComparisons( cut_ss_cIsoB, "e2x5OverE5x5 Iso B", False, ["",""], 'cluster_pt' )
+        makeComparisons( cut_ss_cIso1, "e2x5OverE5x5 Iso 1 GeV", False, ["",""], 'cluster_pt' )
+        makeComparisons( cut_ss_cIso2, "e2x5OverE5x5 Iso 2 GeV", False, ["",""], 'cluster_pt' )
+        makeComparisons( cut_ss_cIso500, "e2x5OverE5x5 Iso 500 MeV", False, ["",""], 'cluster_pt' )
+        makeComparisons( cut_ss_cIsoX, "e2x5OverE5x5 Iso PU Corr", False, ["",""], 'cluster_pt' )
    #     makeComparisons( cut_ss_cIso_tkM, "e2x5OverE5x5 Iso TkMatch", False, [tkMatched, "L1Tk Match #DeltaR<0.1, Eff. (L1/Gen)"] )
    #     makeComparisons( cut_ss_cIso_tkM, "e2x5OverE5x5 Iso TkMatch", False, ["",""], 'crystal_pt_to_RCT2015' )
    #     #tryCut( eTree, rTree, "cluster_pt", cutMatch, previousCut)
    #     makeComparisons( cut_ss_cIso_tkM_tkIso, "e2x5OverE5x5 Iso TkMatch TkIso", False, [tkMatched, "L1Tk Match #DeltaR<0.1, Eff. (L1/Gen)"] )
-        makeComparisons( cut_ss_cIso_tkM_tkIso, "SLHC Level 1 EGamma Crystal Based Algo.", False, ["",""], 'crystal_pt_to_RCT2015'  )
+   #     makeComparisons( cut_ss_cIso_tkM_tkIso, "SLHC Level 1 EGamma Crystal Based Algo.", False, ["",""], 'crystal_pt_to_RCT2015'  )
+#XXX        makeComparisons( cut_ss_cIso_tkM_tkIso, "SLHC Level 1 EGamma Crystal Based Algo.", False, ["",""], 'cluster_pt'  )
 
         #tryCut( eTree, rTree, "cluster_pt", cut_ss, cut_none)
         #tryCut( eTree, rTree, "cluster_pt", showerShapes2, "")
