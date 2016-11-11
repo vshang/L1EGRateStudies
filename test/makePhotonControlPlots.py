@@ -16,7 +16,7 @@ gStyle.SetOptStat(0)
 ROOT.gROOT.SetBatch(True)
 
 rateFile = ROOT.TFile( 'egTriggerRates.root', 'r' )
-effFile = ROOT.TFile( 'egTriggerEff.root', 'r' )
+effFile = ROOT.TFile( 'egTriggerPhoEff.root', 'r' )
 
 
 crystal_tree = effFile.Get("analyzer/crystal_tree")
@@ -65,27 +65,27 @@ del c
 
 canvasSize = 800
 
-effFile = ROOT.TFile( 'egTriggerEff.root', 'r' )
+effFile = ROOT.TFile( 'egTriggerPhoEff.root', 'r' )
 rateFile = ROOT.TFile( 'egTriggerRates.root', 'r' )
 eTree = effFile.Get("analyzer/crystal_tree")
 rTree = rateFile.Get("analyzer/crystal_tree")
 
 tdrstyle.setTDRStyle()
 c = ROOT.TCanvas('c','c',canvasSize,canvasSize)
-# Old ones (why did these change?)
+# Single Electrong cuts
 #showerShapes = "(-0.921128 + 0.180511*TMath::Exp(-0.0400725*cluster_pt)>(-1)*(e2x5/e5x5))"
 #Isolation = "((0.990748 + 5.64259*TMath::Exp(-0.0613952*cluster_pt))>cluster_iso)"
-# New ones!
-showerShapes = "(-0.90583 + 0.03696*TMath::Exp(-0.171295*cluster_pt)>(-1)*(e2x5/e5x5))"
-Isolation = "((0.98287 + 3.3456*TMath::Exp(-0.0848607*cluster_pt))>cluster_iso)"
-tkIsoMatched = "((0.106544 + 0.00316748*cluster_pt)>(trackIsoConePtSum/trackPt))"
+#tkIsoMatched = "((0.106544 + 0.00316748*cluster_pt)>(trackIsoConePtSum/trackPt))"
+# Photon Cuts
+showerShapes = "(-0.903606 + 0.0248551*TMath::Exp(-0.196083*cluster_pt)>(-1)*(e2x5/e5x5))"
+Isolation = "((1.43074 + 3.14748*TMath::Exp(-0.188215*cluster_pt))>cluster_iso)"
+tkIsoMatched = "(( + *cluster_pt)>(trackIsoConePtSum/trackPt))"
 
 cut_none = ""
 cut_ss = showerShapes
 cut_ss_cIso = showerShapes+"*"+Isolation
 
 rocAry = [1000, 0.0, 1.]
-#rocAry = [200, 0.0, .3]
 textR = "Scanning 0.0 < #DeltaR(Trk, L1EG) < 1.0"
 rebase20 = "(cluster_pt>20)"
 rebase30 = "(cluster_pt>30)"

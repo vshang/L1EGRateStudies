@@ -340,7 +340,7 @@ def draw2DdeltaRHist(hist, c) :
 
 def drawDRHists(hists, c, ymax, doFit = False, targetDir = 'plots' ) :
     c.cd()
-    colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray]
+    colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray+2]
     marker_styles = [20, 24, 25, 26, 32, 35]
     hs = ROOT.THStack("hs", c.GetTitle())
     for i, hist in enumerate(hists) :
@@ -392,6 +392,7 @@ def drawDRHists(hists, c, ymax, doFit = False, targetDir = 'plots' ) :
         cmsString = drawCMSString("CMS Simulation")
     else :
         cmsString = drawCMSString("CMS Simulation, <PU>=140 bx=25, Single Electron")
+        #cmsString = drawCMSString("CMS Simulation, <PU>=140 bx=25, Min-Bias")
                 
     c.Print(targetDir+"/"+c.GetName()+".png")
 
@@ -550,9 +551,9 @@ if __name__ == '__main__' :
  
     # 2) 2D pt resolution vs. gen pt
     recoGenPtHist = effFile.Get("analyzer/reco_gen_pt")
-    draw2DPtRes( recoGenPtHist, c, "dyncrystalEG" )
+    #draw2DPtRes( recoGenPtHist, c, "dyncrystalEG" )
     tdrRecoGenPtHist = effFile.Get("analyzer/l1extraParticlesUCT:All_reco_gen_pt")
-    draw2DPtRes( tdrRecoGenPtHist, c, "tdr" )
+    #draw2DPtRes( tdrRecoGenPtHist, c, "tdr" )
 
     ''' Track to cluster reco resolution '''
     c.SetCanvasSize(1200,600)
@@ -911,12 +912,12 @@ if __name__ == '__main__' :
 
  
     # Offline reco pt
-    offlineRecoHist = ROOT.TH2F("offlineRecoHist", "Offline reco to gen. comparisonGen. pT (GeV)(reco-gen)/genCounts", 60, 0., 50., 60, -0.5, 0.5)
-    crystal_tree.Draw("(reco_pt-gen_pt)/gen_pt:gen_pt >> offlineRecoHist", "reco_pt>0", "colz")
-    c.SetLogy(0)
-    offlineRecoHist.Draw("colz")
-    c.Print("plots/offlineReco_vs_gen.png")
-    c.Clear()
+    #offlineRecoHist = ROOT.TH2F("offlineRecoHist", "Offline reco to gen. comparisonGen. pT (GeV)(reco-gen)/genCounts", 60, 0., 50., 60, -0.5, 0.5)
+    #crystal_tree.Draw("(reco_pt-gen_pt)/gen_pt:gen_pt >> offlineRecoHist", "reco_pt>0", "colz")
+    #c.SetLogy(0)
+    #offlineRecoHist.Draw("colz")
+    #c.Print("plots/offlineReco_vs_gen.png")
+    #c.Clear()
  
     recoGenPtHist.SetTitle("Crystal EG algorithm pT resolution")
     # oldAlgrecoGenPtHist = (TH2F *) effFile.Get("analyzer/SLHCL1ExtraParticles:EGamma_reco_gen_pt")
@@ -988,22 +989,19 @@ if __name__ == '__main__' :
                     toPlot.append( UCTPt )
                     c.SetName("dyncrystalEG_threshold"+pt+"_efficiency_gen_pt")
                     drawEfficiency( toPlot, c, 1.2, "Gen P_{T} (GeV)", xrange, True, possiblePts[pt])
-#
-#
-#    ''' POSITION RECONSTRUCTION '''
-#    # Delta R Stuff
-#    c.SetGridx(0)
-#    c.SetGridy(0)
-#    c.SetName("dyncrystalEG_deltaR")
-#    c.SetTitle("")
-#    drawDRHists([effHists['newAlgDRHist'], effHists['UCTAlgDRHist']], c, 0.)
-#    #c.SetName("dyncrystalEG_deltaR_UW")
-#    #c.SetTitle("")
-#    #drawDRHists([effHists['newAlgDRHist'], effHists['UCTAlgDRHist'], effHists['dynAlgDRHist']], c, 0.)
-#
-#    # Delta Eta / Phi
-#    #c.SetName("dyncrystalEG_deltaEta_UW")
-#    #drawDRHists([effHists['newAlgDEtaHist'], effHists['UCTAlgDEtaHist'], effHists['dynAlgDEtaHist']], c, 0., [-0.5, 0.5])
+
+
+    ''' POSITION RECONSTRUCTION '''
+    # Delta R Stuff
+    c.SetGridx(0)
+    c.SetGridy(0)
+    c.SetName("dyncrystalEG_deltaR")
+    c.SetTitle("")
+    drawDRHists([effHists['newAlgDRHist'], effHists['UCTAlgDRHist']], c, 0.)
+
+    # Delta Eta / Phi
+    #c.SetName("dyncrystalEG_deltaEta_UW")
+    #drawDRHists([effHists['newAlgDEtaHist'], effHists['UCTAlgDEtaHist']], c, 0., [-0.5, 0.5])
 
     """ 81X Check """
     Check81x = False
@@ -1058,8 +1056,36 @@ if __name__ == '__main__' :
         drawDRHists([tree81XdPhi2, stage2dPhi], c, 0.4)
     
 
-#    c.SetName("dyncrystalEG_deltaEta")
-#    drawDRHists([effHists['newAlgDEtaHist'], effHists['UCTAlgDEtaHist']], c, 0.)
+    DoPUStuff = True
+    if DoPUStuff :
+        fPU1 = ROOT.TFile('egTriggerRates45_p2.root','r')
+        tPU1 = fPU1.Get('analyzer/crystal_tree')
+        puAll = ROOT.TH1F("puAll", "13x113 PU Energy Total;#Sigma p_{T} (GeV)", 65, 0., 65)
+        pu0 = ROOT.TH1F("pu0", "13x113 PU Energy < 0.5 GeV Hits;#Sigma p_{T} (GeV)", 50, 0., 50)
+        pu5 = ROOT.TH1F("pu5", "13x113 PU Energy 0.5 - 1 GeV Hits;#Sigma p_{T} (GeV)", 50, 0., 50)
+        pu1 = ROOT.TH1F("pu1", "13x113 PU Energy 1 - 2 GeV Hits;#Sigma p_{T} (GeV)", 50, 0., 50)
+        pu2 = ROOT.TH1F("pu2", "13x113 PU Energy 2 - 3 GeV Hits;#Sigma p_{T} (GeV)", 50, 0., 50)
+        pu3 = ROOT.TH1F("pu3", "13x113 PU Energy 3 - 4 GeV Hits;#Sigma p_{T} (GeV)", 50, 0., 50)
+        pu4 = ROOT.TH1F("pu4", "13x113 PU Energy 4 - 5 GeV Hits;#Sigma p_{T} (GeV)", 50, 0., 50)
+        tPU1.Draw("ecalPUtoPt >> puAll")
+        tPU1.Draw("ecalPUtoPt0to500 >> pu0")
+        tPU1.Draw("ecalPUtoPt500to1 >> pu5")
+        tPU1.Draw("ecalPUtoPt1to2 >> pu1")
+        tPU1.Draw("ecalPUtoPt2to3 >> pu2")
+        tPU1.Draw("ecalPUtoPt3to4 >> pu3")
+        tPU1.Draw("ecalPUtoPt4to5 >> pu4")
+        c.SetName("puStudy_ECAL_PU_range")
+        c.SetLogy()
+        drawDRHists([pu0, pu5, pu1, pu2, pu3, pu4], c, 10)
+        c.SetName("puStudy_ECAL_PU_Tot")
+        c.SetLogy(0)
+        drawDRHists([puAll,], c, .12)
+
+
+
+
+    c.SetName("dyncrystalEG_deltaEta")
+    drawDRHists([effHists['newAlgDEtaHist'], effHists['UCTAlgDEtaHist']], c, 0.)
 #    #c.SetName("dyncrystalEG_deltaPhi_UW")
 #    #drawDRHists([effHists['newAlgDPhiHist'], effHists['UCTAlgDPhiHist'], effHists['dynAlgDPhiHist']], c, 0., [-0.5, 0.5])
 #    drawDRHists([effHists['newAlgDPhiHist'], effHists['UCTAlgDPhiHist'] ], c, 0.5)
@@ -1398,11 +1424,11 @@ if __name__ == '__main__' :
 #
 #
 #    ''' PT RECONSTRUCTION: (reco-gen) / reco '''
-#    #c.SetName("dyncrystalEG_RecoGenPt_UW")
-#    #drawDRHists([effHists['newAlgGenRecoPtHist'], effHists['UCTAlgGenRecoPtHist'], effHists['dynAlgGenRecoPtHist']], c, 0., [-1., 1.])
-#    c.SetName("dyncrystalEG_RecoGenPt")
-#    effHists['newAlgGenRecoPtHist'].GetXaxis().SetTitle("P_{T} (reco-gen)/gen")
-#    drawDRHists([effHists['newAlgGenRecoPtHist'], effHists['UCTAlgGenRecoPtHist']], c, 0., True)
+    #c.SetName("dyncrystalEG_RecoGenPt_UW")
+    #drawDRHists([effHists['newAlgGenRecoPtHist'], effHists['UCTAlgGenRecoPtHist'], effHists['dynAlgGenRecoPtHist']], c, 0., [-1., 1.])
+    c.SetName("dyncrystalEG_RecoGenPt")
+    effHists['newAlgGenRecoPtHist'].GetXaxis().SetTitle("P_{T} (reco-gen)/gen")
+    drawDRHists([effHists['newAlgGenRecoPtHist'], effHists['UCTAlgGenRecoPtHist']], c, 0., True)
 #    
 #
 # 

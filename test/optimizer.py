@@ -362,6 +362,8 @@ def makeCutROC( name, eTree, rTree, var, rocAry, prevCut, baseCut='', text='') :
     rTree.Draw( var, baseCut )
     hR = gPad.GetPrimitive( "htemp" )
     bkgInit = hR.Integral()
+    print "Signal Integral Inital:",sigInit
+    print "Bkg Integral Inital:",bkgInit
 
     # For storing our values as we check the cuts
     sigVals = array('d', [])
@@ -376,13 +378,12 @@ def makeCutROC( name, eTree, rTree, var, rocAry, prevCut, baseCut='', text='') :
     h2 = ROOT.TH1F('h2','h2',rocAry[0],rocAry[1],rocAry[2])
     rTree.Draw( var + ' >> h2', prevCut )
 
-    #for b in range( 1, h1.GetNbinsX()+1 ) :
-    for b in range( 0, h1.GetNbinsX() ) :
+    for b in range( 1, h1.GetNbinsX()+1 ) :
         paramVals.append( h1.GetXaxis().GetBinCenter( b ) )
         eInt = h1.Integral( 0, b )
         rInt = h2.Integral( 0, b )
-        #if b < 10 :
-        #    print "Eff: %f    Rate: %f" % (eInt,rInt)
+        if b % 50 == 0 or (b < 100 and b % 5 == 0) :
+            print "Bin: %i  Eff: %f    Rate: %f" % (b, eInt,rInt)
         sigVals.append( eInt / sigInit )
         bkgVals.append( 1. - rInt / bkgInit )
         if abs( sigVals[-1] - .9 ) < 0.001 :
@@ -533,13 +534,21 @@ if __name__ == '__main__' :
     showerShapes = "(-0.921128 + 0.180511*TMath::Exp(-0.0400725*cluster_pt)>(-1)*(e2x5/e5x5))"
     showerShapesB = "(-0.998511 + -8.16648e-05*TMath::Exp(-0.210906*cluster_pt)>(-1)*(e2x5b/e5x5b))"
     showerShapesC = "((-0.98 >(-1)*(e2x5/e5x5) || cluster_pt >35 ))"
-    Isolation = "((0.990748 + 5.64259*TMath::Exp(-0.0613952*cluster_pt))>cluster_iso)"
     IsolationB = "((0.42128 + -1.48187*TMath::Exp(-0.234355*cluster_pt))>cluster_isoGtr2)"
     IsolationC = "((0.472785 + -8.17373*TMath::Exp(-0.821266*cluster_pt))>cluster_iso)"
+    ### These below are with ~99% efficiency at plateau
+    Isolation = "((0.990748 + 5.64259*TMath::Exp(-0.0613952*cluster_pt))>cluster_iso)"
     Isolation1 = "((-15.2726 + 15.9463*TMath::Exp(-0.000282339*cluster_pt))>cluster_isoGtr1)"
     Isolation2 = "((0.42128 + -1.48187*TMath::Exp(-0.234355*cluster_pt))>cluster_isoGtr2)"
     Isolation500 = "((0.562669 + 2.01266*TMath::Exp(-0.0559235*cluster_pt))>cluster_isoGtr500)"
     IsolationX = "((0.617738 + 2.00979*TMath::Exp(-0.056631*cluster_pt))>((cluster_iso*corePt-ecalPUtoPt*0.496)/corePt))"
+    IsolationLobe = "((0.658715 + 1.9467*TMath::Exp(-0.0415617*cluster_pt))>((cluster_iso*corePt-(corePt*.1 < lslPt ? ecalPUtoPt-lslPt : (corePt*.1 < uslPt ? ecalPUtoPt-uslPt : ecalPUtoPt ) )*0.496)/corePt))"
+    ### Aiming for ~95% eff at plateau
+    #Isolation = "((0.884288 + 5.24376*TMath::Exp(-0.0838355*cluster_pt))>cluster_iso)"
+    #Isolation500 = "((0.369795 + 1.66704*TMath::Exp(-0.0738599*cluster_pt))>cluster_isoGtr500)"
+    #Isolation1 = "((-8.98409 + 9.35278*TMath::Exp(-0.000348177*cluster_pt))>cluster_isoGtr1)"
+    #Isolation2 = "((0.191302 + -0.351645*TMath::Exp(-0.116907*cluster_pt))>cluster_isoGtr2)"
+    #IsolationX = "((0.409748 + 1.52035*TMath::Exp(-0.0661331*cluster_pt))>((cluster_iso*corePt-ecalPUtoPt*0.496)/corePt))"
 
     tkIsoMatched = "((0.106544 + 0.00316748*cluster_pt)>(trackIsoConePtSum/trackPt))"
 
@@ -552,6 +561,7 @@ if __name__ == '__main__' :
     cut_ss_cIso2 = showerShapes+"*"+Isolation2
     cut_ss_cIso500 = showerShapes+"*"+Isolation500
     cut_ss_cIsoX = showerShapes+"*"+IsolationX
+    cut_ss_cIsoLobe = showerShapes+"*"+IsolationLobe
     #cut_ss_cIso1 = Isolation1
     #cut_ss_cIso2 = Isolation2
     #cut_ss_cIso500 = Isolation500
@@ -570,6 +580,19 @@ if __name__ == '__main__' :
     rebase30 = "(cluster_pt>30)"
     rebaseAll = cut_ss_cIso
 
+    # Below cuts are for 500 MeV energy recHit cut
+    ss500 = "(-0.905265 + 0.0409635*TMath::Exp(-0.165703*cluster_pt)>(-1)*(e2x5/e5x5))"
+    iso500 = "((0.983083 + 3.32699*TMath::Exp(-0.0840977*cluster_pt))>cluster_iso)"
+    cut_ss_cIso500 = ss500+"*"+iso500
+    ss502 = "(-0.912155 + -0.0362738*TMath::Exp(-0.0482866*cluster_pt)>(-1)*(e2x5/e5x5))"
+    iso502 = "((0.836744 + 2.60678*TMath::Exp(-0.115636*cluster_pt))>cluster_iso)"
+    cut_ss_cIso502 = ss502+"*"+iso502
+    makeComparisons( cut_ss_cIso502, "e2x5OverE5x5 Iso", False, ["",""], 'cluster_pt' )
+    # Very aggressive in lower pt region below
+    ss5002 = "(-0.91957 + -0.0233851*TMath::Exp(-0.0305597*cluster_pt)>(-1)*(e2x5/e5x5))"
+    iso5002 = "((0.602232 + 2.78939*TMath::Exp(-0.0985843*cluster_pt))>cluster_iso)"
+    cut_ss_cIso5002 = ss5002+"*"+iso500
+    #makeComparisons( cut_ss_cIso5002, "e2x5OverE5x5 Iso", False, ["",""], 'cluster_pt' )
     #makeCutROC( "testDRCuts_ss_cIso", eTree, rTree, "trackDeltaR", rocAry, cut_ss_cIso, cut_none, textR )
     #makeCutROC( "testDPhiCuts_ss_cIso", eTree, rTree, "abs(trackDeltaPhi)", rocAry, cut_ss_cIso, cut_none, textPhi )
     #makeCutROC( "testDEtaCuts_ss_cIso", eTree, rTree, "abs(trackDeltaEta)", rocAry, cut_ss_cIso, cut_none, textEta )
@@ -610,7 +633,7 @@ if __name__ == '__main__' :
 
 
 
-    makeSet = True
+    makeSet = False
     if makeSet :
    #     makeComparisons( "(1)", "No_Cuts", True )
    #     makeComparisons( "(passed>0)", "Passed", True )
@@ -622,6 +645,7 @@ if __name__ == '__main__' :
         makeComparisons( cut_ss_cIso2, "e2x5OverE5x5 Iso 2 GeV", False, ["",""], 'cluster_pt' )
         makeComparisons( cut_ss_cIso500, "e2x5OverE5x5 Iso 500 MeV", False, ["",""], 'cluster_pt' )
         makeComparisons( cut_ss_cIsoX, "e2x5OverE5x5 Iso PU Corr", False, ["",""], 'cluster_pt' )
+        makeComparisons( cut_ss_cIsoLobe, "e2x5OverE5x5 Iso PU Corr Brem Sub", False, ["",""], 'cluster_pt' )
    #     makeComparisons( cut_ss_cIso_tkM, "e2x5OverE5x5 Iso TkMatch", False, [tkMatched, "L1Tk Match #DeltaR<0.1, Eff. (L1/Gen)"] )
    #     makeComparisons( cut_ss_cIso_tkM, "e2x5OverE5x5 Iso TkMatch", False, ["",""], 'crystal_pt_to_RCT2015' )
    #     #tryCut( eTree, rTree, "cluster_pt", cutMatch, previousCut)

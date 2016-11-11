@@ -183,7 +183,9 @@ def getAverage( h, xVal ) :
 if __name__ == '__main__' :
     rateFile = ROOT.TFile( 'egTriggerRates.root', 'r' )
     effFile = ROOT.TFile( 'egTriggerEff.root', 'r' )
+    effPhoFile = ROOT.TFile( 'egTriggerPhoEff.root', 'r' )
     crystal_tree = effFile.Get("analyzer/crystal_tree")
+    crystal_treePho = effPhoFile.Get("analyzer/crystal_tree")
     rate_tree = rateFile.Get("analyzer/crystal_tree")
     c = ROOT.TCanvas('c', 'c', 800, 700)
     ''' Track to cluster reco resolution '''
@@ -203,16 +205,26 @@ if __name__ == '__main__' :
         [ 37.5, .99 ],
         [ 42.5, .995 ],
         [ 47.5, .995 ]]
-#    points = [ # pt, percentile
-#        #[  5,   .60 ],
-#        #[ 10,   .80 ],
-#        #[ 15,   .90 ],
-#        #[ 22.5, .95 ],
-#        #[ 27.5, .96 ],
-#        #[ 32.5, .97 ],
-#        [ 37.5, .995 ],
-#        [ 42.5, .995 ],
-#        [ 47.5, .995 ]]
+    #points = [ # pt, percentile
+    #    [  5,   .60 ],
+    #    [ 10,   .70 ],
+    #    [ 15,   .80 ],
+    #    [ 22.5, .90 ],
+    #    [ 27.5, .925 ],
+    #    [ 32.5, .95 ],
+    #    [ 37.5, .95 ],
+    #    [ 42.5, .95 ],
+    #    [ 47.5, .95 ]]
+    #points = [ # pt, percentile
+    #    [  5,   .60 ],
+    #    [ 10,   .70 ],
+    #    [ 15,   .80 ],
+    #    [ 22.5, .95 ],
+    #    [ 27.5, .95 ],
+    #    [ 32.5, .98 ],
+    #    [ 37.5, .98 ],
+    #    [ 42.5, .98 ],
+    #    [ 47.5, .98 ]]
 
     cut = ""
 
@@ -264,6 +276,34 @@ if __name__ == '__main__' :
     cut_ss_cIso_tkM = cut_ss_cIso+"*(trackDeltaR<0.1)"
     cut_ss_cIso_tkM_tkIso = cut_ss_cIso_tkM+"*"+tkIsoMatched
 
+    Isolation1 = "((-15.2726 + 15.9463*TMath::Exp(-0.000282339*cluster_pt))>cluster_isoGtr1)"
+    Isolation2 = "((0.42128 + -1.48187*TMath::Exp(-0.234355*cluster_pt))>cluster_isoGtr2)"
+    Isolation500 = "((0.562669 + 2.01266*TMath::Exp(-0.0559235*cluster_pt))>cluster_isoGtr500)"
+    IsolationX = "((0.617738 + 2.00979*TMath::Exp(-0.056631*cluster_pt))>((cluster_iso*corePt-ecalPUtoPt*0.496)/corePt))"
+
+
+    cut_ss_cIso1 = showerShapes+"*"+Isolation1
+    cut_ss_cIso2 = showerShapes+"*"+Isolation2
+    cut_ss_cIso500 = showerShapes+"*"+Isolation500
+    cut_ss_cIsoX = showerShapes+"*"+IsolationX
+
+#    var = "gen_pt:cluster_pt"
+#    xaxis = "Cluster P_{T} (GeV)"
+#    yaxis = "Gen P_{T} (GeV)"
+#    xinfo = [50, 0., 50.]
+#    yinfo = [52, 0., 52.]
+#    c.SetTitle("clusterPtVGenPt_ss_cIso")
+#    drawPoints(c, crystal_tree, var, cut_ss_cIso, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points, False, False)
+#    c.SetTitle("clusterPtVGenPt_ss_cIsoGtr1GeV")
+#    drawPoints(c, crystal_tree, var, cut_ss_cIso1, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points, False, False)
+#    c.SetTitle("clusterPtVGenPt_ss_cIsoGtr2GeV")
+#    drawPoints(c, crystal_tree, var, cut_ss_cIso2, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points, False, False)
+#    c.SetTitle("clusterPtVGenPt_ss_cIsoGtr500MeV")
+#    drawPoints(c, crystal_tree, var, cut_ss_cIso500, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points, False, False)
+#    c.SetTitle("clusterPtVGenPt_ss_cIsoPUCorr")
+#    drawPoints(c, crystal_tree, var, cut_ss_cIsoX, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points, False, False)
+
+
 #    var = "abs(trackDeltaPhi):cluster_pt"
 #    xaxis = "Cluster P_{T} (GeV)"
 #    yaxis = "abs( #delta#phi )"
@@ -280,6 +320,8 @@ if __name__ == '__main__' :
     yinfo = [100, -1.1, -0.4]
     c.SetTitle("clusterPtVE2x5OverE5x5")
     drawPoints(c, crystal_tree, var, cut_none, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
+    c.SetTitle("photon_clusterPtVE2x5OverE5x5")
+    drawPoints(c, crystal_treePho, var, cut_none, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
 
 #    var = "(-e2x5b/e5x5b):cluster_pt"
 #    xaxis = "Cluster P_{T} (GeV)"
@@ -322,23 +364,33 @@ if __name__ == '__main__' :
     c.SetTitle("clusterPtVClusterIso")
     #drawPoints(c, crystal_tree, var, cut_ss, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
     drawPoints(c, crystal_tree, var, cut_none, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
+    c.SetTitle("photon_clusterPtVClusterIso")
+    drawPoints(c, crystal_treePho, var, cut_none, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
 
-    var = "cluster_isoGtr500:cluster_pt"
-    c.SetTitle("clusterPtVClusterIsoGtr500MeV")
-    drawPoints(c, crystal_tree, var, cut_none, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
-
-    var = "cluster_isoGtr1:cluster_pt"
-    c.SetTitle("clusterPtVClusterIsoGtr1GeV")
-    drawPoints(c, crystal_tree, var, cut_none, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
-
-    var = "cluster_isoGtr2:cluster_pt"
-    c.SetTitle("clusterPtVClusterIsoGtr2GeV")
-    drawPoints(c, crystal_tree, var, cut_none, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
-
-    var = "(cluster_iso*corePt-ecalPUtoPt*0.496)/corePt:cluster_pt"
-    c.SetTitle("clusterPtVClusterIsoPUCorr")
-    drawPoints(c, crystal_tree, var, cut_none, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
-
+#XXX    var = "cluster_isoGtr500:cluster_pt"
+#XXX    c.SetTitle("clusterPtVClusterIsoGtr500MeV")
+#XXX    drawPoints(c, crystal_tree, var, cut_none, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
+#XXX
+#XXX    var = "cluster_isoGtr1:cluster_pt"
+#XXX    c.SetTitle("clusterPtVClusterIsoGtr1GeV")
+#XXX    drawPoints(c, crystal_tree, var, cut_none, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
+#XXX
+#XXX    var = "cluster_isoGtr2:cluster_pt"
+#XXX    c.SetTitle("clusterPtVClusterIsoGtr2GeV")
+#XXX    drawPoints(c, crystal_tree, var, cut_none, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
+#XXX
+#XXX    var = "(cluster_iso*corePt-(ecalPUtoPt)*0.496)/corePt:cluster_pt"
+#XXX    c.SetTitle("clusterPtVClusterIsoPUCorr")
+#XXX    drawPoints(c, crystal_tree, var, cut_none, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
+#XXX
+#XXX    var = "(cluster_iso*corePt-( (corePt*.1 < lslPt ? ecalPUtoPt-lslPt : (corePt*.1 < uslPt ? ecalPUtoPt-uslPt : ecalPUtoPt ) ) )*0.496)/corePt:cluster_pt"
+#XXX    c.SetTitle("clusterPtVClusterIsoPUCorrLobeCor")
+#XXX    drawPoints(c, crystal_tree, var, cut_none, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
+#XXX
+#XXX    var = "(cluster_iso*corePt-( (corePt*.1 < uslPt ? ecalPUtoPt-uslPt : ecalPUtoPt )  )*0.496)/corePt:cluster_pt"
+#XXX    c.SetTitle("clusterPtVClusterIsoPUCorrUSL")
+#XXX    drawPoints(c, crystal_tree, var, cut_none, title1, rate_tree, title2, xaxis, xinfo, yaxis, yinfo, points)
+#XXX
 #    var = "cluster_isoGtr2:cluster_pt"
 #    xaxis = "Cluster P_{T} (GeV)"
 #    yaxis = "Cluster Iso"
