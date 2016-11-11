@@ -166,6 +166,9 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float phi;
          float hovere;
          float iso;
+         float isoGtr500;
+         float isoGtr1;
+         float isoGtr2;
          float bremStrength;
          float e2x5;
          float e3x5;
@@ -191,6 +194,12 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float lslPt = 0.;
          float corePt = 0.;
          float ecalPUtoPt = 0.;
+         float ecalPUtoPt0to500 = 0.;
+         float ecalPUtoPt500to1 = 0.;
+         float ecalPUtoPt1to2 = 0.;
+         float ecalPUtoPt2to3 = 0.;
+         float ecalPUtoPt3to4 = 0.;
+         float ecalPUtoPt4to5 = 0.;
          float E_core = 0.;
          float phiStripContiguous0;
          float phiStripOneHole0;
@@ -216,6 +225,10 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float trackChi2;
          float trackIsoConeTrackCount;
          float trackIsoConePtSum;
+         float trackPUTrackPtGlobalDiffZ;
+         float trackPUTrackPtGlobalDiffZandPt;
+         float trackPUTrackPtGlobalSameZ;
+         float trackPUTrackPtGlobalAll;
          float trackPUTrackPt13x113DiffZ;
          float trackPUTrackPt13x113DiffZandPt;
          float trackPUTrackPt13x113SameZ;
@@ -232,6 +245,10 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float trackPUTrackPtTkIsoConeDiffZandPt;
          float trackPUTrackPtTkIsoConeSameZ;
          float trackPUTrackPtTkIsoConeAll;
+         float trackPUTrackCntGlobalDiffZ;
+         float trackPUTrackCntGlobalDiffZandPt;
+         float trackPUTrackCntGlobalSameZ;
+         float trackPUTrackCntGlobalAll;
          float trackPUTrackCnt13x113DiffZ;
          float trackPUTrackCnt13x113DiffZandPt;
          float trackPUTrackCnt13x113SameZ;
@@ -375,6 +392,9 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("phi", &treeinfo.phi);
    crystal_tree->Branch("cluster_hovere", &treeinfo.hovere);
    crystal_tree->Branch("cluster_iso", &treeinfo.iso);
+   crystal_tree->Branch("cluster_isoGtr500", &treeinfo.isoGtr500);
+   crystal_tree->Branch("cluster_isoGtr1", &treeinfo.isoGtr1);
+   crystal_tree->Branch("cluster_isoGtr2", &treeinfo.isoGtr2);
    crystal_tree->Branch("bremStrength", &treeinfo.bremStrength);
    crystal_tree->Branch("e2x5", &treeinfo.e2x5);
    crystal_tree->Branch("e3x5", &treeinfo.e3x5);
@@ -399,6 +419,12 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("lslPt", &treeinfo.lslPt);
    crystal_tree->Branch("corePt", &treeinfo.corePt);
    crystal_tree->Branch("ecalPUtoPt", &treeinfo.ecalPUtoPt);
+   crystal_tree->Branch("ecalPUtoPt0to500", &treeinfo.ecalPUtoPt0to500);
+   crystal_tree->Branch("ecalPUtoPt500to1", &treeinfo.ecalPUtoPt500to1);
+   crystal_tree->Branch("ecalPUtoPt1to2", &treeinfo.ecalPUtoPt1to2);
+   crystal_tree->Branch("ecalPUtoPt2to3", &treeinfo.ecalPUtoPt2to3);
+   crystal_tree->Branch("ecalPUtoPt3to4", &treeinfo.ecalPUtoPt3to4);
+   crystal_tree->Branch("ecalPUtoPt4to5", &treeinfo.ecalPUtoPt4to5);
    crystal_tree->Branch("E_core", &treeinfo.E_core);
    crystal_tree->Branch("phiStripContiguous0", &treeinfo.phiStripContiguous0);
    crystal_tree->Branch("phiStripOneHole0", &treeinfo.phiStripOneHole0);
@@ -424,6 +450,10 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("trackChi2", &treeinfo.trackChi2);
    crystal_tree->Branch("trackIsoConeTrackCount", &treeinfo.trackIsoConeTrackCount);
    crystal_tree->Branch("trackIsoConePtSum", &treeinfo.trackIsoConePtSum);
+   crystal_tree->Branch("trackPUTrackPtGlobalDiffZ", &treeinfo.trackPUTrackPtGlobalDiffZ);
+   crystal_tree->Branch("trackPUTrackPtGlobalDiffZandPt", &treeinfo.trackPUTrackPtGlobalDiffZandPt);
+   crystal_tree->Branch("trackPUTrackPtGlobalSameZ", &treeinfo.trackPUTrackPtGlobalSameZ);
+   crystal_tree->Branch("trackPUTrackPtGlobalAll", &treeinfo.trackPUTrackPtGlobalAll);
    crystal_tree->Branch("trackPUTrackPt13x113DiffZ", &treeinfo.trackPUTrackPt13x113DiffZ);
    crystal_tree->Branch("trackPUTrackPt13x113DiffZandPt", &treeinfo.trackPUTrackPt13x113DiffZandPt);
    crystal_tree->Branch("trackPUTrackPt13x113SameZ", &treeinfo.trackPUTrackPt13x113SameZ);
@@ -440,6 +470,10 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("trackPUTrackPtTkIsoConeDiffZandPt", &treeinfo.trackPUTrackPtTkIsoConeDiffZandPt);
    crystal_tree->Branch("trackPUTrackPtTkIsoConeSameZ", &treeinfo.trackPUTrackPtTkIsoConeSameZ);
    crystal_tree->Branch("trackPUTrackPtTkIsoConeAll", &treeinfo.trackPUTrackPtTkIsoConeAll);
+   crystal_tree->Branch("trackPUTrackCntGlobalDiffZ", &treeinfo.trackPUTrackCntGlobalDiffZ);
+   crystal_tree->Branch("trackPUTrackCntGlobalDiffZandPt", &treeinfo.trackPUTrackCntGlobalDiffZandPt);
+   crystal_tree->Branch("trackPUTrackCntGlobalSameZ", &treeinfo.trackPUTrackCntGlobalSameZ);
+   crystal_tree->Branch("trackPUTrackCntGlobalAll", &treeinfo.trackPUTrackCntGlobalAll);
    crystal_tree->Branch("trackPUTrackCnt13x113DiffZ", &treeinfo.trackPUTrackCnt13x113DiffZ);
    crystal_tree->Branch("trackPUTrackCnt13x113DiffZandPt", &treeinfo.trackPUTrackCnt13x113DiffZandPt);
    crystal_tree->Branch("trackPUTrackCnt13x113SameZ", &treeinfo.trackPUTrackCnt13x113SameZ);
@@ -921,12 +955,21 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
    treeinfo.corePt = cluster.GetExperimentalParam("uncorrectedPt"); // 3x5 Pt
    treeinfo.E_core = cluster.GetExperimentalParam("uncorrectedE"); // 3x5 Energy
    treeinfo.ecalPUtoPt = cluster.GetExperimentalParam("ecalPUEnergyToPt");
+   treeinfo.ecalPUtoPt0to500 = cluster.GetExperimentalParam("ecalPUEnergyToPt0to500");
+   treeinfo.ecalPUtoPt500to1 = cluster.GetExperimentalParam("ecalPUEnergyToPt500to1");
+   treeinfo.ecalPUtoPt1to2 = cluster.GetExperimentalParam("ecalPUEnergyToPt1to2");
+   treeinfo.ecalPUtoPt2to3 = cluster.GetExperimentalParam("ecalPUEnergyToPt2to3");
+   treeinfo.ecalPUtoPt3to4 = cluster.GetExperimentalParam("ecalPUEnergyToPt3to4");
+   treeinfo.ecalPUtoPt4to5 = cluster.GetExperimentalParam("ecalPUEnergyToPt4to5");
    treeinfo.crystalCount = cluster.GetExperimentalParam("crystalCount");
    treeinfo.cluster_energy = cluster.energy();
    treeinfo.eta = cluster.eta();
    treeinfo.phi = cluster.phi();
    treeinfo.hovere = cluster.hovere();
    treeinfo.iso = cluster.isolation();
+   treeinfo.isoGtr500 = cluster.GetExperimentalParam("ECalIsolationGrt500");
+   treeinfo.isoGtr1 = cluster.GetExperimentalParam("ECalIsolationGrt1");
+   treeinfo.isoGtr2 = cluster.GetExperimentalParam("ECalIsolationGrt2");
    treeinfo.bremStrength = cluster.bremStrength();
    treeinfo.e2x5 = cluster.GetExperimentalParam("E2x5");
    treeinfo.e3x5 = cluster.GetExperimentalParam("E3x5");
@@ -1141,6 +1184,10 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
 
      // Trying a track-based PU estimation for abs(dEta) <= 13*0.0173 && abs(dPhi) <= 113*0.0173
      // using the same window as calo based PU
+     float PUTrackPtGlobalDiffZ = 0.;
+     float PUTrackPtGlobalDiffZandPt = 0.;
+     float PUTrackPtGlobalSameZ = 0.;
+     float PUTrackPtGlobalAll = 0.;
      float PUTrackPt13x113DiffZ = 0.;
      float PUTrackPt13x113DiffZandPt = 0.;
      float PUTrackPt13x113SameZ = 0.;
@@ -1157,6 +1204,10 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
      float PUTrackPtTkIsoConeDiffZandPt = 0.;
      float PUTrackPtTkIsoConeSameZ = 0.;
      float PUTrackPtTkIsoConeAll = 0.;
+     float PUTrackCntGlobalDiffZ = 0.;
+     float PUTrackCntGlobalDiffZandPt = 0.;
+     float PUTrackCntGlobalSameZ = 0.;
+     float PUTrackCntGlobalAll = 0.;
      float PUTrackCnt13x113DiffZ = 0.;
      float PUTrackCnt13x113DiffZandPt = 0.;
      float PUTrackCnt13x113SameZ = 0.;
@@ -1173,6 +1224,7 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
      float PUTrackCntTkIsoConeDiffZandPt = 0.;
      float PUTrackCntTkIsoConeSameZ = 0.;
      float PUTrackCntTkIsoConeAll = 0.;
+     //int trkCnt = 0;
      for(size_t track_index=0; track_index<l1trackHandle->size(); ++track_index)
      {
         edm::Ptr<TTTrack<Ref_PixelDigi_>> ptr(l1trackHandle, track_index);
@@ -1183,9 +1235,12 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
         // Don't consider tracks with pt < 2 for studies
         // Don't consider track with pt > 5 b/c they aren't PU
 	double pt = ptr->getMomentum().perp();
-        //if (pt < 2. || pt > 5.) continue;
-        if (pt < 2.) continue;
 	double chi2 = ptr->getChi2();
+        //if (pt < 2. || pt > 5.) continue;
+        //trkCnt++;
+        //std::cout << trkCnt << " - Pt: " << pt << " Chi2: " << chi2 << std::endl;
+        if (pt < 2.) continue;
+	if (pt > 50.) pt = 50;
 	if (chi2 > 100.) continue;
 
 	// Categories
@@ -1193,22 +1248,40 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
 	// 2. ECal Iso Window: 27x27
 	// 3. Trk Iso Window: dr < 0.2
 	// 4. Signal Region 3x5
+	// 5. Global!
 	 
 	// Reject tracks not matching any of these areas
      	float trackDEta = L1TkElectronTrackMatchAlgo::deltaEta(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), ptr);
      	float trackDPhi = L1TkElectronTrackMatchAlgo::deltaPhi(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), ptr);
-	// Going from integral crystal indices to track distance that could hit the farther edge of a crystal
-	if (abs(trackDEta) > 13.5*0.0173 ) continue; // ECal Iso is widest in Eta, this cut is == dR > 0.23
-	if (abs(trackDPhi) > 56.5*0.0173 ) continue; // ECal PU is widest in Phi
 
 	// Additional vars for following categories
         float dr_2 = reco::deltaR(ptr->getMomentum(), matched_track->getMomentum());
         float this_z = ptr->getPOCA().z();
 	float dz = abs(matched_z - this_z);
 
+	// Whole detector
+     	PUTrackPtGlobalAll += pt;
+     	PUTrackCntGlobalAll++;
+	if (dz < 0.6) {
+     	    PUTrackPtGlobalSameZ += pt;
+     	    PUTrackCntGlobalSameZ++;
+	}
+	if (dz > 0.6) {
+     	    PUTrackPtGlobalDiffZ += pt;
+     	    PUTrackCntGlobalDiffZ++;
+	}
+	if (dz > 0.6 && pt < 5.) {
+     	    PUTrackPtGlobalDiffZandPt += pt;
+     	    PUTrackCntGlobalDiffZandPt++;
+	}
+
+	// Going from integral crystal indices to track distance that could hit the farther edge of a crystal
+	if (fabs(trackDEta) > 13.5*0.0173 ) continue; // ECal Iso is widest in Eta, this cut is == dR > 0.23
+	if (fabs(trackDPhi) > 56.5*0.0173 ) continue; // ECal PU is widest in Phi
+
 	// Now many categories
 	// 13x113 ECal PU Region
-	if (abs(trackDEta) < 6.5*0.0173 && abs(trackDPhi) < 56.5*0.0173) {
+	if (fabs(trackDEta) < 6.5*0.0173 && fabs(trackDPhi) < 56.5*0.0173) {
      	    PUTrackPt13x113All += pt;
      	    PUTrackCnt13x113All++;
 	    if (dz < 0.6) {
@@ -1226,7 +1299,7 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
 	} // end 13x113 ECal PU Region
 		
 	// 3x5 Cluster Core
-	if (abs(trackDEta) < 1.5*0.0173 && abs(trackDPhi) < 2.5*0.0173) {
+	if (fabs(trackDEta) < 1.5*0.0173 && fabs(trackDPhi) < 2.5*0.0173) {
      	    PUTrackPt3x5All += pt;
      	    PUTrackCnt3x5All++;
 	    if (dz < 0.6) {
@@ -1244,7 +1317,7 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
 	} // end 3x5 Cluster Core
 		
 	// ECal Iso Cone
-	if (abs(trackDEta) < 13.5*0.0173 && abs(trackDPhi) < 13.5*0.0173) {
+	if (fabs(trackDEta) < 13.5*0.0173 && fabs(trackDPhi) < 13.5*0.0173) {
      	    PUTrackPtECalIsoConeAll += pt;
      	    PUTrackCntECalIsoConeAll++;
 	    if (dz < 0.6) {
@@ -1301,6 +1374,10 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
      treeinfo.trackChi2 = matched_track->getChi2();
      treeinfo.trackIsoConeTrackCount = isoConeTrackCount;
      treeinfo.trackIsoConePtSum = isoConePtSum;
+     treeinfo.trackPUTrackPtGlobalDiffZ = PUTrackPtGlobalDiffZ;
+     treeinfo.trackPUTrackPtGlobalDiffZandPt = PUTrackPtGlobalDiffZandPt;
+     treeinfo.trackPUTrackPtGlobalSameZ = PUTrackPtGlobalSameZ;
+     treeinfo.trackPUTrackPtGlobalAll = PUTrackPtGlobalAll;
      treeinfo.trackPUTrackPt13x113DiffZ = PUTrackPt13x113DiffZ;
      treeinfo.trackPUTrackPt13x113DiffZandPt = PUTrackPt13x113DiffZandPt;
      treeinfo.trackPUTrackPt13x113SameZ = PUTrackPt13x113SameZ;
@@ -1317,6 +1394,10 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
      treeinfo.trackPUTrackPtTkIsoConeDiffZandPt = PUTrackPtTkIsoConeDiffZandPt;
      treeinfo.trackPUTrackPtTkIsoConeSameZ = PUTrackPtTkIsoConeSameZ;
      treeinfo.trackPUTrackPtTkIsoConeAll = PUTrackPtTkIsoConeAll;
+     treeinfo.trackPUTrackCntGlobalDiffZ = PUTrackCntGlobalDiffZ;
+     treeinfo.trackPUTrackCntGlobalDiffZandPt = PUTrackCntGlobalDiffZandPt;
+     treeinfo.trackPUTrackCntGlobalSameZ = PUTrackCntGlobalSameZ;
+     treeinfo.trackPUTrackCntGlobalAll = PUTrackCntGlobalAll;
      treeinfo.trackPUTrackCnt13x113DiffZ = PUTrackCnt13x113DiffZ;
      treeinfo.trackPUTrackCnt13x113DiffZandPt = PUTrackCnt13x113DiffZandPt;
      treeinfo.trackPUTrackCnt13x113SameZ = PUTrackCnt13x113SameZ;
