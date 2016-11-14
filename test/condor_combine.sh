@@ -1,10 +1,16 @@
-eff=24
+eff=47
 rate=${eff}
+photon=${eff}
 
 #!/bin/bash
 if [ -d /hdfs/store/user/${USER}/egalg_eff_hists${eff}-eff_hists_cfg/ ]; then
     rm egTriggerEff.root
     find /hdfs/store/user/${USER}/egalg_eff_hists${eff}-eff_hists_cfg/* |xargs hadd egTriggerEff.root
+fi
+
+if [ -d /hdfs/store/user/${USER}/egalgPho_eff_hists${photon}-eff_hists_cfg/ ]; then
+    rm egTriggerPhoEff.root
+    find /hdfs/store/user/${USER}/egalgPho_eff_hists${photon}-eff_hists_cfg/* |xargs hadd egTriggerPhoEff.root
 fi
 
 if [ -d /hdfs/store/user/${USER}/egalg_rate_hists${rate}-rate_hists_cfg/ ]; then
