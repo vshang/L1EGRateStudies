@@ -170,6 +170,8 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float isoGtr1;
          float isoGtr2;
          float bremStrength;
+         float e2x2;
+         float e2x3;
          float e2x5;
          float e3x5;
          float e5x5;
@@ -396,6 +398,8 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("cluster_isoGtr1", &treeinfo.isoGtr1);
    crystal_tree->Branch("cluster_isoGtr2", &treeinfo.isoGtr2);
    crystal_tree->Branch("bremStrength", &treeinfo.bremStrength);
+   crystal_tree->Branch("e2x2", &treeinfo.e2x2);
+   crystal_tree->Branch("e2x3", &treeinfo.e2x3);
    crystal_tree->Branch("e2x5", &treeinfo.e2x5);
    crystal_tree->Branch("e3x5", &treeinfo.e3x5);
    crystal_tree->Branch("e5x5", &treeinfo.e5x5);
@@ -617,6 +621,13 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       iEvent.getByLabel(offlineRecoClusterInputTag, offlineRecoClustersHandle);
       reco::SuperClusterCollection offlineRecoClusters = *offlineRecoClustersHandle.product();
 
+      //// Print info on all gen Particles
+      //std::cout << "\nGen Info:" << std::endl;
+      //int counter = 0;
+      //for (auto genP : genParticles ) {
+      //   std::cout << counter << " - pt: " << genP.pt() << std::endl;
+      //}
+
       // Find the cluster corresponding to generated electron
       bool offlineRecoFound = false;
       for(auto& cluster : offlineRecoClusters)
@@ -626,6 +637,8 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          p4.SetEta(cluster.position().eta());
          p4.SetPhi(cluster.position().phi());
          p4.SetM(0.);
+
+
          if ( reco::deltaR(p4, genParticles[0].polarP4()) < 0.1
              && fabs(p4.pt() - genParticles[0].pt()) < genMatchRelPtcut*genParticles[0].pt() )
          {
@@ -971,6 +984,8 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
    treeinfo.isoGtr1 = cluster.GetExperimentalParam("ECalIsolationGrt1");
    treeinfo.isoGtr2 = cluster.GetExperimentalParam("ECalIsolationGrt2");
    treeinfo.bremStrength = cluster.bremStrength();
+   treeinfo.e2x2 = cluster.GetExperimentalParam("E2x2");
+   treeinfo.e2x3 = cluster.GetExperimentalParam("E2x3");
    treeinfo.e2x5 = cluster.GetExperimentalParam("E2x5");
    treeinfo.e3x5 = cluster.GetExperimentalParam("E3x5");
    treeinfo.e5x5 = cluster.GetExperimentalParam("E5x5");
