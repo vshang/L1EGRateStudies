@@ -84,16 +84,27 @@ tkIsoMatched = "(( + *cluster_pt)>(trackIsoConePtSum/trackPt))"
 cut_none = ""
 cut_ss = showerShapes
 cut_ss_cIso = showerShapes+"*"+Isolation
+# FROZEN
+showerShapesF = "(-0.896501 + 0.181135*TMath::Exp(-0.0696926*cluster_pt)>(-1)*(e2x5/e5x5))"
+IsolationF = "((1.0614 + 5.65869*TMath::Exp(-0.0646173*cluster_pt))>cluster_iso)"
+cut_ss_cIso = showerShapesF+"*"+IsolationF
+###cut_ss_cIso_TrkMatch = showerShapesF+"*"+IsolationF+"*!(trackDeltaR<0.1 && 0.601814 * cluster_pt < trackPt)"
+cut_ss_cIso_TrkMatch = showerShapesF+"*"+IsolationF+"*(trackDeltaR<0.05)"
 
 rocAry = [1000, 0.0, 1.]
 textR = "Scanning 0.0 < #DeltaR(Trk, L1EG) < 1.0"
+#rebase20 = "(cluster_pt>20)*(abs(cluster_pt-trackPt)/cluster_pt < 0.5)"
 rebase20 = "(cluster_pt>20)"
 rebase30 = "(cluster_pt>30)"
 rebaseAll = cut_ss_cIso
+doPhoton=True
 
 
-makeCutROC( "testDRCutsBaselineCuts20_ss_cIso", eTree, rTree, "trackDeltaR", rocAry, cut_ss_cIso+"*"+rebase20, rebaseAll+"*"+rebase20, textR )
-makeComparisons( cut_ss_cIso, "e2x5OverE5x5 Iso", False, ["",""], 'cluster_pt' )
+###makeCutROC( "testDRCutsBaselineCuts20_ss_cIso", eTree, rTree, "trackDeltaR", rocAry, cut_ss_cIso+"*"+rebase20, rebaseAll+"*"+rebase20, textR )
+###makeComparisons( cut_ss_cIso, "G_e2x5OverE5x5 Iso", False, ["",""], 'cluster_pt', doPhoton )
+###cut_with_e2x2OverE2x5Window = cut_ss_cIso+"*((e2x2/e2x5)>0.9)"
+###makeComparisons( cut_with_e2x2OverE2x5Window, "G_e2x5OverE5x5 Iso PhoWindow", False, ["",""], 'cluster_pt', doPhoton )
+makeComparisons( cut_ss_cIso_TrkMatch, "G_e2x5OverE5x5 Iso Anti-TkMatch", False, ["",""], 'cluster_pt', doPhoton )
 
 
 gStyle.SetOptStat(0)

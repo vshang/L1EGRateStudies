@@ -451,6 +451,12 @@ def drawDRHists(hists, c, ymax, doFit = False, targetDir = 'plots' ) :
 
     c.Clear()
  
+def simple1D( name, tree, iii, var, info, cut="" ) :
+    h = ROOT.TH1F("%i" % iii[0], name+' '+var+';'+var, info[0], info[1], info[2])
+    tree.Draw( var + " >> %i" % iii[0], cut )
+    iii[0] += 1
+    return h
+    
 
 
 if __name__ == '__main__' :
@@ -568,12 +574,23 @@ if __name__ == '__main__' :
     deltaR = "((trackDeltaR<0.1))"
     deltaRgtr = "((trackDeltaR>0.1))"
     cut = showerShapes+"*"+Isolation
-    cut = showerShapes+"*"+Isolation+"*"+deltaR
+    #cut = showerShapes+"*"+Isolation+"*"+deltaR
     title1 = "L1EGamma Crystal (Electrons)"
     title2 = "L1EGamma Crystal (Fake)"
 
     lotsOf2DPlots = False
+    #lotsOf2DPlots = True
     if lotsOf2DPlots :
+        # Tmp Photo Stuff
+        showerShapes = "(-0.903606 + 0.0248551*TMath::Exp(-0.196083*cluster_pt)>(-1)*(e2x5/e5x5))"
+        Isolation = "((1.43074 + 3.14748*TMath::Exp(-0.188215*cluster_pt))>cluster_iso)"
+        #cut = showerShapes+"*"+Isolation+"*(cluster_pt>8 || trackPt>8)"
+        trkMatch="( (2.15946 + 0.684997 * cluster_pt) > trackPt)"
+        cut = showerShapes+"*"+Isolation+"*"+trkMatch
+        fPho = ROOT.TFile('egTriggerPhoEff.root','r')
+        crystal_tree = fPho.Get('analyzer/crystal_tree')
+        # End tmp photon stuff
+
         var = "zVertexEnergy:abs(trackZ-zVertex)"
         xaxis = "dZ (L1Trk, Trk Vtx)"
         xinfo = [80, 0., 20.]
@@ -1056,7 +1073,7 @@ if __name__ == '__main__' :
         drawDRHists([tree81XdPhi2, stage2dPhi], c, 0.4)
     
 
-    DoPUStuff = True
+    DoPUStuff = False
     if DoPUStuff :
         fPU1 = ROOT.TFile('egTriggerRates45_p2.root','r')
         tPU1 = fPU1.Get('analyzer/crystal_tree')
@@ -1081,7 +1098,33 @@ if __name__ == '__main__' :
         c.SetLogy(0)
         drawDRHists([puAll,], c, .12)
 
-
+    doPhotonComp = True
+    if doPhotonComp :
+        # FROZEN
+        showerShapesF = "(-0.896501 + 0.181135*TMath::Exp(-0.0696926*cluster_pt)>(-1)*(e2x5/e5x5))"
+        IsolationF = "((1.0614 + 5.65869*TMath::Exp(-0.0646173*cluster_pt))>cluster_iso)"
+        cut_ss_cIso = showerShapesF+"*"+IsolationF+"*(cluster_pt>20)"
+        fPho = ROOT.TFile('egTriggerPhoEff.root','r')
+        tPho = fPho.Get('analyzer/crystal_tree')
+        crystal_tree = effFile.Get("analyzer/crystal_tree")
+        min_ = 0.
+        max_ = 2.
+        tmpAry=[200,min_,max_]
+        varList = [
+'e1x1/e1x2','e1x1/e2x1','e1x1/e2x2','e1x1/e2x3','e1x1/e2x5','e1x1/gen_energy','e1x1/e3x5',
+            'e2x1/e1x2','e2x1/e2x2','e2x1/e2x3','e2x1/e2x5','e2x1/gen_energy','e2x1/e3x5',
+                        'e1x2/e2x2','e1x2/e2x3','e1x2/e2x5','e1x2/gen_energy','e1x2/e3x5',
+                                    'e2x2/e2x3','e2x2/e2x5','e2x2/gen_energy','e2x2/e3x5',
+                                                'e2x3/e2x5','e2x3/gen_energy','e2x3/e3x5',
+                                                            'e2x5/gen_energy','e2x5/e3x5',
+        ]
+        cnt = [0]
+        for var in varList :
+            h1 = simple1D( 'Photon', tPho, cnt, var, tmpAry, cut_ss_cIso )
+            h2 = simple1D( 'Electron', crystal_tree, cnt, var, tmpAry, cut_ss_cIso )
+            h3 = simple1D( 'Min-Bias', rate_tree, cnt, var, tmpAry, cut_ss_cIso )
+            c.SetName("photonElecDiff"+var.replace('/','_'))
+            drawDRHists([h1,h2,h3], c, 0. )
 
 
     c.SetName("dyncrystalEG_deltaEta")
