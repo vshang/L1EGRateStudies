@@ -4,14 +4,15 @@ https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1TrackTriggerObjects62X
 
 Checkout instructions:
 ```bash
-cmsrel CMSSW_8_1_0_pre9
-cd CMSSW_8_1_0_pre9/src/
+cmsrel CMSSW_8_1_0_pre16
+cd CMSSW_8_1_0_pre16/src/
 cmsenv
 git cms-init
-git cms-merge-topic truggles:81X_from_62X_Port
+git cms-merge-topic nancymarinelli:TP_PhaseII_V0 # For ECAL TPs
+git cms-merge-topic truggles:cmssw_810_pre16_dev
 
 pushd SLHCUpgradeSimulations
-git clone -b 81X_SLHC_L1EGCrystals_DEV https://github.com/truggles/L1EGRateStudies.git SLHCUpgradeSimulations
+git clone -b 81X_SLHC_L1EGCrystals_DEV https://github.com/truggles/L1EGRateStudies.git L1EGRateStudies
 popd
 
 scramv1 b -j 8

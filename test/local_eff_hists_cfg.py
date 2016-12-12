@@ -10,7 +10,7 @@ process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
    reportEvery = cms.untracked.int32(1)
 )
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 process.source = cms.Source("PoolSource",
    fileNames = cms.untracked.vstring(
@@ -29,8 +29,18 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc', '')
 
 # Choose a 2030 geometry!
+# The ones which don't work all replace the ECAL Endcap geometry with HGCal stuff
+# Options in cmssw_810_pre16: (each also has an option without the Reco)
+process.load('Configuration.Geometry.GeometryExtended2023D1Reco_cff') # Works
+#process.load('Configuration.Geometry.GeometryExtended2023D2Reco_cff') # Works
+#process.load('Configuration.Geometry.GeometryExtended2023D3Reco_cff') # HGCal stuff, doesn't work 
+#process.load('Configuration.Geometry.GeometryExtended2023D4Reco_cff') # HGCal stuff, doesn't work 
+#process.load('Configuration.Geometry.GeometryExtended2023D5Reco_cff') # Crashes geometryHelper, this is the default one used for ECAL TPs
+#process.load('Configuration.Geometry.GeometryExtended2023D6Reco_cff') # Works
+
 #process.load('Configuration.Geometry.GeometryExtended2023simReco_cff') # Has CaloTopology, but no ECal endcap, don't use!
-process.load('Configuration.Geometry.GeometryExtended2023GRecoReco_cff') # using this geometry because I'm not sure if the tilted geometry is vetted yet
+#process.load('Configuration.Geometry.GeometryExtended2023GRecoReco_cff') # using this geometry because I'm not sure if the tilted geometry is vetted yet
+#process.load('Configuration.Geometry.GeometryExtended2023D5Reco_cff') # using this geometry because it is what was used for ECAL TP production in 810_pre16, this one doesn't work with the geometryHelper
 #process.load('Configuration.Geometry.GeometryExtended2023tiltedReco_cff') # this one good?
 
 #process.load('Configuration.Geometry.GeometryExtended2023TTIReco_cff')
