@@ -12,7 +12,7 @@ git cms-merge-topic nancymarinelli:TP_PhaseII_V0 # For ECAL TPs
 git cms-merge-topic truggles:cmssw_810_pre16_dev
 
 pushd SLHCUpgradeSimulations
-git clone -b 81X_SLHC_L1EGCrystals_DEV https://github.com/truggles/L1EGRateStudies.git L1EGRateStudies
+git clone -b 81X_SLHC_L1EGCrystals_ECAL_TPs_DEV https://github.com/truggles/L1EGRateStudies.git L1EGRateStudies
 popd
 
 scramv1 b -j 8
