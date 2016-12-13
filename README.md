@@ -27,4 +27,13 @@ cmsRun local_eff_hists_cfg.py
 
 This branch is under development and will be updated further in the coming weeks.
 
+Updates:
+   * Switched to Nancy's ECAL TPs
+   * Had to turn off lots of stuff because of move from GEN-SIM-RECO to GEN-SIM-RAW-DIGI
+
+To Do:
+   * Add HCAL back into analyzer for H/E calc, right now I can't figure out HCAL TP or RecHit sequence from DIGI
+   * Re-add offline Electrons for comparisons
+   * Double check compressedEt for extracting Et value from ECAL TPs in SLHCUpgradeSimulations/L1CaloTrigger/plugins/L1EGammaCrystalsProducer.cc
+   * Possibly slim down all the output histograms?
 
