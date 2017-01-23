@@ -5,9 +5,6 @@ from ROOT import gStyle
 gStyle.SetOptStat(0)
 
 def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, points, linear=False, doFit=True, includeLine=False) :
-    print tree1.GetEntries()
-    print tree2.GetEntries()
-    print tree3.GetEntries()
     title1 = "L1EGamma Crystal (Electrons)"
     title2 = "L1EGamma Crystal (Photons)"
     title3 = "L1EGamma Crystal (Fake)"
@@ -75,6 +72,8 @@ def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, poi
     h3.GetXaxis().SetTitle( xaxis )
     h3.GetYaxis().SetTitle( yaxis )
     h3.Draw("colz")
+    #if c.GetTitle() == 'clusterPtVE2x2OverE2x5' :
+    #    ROOT.gPad.SetLogz()
     if includeLine : 
         g1.Draw('SAME')
     if doFit :
@@ -333,13 +332,24 @@ if __name__ == '__main__' :
     cut_ss_cIsoF2 = cut_ss_cIsoF+"*(trackDeltaR<.1)"
     c.SetTitle("clusterPtVTrackPt_trkDR")
     drawPoints(c, crystal_tree, var, cut_ss_cIsoF2, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, True, doFit, doFit)
+    c.SetTitle("clusterPtVTrackPt_trkDR_trkPtKeep")
+    cut_ss_cIsoF3 = cut_ss_cIsoF+"*(trackDeltaR<.05 || trackPt < 6.)"
+    drawPoints(c, crystal_tree, var, cut_ss_cIsoF3, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, True, doFit, doFit)
 
     var = "trackDeltaR:cluster_pt"
     xaxis = "Cluster P_{T} (GeV)"
-    yaxis = "Trk dR"
+    yaxis = "#Delta R (Track, L1 Cluster)"
     xinfo = [20, 0., 50.]
     yinfo = [50, 0., 0.5]
     c.SetTitle("clusterPtVTrackDeltaR")
+    drawPoints(c, crystal_tree, var, cut_ss_cIsoF, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, True, doFit, doFit)
+
+    var = "-e2x2/e2x5:cluster_pt"
+    xaxis = "Cluster P_{T} (GeV)"
+    yaxis = "E2x2 / E2x5"
+    xinfo = [20, 0., 50.]
+    yinfo = [50, -1.1, -0.4]
+    c.SetTitle("clusterPtVE2x2OverE2x5")
     drawPoints(c, crystal_tree, var, cut_ss_cIsoF, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, True, doFit, doFit)
 
 

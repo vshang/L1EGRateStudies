@@ -25,7 +25,7 @@ rate_tree = rateFile.Get("analyzer/crystal_tree")
 # 1) 2D delta Eta vs delta Phi plot
 dynCrystal2DdeltaRHist = effFile.Get("analyzer/dyncrystalEG_2DdeltaR_hist")
 c = ROOT.TCanvas('c', 'c', 800, 700)
-c.SetName("dyncrystalEG_2D_deltaR")
+c.SetName("dyncrystalEG_2D_deltaR_electron")
 c.SetTitle("")
 draw2DdeltaRHist(dynCrystal2DdeltaRHist, c)
 
@@ -42,9 +42,9 @@ title1 = "L1EGamma Crystal (Electrons)"
 title2 = "L1EGamma Crystal (Fake)"
 c.Clear()
 
-recoGenPtHist.SetTitle("Crystal EG algorithm pT resolution")
+recoGenPtHist.SetTitle("Electron: Crystal EG algorithm pT resolution")
 oldAlgRecoGenPtHist = effFile.Get("analyzer/l1extraParticlesUCT:All_reco_gen_pt")
-oldAlgRecoGenPtHist.SetTitle("Tower EG alg. momentum error")
+oldAlgRecoGenPtHist.SetTitle("Electron: Tower EG alg. momentum error")
 oldAlgRecoGenPtHist.GetYaxis().SetTitle("Relative Error (reco-gen)/gen")
 oldAlgRecoGenPtHist.SetMaximum(50)
 oldAlgRecoGenPtHist.SetLineColor(ROOT.kRed)
@@ -60,7 +60,7 @@ gPad.SetGridx(1)
 gPad.SetGridy(1)
 oldAlgRecoGenPtHist.Draw("colz")
 oldAlgRecoGenPtHist.GetYaxis().SetTitleOffset(1.4)
-c.Print("plots/reco_gen_pt.png")
+c.Print("plots/reco_gen_pt_electron.png")
 del c
 
 canvasSize = 800
@@ -103,7 +103,7 @@ rebaseAll = cut_ss_cIso
 ###makeComparisons( cut_ss_cIso, "E_e2x5OverE5x5 Iso", False, ["",""], 'cluster_pt' )
 ###cut_with_e2x2OverE2x5Window = cut_ss_cIso+"*((e2x2/e2x5)>0.9)"
 ###makeComparisons( cut_with_e2x2OverE2x5Window, "E_e2x5OverE5x5 Iso PhoWindow", False, ["",""], 'cluster_pt' )
-makeComparisons( cut_ss_cIso_TrkMatch, "E_e2x5OverE5x5 Iso TrkMatch", False, ["",""], 'cluster_pt' )
+#makeComparisons( cut_ss_cIso_TrkMatch, "E_e2x5OverE5x5 Iso TrkMatch", False, ["",""], 'cluster_pt' )
 
 
 gStyle.SetOptStat(0)

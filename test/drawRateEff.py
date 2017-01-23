@@ -221,6 +221,9 @@ def draw2DdeltaRHist(hist, c) :
     # Draw 2D hist
     hist_pad.cd()
     hist.Draw("col")
+    gPad.SetLogz()
+    hist.GetXaxis().SetTitle("d#eta(reco-gen)")
+    hist.GetYaxis().SetTitle("d#phi(reco-gen)")
     hist.GetYaxis().SetTitleOffset(1.4)
     
     # Fit hist
@@ -236,13 +239,13 @@ def draw2DdeltaRHist(hist, c) :
     shape.SetNpx(100)
     shape.SetNpy(100)
     shape.SetLineWidth(2)
-    shape.SetLineColor(ROOT.kRed)
+    shape.SetLineColor(ROOT.kBlack)
     shape.Draw("cont3 same")
     
     # One crystal box
     crystalBox = ROOT.TBox(-0.0173/2, -0.0173/2, 0.0173/2, 0.0173/2)
     crystalBox.SetLineStyle(3)
-    crystalBox.SetLineColor(ROOT.kGray)
+    crystalBox.SetLineColor(13)
     crystalBox.SetLineWidth(2)
     crystalBox.SetFillStyle(0)
     crystalBox.Draw()
@@ -296,7 +299,8 @@ def draw2DdeltaRHist(hist, c) :
     cmsString = ROOT.TLatex(
        histpad_sizeX+margin-0.005, 
        1-margin-0.005, 
-       "CMS Simulation, <PU>=140 bx=25, Single Electron")
+       #"CMS Simulation, <PU>=140 bx=25, Single Electron")
+       "CMS Simulation, <PU>=140 bx=25, Single Photon")
     cmsString.SetTextFont(42)
     cmsString.SetTextSize(0.02)
     cmsString.SetNDC(1)
@@ -330,6 +334,7 @@ def draw2DdeltaRHist(hist, c) :
     hist.GetZaxis().SetLabelSize( txtSize )
     hist.GetZaxis().SetTitleSize( txtSize )
     palette.Draw()
+    #gPad.SetLogz()
     gPad.Modified()
     gPad.Update()
  
@@ -343,6 +348,7 @@ def drawDRHists(hists, c, ymax, doFit = False, targetDir = 'plots' ) :
     colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray+2]
     marker_styles = [20, 24, 25, 26, 32, 35]
     hs = ROOT.THStack("hs", c.GetTitle())
+    maxi = 0.
     for i, hist in enumerate(hists) :
         hist.Sumw2()
         hist.Scale(1./hist.Integral())
@@ -350,15 +356,16 @@ def drawDRHists(hists, c, ymax, doFit = False, targetDir = 'plots' ) :
         hist.SetMarkerColor(colors[i])
         hist.SetMarkerStyle(marker_styles[i])
         hist.SetMarkerSize(0.8)
+        if hist.GetMaximum() > maxi : maxi = hist.GetMaximum()
         hs.Add(hist, "ex0 hist")
 
     c.Clear()
     if c.GetLogy() == 0 : # linear
         hs.SetMinimum(0.)
     if ymax == 0. :
-        hs.SetMaximum( hs.GetMaximum() * 1.2 )
+        hs.SetMaximum( maxi * 1.8 )
     elif ymax == -1 :
-        hs.SetMaximum( hs.GetMaximum() * 1.3 )
+        hs.SetMaximum( maxi * 1.3 )
     elif ymax != 0. :
         hs.SetMaximum(ymax)
     #hs.SetMinimum(0.0001)
@@ -1108,8 +1115,8 @@ if __name__ == '__main__' :
         tPho = fPho.Get('analyzer/crystal_tree')
         crystal_tree = effFile.Get("analyzer/crystal_tree")
         min_ = 0.
-        max_ = 2.
-        tmpAry=[200,min_,max_]
+        max_ = 1.2
+        tmpAry=[60,min_,max_]
         varList = [
 'e1x1/e1x2','e1x1/e2x1','e1x1/e2x2','e1x1/e2x3','e1x1/e2x5','e1x1/gen_energy','e1x1/e3x5',
             'e2x1/e1x2','e2x1/e2x2','e2x1/e2x3','e2x1/e2x5','e2x1/gen_energy','e2x1/e3x5',
