@@ -126,7 +126,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       //iEvent.getByLabel("genParticles", genParticleHandle);
       edm::Handle<reco::GenParticleCollection> genParticleHandle;
 
-      edm::EDGetTokenT<EcalEBTrigPrimDigiCollection> ecalTPEBToken_;
+      //edm::EDGetTokenT<EcalEBTrigPrimDigiCollection> ecalTPEBToken_;
       //edm::EDGetTokenT<EcalRecHitCollection> ecalRecHitEBToken_;
       //edm::EDGetTokenT<EcalRecHitCollection> ecalRecHitEEToken_;
 
@@ -266,7 +266,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    genMatchRelPtcut(iConfig.getUntrackedParameter<double>("genMatchRelPtcut", 0.5)),
    crystalClustersToken_(consumes<l1slhc::L1EGCrystalClusterCollection>(iConfig.getParameter<edm::InputTag>("L1CrystalClustersInputTag"))),
    genCollectionToken_(consumes<reco::GenParticleCollection>(iConfig.getParameter<edm::InputTag>("genParticles"))),
-   ecalTPEBToken_(consumes<EcalEBTrigPrimDigiCollection>(iConfig.getParameter<edm::InputTag>("ecalTPEB"))),
+   //ecalTPEBToken_(consumes<EcalEBTrigPrimDigiCollection>(iConfig.getParameter<edm::InputTag>("ecalTPEB"))),
    //ecalRecHitEBToken_(consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("ecalRecHitEB"))),
    //ecalRecHitEEToken_(consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("ecalRecHitEE"))),
    offlineRecoClusterToken_(consumes<reco::SuperClusterCollection>(iConfig.getParameter<edm::InputTag>("OfflineRecoClustersInputTag"))),
@@ -479,13 +479,13 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    //EcalTrigPrimDigiCollection triggerPrimitives = *tpH.product();
 
    // EcalRecHits for looking at flags in the cluster seed crystal
-   edm::Handle<EcalEBTrigPrimDigiCollection> pcalohits;
+   //edm::Handle<EcalEBTrigPrimDigiCollection> pcalohits;
    //edm::Handle<EcalRecHitCollection> pcalohits;
    //iEvent.getByLabel("ecalRecHit","EcalRecHitsEB",pcalohits);
-   iEvent.getByToken(ecalTPEBToken_,pcalohits);
+   //iEvent.getByToken(ecalTPEBToken_,pcalohits);
    //iEvent.getByToken(ecalRecHitEBToken_,pcalohits);
    //EcalRecHitCollection ecalRecHits = *pcalohits.product();
-   EcalEBTrigPrimDigiCollection ecalRecHits = *pcalohits.product();
+   //EcalEBTrigPrimDigiCollection ecalRecHits = *pcalohits.product();
 
    // Record the standards
    treeinfo.run = iEvent.eventAuxiliary().run();
@@ -543,43 +543,40 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 //         eventCount--;
 //         return;
 //      }
-//
-//      if ( !useOfflineClusters )
-//      {
-//         // Get the particle position upon entering ECal
-//         RawParticle particle(genParticles[0].p4());
-//         particle.setVertex(genParticles[0].vertex().x(), genParticles[0].vertex().y(), genParticles[0].vertex().z(), 0.);
-//         //particle.setID(genParticles[0].pdgId());
-//         // Skip setID requires some external libraries working well that
-//         // define HepPDT::ParticleID
-//         // in the end, setID sets the mass and charge of our particle.
-//         // Try doing this by hand for the moment
-//         particle.setMass(.511);
-//         int pdgId = genParticles[0].pdgId();
-//         if (pdgId > 0) {
-//            particle.setCharge( -1.0 ); }
-//         if (pdgId < 0) {
-//            particle.setCharge( 1.0 ); }
-//         BaseParticlePropagator prop(particle, 0., 0., 4.);
-//         BaseParticlePropagator start(prop);
-//         prop.propagateToEcalEntrance();
-//         if(prop.getSuccess()!=0)
-//         {
-//            trueElectron = reco::Candidate::PolarLorentzVector(prop.E()*sin(prop.vertex().theta()), prop.vertex().eta(), prop.vertex().phi(), 0.);
-//            if ( debug ) std::cout << "Propogated genParticle to ECal, position: " << prop.vertex() << " momentum = " << prop.momentum() << std::endl;
-//            if ( debug ) std::cout << "                       starting position: " << start.vertex() << " momentum = " << start.momentum() << std::endl;
-//            if ( debug ) std::cout << "                    genParticle position: " << genParticles[0].vertex() << " momentum = " << genParticles[0].p4() << std::endl;
-//            if ( debug ) std::cout << "       old pt = " << genParticles[0].pt() << ", new pt = " << trueElectron.pt() << std::endl;
-//         }
-//         else
-//         {
-//            // something failed?
-//            trueElectron = genParticles[0].polarP4();
-//         }
-//      }
 
-      // Temporary fix to get genParticle
-      trueElectron = genParticles[0].polarP4();
+      if ( !useOfflineClusters )
+      {
+         // Get the particle position upon entering ECal
+         RawParticle particle(genParticles[0].p4());
+         particle.setVertex(genParticles[0].vertex().x(), genParticles[0].vertex().y(), genParticles[0].vertex().z(), 0.);
+         //particle.setID(genParticles[0].pdgId());
+         // Skip setID requires some external libraries working well that
+         // define HepPDT::ParticleID
+         // in the end, setID sets the mass and charge of our particle.
+         // Try doing this by hand for the moment
+         particle.setMass(.511);
+         int pdgId = genParticles[0].pdgId();
+         if (pdgId > 0) {
+            particle.setCharge( -1.0 ); }
+         if (pdgId < 0) {
+            particle.setCharge( 1.0 ); }
+         BaseParticlePropagator prop(particle, 0., 0., 4.);
+         BaseParticlePropagator start(prop);
+         prop.propagateToEcalEntrance();
+         if(prop.getSuccess()!=0)
+         {
+            trueElectron = reco::Candidate::PolarLorentzVector(prop.E()*sin(prop.vertex().theta()), prop.vertex().eta(), prop.vertex().phi(), 0.);
+            if ( debug ) std::cout << "Propogated genParticle to ECal, position: " << prop.vertex() << " momentum = " << prop.momentum() << std::endl;
+            if ( debug ) std::cout << "                       starting position: " << start.vertex() << " momentum = " << start.momentum() << std::endl;
+            if ( debug ) std::cout << "                    genParticle position: " << genParticles[0].vertex() << " momentum = " << genParticles[0].p4() << std::endl;
+            if ( debug ) std::cout << "       old pt = " << genParticles[0].pt() << ", new pt = " << trueElectron.pt() << std::endl;
+         }
+         else
+         {
+            // something failed?
+            trueElectron = genParticles[0].polarP4();
+         }
+      }
 
       // Only one electron is produced in singleElectron files
       // we look for that electron in the reconstructed data within some deltaR cut,
@@ -615,25 +612,18 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       {
          treeinfo.reco_pt = 0.;
       }
-      std::cout << "   ---!!!--- L1EG Size: " << crystalClusters.size() << std::endl;
+      //std::cout << "   ---!!!--- L1EG Size: " << crystalClusters.size() << std::endl;
       if ( crystalClusters.size() > 0 )
       {
-         std::cout << "   ---!!!--- 1" << std::endl;
          auto bestCluster = *std::min_element(begin(crystalClusters), end(crystalClusters), [trueElectron](const l1slhc::L1EGCrystalCluster& a, const l1slhc::L1EGCrystalCluster& b){return reco::deltaR(a, trueElectron) < reco::deltaR(b, trueElectron);});
          bool clusterFound = false;
          bool bestClusterUsed = false;
          for(const auto& cluster : crystalClusters)
          {
-            std::cout << "   ---!!!--- 2" << std::endl;
             clusterCount++;
-            std::cout << "   ---!!!--- dr: " << reco::deltaR(cluster, trueElectron) << std::endl;
-            std::cout << "   ---!!!--- pt1: " << cluster.pt() << std::endl;
-            std::cout << "   ---!!!--- pt2: " << trueElectron.pt() << std::endl;
-            std::cout << "   ---!!!--- pt cut: " << genMatchRelPtcut << std::endl;
             if ( reco::deltaR(cluster, trueElectron) < genMatchDeltaRcut
                  && fabs(cluster.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
             {
-               std::cout << "   ---!!!--- 3" << std::endl;
                clusterFound = true;
                if ( cluster.eta() != bestCluster.eta() || cluster.phi() != bestCluster.phi() ) // why don't I have a comparison op
                   continue;
@@ -644,7 +634,6 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                treeinfo.deltaPhi = reco::deltaPhi(cluster, trueElectron);
                treeinfo.deltaEta = trueElectron.eta()-cluster.eta();
                
-               std::cout << "   ---!!!--- 4" << std::endl;
                fill_tree(cluster);
                //checkRecHitsFlags(cluster, triggerPrimitives, ecalRecHits);
 
