@@ -7,10 +7,10 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 process.load('Configuration.EventContent.EventContent_cff')
 process.MessageLogger.categories = cms.untracked.vstring('L1EGRateStudies', 'FwkReport')
 process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
-   reportEvery = cms.untracked.int32(10)
+   reportEvery = cms.untracked.int32(100)
 )
 
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(200) )
+#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.source = cms.Source("PoolSource",
@@ -151,18 +151,18 @@ process.load('Configuration.StandardSequences.MagneticField_38T_PostLS1_cff')
 #process.load('Configuration.StandardSequences.Reconstruction_cff')
 #process.reconstruction_step = cms.Path( process.calolocalreco )
 
-process.L1EGammaCrystalsProducerRecHits = cms.EDProducer("L1EGammaCrystalsProducerRecHits",
+process.L1EGammaCrystalsProducer = cms.EDProducer("L1EGCrystalClusterProducer",
    EtminForStore = cms.double(0.),
    debug = cms.untracked.bool(False),
-   useECalEndcap = cms.bool(True),
+   useECalEndcap = cms.bool(False),
+   useRecHits = cms.bool(True),
+   ecalTPEB = cms.InputTag("EcalEBTrigPrimProducer","","L1AlgoTest"),
    ecalRecHitEB = cms.InputTag("ecalRecHit","EcalRecHitsEB","RECO"),
-   ecalRecHitEE = cms.InputTag("ecalRecHit","EcalRecHitsEE","RECO"),
-   #hcalRecHit = cms.InputTag("hbhereco") # for testing non-2023 geometry configurations
-   hcalRecHit = cms.InputTag("hbhereco")
-   #hcalRecHit = cms.InputTag("hbheUpgradeReco")
+   hcalRecHit = cms.InputTag("hbhereco"),
+   useTowerMap = cms.untracked.bool(False)
 )
 
-process.pSasha = cms.Path( process.L1EGammaCrystalsProducerRecHits )
+process.pSasha = cms.Path( process.L1EGammaCrystalsProducer )
 
 # --------------------------------------------------------------------------------------------
 #
@@ -198,7 +198,7 @@ process.ecalClusters = cms.Path(process.ecalClustersNoPFBox)
 # 
 # Analyzer starts here
 
-process.analyzer = cms.EDAnalyzer('L1EGRateStudiesRecHits',
+process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    #L1EGammaInputTags = cms.VInputTag(
    #   # Old stage-2 trigger
    #   cms.InputTag("SLHCL1ExtraParticles","EGamma"),
@@ -213,11 +213,9 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudiesRecHits',
    #   # Crystal-level algo.
    #   cms.InputTag("L1EGammaCrystalsProducer","EGammaCrystal")
    #),
-   L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducerRecHits","EGCrystalCluster"),
+   L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer","EGCrystalCluster"),
    genParticles = cms.InputTag("genParticles"),
    OfflineRecoClustersInputTag = cms.InputTag("correctedHybridSuperClusters"),
-   ecalRecHitEB = cms.InputTag("ecalRecHit","EcalRecHitsEB","RECO"),
-   #ecalRecHitEE = cms.InputTag("ecalRecHit","EcalRecHitsEE","RECO"),
    doEfficiencyCalc = cms.untracked.bool(True),
    #doEfficiencyCalc = cms.untracked.bool(False),
    useOfflineClusters = cms.untracked.bool(False),
@@ -228,13 +226,14 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudiesRecHits',
    histogramRangeHigh = cms.untracked.double(50),
    histogramEtaBinCount = cms.untracked.int32(20),
    genMatchDeltaRcut = cms.untracked.double(0.25),
-   genMatchRelPtcut = cms.untracked.double(0.5)
+   genMatchRelPtcut = cms.untracked.double(0.5), # align the rec hits with ecal TP value
+   debug = cms.untracked.bool(False)
 )
 
 process.panalyzer = cms.Path(process.analyzer)
 
 process.TFileService = cms.Service("TFileService", 
-   fileName = cms.string("effRecHitTest.root"), 
+   fileName = cms.string("effTest_recHits.root"), 
    closeFileFast = cms.untracked.bool(True)
 )
 
