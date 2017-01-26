@@ -1,9 +1,9 @@
 // -*- C++ -*-
 //
 // Package:    SLHCUpgradeSimulations/L1EGRateStudies
-// Class:      EcalTPAnalyzer
+// Class:      HitAnalyzer
 // 
-/**\class EcalTPAnalyzer EcalTPAnalyzer.cc SLHCUpgradeSimulations/L1EGRateStudies/src/EcalTPAnalyzer.cc
+/**\class HitAnalyzer HitAnalyzer.cc SLHCUpgradeSimulations/L1EGRateStudies/src/HitAnalyzer.cc
 
  Description: [save a few hists showing distributions of all L1EG TPs]
 
@@ -55,14 +55,18 @@
 #include "DataFormats/EcalRecHit/interface/EcalRecHit.h"
 #include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
 
+// HCAL RecHits
+#include "DataFormats/HcalRecHit/interface/HcalRecHitCollections.h"
+#include "DataFormats/HcalRecHit/interface/HcalSourcePositionData.h"
+
 //
 // class declaration
 //
 
-class EcalTPAnalyzer : public edm::EDAnalyzer {
+class HitAnalyzer : public edm::EDAnalyzer {
    public:
-      explicit EcalTPAnalyzer(const edm::ParameterSet&);
-      ~EcalTPAnalyzer();
+      explicit HitAnalyzer(const edm::ParameterSet&);
+      ~HitAnalyzer();
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
@@ -80,13 +84,18 @@ class EcalTPAnalyzer : public edm::EDAnalyzer {
 
       // ----------member data ---------------------------
 
-      bool useRecHits;
+      bool useEcalRecHits;
+      bool useEcalTPs;
+      bool useHcalRecHits;
 
       edm::EDGetTokenT<EcalRecHitCollection> ecalRecHitEBToken_;
       edm::EDGetTokenT<EcalEBTrigPrimDigiCollection> ecalTPEBToken_;
+      edm::EDGetTokenT<HBHERecHitCollection> hcalRecHitToken_;
 
       TH1D *totalHits;
+      TH1D *totalHits2;
       TH1D *totalNonZeroHits;
+      TH1D *totalNonZeroHits2;
       TH1D *TP_or_recHit_et;
       TH1D *TP_or_recHit_energy;
       TH1D *TP_or_recHit_eta;
@@ -104,16 +113,21 @@ class EcalTPAnalyzer : public edm::EDAnalyzer {
 //
 // constructors and destructor
 //
-EcalTPAnalyzer::EcalTPAnalyzer(const edm::ParameterSet& iConfig) :
-   useRecHits(iConfig.getParameter<bool>("useRecHits")),
+HitAnalyzer::HitAnalyzer(const edm::ParameterSet& iConfig) :
+   useEcalRecHits(iConfig.getParameter<bool>("useEcalRecHits")),
+   useEcalTPs(iConfig.getParameter<bool>("useEcalTPs")),
+   useHcalRecHits(iConfig.getParameter<bool>("useHcalRecHits")),
    ecalRecHitEBToken_(consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("ecalRecHitEB"))),
-   ecalTPEBToken_(consumes<EcalEBTrigPrimDigiCollection>(iConfig.getParameter<edm::InputTag>("ecalTPEB")))
+   ecalTPEBToken_(consumes<EcalEBTrigPrimDigiCollection>(iConfig.getParameter<edm::InputTag>("ecalTPEB"))),
+   hcalRecHitToken_(consumes<HBHERecHitCollection>(iConfig.getParameter<edm::InputTag>("hcalRecHit")))
 {
    //now do what ever initialization is needed
 
    edm::Service<TFileService> fs;
    totalHits = fs->make<TH1D>("totalHits" , "totalHits" , 200 , 0 , 20000 );
+   totalHits2 = fs->make<TH1D>("totalHits2" , "totalHits2" , 200 , 0 , 3000 );
    totalNonZeroHits = fs->make<TH1D>("totalNonZeroHits" , "totalNonZeroHits" , 500 , 0 , 500 );
+   totalNonZeroHits2 = fs->make<TH1D>("totalNonZeroHits2" , "totalNonZeroHits2" , 500 , 0 , 1000 );
    TP_or_recHit_et = fs->make<TH1D>("TP_or_recHit_et" , "TP_or_recHit_et" , 300 , 0 , 30 );
    TP_or_recHit_energy = fs->make<TH1D>("TP_or_recHit_energy" , "TP_or_recHit_energy" , 200 , 0 , 50 );
    TP_or_recHit_eta = fs->make<TH1D>("TP_or_recHit_eta" , "TP_or_recHit_eta" , 40 , -2 , 2 );
@@ -122,7 +136,7 @@ EcalTPAnalyzer::EcalTPAnalyzer(const edm::ParameterSet& iConfig) :
 }
 
 
-EcalTPAnalyzer::~EcalTPAnalyzer()
+HitAnalyzer::~HitAnalyzer()
 {
  
    // do anything here that needs to be done at desctruction time
@@ -137,8 +151,14 @@ EcalTPAnalyzer::~EcalTPAnalyzer()
 
 // ------------ method called for each event  ------------
 void
-EcalTPAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
+HitAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+
+   // Make sure we are only running a single set of hits at a time
+   assert(useEcalRecHits * useHcalRecHits == 0);
+   assert(useEcalRecHits * useEcalTPs == 0);
+   assert(useHcalRecHits * useEcalTPs == 0);
+
    if ( geometryHelper.getEcalBarrelGeometry() == nullptr )
    {
       edm::ESHandle<CaloTopology> theCaloTopology;
@@ -172,7 +192,7 @@ EcalTPAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
    // Retrieve the ecal barrel hits
    // using RecHits (https://cmssdt.cern.ch/SDT/doxygen/CMSSW_6_1_2_SLHC6/doc/html/d8/dc9/classEcalRecHit.html)
-   if (useRecHits) {
+   if (useEcalRecHits) {
       edm::Handle<EcalRecHitCollection> pcalohits;
       iEvent.getByToken(ecalRecHitEBToken_,pcalohits);
       for(auto& hit : *pcalohits.product())
@@ -186,7 +206,7 @@ EcalTPAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
             position = GlobalVector(cell->getPosition().x(), cell->getPosition().y(), cell->getPosition().z());
             energy = hit.energy();
             et = energy * sin(position.theta());
-            if (et > 0.6) {
+            if (et > 0.5) { // 0.6 to do a faux calibration comparison with Ecal TPs
                totNonZeroTP++;
                eta = cell->getPosition().eta();
                phi = cell->getPosition().phi();
@@ -204,7 +224,7 @@ EcalTPAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       }
    }
 
-   else {
+   if (useEcalTPs) {
       edm::Handle<EcalEBTrigPrimDigiCollection> pcalohits;
       iEvent.getByToken(ecalTPEBToken_,pcalohits);
       for(auto& hit : *pcalohits.product())
@@ -231,9 +251,48 @@ EcalTPAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
          }
       }
    }
+
+   // Retrive HCAL hits 
+   if (useHcalRecHits) {
+      edm::Handle<HBHERecHitCollection> pcalohits;
+      iEvent.getByToken(hcalRecHitToken_,pcalohits);
+      for(auto& hit : *pcalohits.product())
+      {
+         // We need to cut out the endcap HCAL here before counting raw total
+         auto cell = geometryHelper.getHcalGeometry()->getGeometry(hit.id());
+         position = GlobalVector(cell->getPosition().x(), cell->getPosition().y(), cell->getPosition().z());
+         eta = cell->getPosition().eta();
+         if (fabs(eta) > 1.5) continue;
+
+         totTP++;
+         // Because we need position to calculate Et, skim a little first for Energy > 500 MeV
+         // then figure out Et for comparison with ECAL TPs
+         if(hit.energy() > 0.2)
+         {
+            energy = hit.energy();
+            et = energy * sin(position.theta());
+            if (et > 0.5) {
+               totNonZeroTP++;
+               phi = cell->getPosition().phi();
+               TP_or_recHit_et->Fill( et );
+               TP_or_recHit_energy->Fill( energy );
+               TP_or_recHit_eta->Fill( eta );
+               TP_or_recHit_phi->Fill( phi );
+               if (energy > highestE) {
+                  highestE = energy;
+                  highestPhi = phi;
+                  highestEta = eta;
+               }
+            }
+         }
+      }
+   }
+
    // Now fill
    totalHits->Fill( totTP ); 
+   totalHits2->Fill( totTP ); 
    totalNonZeroHits->Fill( totNonZeroTP ); 
+   totalNonZeroHits2->Fill( totNonZeroTP ); 
 
    std::cout << event << ":  highest hit energy: " << highestE <<
         "  phi: " << highestPhi << "  eta: " << highestEta << std::endl;
@@ -253,20 +312,20 @@ EcalTPAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 // ------------ method called once each job just before starting event loop  ------------
 void 
-EcalTPAnalyzer::beginJob()
+HitAnalyzer::beginJob()
 {
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
 void 
-EcalTPAnalyzer::endJob() 
+HitAnalyzer::endJob() 
 {
 }
 
 // ------------ method called when starting to processes a run  ------------
 /*
 void 
-EcalTPAnalyzer::beginRun(edm::Run const&, edm::EventSetup const&)
+HitAnalyzer::beginRun(edm::Run const&, edm::EventSetup const&)
 {
 }
 */
@@ -274,7 +333,7 @@ EcalTPAnalyzer::beginRun(edm::Run const&, edm::EventSetup const&)
 // ------------ method called when ending the processing of a run  ------------
 /*
 void 
-EcalTPAnalyzer::endRun(edm::Run const&, edm::EventSetup const&)
+HitAnalyzer::endRun(edm::Run const&, edm::EventSetup const&)
 {
 }
 */
@@ -282,7 +341,7 @@ EcalTPAnalyzer::endRun(edm::Run const&, edm::EventSetup const&)
 // ------------ method called when starting to processes a luminosity block  ------------
 /*
 void 
-EcalTPAnalyzer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+HitAnalyzer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
 */
@@ -290,14 +349,14 @@ EcalTPAnalyzer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetu
 // ------------ method called when ending the processing of a luminosity block  ------------
 /*
 void 
-EcalTPAnalyzer::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+HitAnalyzer::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
 */
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void
-EcalTPAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+HitAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   //The following says we do not know what parameters are allowed so do no validation
   // Please change this to state exactly what you do use, even if it is no parameters
   edm::ParameterSetDescription desc;
@@ -306,5 +365,5 @@ EcalTPAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(EcalTPAnalyzer);
+DEFINE_FWK_MODULE(HitAnalyzer);
 

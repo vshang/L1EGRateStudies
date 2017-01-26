@@ -11,7 +11,7 @@ process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
 )
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(2000) )
 
 process.source = cms.Source("PoolSource",
 # file dataset=/RelValSingleElectronPt35Extended/CMSSW_8_1_0_pre11-PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/GEN-SIM-DIGI-RAW
@@ -252,13 +252,16 @@ process.load('RecoLocalCalo.EcalRecAlgos.EcalSeverityLevelESProducer_cfi')
 # -------------------------------------------------------------------------------------------
 #
 ### Mini-analyzer for ECAL TPs / RecHits
-process.EcalTPAnalyzer = cms.EDAnalyzer('EcalTPAnalyzer',
-   useRecHits = cms.bool(True),
-   #useRecHits = cms.bool(False),
+process.HitAnalyzer = cms.EDAnalyzer('HitAnalyzer',
+   #useEcalRecHits = cms.bool(True),
+   useEcalRecHits = cms.bool(False),
+   useHcalRecHits = cms.bool(True),
+   useEcalTPs = cms.bool(False),
    ecalRecHitEB = cms.InputTag("ecalRecHit","EcalRecHitsEB","RECO"),
-   ecalTPEB = cms.InputTag("EcalEBTrigPrimProducer","","L1AlgoTest")
+   ecalTPEB = cms.InputTag("EcalEBTrigPrimProducer","","L1AlgoTest"),
+   hcalRecHit = cms.InputTag("hbhereco")
 )
-process.p1 = cms.Path(process.EcalTPAnalyzer)
+process.p1 = cms.Path(process.HitAnalyzer)
 
 
 
