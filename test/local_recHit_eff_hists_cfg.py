@@ -99,12 +99,7 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc', '')
 # Choose a 2030 geometry!
 # The ones which don't work all replace the ECAL Endcap geometry with HGCal stuff
 # Options in cmssw_810_pre16: (each also has an option without the Reco)
-process.load('Configuration.Geometry.GeometryExtended2023D1Reco_cff') # Works
-#process.load('Configuration.Geometry.GeometryExtended2023D2Reco_cff') # Works
-#process.load('Configuration.Geometry.GeometryExtended2023D3Reco_cff') # HGCal stuff, doesn't work 
-#process.load('Configuration.Geometry.GeometryExtended2023D4Reco_cff') # HGCal stuff, doesn't work 
-#process.load('Configuration.Geometry.GeometryExtended2023D5Reco_cff') # Crashes geometryHelper, this is the default one used for ECAL TPs
-#process.load('Configuration.Geometry.GeometryExtended2023D6Reco_cff') # Works
+process.load('Configuration.Geometry.GeometryExtended2023D2Reco_cff') # Works
 
 #process.load('Configuration.Geometry.GeometryExtended2023simReco_cff') # Has CaloTopology, but no ECal endcap, don't use!
 #process.load('Configuration.Geometry.GeometryExtended2023GRecoReco_cff') # using this geometry because I'm not sure if the tilted geometry is vetted yet
