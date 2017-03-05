@@ -186,6 +186,9 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float hovere;
          float iso;
          float bremStrength;
+         float electronWP98;
+         float photonWP90;
+         float e2x2;
          float e2x5;
          float e3x5;
          float e5x5;
@@ -364,6 +367,9 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("cluster_hovere", &treeinfo.hovere);
    crystal_tree->Branch("cluster_iso", &treeinfo.iso);
    crystal_tree->Branch("bremStrength", &treeinfo.bremStrength);
+   crystal_tree->Branch("electronWP98", &treeinfo.electronWP98);
+   crystal_tree->Branch("photonWP90", &treeinfo.photonWP90);
+   crystal_tree->Branch("e2x2", &treeinfo.e2x2);
    crystal_tree->Branch("e2x5", &treeinfo.e2x5);
    crystal_tree->Branch("e3x5", &treeinfo.e3x5);
    crystal_tree->Branch("e5x5", &treeinfo.e5x5);
@@ -860,6 +866,9 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
    treeinfo.hovere = cluster.hovere();
    treeinfo.iso = cluster.isolation();
    treeinfo.bremStrength = cluster.bremStrength();
+   treeinfo.electronWP98 = cluster.GetExperimentalParam("electronWP98");
+   treeinfo.photonWP90 = cluster.GetExperimentalParam("photonWP90");
+   treeinfo.e2x2 = cluster.GetExperimentalParam("E2x2");
    treeinfo.e2x5 = cluster.GetExperimentalParam("E2x5");
    treeinfo.e3x5 = cluster.GetExperimentalParam("E3x5");
    treeinfo.e5x5 = cluster.GetExperimentalParam("E5x5");
