@@ -231,8 +231,7 @@ process.load('RecoLocalCalo.EcalRecAlgos.EcalSeverityLevelESProducer_cfi')
 #
 ### Mini-analyzer for ECAL TPs / RecHits
 process.HitAnalyzer = cms.EDAnalyzer('HitAnalyzer',
-   useEcalRecHits = cms.bool(False),
-   useHcalRecHits = cms.bool(False),
+   useRecHits = cms.bool(False),
    useEcalTPs = cms.bool(True),
    ecalRecHitEB = cms.InputTag("ecalRecHit","EcalRecHitsEB","RECO"),
    ecalTPEB = cms.InputTag("EcalEBTrigPrimProducer","","L1AlgoTest")

@@ -36,6 +36,7 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "TH1.h"
+#include "TTree.h"
 
 // All for Calo geometry for getting energy/pt/eta/phi per crystal
 #include "FastSimulation/CaloGeometryTools/interface/CaloGeometryHelper.h"
@@ -84,22 +85,54 @@ class HitAnalyzer : public edm::EDAnalyzer {
 
       // ----------member data ---------------------------
 
-      bool useEcalRecHits;
+      bool useRecHits;
       bool useEcalTPs;
-      bool useHcalRecHits;
 
       edm::EDGetTokenT<EcalRecHitCollection> ecalRecHitEBToken_;
       edm::EDGetTokenT<EcalEBTrigPrimDigiCollection> ecalTPEBToken_;
       edm::EDGetTokenT<HBHERecHitCollection> hcalRecHitToken_;
 
-      TH1D *totalHits;
-      TH1D *totalHits2;
-      TH1D *totalNonZeroHits;
-      TH1D *totalNonZeroHits2;
-      TH1D *TP_or_recHit_et;
-      TH1D *TP_or_recHit_energy;
-      TH1D *TP_or_recHit_eta;
-      TH1D *TP_or_recHit_phi;
+      TH1D *ecal_totalHits;
+      TH1D *ecal_totalNonZeroHits;
+      TH1D *ecal_TP_or_recHit_et;
+      TH1D *ecal_TP_or_recHit_energy;
+      TH1D *ecal_TP_or_recHit_eta;
+      TH1D *ecal_TP_or_recHit_phi;
+      TH1D *hcal_totalHits;
+      TH1D *hcal_totalNonZeroHits;
+      TH1D *hcal_TP_or_recHit_et;
+      TH1D *hcal_TP_or_recHit_energy;
+      TH1D *hcal_TP_or_recHit_eta;
+      TH1D *hcal_TP_or_recHit_phi;
+
+      TTree * hit_tree;
+      struct {
+        double run;
+        double lumi;
+        double event;
+        std::vector< float > ecalHit_energy;
+        std::vector< float > ecalHit_et;
+        std::vector< float > ecalHit_eta;
+        std::vector< float > ecalHit_phi;
+        std::vector< float > ecalHit_iEta;
+        std::vector< float > ecalHit_iPhi;
+        std::vector< float > hcalHit_energy;
+        std::vector< float > hcalHit_et;
+        std::vector< float > hcalHit_eta;
+        std::vector< float > hcalHit_phi;
+        std::vector< float > hcalHit_iEta;
+        std::vector< float > hcalHit_iPhi;
+      } treeinfo;
+
+      // These will fill the ecalHit/hcalHits
+      float energy;
+      float et;
+      float eta;
+      float phi;
+      float iPhi;
+      float iEta;
+      EBDetId id; // for getting iEta, iPhi
+
 };
 
 //
@@ -114,9 +147,8 @@ class HitAnalyzer : public edm::EDAnalyzer {
 // constructors and destructor
 //
 HitAnalyzer::HitAnalyzer(const edm::ParameterSet& iConfig) :
-   useEcalRecHits(iConfig.getParameter<bool>("useEcalRecHits")),
+   useRecHits(iConfig.getParameter<bool>("useRecHits")),
    useEcalTPs(iConfig.getParameter<bool>("useEcalTPs")),
-   useHcalRecHits(iConfig.getParameter<bool>("useHcalRecHits")),
    ecalRecHitEBToken_(consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("ecalRecHitEB"))),
    ecalTPEBToken_(consumes<EcalEBTrigPrimDigiCollection>(iConfig.getParameter<edm::InputTag>("ecalTPEB"))),
    hcalRecHitToken_(consumes<HBHERecHitCollection>(iConfig.getParameter<edm::InputTag>("hcalRecHit")))
@@ -124,14 +156,36 @@ HitAnalyzer::HitAnalyzer(const edm::ParameterSet& iConfig) :
    //now do what ever initialization is needed
 
    edm::Service<TFileService> fs;
-   totalHits = fs->make<TH1D>("totalHits" , "totalHits" , 200 , 0 , 20000 );
-   totalHits2 = fs->make<TH1D>("totalHits2" , "totalHits2" , 200 , 0 , 3000 );
-   totalNonZeroHits = fs->make<TH1D>("totalNonZeroHits" , "totalNonZeroHits" , 500 , 0 , 500 );
-   totalNonZeroHits2 = fs->make<TH1D>("totalNonZeroHits2" , "totalNonZeroHits2" , 500 , 0 , 1000 );
-   TP_or_recHit_et = fs->make<TH1D>("TP_or_recHit_et" , "TP_or_recHit_et" , 300 , 0 , 30 );
-   TP_or_recHit_energy = fs->make<TH1D>("TP_or_recHit_energy" , "TP_or_recHit_energy" , 200 , 0 , 50 );
-   TP_or_recHit_eta = fs->make<TH1D>("TP_or_recHit_eta" , "TP_or_recHit_eta" , 40 , -2 , 2 );
-   TP_or_recHit_phi = fs->make<TH1D>("TP_or_recHit_phi" , "TP_or_recHit_phi" , 70 , -3.5 , 3.5 );
+   ecal_totalHits = fs->make<TH1D>("ecal totalHits" , "ecal totalHits" , 200 , 0 , 20000 );
+   ecal_totalNonZeroHits = fs->make<TH1D>("ecal totalNonZeroHits" , "ecal totalNonZeroHits" , 500 , 0 , 500 );
+   ecal_TP_or_recHit_et = fs->make<TH1D>("ecal TP_or_recHit_et" , "ecal TP_or_recHit_et" , 300 , 0 , 30 );
+   ecal_TP_or_recHit_energy = fs->make<TH1D>("ecal TP_or_recHit_energy" , "ecal TP_or_recHit_energy" , 200 , 0 , 50 );
+   ecal_TP_or_recHit_eta = fs->make<TH1D>("ecal TP_or_recHit_eta" , "ecal TP_or_recHit_eta" , 40 , -2 , 2 );
+   ecal_TP_or_recHit_phi = fs->make<TH1D>("ecal TP_or_recHit_phi" , "ecal TP_or_recHit_phi" , 70 , -3.5 , 3.5 );
+   hcal_totalHits = fs->make<TH1D>("hcal totalHits" , "hcal totalHits" , 200 , 0 , 3000 );
+   hcal_totalNonZeroHits = fs->make<TH1D>("hcal totalNonZeroHits" , "hcal totalNonZeroHits" , 500 , 0 , 500 );
+   hcal_TP_or_recHit_et = fs->make<TH1D>("hcal TP_or_recHit_et" , "hcal TP_or_recHit_et" , 300 , 0 , 30 );
+   hcal_TP_or_recHit_energy = fs->make<TH1D>("hcal TP_or_recHit_energy" , "hcal TP_or_recHit_energy" , 200 , 0 , 50 );
+   hcal_TP_or_recHit_eta = fs->make<TH1D>("hcal TP_or_recHit_eta" , "hcal TP_or_recHit_eta" , 40 , -2 , 2 );
+   hcal_TP_or_recHit_phi = fs->make<TH1D>("hcal TP_or_recHit_phi" , "hcal TP_or_recHit_phi" , 70 , -3.5 , 3.5 );
+
+   // Make TTree too
+   hit_tree = fs->make<TTree>("hit_tree","hit_tree");
+   hit_tree->Branch("run", &treeinfo.run);
+   hit_tree->Branch("lumi", &treeinfo.lumi);
+   hit_tree->Branch("event", &treeinfo.event);
+   hit_tree->Branch("ecalHit_energy", &treeinfo.ecalHit_energy);
+   hit_tree->Branch("ecalHit_et", &treeinfo.ecalHit_et);
+   hit_tree->Branch("ecalHit_eta", &treeinfo.ecalHit_eta);
+   hit_tree->Branch("ecalHit_phi", &treeinfo.ecalHit_phi);
+   hit_tree->Branch("ecalHit_iEta", &treeinfo.ecalHit_iEta);
+   hit_tree->Branch("ecalHit_iPhi", &treeinfo.ecalHit_iPhi);
+   hit_tree->Branch("hcalHit_energy", &treeinfo.hcalHit_energy);
+   hit_tree->Branch("hcalHit_et", &treeinfo.hcalHit_et);
+   hit_tree->Branch("hcalHit_eta", &treeinfo.hcalHit_eta);
+   hit_tree->Branch("hcalHit_phi", &treeinfo.hcalHit_phi);
+   hit_tree->Branch("hcalHit_iEta", &treeinfo.hcalHit_iEta);
+   hit_tree->Branch("hcalHit_iPhi", &treeinfo.hcalHit_iPhi);
 
 }
 
@@ -155,9 +209,7 @@ HitAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 
    // Make sure we are only running a single set of hits at a time
-   assert(useEcalRecHits * useHcalRecHits == 0);
-   assert(useEcalRecHits * useEcalTPs == 0);
-   assert(useHcalRecHits * useEcalTPs == 0);
+   assert(useRecHits * useEcalTPs == 0);
 
    if ( geometryHelper.getEcalBarrelGeometry() == nullptr )
    {
@@ -178,26 +230,41 @@ HitAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    }
    using namespace edm;
 
-   int totTP = 0;
-   int totNonZeroTP = 0;
-   float energy;
-   float et;
-   float eta;
-   float phi;
+   int e_totTP = 0;
+   int e_totNonZeroTP = 0;
+   int h_totTP = 0;
+   int h_totNonZeroTP = 0;
    GlobalVector position; // As opposed to GlobalPoint, so we can add them (for weighted average)
-   float highestPhi=-999;
-   float highestEta=-999;
-   float highestE=0;
-   double long event = iEvent.eventAuxiliary().event();
+   //float highestPhi=-999;
+   //float highestEta=-999;
+   //float highestE=0;
+
+   // Clear our possibly pre-filled vectors
+   treeinfo.ecalHit_energy.clear();
+   treeinfo.ecalHit_et.clear();
+   treeinfo.ecalHit_eta.clear();
+   treeinfo.ecalHit_phi.clear();
+   treeinfo.ecalHit_iEta.clear();
+   treeinfo.ecalHit_iPhi.clear();
+   treeinfo.hcalHit_energy.clear();
+   treeinfo.hcalHit_et.clear();
+   treeinfo.hcalHit_eta.clear();
+   treeinfo.hcalHit_phi.clear();
+   treeinfo.hcalHit_iEta.clear();
+   treeinfo.hcalHit_iPhi.clear();
+
+   treeinfo.run = iEvent.eventAuxiliary().run();
+   treeinfo.lumi = iEvent.eventAuxiliary().luminosityBlock();
+   treeinfo.event = iEvent.eventAuxiliary().event();
 
    // Retrieve the ecal barrel hits
    // using RecHits (https://cmssdt.cern.ch/SDT/doxygen/CMSSW_6_1_2_SLHC6/doc/html/d8/dc9/classEcalRecHit.html)
-   if (useEcalRecHits) {
+   if (useRecHits) {
       edm::Handle<EcalRecHitCollection> pcalohits;
       iEvent.getByToken(ecalRecHitEBToken_,pcalohits);
       for(auto& hit : *pcalohits.product())
       {
-         totTP++;
+         e_totTP++;
          // Because we need position to calculate Et, skim a little first for Energy > 500 MeV
          // then figure out Et for comparison with ECAL TPs
          if(hit.energy() >= 0.2 && !hit.checkFlag(EcalRecHit::kOutOfTime) && !hit.checkFlag(EcalRecHit::kL1SpikeFlag))
@@ -207,18 +274,30 @@ HitAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
             energy = hit.energy();
             et = energy * sin(position.theta());
             if (et > 0.5) { // 0.6 to do a faux calibration comparison with Ecal TPs
-               totNonZeroTP++;
+               e_totNonZeroTP++;
                eta = cell->getPosition().eta();
                phi = cell->getPosition().phi();
-               TP_or_recHit_et->Fill( et );
-               TP_or_recHit_energy->Fill( energy );
-               TP_or_recHit_eta->Fill( eta );
-               TP_or_recHit_phi->Fill( phi );
-               if (energy > highestE) {
-                  highestE = energy;
-                  highestPhi = phi;
-                  highestEta = eta;
-               }
+               ecal_TP_or_recHit_et->Fill( et );
+               ecal_TP_or_recHit_energy->Fill( energy );
+               ecal_TP_or_recHit_eta->Fill( eta );
+               ecal_TP_or_recHit_phi->Fill( phi );
+
+               // Fill Tree
+               id = hit.id();
+               iEta = id.ieta();
+               iPhi = id.iphi();
+               treeinfo.ecalHit_energy.push_back( energy );
+               treeinfo.ecalHit_et.push_back( et );
+               treeinfo.ecalHit_eta.push_back( eta );
+               treeinfo.ecalHit_phi.push_back( phi );
+               treeinfo.ecalHit_iEta.push_back( iEta );
+               treeinfo.ecalHit_iPhi.push_back( iPhi );
+
+               //if (energy > highestE) {
+               //   highestE = energy;
+               //   highestPhi = phi;
+               //   highestEta = eta;
+               //}
             }
          }
       }
@@ -229,31 +308,43 @@ HitAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       iEvent.getByToken(ecalTPEBToken_,pcalohits);
       for(auto& hit : *pcalohits.product())
       {
-         totTP++;
+         e_totTP++;
          if(hit.compressedEt() > 0) // && !hit.l1aSpike()) // hit.compressedEt() returns an int corresponding to 2x the crystal Et
          {
-            totNonZeroTP++;
+            e_totNonZeroTP++;
             auto cell = geometryHelper.getEcalBarrelGeometry()->getGeometry(hit.id());
             position = GlobalVector(cell->getPosition().x(), cell->getPosition().y(), cell->getPosition().z());
             et = hit.compressedEt()/2.;
             energy = et / sin(position.theta());
             eta = cell->getPosition().eta();
             phi = cell->getPosition().phi();
-            TP_or_recHit_et->Fill( et );
-            TP_or_recHit_energy->Fill( energy );
-            TP_or_recHit_eta->Fill( eta );
-            TP_or_recHit_phi->Fill( phi );
-            if (energy > highestE) {
-               highestE = energy;
-               highestPhi = phi;
-               highestEta = eta;
-            }
+            ecal_TP_or_recHit_et->Fill( et );
+            ecal_TP_or_recHit_energy->Fill( energy );
+            ecal_TP_or_recHit_eta->Fill( eta );
+            ecal_TP_or_recHit_phi->Fill( phi );
+
+            // Fill Tree
+            id = hit.id();
+            iEta = id.ieta();
+            iPhi = id.iphi();
+            treeinfo.ecalHit_energy.push_back( energy );
+            treeinfo.ecalHit_et.push_back( et );
+            treeinfo.ecalHit_eta.push_back( eta );
+            treeinfo.ecalHit_phi.push_back( phi );
+            treeinfo.ecalHit_iEta.push_back( iEta );
+            treeinfo.ecalHit_iPhi.push_back( iPhi );
+
+            //if (energy > highestE) {
+            //   highestE = energy;
+            //   highestPhi = phi;
+            //   highestEta = eta;
+            //}
          }
       }
    }
 
    // Retrive HCAL hits 
-   if (useHcalRecHits) {
+   if (useRecHits) {
       edm::Handle<HBHERecHitCollection> pcalohits;
       iEvent.getByToken(hcalRecHitToken_,pcalohits);
       for(auto& hit : *pcalohits.product())
@@ -264,7 +355,7 @@ HitAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
          eta = cell->getPosition().eta();
          if (fabs(eta) > 1.5) continue;
 
-         totTP++;
+         h_totTP++;
          // Because we need position to calculate Et, skim a little first for Energy > 500 MeV
          // then figure out Et for comparison with ECAL TPs
          if(hit.energy() > 0.2)
@@ -272,30 +363,44 @@ HitAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
             energy = hit.energy();
             et = energy * sin(position.theta());
             if (et > 0.5) {
-               totNonZeroTP++;
+               h_totNonZeroTP++;
                phi = cell->getPosition().phi();
-               TP_or_recHit_et->Fill( et );
-               TP_or_recHit_energy->Fill( energy );
-               TP_or_recHit_eta->Fill( eta );
-               TP_or_recHit_phi->Fill( phi );
-               if (energy > highestE) {
-                  highestE = energy;
-                  highestPhi = phi;
-                  highestEta = eta;
-               }
+               hcal_TP_or_recHit_et->Fill( et );
+               hcal_TP_or_recHit_energy->Fill( energy );
+               hcal_TP_or_recHit_eta->Fill( eta );
+               hcal_TP_or_recHit_phi->Fill( phi );
+
+               // Fill Tree
+               id = hit.id();
+               iEta = id.ieta();
+               iPhi = id.iphi();
+               treeinfo.hcalHit_energy.push_back( energy );
+               treeinfo.hcalHit_et.push_back( et );
+               treeinfo.hcalHit_eta.push_back( eta );
+               treeinfo.hcalHit_phi.push_back( phi );
+               treeinfo.hcalHit_iEta.push_back( iEta );
+               treeinfo.hcalHit_iPhi.push_back( iPhi );
+
+               //if (energy > highestE) {
+               //   highestE = energy;
+               //   highestPhi = phi;
+               //   highestEta = eta;
+               //}
             }
          }
       }
    }
 
    // Now fill
-   totalHits->Fill( totTP ); 
-   totalHits2->Fill( totTP ); 
-   totalNonZeroHits->Fill( totNonZeroTP ); 
-   totalNonZeroHits2->Fill( totNonZeroTP ); 
+   ecal_totalHits->Fill( e_totTP ); 
+   ecal_totalNonZeroHits->Fill( e_totNonZeroTP ); 
+   hcal_totalHits->Fill( h_totTP ); 
+   hcal_totalNonZeroHits->Fill( h_totNonZeroTP ); 
+   // Fill TTree
+   hit_tree->Fill();
 
-   std::cout << event << ":  highest hit energy: " << highestE <<
-        "  phi: " << highestPhi << "  eta: " << highestEta << std::endl;
+   //std::cout << treeinfo.event << ":  highest hit energy: " << highestE <<
+   //     "  phi: " << highestPhi << "  eta: " << highestEta << std::endl;
 
 
 #ifdef THIS_IS_AN_EVENT_EXAMPLE
