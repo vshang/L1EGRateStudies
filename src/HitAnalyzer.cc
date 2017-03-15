@@ -60,6 +60,11 @@
 #include "DataFormats/HcalRecHit/interface/HcalRecHitCollections.h"
 #include "DataFormats/HcalRecHit/interface/HcalSourcePositionData.h"
 
+// Gen Particles
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+#include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
+#include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
+
 //
 // class declaration
 //
@@ -87,10 +92,14 @@ class HitAnalyzer : public edm::EDAnalyzer {
 
       bool useRecHits;
       bool useEcalTPs;
+      bool hasGenInfo;
 
       edm::EDGetTokenT<EcalRecHitCollection> ecalRecHitEBToken_;
       edm::EDGetTokenT<EcalEBTrigPrimDigiCollection> ecalTPEBToken_;
       edm::EDGetTokenT<HBHERecHitCollection> hcalRecHitToken_;
+      edm::EDGetTokenT<reco::GenParticleCollection> genCollectionToken_;
+      reco::GenParticleCollection genParticles;
+
 
       TH1D *ecal_totalHits;
       TH1D *ecal_totalNonZeroHits;
@@ -122,6 +131,10 @@ class HitAnalyzer : public edm::EDAnalyzer {
         std::vector< float > hcalHit_phi;
         std::vector< float > hcalHit_iEta;
         std::vector< float > hcalHit_iPhi;
+        std::vector< float > genParticle_energy;
+        std::vector< float > genParticle_pt;
+        std::vector< float > genParticle_eta;
+        std::vector< float > genParticle_phi;
       } treeinfo;
 
       // These will fill the ecalHit/hcalHits
@@ -149,9 +162,11 @@ class HitAnalyzer : public edm::EDAnalyzer {
 HitAnalyzer::HitAnalyzer(const edm::ParameterSet& iConfig) :
    useRecHits(iConfig.getParameter<bool>("useRecHits")),
    useEcalTPs(iConfig.getParameter<bool>("useEcalTPs")),
+   hasGenInfo(iConfig.getParameter<bool>("hasGenInfo")),
    ecalRecHitEBToken_(consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("ecalRecHitEB"))),
    ecalTPEBToken_(consumes<EcalEBTrigPrimDigiCollection>(iConfig.getParameter<edm::InputTag>("ecalTPEB"))),
-   hcalRecHitToken_(consumes<HBHERecHitCollection>(iConfig.getParameter<edm::InputTag>("hcalRecHit")))
+   hcalRecHitToken_(consumes<HBHERecHitCollection>(iConfig.getParameter<edm::InputTag>("hcalRecHit"))),
+   genCollectionToken_(consumes<reco::GenParticleCollection>(iConfig.getParameter<edm::InputTag>("genParticles")))
 {
    //now do what ever initialization is needed
 
@@ -186,6 +201,10 @@ HitAnalyzer::HitAnalyzer(const edm::ParameterSet& iConfig) :
    hit_tree->Branch("hcalHit_phi", &treeinfo.hcalHit_phi);
    hit_tree->Branch("hcalHit_iEta", &treeinfo.hcalHit_iEta);
    hit_tree->Branch("hcalHit_iPhi", &treeinfo.hcalHit_iPhi);
+   hit_tree->Branch("genParticle_energy", &treeinfo.genParticle_energy);
+   hit_tree->Branch("genParticle_pt", &treeinfo.genParticle_pt);
+   hit_tree->Branch("genParticle_eta", &treeinfo.genParticle_eta);
+   hit_tree->Branch("genParticle_phi", &treeinfo.genParticle_phi);
 
 }
 
@@ -252,6 +271,10 @@ HitAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    treeinfo.hcalHit_phi.clear();
    treeinfo.hcalHit_iEta.clear();
    treeinfo.hcalHit_iPhi.clear();
+   treeinfo.genParticle_energy.clear();
+   treeinfo.genParticle_pt.clear();
+   treeinfo.genParticle_eta.clear();
+   treeinfo.genParticle_phi.clear();
 
    treeinfo.run = iEvent.eventAuxiliary().run();
    treeinfo.lumi = iEvent.eventAuxiliary().luminosityBlock();
@@ -396,6 +419,31 @@ HitAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    ecal_totalNonZeroHits->Fill( e_totNonZeroTP ); 
    hcal_totalHits->Fill( h_totTP ); 
    hcal_totalNonZeroHits->Fill( h_totNonZeroTP ); 
+
+
+   if (hasGenInfo) {
+      edm::Handle<reco::GenParticleCollection> genParticleHandle;
+      iEvent.getByToken(genCollectionToken_,genParticleHandle);
+      genParticles = *genParticleHandle.product();
+      //int hitNum = 0;
+      //for(auto& hit : genParticles)
+      //{
+      //   hitNum++;
+      //   std::cout << "genP hit " << hitNum << " pt: " << hit.pt() <<
+      //          " eta: " << hit.eta() << " phi: " << hit.phi() << std::endl;
+      //}
+      energy = genParticles[0].energy();
+      float pt = genParticles[0].pt();
+      eta = genParticles[0].eta();
+      phi = genParticles[0].phi();
+
+      treeinfo.genParticle_energy.push_back( energy );
+      treeinfo.genParticle_pt.push_back( pt );
+      treeinfo.genParticle_eta.push_back( eta );
+      treeinfo.genParticle_phi.push_back( phi );
+   }
+
+
    // Fill TTree
    hit_tree->Fill();
 
