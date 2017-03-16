@@ -135,6 +135,7 @@ class HitAnalyzer : public edm::EDAnalyzer {
         std::vector< float > genParticle_pt;
         std::vector< float > genParticle_eta;
         std::vector< float > genParticle_phi;
+        std::vector< float > genParticle_pdgId;
       } treeinfo;
 
       // These will fill the ecalHit/hcalHits
@@ -205,6 +206,7 @@ HitAnalyzer::HitAnalyzer(const edm::ParameterSet& iConfig) :
    hit_tree->Branch("genParticle_pt", &treeinfo.genParticle_pt);
    hit_tree->Branch("genParticle_eta", &treeinfo.genParticle_eta);
    hit_tree->Branch("genParticle_phi", &treeinfo.genParticle_phi);
+   hit_tree->Branch("genParticle_pdgId", &treeinfo.genParticle_pdgId);
 
 }
 
@@ -275,6 +277,7 @@ HitAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    treeinfo.genParticle_pt.clear();
    treeinfo.genParticle_eta.clear();
    treeinfo.genParticle_phi.clear();
+   treeinfo.genParticle_pdgId.clear();
 
    treeinfo.run = iEvent.eventAuxiliary().run();
    treeinfo.lumi = iEvent.eventAuxiliary().luminosityBlock();
@@ -425,22 +428,26 @@ HitAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       edm::Handle<reco::GenParticleCollection> genParticleHandle;
       iEvent.getByToken(genCollectionToken_,genParticleHandle);
       genParticles = *genParticleHandle.product();
-      //int hitNum = 0;
-      //for(auto& hit : genParticles)
-      //{
-      //   hitNum++;
-      //   std::cout << "genP hit " << hitNum << " pt: " << hit.pt() <<
-      //          " eta: " << hit.eta() << " phi: " << hit.phi() << std::endl;
-      //}
-      energy = genParticles[0].energy();
-      float pt = genParticles[0].pt();
-      eta = genParticles[0].eta();
-      phi = genParticles[0].phi();
+      int hitNum = 0;
+      for(auto& hit : genParticles)
+      {
+         // Currently memory use for gen particles is so low,
+         // don't worry about filtering these out yet.
+         //eta = hit.eta();
+         //if (fabs(eta) > 1.5) continue;
+         hitNum++;
+         //std::cout << "genP hit " << hitNum << " pt: " << hit.pt() <<
+         //       " eta: " << hit.eta() << " phi: " << hit.phi() << 
+         //       " pdgId: " << hit.pdgId() << " status: " <<
+         //       hit.status() << " fromHardProcFS " << 
+         //       hit.fromHardProcessFinalState() << std::endl;
 
-      treeinfo.genParticle_energy.push_back( energy );
-      treeinfo.genParticle_pt.push_back( pt );
-      treeinfo.genParticle_eta.push_back( eta );
-      treeinfo.genParticle_phi.push_back( phi );
+         treeinfo.genParticle_energy.push_back( hit.energy() );
+         treeinfo.genParticle_pt.push_back( hit.pt() );
+         treeinfo.genParticle_eta.push_back( hit.eta() );
+         treeinfo.genParticle_phi.push_back( hit.phi() );
+         treeinfo.genParticle_pdgId.push_back( hit.pdgId() );
+      }
    }
 
 
