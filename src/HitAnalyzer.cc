@@ -1,9 +1,9 @@
 // -*- C++ -*-
 //
-// Package:    SLHCUpgradeSimulations/L1EGRateStudies
+// Package:    L1Trigger/L1EGRateStudies
 // Class:      HitAnalyzer
 // 
-/**\class HitAnalyzer HitAnalyzer.cc SLHCUpgradeSimulations/L1EGRateStudies/src/HitAnalyzer.cc
+/**\class HitAnalyzer HitAnalyzer.cc L1Trigger/L1EGRateStudies/src/HitAnalyzer.cc
 
  Description: [save a few hists showing distributions of all L1EG TPs]
 
@@ -335,12 +335,12 @@ HitAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       for(auto& hit : *pcalohits.product())
       {
          e_totTP++;
-         if(hit.compressedEt() > 0) // && !hit.l1aSpike()) // hit.compressedEt() returns an int corresponding to 2x the crystal Et
+         if(hit.encodedEt() > 0) // && !hit.l1aSpike()) // hit.encodedEt() returns an int corresponding to 8x the crystal Et, saturates at 128
          {
             e_totNonZeroTP++;
             auto cell = geometryHelper.getEcalBarrelGeometry()->getGeometry(hit.id());
             position = GlobalVector(cell->getPosition().x(), cell->getPosition().y(), cell->getPosition().z());
-            et = hit.compressedEt()/2.;
+            et = hit.encodedEt()/8.;
             energy = et / sin(position.theta());
             eta = cell->getPosition().eta();
             phi = cell->getPosition().phi();

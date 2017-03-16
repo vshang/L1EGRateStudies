@@ -3,7 +3,7 @@
 // Package:    L1EGRateStudies
 // Class:      L1EGRateStudies
 // 
-/**\class L1EGRateStudies L1EGRateStudies.cc SLHCUpgradeSimulations/L1EGRateStudies/src/L1EGRateStudies.cc
+/**\class L1EGRateStudies L1EGRateStudies.cc L1Trigger/L1EGRateStudies/src/L1EGRateStudies.cc
 
  Description: [one line class summary]
 
@@ -45,8 +45,8 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
 #include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
-#include "SimDataFormats/SLHC/interface/L1EGCrystalCluster.h"
-#include "SimDataFormats/SLHC/src/classes.h"
+#include "DataFormats/Phase2L1CaloTrig/interface/L1EGCrystalCluster.h"
+#include "DataFormats/Phase2L1CaloTrig/src/classes.h"
 
 #include "DataFormats/EgammaReco/interface/SuperCluster.h"
 #include "DataFormats/EgammaReco/interface/SuperClusterFwd.h"

@@ -3,9 +3,9 @@
 <use name="FWCore/ParameterSet"/>
 <use name="CommonTools/UtilAlgos"/>
 <use name="PhysicsTools/UtilAlgos"/>
-<use name="SimDataFormats/SLHC"/>
+<use name="DataFormats/Phase2L1CaloTrig"/>
 <use name="DataFormats/EcalDigi"/>
-<use name="SLHCUpgradeSimulations/L1CaloTrigger"/>
+<use name="L1Trigger/L1CaloTrigger"/>
 <use name="FastSimulation/CaloGeometryTools"/>
 <use name="FastSimulation/Particle"/>
 <use name="FastSimulation/BaseParticlePropagator"/>

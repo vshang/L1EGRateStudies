@@ -1,9 +1,9 @@
 // -*- C++ -*-
 //
-// Package:    SLHCUpgradeSimulations/L1EGRateStudies
+// Package:    L1Trigger/L1EGRateStudies
 // Class:      L1EGPreclusterAnalysis
 // 
-/**\class L1EGPreclusterAnalysis L1EGPreclusterAnalysis.cc SLHCUpgradeSimulations/L1EGRateStudies/src/L1EGPreclusterAnalysis.cc
+/**\class L1EGPreclusterAnalysis L1EGPreclusterAnalysis.cc L1Trigger/L1EGRateStudies/src/L1EGPreclusterAnalysis.cc
 
  Description: [save a few hists showing distributions of all L1EG TPs]
 
@@ -36,7 +36,7 @@
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "TH1.h"
 
-#include "SimDataFormats/SLHC/interface/L1EGCrystalCluster.h"
+#include "DataFormats/Phase2L1CaloTrig/interface/L1EGCrystalCluster.h"
 
 //
 // class declaration
