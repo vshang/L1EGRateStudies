@@ -11,7 +11,7 @@ process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
 )
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 process.source = cms.Source("PoolSource",
 # file dataset=/RelValSingleElectronPt35Extended/CMSSW_8_1_0_pre11-PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/GEN-SIM-DIGI-RAW
@@ -176,8 +176,9 @@ process.L1EGammaCrystalsProducer = cms.EDProducer("L1EGCrystalClusterProducer",
    EtminForStore = cms.double(0.),
    debug = cms.untracked.bool(False),
    useECalEndcap = cms.bool(False),
+   useRecHits = cms.bool(False),
+   ecalRecHitEB = cms.InputTag("ecalRecHit","EcalRecHitsEB","RECO"),
    ecalTPEB = cms.InputTag("EcalEBTrigPrimProducer","","L1AlgoTest"),
-   #ecalRecHitEB = cms.InputTag("ecalRecHit","EcalRecHitsEB","RECO"),
    #ecalRecHitEE = cms.InputTag("ecalRecHit","EcalRecHitsEE","RECO"),
    #hcalRecHit = cms.InputTag("hbhereco") # for testing non-2023 geometry configurations
    #hcalRecHit = cms.InputTag("hltHbhereco","","L1AlgoTest")
@@ -228,8 +229,11 @@ process.load('RecoLocalCalo.EcalRecAlgos.EcalSeverityLevelESProducer_cfi')
 process.HitAnalyzer = cms.EDAnalyzer('HitAnalyzer',
    useRecHits = cms.bool(False),
    useEcalTPs = cms.bool(True),
+   hasGenInfo = cms.bool(True),
    ecalRecHitEB = cms.InputTag("ecalRecHit","EcalRecHitsEB","RECO"),
-   ecalTPEB = cms.InputTag("EcalEBTrigPrimProducer","","L1AlgoTest")
+   ecalTPEB = cms.InputTag("EcalEBTrigPrimProducer","","L1AlgoTest"),
+   hcalRecHit = cms.InputTag("hbhereco"),
+   genParticles = cms.InputTag("genParticles")
 )
 process.p1 = cms.Path(process.HitAnalyzer)
 
