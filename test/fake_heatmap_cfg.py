@@ -50,8 +50,7 @@ process.reconstruction_step = cms.Path( process.calolocalreco )
 
 process.L1EGammaCrystalsProducer = cms.EDProducer("L1EGCrystalClusterProducer",
    EtminForStore = cms.double(0.),
-   DEBUG = cms.untracked.bool(False),
-   useECalEndcap = cms.bool(False)
+   DEBUG = cms.untracked.bool(False)
 )
 process.pSasha = cms.Path( process.L1EGammaCrystalsProducer )
 

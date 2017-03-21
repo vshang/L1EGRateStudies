@@ -101,7 +101,7 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc', '')
 # Choose a 2030 geometry!
 # The ones which don't work all replace the ECAL Endcap geometry with HGCal stuff
 # Options in cmssw_810_pre16: (each also has an option without the Reco)
-process.load('Configuration.Geometry.GeometryExtended2023D7Reco_cff') # Works
+process.load('Configuration.Geometry.GeometryExtended2023D4Reco_cff') # Phase-2 Preferred
 
 
 process.load('Configuration.StandardSequences.MagneticField_38T_PostLS1_cff')
@@ -175,17 +175,15 @@ process.pNancy = cms.Path( process.EcalEBTrigPrimProducer )
 process.L1EGammaCrystalsProducer = cms.EDProducer("L1EGCrystalClusterProducer",
    EtminForStore = cms.double(0.),
    debug = cms.untracked.bool(False),
-   useECalEndcap = cms.bool(False),
    useRecHits = cms.bool(False),
    ecalRecHitEB = cms.InputTag("ecalRecHit","EcalRecHitsEB","RECO"),
    ecalTPEB = cms.InputTag("EcalEBTrigPrimProducer","","L1AlgoTest"),
-   #ecalRecHitEE = cms.InputTag("ecalRecHit","EcalRecHitsEE","RECO"),
    #hcalRecHit = cms.InputTag("hbhereco") # for testing non-2023 geometry configurations
    #hcalRecHit = cms.InputTag("hltHbhereco","","L1AlgoTest")
    #hcalRecHit = cms.InputTag("hltHbhereco")
    hcalRecHit = cms.InputTag("hbhereco"),
    #hcalRecHit = cms.InputTag("hbheUpgradeReco")
-   #hcalTP = cms.InputTag("simHcalTriggerPrimitiveDigis","","HLT")
+   hcalTP = cms.InputTag("simHcalTriggerPrimitiveDigis","","HLT"),
 
    #useTowerMap = cms.untracked.bool(False)
    useTowerMap = cms.untracked.bool(True)

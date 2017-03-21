@@ -49,8 +49,7 @@ process.load('Configuration.StandardSequences.Reconstruction_cff')
 process.reconstruction_step = cms.Path( process.calolocalreco )
 
 process.L1EGammaCrystalsProducer = cms.EDProducer("L1EGCrystalClusterProducer",
-   EtminForStore = cms.double(0.),
-   useECalEndcap = cms.bool(False)
+   EtminForStore = cms.double(0.)
 )
 process.pSasha = cms.Path( process.L1EGammaCrystalsProducer )
 

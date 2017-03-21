@@ -97,19 +97,8 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc', '')
 
 # Choose a 2030 geometry!
-# The ones which don't work all replace the ECAL Endcap geometry with HGCal stuff
-# Options in cmssw_810_pre16: (each also has an option without the Reco)
-process.load('Configuration.Geometry.GeometryExtended2023D7Reco_cff') # Works
+process.load('Configuration.Geometry.GeometryExtended2023D4Reco_cff') # Phase-2 Preferred
 
-#process.load('Configuration.Geometry.GeometryExtended2023simReco_cff') # Has CaloTopology, but no ECal endcap, don't use!
-#process.load('Configuration.Geometry.GeometryExtended2023GRecoReco_cff') # using this geometry because I'm not sure if the tilted geometry is vetted yet
-#process.load('Configuration.Geometry.GeometryExtended2023D5Reco_cff') # using this geometry because it is what was used for ECAL TP production in 810_pre16, this one doesn't work with the geometryHelper
-#process.load('Configuration.Geometry.GeometryExtended2023tiltedReco_cff') # this one good?
-
-#process.load('Configuration.Geometry.GeometryExtended2023TTIReco_cff')
-process.load('Configuration.StandardSequences.MagneticField_38T_PostLS1_cff')
-#process.load('Configuration.StandardSequences.L1TrackTrigger_cff')
-#process.load('Geometry.TrackerGeometryBuilder.StackedTrackerGeometry_cfi')
 #process.load('IOMC.EventVertexGenerators.VtxSmearedHLLHC_cfi')
 #process.load('IOMC.EventVertexGenerators.VtxSmearedHLLHC_cfi')
 
@@ -149,7 +138,6 @@ process.load('Configuration.StandardSequences.MagneticField_38T_PostLS1_cff')
 process.L1EGammaCrystalsProducer = cms.EDProducer("L1EGCrystalClusterProducer",
    EtminForStore = cms.double(0.),
    debug = cms.untracked.bool(False),
-   useECalEndcap = cms.bool(False),
    useRecHits = cms.bool(True),
    ecalTPEB = cms.InputTag("EcalEBTrigPrimProducer","","L1AlgoTest"),
    ecalRecHitEB = cms.InputTag("ecalRecHit","EcalRecHitsEB","RECO"),
