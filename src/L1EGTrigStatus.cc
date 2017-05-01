@@ -37,8 +37,6 @@
 #include "TH1.h"
 
 #include "DataFormats/Phase2L1CaloTrig/interface/L1EGCrystalCluster.h"
-#include "DataFormats/L1Trigger/interface/L1EmParticle.h"
-#include "DataFormats/L1Trigger/interface/L1EmParticleFwd.h"
 
 //
 // class declaration
@@ -70,9 +68,9 @@ class L1EGPreclusterAnalysis : public edm::EDAnalyzer {
       l1slhc::L1EGCrystalClusterCollection crystalClusters;
       edm::Handle<l1slhc::L1EGCrystalClusterCollection> crystalClustersHandle;      
 
-      edm::EDGetTokenT<l1extra::L1EmParticleCollection> crystalClustersWithCutsToken_;
-      l1extra::L1EmParticleCollection crystalClustersWithCuts;
-      edm::Handle<l1extra::L1EmParticleCollection> crystalClustersWithCutsHandle;      
+      edm::EDGetTokenT<l1slhc::L1EGCrystalClusterCollection> crystalClustersWithCutsToken_;
+      l1slhc::L1EGCrystalClusterCollection crystalClustersWithCuts;
+      edm::Handle<l1slhc::L1EGCrystalClusterCollection> crystalClustersWithCutsHandle;
 
       TH1D *L1EG_pt;
       TH1D *L1EG_energy;
@@ -97,7 +95,7 @@ class L1EGPreclusterAnalysis : public edm::EDAnalyzer {
 //
 L1EGPreclusterAnalysis::L1EGPreclusterAnalysis(const edm::ParameterSet& iConfig) :
    crystalClustersToken_(consumes<l1slhc::L1EGCrystalClusterCollection>(iConfig.getParameter<edm::InputTag>("L1CrystalClustersInputTag"))),
-   crystalClustersWithCutsToken_(consumes<l1extra::L1EmParticleCollection>(iConfig.getParameter<edm::InputTag>("L1CrystalClustersWithCutsInputTag")))
+   crystalClustersWithCutsToken_(consumes<l1slhc::L1EGCrystalClusterCollection>(iConfig.getParameter<edm::InputTag>("L1CrystalClustersWithCutsInputTag")))
 {
    //now do what ever initialization is needed
 

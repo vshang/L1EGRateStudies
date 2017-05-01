@@ -74,8 +74,8 @@ process.pSasha = cms.Path( process.L1EGammaCrystalsProducer )
 #
 ### Mini-analyzer for L1EG TPs
 process.TPAnalyzer = cms.EDAnalyzer('L1EGPreclusterAnalysis',
-   L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer","EGCrystalCluster"),
-   L1CrystalClustersWithCutsInputTag = cms.InputTag("L1EGammaCrystalsProducer","EGammaCrystal")
+   L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer","L1EGXtalClusterNoCuts"),
+   L1CrystalClustersWithCutsInputTag = cms.InputTag("L1EGammaCrystalsProducer","L1EGXtalClusterWithCuts")
 )
 
 
@@ -85,7 +85,7 @@ process.TPAnalyzer = cms.EDAnalyzer('L1EGPreclusterAnalysis',
 # Analyzer starts here
 
 process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
-   L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer","EGCrystalCluster"),
+   L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer","L1EGXtalClusterNoCuts"),
    genParticles = cms.InputTag("genParticles"),
    OfflineRecoClustersInputTag = cms.InputTag("correctedHybridSuperClusters"),
    ecalTPEB = cms.InputTag("EcalEBTrigPrimProducer","","L1AlgoTest"),

@@ -157,7 +157,7 @@ process.pSasha = cms.Path( process.L1EGammaCrystalsProducer )
 
 #process.l1ExtraCrystalProducer = cms.EDProducer("L1ExtraCrystalPosition",
 #   eGammaSrc = cms.InputTag("SLHCL1ExtraParticles","EGamma"),
-#   eClusterSrc = cms.InputTag("L1EGammaCrystalsProducer","EGCrystalCluster")
+#   eClusterSrc = cms.InputTag("L1EGammaCrystalsProducer","L1EGXtalClusterNoCuts")
 #)
 #process.egcrystal_producer = cms.Path(process.l1ExtraCrystalProducer)
 
@@ -194,9 +194,9 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    #   cms.InputTag("l1extraParticlesUCT", "Isolated"),
    #   cms.InputTag("l1extraParticlesUCT", "NonIsolated"),
    #   # Crystal-level algo.
-   #   cms.InputTag("L1EGammaCrystalsProducer","EGammaCrystal")
+   #   cms.InputTag("L1EGammaCrystalsProducer","L1EGXtalClusterWithCuts")
    #),
-   L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer","EGCrystalCluster"),
+   L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer","L1EGXtalClusterNoCuts"),
    genParticles = cms.InputTag("genParticles"),
    OfflineRecoClustersInputTag = cms.InputTag("correctedHybridSuperClusters"),
    doEfficiencyCalc = cms.untracked.bool(True),
