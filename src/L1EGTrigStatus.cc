@@ -37,6 +37,8 @@
 #include "TH1.h"
 
 #include "DataFormats/Phase2L1CaloTrig/interface/L1EGCrystalCluster.h"
+#include "DataFormats/L1Trigger/interface/L1EmParticle.h"
+#include "DataFormats/L1Trigger/interface/L1EmParticleFwd.h"
 
 //
 // class declaration
@@ -68,10 +70,18 @@ class L1EGPreclusterAnalysis : public edm::EDAnalyzer {
       l1slhc::L1EGCrystalClusterCollection crystalClusters;
       edm::Handle<l1slhc::L1EGCrystalClusterCollection> crystalClustersHandle;      
 
+      edm::EDGetTokenT<l1extra::L1EmParticleCollection> crystalClustersWithCutsToken_;
+      l1extra::L1EmParticleCollection crystalClustersWithCuts;
+      edm::Handle<l1extra::L1EmParticleCollection> crystalClustersWithCutsHandle;      
+
       TH1D *L1EG_pt;
       TH1D *L1EG_energy;
       TH1D *L1EG_eta;
       TH1D *L1EG_phi;
+      TH1D *L1EG_withCuts_pt;
+      TH1D *L1EG_withCuts_energy;
+      TH1D *L1EG_withCuts_eta;
+      TH1D *L1EG_withCuts_phi;
 };
 
 //
@@ -86,7 +96,8 @@ class L1EGPreclusterAnalysis : public edm::EDAnalyzer {
 // constructors and destructor
 //
 L1EGPreclusterAnalysis::L1EGPreclusterAnalysis(const edm::ParameterSet& iConfig) :
-   crystalClustersToken_(consumes<l1slhc::L1EGCrystalClusterCollection>(iConfig.getParameter<edm::InputTag>("L1CrystalClustersInputTag")))
+   crystalClustersToken_(consumes<l1slhc::L1EGCrystalClusterCollection>(iConfig.getParameter<edm::InputTag>("L1CrystalClustersInputTag"))),
+   crystalClustersWithCutsToken_(consumes<l1extra::L1EmParticleCollection>(iConfig.getParameter<edm::InputTag>("L1CrystalClustersWithCutsInputTag")))
 {
    //now do what ever initialization is needed
 
@@ -95,6 +106,10 @@ L1EGPreclusterAnalysis::L1EGPreclusterAnalysis(const edm::ParameterSet& iConfig)
    L1EG_energy = fs->make<TH1D>("L1EG_energy" , "L1EG_energy" , 100 , 0 , 100 );
    L1EG_eta = fs->make<TH1D>("L1EG_eta" , "L1EG_eta" , 40 , -2 , 2 );
    L1EG_phi = fs->make<TH1D>("L1EG_phi" , "L1EG_phi" , 70 , -3.5 , 3.5 );
+   L1EG_withCuts_pt = fs->make<TH1D>("L1EG_withCuts_pt" , "L1EG_withCuts_pt" , 50 , 0 , 50 );
+   L1EG_withCuts_energy = fs->make<TH1D>("L1EG_withCuts_energy" , "L1EG_withCuts_energy" , 100 , 0 , 100 );
+   L1EG_withCuts_eta = fs->make<TH1D>("L1EG_withCuts_eta" , "L1EG_withCuts_eta" , 40 , -2 , 2 );
+   L1EG_withCuts_phi = fs->make<TH1D>("L1EG_withCuts_phi" , "L1EG_withCuts_phi" , 70 , -3.5 , 3.5 );
 
 }
 
@@ -127,6 +142,17 @@ L1EGPreclusterAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
       L1EG_energy->Fill( cluster.energy() );
       L1EG_eta->Fill( cluster.eta() );
       L1EG_phi->Fill( cluster.phi() );
+   }
+
+   iEvent.getByToken(crystalClustersWithCutsToken_,crystalClustersWithCutsHandle);
+   crystalClustersWithCuts = (*crystalClustersWithCutsHandle.product());
+
+   for(const auto& cluster : crystalClustersWithCuts)
+   {
+      L1EG_withCuts_pt->Fill( cluster.pt() );
+      L1EG_withCuts_energy->Fill( cluster.energy() );
+      L1EG_withCuts_eta->Fill( cluster.eta() );
+      L1EG_withCuts_phi->Fill( cluster.phi() );
    }
 
 

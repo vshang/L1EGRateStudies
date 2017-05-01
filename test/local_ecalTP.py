@@ -7,86 +7,116 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 process.load('Configuration.EventContent.EventContent_cff')
 process.MessageLogger.categories = cms.untracked.vstring('L1EGRateStudies', 'FwkReport')
 process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
-   reportEvery = cms.untracked.int32(1000)
+   reportEvery = cms.untracked.int32(10)
 )
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 process.source = cms.Source("PoolSource",
 # file dataset=/RelValSingleElectronPt35Extended/CMSSW_8_1_0_pre11-PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/GEN-SIM-DIGI-RAW
     fileNames = cms.untracked.vstring(
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/0ADFD7B5-4277-E611-8E89-0025905A6132.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/0C8DF598-1977-E611-95D4-0025905A612E.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/148A8242-1577-E611-B3B6-0025905B855E.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/149D7C35-1577-E611-992B-0CC47A745282.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/1874030D-DC76-E611-8FA7-0CC47A4C8E14.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/1C51682A-DD76-E611-A258-0025905B857A.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/1E7C6756-1677-E611-9633-0025905B8560.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/2007B6E9-CA76-E611-9B4C-0CC47A745294.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/22926245-C276-E611-9F2A-0025905A48B2.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/24EE0F03-D676-E611-B94D-0CC47A4C8E46.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/286DC4E9-CB76-E611-B41B-0CC47A7452D8.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/28CF1A1C-1877-E611-B14F-0025905A60D2.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/2C32E900-E076-E611-BA96-0CC47A4C8EA8.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/32FA5232-0D77-E611-A420-0025905B861C.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/34E99ED5-1877-E611-B092-0CC47A7C3572.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/40AC3F5E-F376-E611-BAA2-0CC47A4D76D0.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/46C79DBE-1D77-E611-BA00-0025905B8596.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/487702E0-0377-E611-B276-0025905B8560.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/48B2905D-EA76-E611-977F-0025905B85DC.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/48BA4FF7-D976-E611-A309-0CC47A4C8F26.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/4A47F5E3-C276-E611-8930-0025905B8562.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/4CC09DB2-C176-E611-8133-0025905B85DC.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/4CF4B0AC-FD76-E611-A394-0CC47A7C3636.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/52297EE9-0D77-E611-AFA8-0025905B85FC.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/523271EF-CA76-E611-BC16-0025905A60B0.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/54EE68FD-D976-E611-B407-0025905A6104.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/5A5DF9D7-C276-E611-882F-0025905A60F8.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/62312CE9-CA76-E611-A2CA-0CC47A7C340E.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/628AC61E-DE76-E611-8E4B-0CC47A7C35E0.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/64A2D5BB-C276-E611-AEF9-0CC47A4D7634.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/665DC64A-0D77-E611-97B6-0025905B859A.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/6C6985EE-CA76-E611-8618-0025905A60BC.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/6E6A9699-1A77-E611-ADEF-0CC47A4D75EC.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/6EAE6BA1-E076-E611-96BF-0025905A6064.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/6EF68AA9-DA76-E611-B346-0CC47A7C3420.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/70BC6199-CE76-E611-AF5C-0CC47A7C3472.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/7CF9CC14-1777-E611-961E-0CC47A4C8F18.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/8EBE59A2-E476-E611-B71B-0CC47A78A41C.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/904DF162-CE76-E611-B40B-0CC47A4D76CC.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/9229C466-3C77-E611-B729-0025905B8564.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/92993D85-D076-E611-871F-0CC47A4D7628.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/94463AB9-D276-E611-9048-0CC47A4C8E26.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/9846B648-C376-E611-B4E7-0025905A60F2.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/9E218346-C276-E611-ABD1-0025905B858C.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/A089E4AE-2E77-E611-B9D4-0025905A60CE.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/A2B4A634-0F77-E611-8590-0025905B85DA.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/A8814913-E376-E611-BFFC-0CC47A7C3604.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/AC20E95E-EB76-E611-8D1D-0025905A6118.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/AE34A0BD-E776-E611-80A9-0CC47A4D76BE.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/B0FE2ADE-0677-E611-9253-0025905A60F2.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/B455252A-DE76-E611-91AA-0CC47A4D760A.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/B4FF0741-C276-E611-8B92-0CC47A78A42E.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/BC34DA45-C276-E611-8006-0025905B859E.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/C439EB44-C376-E611-888A-0025905B85B8.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/C81CF7DB-CF76-E611-BC0B-0CC47A4D760C.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/CC275EA2-E376-E611-8240-0CC47A78A33E.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/D0520AEF-CA76-E611-BE0C-0025905B858E.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/D05220E8-CF76-E611-AB63-0CC47A7C357A.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/D65580CD-C276-E611-B816-0025905A60B2.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/D80BBA95-1777-E611-A606-0CC47A78A458.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/D8336CA2-CC76-E611-9491-0025905A60CE.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/D8DA5AF0-CA76-E611-8DE3-0025905A60B6.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/DE731E46-C276-E611-A52C-0025905A60DE.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/E4DA9532-0F77-E611-9313-0CC47A7C340E.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/E683D306-CB76-E611-9F38-0CC47A78A4A6.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/F023CD86-0B77-E611-8330-0CC47A4D766C.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/F0B49AC1-C276-E611-BB66-0025905B85F6.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/F441704B-DC76-E611-89A5-0CC47A4D766C.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/FE080CE0-D076-E611-BD1D-0CC47A4D7640.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/FE5F55B4-4777-E611-B8C5-0CC47A4D76A2.root',
-        '/store/relval/CMSSW_8_1_0_pre11/RelValSingleElectronPt35Extended/GEN-SIM-DIGI-RAW/PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/00000/FEDA422B-DC76-E611-9E14-0CC47A4C8E2A.root',
+        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/002A4121-132C-E711-87AD-008CFAFBF618.root',
+        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/04B4BF1D-1E2C-E711-BE1C-7845C4FC39D1.root',  
+        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/06D8737D-022C-E711-B5D6-F04DA275C2FE.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/14A61139-042C-E711-856A-7CD30AD0A690.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/288BB6A1-112C-E711-B359-848F69FD2958.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/28CBAE0D-132C-E711-848C-008CFAF35994.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/28E8BBE6-0F2C-E711-A3F5-848F69FD2940.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/32931840-132C-E711-B50E-848F69FDFC5C.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/36609B38-122C-E711-8145-7845C4FC3A1C.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/368FACD9-122C-E711-8AE6-008CFAF7245E.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/3888F328-0E2C-E711-989F-F04DA275C2FE.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/44135658-122C-E711-BBC5-008CFAF35A6C.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/4CECA4C9-112C-E711-924E-008CFAF724BE.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/4E5B6A72-FB2B-E711-B3C3-7845C4FC38ED.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/52D55400-192C-E711-B09C-180373FFCED8.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/54A83DBF-0A2C-E711-B430-008CFAF724BE.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/58085EA6-082C-E711-A9C6-848F69FD455F.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/5E42AADD-FE2B-E711-B535-008CFAF724BE.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/60E59706-0C2C-E711-99B6-008CFAFBE8F2.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/62859D2F-0E2C-E711-9A95-008CFAF71666.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/66A75BBA-122C-E711-B215-848F69FD4409.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/765C5240-FE2B-E711-A9A4-008CFA002830.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/78B7CA8D-122C-E711-A736-008CFAF72A64.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/7ABC82FB-122C-E711-87BF-008CFA00210C.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/7C851970-0A2C-E711-8429-848F69FD501B.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/7CA52795-0C2C-E711-8451-7845C4FC3638.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/847E3DA8-0C2C-E711-B7E7-008CFA002830.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/868B4F2D-202C-E711-9127-7845C4FC35F6.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/8A7B06E8-052C-E711-8F5D-008CFAF724BE.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/8E8BD912-122C-E711-97AC-848F69FD471E.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/90A879EA-072C-E711-9039-848F69FD291F.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/90D38DD7-0D2C-E711-A05D-7845C4FC3647.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/9293C9C8-FB2B-E711-AE47-008CFAFBEC34.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/9A6F92FD-FB2B-E711-BA81-848F69FD455F.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/9CC98727-FE2B-E711-8834-7845C4FC3638.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/9E7E8B7F-092C-E711-892B-3417EBE4236C.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/A0FD49AC-012C-E711-B469-7845C4FC3647.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/A8E5D7E4-092C-E711-8D17-7845C4FC3A3D.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/AA20AB51-052C-E711-96FA-7845C4FC3779.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/AA7E800B-132C-E711-93CF-008CFAF74A32.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/ACDD367D-022C-E711-B258-F04DA275C2FE.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/AE369073-022C-E711-AB92-7845C4FC3635.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/B44F2EB3-1E2C-E711-9D65-0025904C68D8.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/B6C49545-122C-E711-88B8-3417EBE644F2.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/B81ECF79-FD2B-E711-82BC-7CD30ACE159A.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/B877B91A-1E2C-E711-967E-008CFAF22114.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/B8A085DF-092C-E711-A7B2-7CD30ACE159A.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/BEC9956C-152C-E711-B842-008CFAF52264.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/C282B859-112C-E711-8B2D-3417EBE6495A.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/C45B85F6-122C-E711-BC2E-008CFAF747AA.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/CAECDBE5-122C-E711-A77D-008CFAF74780.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/CE787858-0F2C-E711-9725-008CFAF73424.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/DC79A6F0-112C-E711-900F-008CFAF35A2A.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/E2E0A4BB-122C-E711-8BDE-F04DA275C2FE.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/EC6363CD-0F2C-E711-ADE9-7845C4FC3635.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/EE4A4C25-092C-E711-84AB-7845C4FC38ED.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/EEAB55B6-122C-E711-AE86-008CFAFBEEE6.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/F0CF50AE-122C-E711-8236-008CFAFBF52E.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/F49CC1D0-082C-E711-A0A9-008CFAFBEC34.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/F8EC772C-202C-E711-B8DA-7845C4FC39D1.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/FEF66F84-FC2B-E711-8119-7845C4FC3A3D.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/1210000/06C69B15-F52B-E711-B873-C454449229EB.root', 
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/1210000/1221DA47-F52B-E711-BA5A-008CFAF74780.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/1210000/66915012-F52B-E711-B88F-0025904C7A56.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/1210000/749BBE13-F52B-E711-A966-0025904AB18A.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/1210000/88C0E96D-F52B-E711-9ABC-001D09FDD6AB.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/1210000/C62CF611-F52B-E711-BA76-0025904C7A56.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/001401E8-C625-E711-8E6F-001E67580BAC.root', 
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/005A04A3-C225-E711-B7D1-0025905C3DD0.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/00C6A757-CC25-E711-8555-0CC47A706D26.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/00ECA247-D925-E711-80DC-00259021A43E.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/00F11F7B-C425-E711-806C-0025904B12FA.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/02646D6F-CC25-E711-8B6E-0025904C5DE0.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/02933850-D325-E711-89C4-1CC1DE1925AC.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/02A34600-BF25-E711-8B54-002590DE6E36.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/02AC06F4-C525-E711-95C6-001E675827BC.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/02CD4452-C225-E711-966E-20CF305616D1.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/02D18A51-E225-E711-9A44-001E677924BA.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/02F0CF76-3B25-E711-9343-001E67E71A56.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/0412DE62-E025-E711-BF0E-002590200B20.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/042076A1-C425-E711-AF86-20CF300E9EDD.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/044AA571-3626-E711-A09C-FA163E3C56B0.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/04776460-B026-E711-86E5-44A8422411EB.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/04959666-FB25-E711-B7CD-002590200900.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/049D9534-A326-E711-AE9C-0242AC110002.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/04A6FAFF-0026-E711-957D-002590200B08.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/04DE2D07-BC25-E711-A454-0025905C3D96.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/04FD0CC0-C325-E711-88C8-20CF3027A606.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/0615B923-CC25-E711-B664-842B2B758AD8.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/0621161F-CC25-E711-8DDC-D4AE5269FD24.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/0631262E-BB25-E711-A1D6-001E675811CC.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/0642909E-C025-E711-A9FA-0CC47A706FF8.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/067439BD-DF25-E711-B837-001E6779281C.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/069A3137-C025-E711-AB56-00259021A3D2.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/06BE37F5-BE25-E711-B9E3-0025904A87E2.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/06DAE390-D825-E711-BA69-A4BF0108B90A.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/06DB32C0-BD25-E711-90DF-0025904C66A0.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/06FBA6B2-C325-E711-8670-0025905C2CE4.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/080E7944-E125-E711-ACE1-001E677926FC.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/70000/0856AF14-E325-E711-BBE5-001E677927C2.root',
+
     )
 )
 
@@ -95,53 +125,18 @@ process.source = cms.Source("PoolSource",
 # ---- Global Tag :
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
-#process.GlobalTag = GlobalTag(process.GlobalTag, 'PH2_1K_FB_V3::All', '')
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '')
 
 # Choose a 2030 geometry!
-# The ones which don't work all replace the ECAL Endcap geometry with HGCal stuff
-# Options in cmssw_810_pre16: (each also has an option without the Reco)
 process.load('Configuration.Geometry.GeometryExtended2023D4Reco_cff') # Phase-2 Preferred
-
-
 process.load('Configuration.StandardSequences.MagneticField_38T_PostLS1_cff')
-#process.load('Configuration.StandardSequences.L1TrackTrigger_cff')
-#process.load('Geometry.TrackerGeometryBuilder.StackedTrackerGeometry_cfi')
-#process.load('IOMC.EventVertexGenerators.VtxSmearedHLLHC_cfi')
-#process.load('IOMC.EventVertexGenerators.VtxSmearedHLLHC_cfi')
-
-#process.load('Configuration/StandardSequences/L1HwVal_cff')
-#process.load('Configuration.StandardSequences.RawToDigi_cff')
-#process.load("SLHCUpgradeSimulations.L1CaloTrigger.SLHCCaloTrigger_cff")
-
-# bug fix for missing HCAL TPs in MC RAW
-#from SimCalorimetry.HcalTrigPrimProducers.hcaltpdigi_cff import HcalTPGCoderULUT
-#HcalTPGCoderULUT.LUTGenerationMode = cms.bool(True)
-#process.valRctDigis.hcalDigis             = cms.VInputTag(cms.InputTag('valHcalTriggerPrimitiveDigis'))
-#process.L1CaloTowerProducer.HCALDigis =  cms.InputTag("valHcalTriggerPrimitiveDigis")
-#
-#process.slhccalo = cms.Path( process.RawToDigi + process.valHcalTriggerPrimitiveDigis+process.SLHCCaloTrigger)
-#
-# run L1Reco to produce the L1EG objects corresponding
-# to the current trigger
-#process.load('Configuration.StandardSequences.L1Reco_cff')
-#process.L1Reco = cms.Path( process.l1extraParticles )
-
-# producer for UCT2015 / Stage-1 trigger objects
-#process.load("L1Trigger.UCT2015.emulationMC_cfi")
-#process.load("L1Trigger.UCT2015.uctl1extraparticles_cfi")
-#process.pUCT = cms.Path(
-#    process.emulationSequence *
-#    process.uct2015L1Extra
-#)
 
 
-process.load("RecoLocalCalo.Configuration.hcalLocalReco_cff")
-process.load("RecoLocalCalo.Configuration.hcalGlobalReco_cff")
 
-#from RecoLocalCalo.Configuration.ecalLocalRecoSequence_cff import *
-#localreco = cms.Sequence(ecalLocalRecoSequence)
-#process.load("RecoLocalCalo.EcalRecProducers.ecalLocalRecoSequence_cff")
+
+#process.load("RecoLocalCalo.Configuration.hcalLocalReco_cff")
+#process.load("RecoLocalCalo.Configuration.hcalGlobalReco_cff")
+
 
 # --------------------------------------------------------------------------------------------
 #
@@ -216,7 +211,7 @@ process.pSasha = cms.Path( process.L1EGammaCrystalsProducer )
 # Do offline reconstruction step for electron matching
 # First we need to run EcalSeverityLevelESProducer ES Producer
 
-process.load('RecoLocalCalo.EcalRecAlgos.EcalSeverityLevelESProducer_cfi')
+#process.load('RecoLocalCalo.EcalRecAlgos.EcalSeverityLevelESProducer_cfi')
 
 #process.load('RecoEcal.Configuration.RecoEcal_cff')
 #process.ecalClusters = cms.Path(process.ecalClustersNoPFBox)
@@ -226,11 +221,11 @@ process.load('RecoLocalCalo.EcalRecAlgos.EcalSeverityLevelESProducer_cfi')
 ### Mini-analyzer for ECAL TPs / RecHits
 process.HitAnalyzer = cms.EDAnalyzer('HitAnalyzer',
    useRecHits = cms.bool(False),
-   useEcalTPs = cms.bool(True),
    hasGenInfo = cms.bool(True),
    ecalRecHitEB = cms.InputTag("ecalRecHit","EcalRecHitsEB","RECO"),
    ecalTPEB = cms.InputTag("EcalEBTrigPrimProducer","","L1AlgoTest"),
    hcalRecHit = cms.InputTag("hbhereco"),
+   hcalTP = cms.InputTag("simHcalTriggerPrimitiveDigis","","HLT"),
    genParticles = cms.InputTag("genParticles")
 )
 process.p1 = cms.Path(process.HitAnalyzer)
@@ -239,7 +234,8 @@ process.p1 = cms.Path(process.HitAnalyzer)
 #
 ### Mini-analyzer for L1EG TPs
 process.analyzer = cms.EDAnalyzer('L1EGPreclusterAnalysis',
-   L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer","EGCrystalCluster")
+   L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer","EGCrystalCluster"),
+   L1CrystalClustersWithCutsInputTag = cms.InputTag("L1EGammaCrystalsProducer","EGammaCrystal")
 )
 process.p2 = cms.Path(process.analyzer)
 

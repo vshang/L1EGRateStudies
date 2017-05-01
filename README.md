@@ -20,6 +20,14 @@ popd
 scramv1 b -j 8
 ```
 
+There is a single auto-generated python file which is created in the "wrong" area and needs to be copied to run this code on Condor.
+
+```
+cp $CMSSW_BASE/cfipython/slc6_amd64_gcc530/Geometry/TrackerGeometryBuilder/trackerGeometry_cfi.py $CMSSW_BASE/src/Geometry/TrackerGeometryBuilder/python/
+cp $CMSSW_BASE/cfipython/slc6_amd64_gcc530/SimGeneral/TrackingAnalysis/trackingParticleNumberOfLayersProducer_cfi.py $CMSSW_BASE/src/SimGeneral/TrackingAnalysis/python/
+scramv1 b -j 8
+```
+
 There are multiple working examples of using the L1EG producer. The current RelVal samples are small and can easily be run over locally.  For code which does that please see the files in `test/`
 
 ```

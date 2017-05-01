@@ -47,6 +47,8 @@
 #include "Geometry/CaloGeometry/interface/CaloCellGeometry.h"
 #include "Geometry/Records/interface/CaloGeometryRecord.h"
 #include "Geometry/EcalAlgo/interface/EcalBarrelGeometry.h"
+#include "Geometry/HcalTowerAlgo/interface/HcalTrigTowerGeometry.h"
+#include "Geometry/HcalTowerAlgo/interface/HcalGeometry.h"
 
 // ECAL TPs
 #include "SimCalorimetry/EcalEBTrigPrimProducers/plugins/EcalEBTrigPrimProducer.h"
@@ -59,6 +61,9 @@
 // HCAL RecHits
 #include "DataFormats/HcalRecHit/interface/HcalRecHitCollections.h"
 #include "DataFormats/HcalRecHit/interface/HcalSourcePositionData.h"
+
+// HCAL TPs
+#include "DataFormats/HcalDigi/interface/HcalTriggerPrimitiveDigi.h"
 
 // Gen Particles
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
@@ -91,18 +96,25 @@ class HitAnalyzer : public edm::EDAnalyzer {
       // ----------member data ---------------------------
 
       bool useRecHits;
-      bool useEcalTPs;
       bool hasGenInfo;
 
       edm::EDGetTokenT<EcalRecHitCollection> ecalRecHitEBToken_;
       edm::EDGetTokenT<EcalEBTrigPrimDigiCollection> ecalTPEBToken_;
       edm::EDGetTokenT<HBHERecHitCollection> hcalRecHitToken_;
+      edm::EDGetTokenT< edm::SortedCollection<HcalTriggerPrimitiveDigi> > hcalTPToken_;
       edm::EDGetTokenT<reco::GenParticleCollection> genCollectionToken_;
       reco::GenParticleCollection genParticles;
+
+      edm::ESHandle<CaloGeometry> caloGeometry_;
+      const CaloSubdetectorGeometry * ebGeometry;
+      const CaloSubdetectorGeometry * hbGeometry;
+      edm::ESHandle<HcalTopology> hbTopology;
+      const HcalTopology * hcTopology_;
 
 
       TH1D *ecal_totalHits;
       TH1D *ecal_totalNonZeroHits;
+      TH1D *ecal_totalGtr500MeVHits;
       TH1D *ecal_TP_or_recHit_et;
       TH1D *ecal_TP_or_recHit_energy;
       TH1D *ecal_TP_or_recHit_eta;
@@ -162,18 +174,19 @@ class HitAnalyzer : public edm::EDAnalyzer {
 //
 HitAnalyzer::HitAnalyzer(const edm::ParameterSet& iConfig) :
    useRecHits(iConfig.getParameter<bool>("useRecHits")),
-   useEcalTPs(iConfig.getParameter<bool>("useEcalTPs")),
    hasGenInfo(iConfig.getParameter<bool>("hasGenInfo")),
    ecalRecHitEBToken_(consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("ecalRecHitEB"))),
    ecalTPEBToken_(consumes<EcalEBTrigPrimDigiCollection>(iConfig.getParameter<edm::InputTag>("ecalTPEB"))),
    hcalRecHitToken_(consumes<HBHERecHitCollection>(iConfig.getParameter<edm::InputTag>("hcalRecHit"))),
+   hcalTPToken_(consumes< edm::SortedCollection<HcalTriggerPrimitiveDigi> >(iConfig.getParameter<edm::InputTag>("hcalTP"))),
    genCollectionToken_(consumes<reco::GenParticleCollection>(iConfig.getParameter<edm::InputTag>("genParticles")))
 {
    //now do what ever initialization is needed
 
    edm::Service<TFileService> fs;
    ecal_totalHits = fs->make<TH1D>("ecal totalHits" , "ecal totalHits" , 200 , 0 , 20000 );
-   ecal_totalNonZeroHits = fs->make<TH1D>("ecal totalNonZeroHits" , "ecal totalNonZeroHits" , 500 , 0 , 500 );
+   ecal_totalNonZeroHits = fs->make<TH1D>("ecal totalNonZeroHits" , "ecal totalNonZeroHits" , 500 , 0 , 2500 );
+   ecal_totalGtr500MeVHits = fs->make<TH1D>("ecal totalGtr500MeVHits" , "ecal totalGtr500MeVHits" , 500 , 0 , 500 );
    ecal_TP_or_recHit_et = fs->make<TH1D>("ecal TP_or_recHit_et" , "ecal TP_or_recHit_et" , 300 , 0 , 30 );
    ecal_TP_or_recHit_energy = fs->make<TH1D>("ecal TP_or_recHit_energy" , "ecal TP_or_recHit_energy" , 200 , 0 , 50 );
    ecal_TP_or_recHit_eta = fs->make<TH1D>("ecal TP_or_recHit_eta" , "ecal TP_or_recHit_eta" , 40 , -2 , 2 );
@@ -229,30 +242,19 @@ void
 HitAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 
-   // Make sure we are only running a single set of hits at a time
-   assert(useRecHits * useEcalTPs == 0);
+   // Get calo geometry info split by subdetector
+   iSetup.get<CaloGeometryRecord>().get(caloGeometry_);
+   ebGeometry = caloGeometry_->getSubdetectorGeometry(DetId::Ecal, EcalBarrel);
+   hbGeometry = caloGeometry_->getSubdetectorGeometry(DetId::Hcal, HcalBarrel);
+   iSetup.get<HcalRecNumberingRecord>().get(hbTopology);
+   hcTopology_ = hbTopology.product();
+   HcalTrigTowerGeometry theTrigTowerGeometry(hcTopology_);
 
-   if ( geometryHelper.getEcalBarrelGeometry() == nullptr )
-   {
-      edm::ESHandle<CaloTopology> theCaloTopology;
-      iSetup.get<CaloTopologyRecord>().get(theCaloTopology);
-      edm::ESHandle<CaloGeometry> pG;
-      iSetup.get<CaloGeometryRecord>().get(pG);
-      double bField000 = 4.;
-      if ( !pG.isValid() || !theCaloTopology.isValid() ) { std::cout << "Bad times" << std::endl;
-        return;}
-      else {
-      geometryHelper.setupGeometry(*pG);
-      geometryHelper.setupTopology(*theCaloTopology);
-      std::cout << "Pre-Initialize Geometry Helper" << std::endl;
-      geometryHelper.initialize(bField000);
-      std::cout << "Post-Initialize Geometry Helper" << std::endl;
-      }
-   }
    using namespace edm;
 
    int e_totTP = 0;
    int e_totNonZeroTP = 0;
+   int e_totGtr500MeVTP = 0;
    int h_totTP = 0;
    int h_totNonZeroTP = 0;
    GlobalVector position; // As opposed to GlobalPoint, so we can add them (for weighted average)
@@ -295,7 +297,7 @@ HitAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
          // then figure out Et for comparison with ECAL TPs
          if(hit.energy() >= 0.2 && !hit.checkFlag(EcalRecHit::kOutOfTime) && !hit.checkFlag(EcalRecHit::kL1SpikeFlag))
          {
-            auto cell = geometryHelper.getEcalBarrelGeometry()->getGeometry(hit.id());
+            auto cell = ebGeometry->getGeometry(hit.id());
             position = GlobalVector(cell->getPosition().x(), cell->getPosition().y(), cell->getPosition().z());
             energy = hit.energy();
             et = energy * sin(position.theta());
@@ -326,57 +328,15 @@ HitAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
                //}
             }
          }
-      }
-   }
+      } // ECAL Finished
 
-   if (useEcalTPs) {
-      edm::Handle<EcalEBTrigPrimDigiCollection> pcalohits;
-      iEvent.getByToken(ecalTPEBToken_,pcalohits);
-      for(auto& hit : *pcalohits.product())
-      {
-         e_totTP++;
-         if(hit.encodedEt() > 0) // && !hit.l1aSpike()) // hit.encodedEt() returns an int corresponding to 8x the crystal Et, saturates at 128
-         {
-            e_totNonZeroTP++;
-            auto cell = geometryHelper.getEcalBarrelGeometry()->getGeometry(hit.id());
-            position = GlobalVector(cell->getPosition().x(), cell->getPosition().y(), cell->getPosition().z());
-            et = hit.encodedEt()/8.;
-            energy = et / sin(position.theta());
-            eta = cell->getPosition().eta();
-            phi = cell->getPosition().phi();
-            ecal_TP_or_recHit_et->Fill( et );
-            ecal_TP_or_recHit_energy->Fill( energy );
-            ecal_TP_or_recHit_eta->Fill( eta );
-            ecal_TP_or_recHit_phi->Fill( phi );
-
-            // Fill Tree
-            id = hit.id();
-            iEta = id.ieta();
-            iPhi = id.iphi();
-            treeinfo.ecalHit_energy.push_back( energy );
-            treeinfo.ecalHit_et.push_back( et );
-            treeinfo.ecalHit_eta.push_back( eta );
-            treeinfo.ecalHit_phi.push_back( phi );
-            treeinfo.ecalHit_iEta.push_back( iEta );
-            treeinfo.ecalHit_iPhi.push_back( iPhi );
-
-            //if (energy > highestE) {
-            //   highestE = energy;
-            //   highestPhi = phi;
-            //   highestEta = eta;
-            //}
-         }
-      }
-   }
-
-   // Retrive HCAL hits 
-   if (useRecHits) {
-      edm::Handle<HBHERecHitCollection> pcalohits;
-      iEvent.getByToken(hcalRecHitToken_,pcalohits);
-      for(auto& hit : *pcalohits.product())
+      // Retrive HCAL hits 
+      edm::Handle<HBHERecHitCollection> hcalohits;
+      iEvent.getByToken(hcalRecHitToken_,hcalohits);
+      for(auto& hit : *hcalohits.product())
       {
          // We need to cut out the endcap HCAL here before counting raw total
-         auto cell = geometryHelper.getHcalGeometry()->getGeometry(hit.id());
+         auto cell = hbGeometry->getGeometry(hit.id());
          position = GlobalVector(cell->getPosition().x(), cell->getPosition().y(), cell->getPosition().z());
          eta = cell->getPosition().eta();
          if (fabs(eta) > 1.5) continue;
@@ -414,12 +374,119 @@ HitAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
                //}
             }
          }
-      }
-   }
+      } // HCAL finished
+   } // RecHits Finished
+
+   if (!(useRecHits)) {
+      edm::Handle<EcalEBTrigPrimDigiCollection> ecalohits;
+      iEvent.getByToken(ecalTPEBToken_,ecalohits);
+      for(auto& hit : *ecalohits.product())
+      {
+         e_totTP++;
+         if(hit.encodedEt() > 0) // && !hit.l1aSpike()) // hit.encodedEt() returns an int corresponding to 8x the crystal Et, saturates at 128
+         {
+            e_totNonZeroTP++;
+            auto cell = ebGeometry->getGeometry(hit.id());
+            position = GlobalVector(cell->getPosition().x(), cell->getPosition().y(), cell->getPosition().z());
+            et = hit.encodedEt()/8.;
+            if(et<0.5) continue;
+            e_totGtr500MeVTP++;
+            energy = et / sin(position.theta());
+            eta = cell->getPosition().eta();
+            phi = cell->getPosition().phi();
+            ecal_TP_or_recHit_et->Fill( et );
+            ecal_TP_or_recHit_energy->Fill( energy );
+            ecal_TP_or_recHit_eta->Fill( eta );
+            ecal_TP_or_recHit_phi->Fill( phi );
+
+            // Fill Tree
+            id = hit.id();
+            iEta = id.ieta();
+            iPhi = id.iphi();
+            treeinfo.ecalHit_energy.push_back( energy );
+            treeinfo.ecalHit_et.push_back( et );
+            treeinfo.ecalHit_eta.push_back( eta );
+            treeinfo.ecalHit_phi.push_back( phi );
+            treeinfo.ecalHit_iEta.push_back( iEta );
+            treeinfo.ecalHit_iPhi.push_back( iPhi );
+
+            //if (energy > highestE) {
+            //   highestE = energy;
+            //   highestPhi = phi;
+            //   highestEta = eta;
+            //}
+         }
+      } // ECAL TPs finished
+
+      // Retrive HCAL hits 
+      edm::Handle< edm::SortedCollection<HcalTriggerPrimitiveDigi> > hbhecoll;
+      iEvent.getByToken(hcalTPToken_,hbhecoll);
+      for(auto& hit : *hbhecoll.product())
+      {
+
+         // Get the detId associated with the HCAL TP
+         // if no detIds associated, skip
+         std::vector<HcalDetId> hcId = theTrigTowerGeometry.detIds(hit.id());
+
+         // All HB Hits start with subdetId < 2
+         if (hcId[0].subdetId() > 1) continue;
+
+         // Find the average position of all HB detIds
+         GlobalVector avgVector = GlobalVector(0., 0., 0.);
+         int hc_i = 0;
+         int hb_i = 0;
+         for (auto &hcId_i : hcId) {
+           hc_i++;
+           //std::cout << " ---- " << hc_i << " : " << hcId_i << "  subD: " << hcId_i.subdetId() << std::endl;
+           if (hcId_i.subdetId() > 1) continue;
+           hb_i++;
+           auto cell = hbGeometry->getGeometry(hcId_i);
+           if (cell == 0) continue;
+           GlobalVector tmpVector = GlobalVector(cell->getPosition().x(), cell->getPosition().y(), cell->getPosition().z());
+           avgVector = avgVector + tmpVector;
+           //std::cout << "tmp Vect: " << tmpVector << std::endl;
+           //std::cout << "avg Vect: " << avgVector << std::endl;
+         }
+         avgVector = avgVector/hb_i;
+         //std::cout << "FINAL avg Vect: " << avgVector << std::endl;
+         
+         // We need to cut out the endcap HCAL here before counting raw total
+         eta = avgVector.eta();
+         if (fabs(eta) > 1.5) continue;
+         h_totTP++;
+
+         // SOI_compressedEt() Compressed ET, integer representing increments of 500 MeV
+         // Cut requires 500 MeV TP
+         if ( hit.SOI_compressedEt() == 0 ) continue; // SOI_compressedEt() Compressed ET for the "Sample of Interest"
+         h_totNonZeroTP++;
+
+         phi = avgVector.phi();
+         et = hit.SOI_compressedEt() / 2.;
+         energy = et / sin(avgVector.theta());
+
+         hcal_TP_or_recHit_et->Fill( et );
+         hcal_TP_or_recHit_energy->Fill( energy );
+         hcal_TP_or_recHit_eta->Fill( eta );
+         hcal_TP_or_recHit_phi->Fill( phi );
+
+         // Fill Tree
+         id = hit.id();
+         iEta = id.ieta();
+         iPhi = id.iphi();
+         treeinfo.hcalHit_energy.push_back( energy );
+         treeinfo.hcalHit_et.push_back( et );
+         treeinfo.hcalHit_eta.push_back( eta );
+         treeinfo.hcalHit_phi.push_back( phi );
+         treeinfo.hcalHit_iEta.push_back( iEta );
+         treeinfo.hcalHit_iPhi.push_back( iPhi );
+      } // HCAL finished
+   } // TPs finished
+
 
    // Now fill
    ecal_totalHits->Fill( e_totTP ); 
    ecal_totalNonZeroHits->Fill( e_totNonZeroTP ); 
+   ecal_totalGtr500MeVHits->Fill( e_totGtr500MeVTP ); 
    hcal_totalHits->Fill( h_totTP ); 
    hcal_totalNonZeroHits->Fill( h_totNonZeroTP ); 
 
