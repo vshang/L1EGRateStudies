@@ -21,7 +21,7 @@ process.source = cms.Source("PoolSource",
         'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/06D8737D-022C-E711-B5D6-F04DA275C2FE.root',
         'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/14A61139-042C-E711-856A-7CD30AD0A690.root',
         'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/288BB6A1-112C-E711-B359-848F69FD2958.root',
-        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/28CBAE0D-132C-E711-848C-008CFAF35994.root',
+#        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/28CBAE0D-132C-E711-848C-008CFAF35994.root',
 #        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/28E8BBE6-0F2C-E711-A3F5-848F69FD2940.root',
 #        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/32931840-132C-E711-B50E-848F69FDFC5C.root',
 #        'root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/36609B38-122C-E711-8145-7845C4FC3A1C.root',
@@ -169,20 +169,18 @@ process.load('Configuration.StandardSequences.MagneticField_38T_PostLS1_cff')
 
 process.L1EGammaCrystalsProducer = cms.EDProducer("L1EGCrystalClusterProducer",
    EtminForStore = cms.double(0.),
+   EcalTpEtMin = cms.untracked.double(0.5), # 500 MeV default per each Ecal TP
+   EtMinForSeedHit = cms.untracked.double(1.0), # 1 GeV decault for seed hit
    debug = cms.untracked.bool(False),
    useRecHits = cms.bool(False),
+   doBremClustering = cms.untracked.bool(True), # For non-EG studies
    ecalRecHitEB = cms.InputTag("ecalRecHit","EcalRecHitsEB","RECO"),
-   #ecalTPEB = cms.InputTag("EcalEBTrigPrimProducer","","L1AlgoTest"),
    ecalTPEB = cms.InputTag("simEcalEBTriggerPrimitiveDigis","","HLT"),
-   #hcalRecHit = cms.InputTag("hbhereco") # for testing non-2023 geometry configurations
-   #hcalRecHit = cms.InputTag("hltHbhereco","","L1AlgoTest")
-   #hcalRecHit = cms.InputTag("hltHbhereco")
    hcalRecHit = cms.InputTag("hbhereco"),
-   #hcalRecHit = cms.InputTag("hbheUpgradeReco")
    hcalTP = cms.InputTag("simHcalTriggerPrimitiveDigis","","HLT"),
 
-   #useTowerMap = cms.untracked.bool(False)
-   useTowerMap = cms.untracked.bool(True)
+   useTowerMap = cms.untracked.bool(False)
+   #useTowerMap = cms.untracked.bool(True)
    #towerMapName = cms.untracked.string("map1.json")
 )
 
@@ -224,7 +222,6 @@ process.HitAnalyzer = cms.EDAnalyzer('HitAnalyzer',
    useRecHits = cms.bool(False),
    hasGenInfo = cms.bool(True),
    ecalRecHitEB = cms.InputTag("ecalRecHit","EcalRecHitsEB","RECO"),
-   #ecalTPEB = cms.InputTag("EcalEBTrigPrimProducer","","L1AlgoTest"),
    ecalTPEB = cms.InputTag("simEcalEBTriggerPrimitiveDigis","","HLT"),
    hcalRecHit = cms.InputTag("hbhereco"),
    hcalTP = cms.InputTag("simHcalTriggerPrimitiveDigis","","HLT"),
