@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DATE=20170501v10
+DATE=20170503v1
 
 # Different options
 doHitAnalyzer=true
@@ -10,10 +10,10 @@ doEfficiencies=true
 
 # Signals for Efficiencies and Std Algo Studies
 doElectron=true
-doPhoton=true
-doPiZero=true
-doPion=true
-doTau=true
+#doPhoton=true
+#doPiZero=true
+#doPion=true
+#doTau=true
 
 # Hit Analyzer
 if $doHitAnalyzer; then
