@@ -43,8 +43,7 @@ process.source = cms.Source("PoolSource",
 # ---- Global Tag :
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
-#process.GlobalTag = GlobalTag(process.GlobalTag, 'PH2_1K_FB_V3::All', '')
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '')
 
 # Choose a 2030 geometry!
 # The ones which don't work all replace the ECAL Endcap geometry with HGCal stuff
@@ -59,21 +58,21 @@ process.load('Configuration.StandardSequences.MagneticField_38T_PostLS1_cff')
 # --------------------------------------------------------------------------------------------
 #
 # ----    Produce the ECAL TPs
-
-#process.simEcalEBTriggerPrimitiveDigis = cms.EDProducer("EcalEBTrigPrimProducer",
-process.EcalEBTrigPrimProducer = cms.EDProducer("EcalEBTrigPrimProducer",
-    BarrelOnly = cms.bool(True),
-#    barrelEcalDigis = cms.InputTag("simEcalUnsuppressedDigis","ebDigis"),
-    barrelEcalDigis = cms.InputTag("simEcalDigis","ebDigis"),
-#    barrelEcalDigis = cms.InputTag("selectDigi","selectedEcalEBDigiCollection"),
-    binOfMaximum = cms.int32(6), ## optional from release 200 on, from 1-10
-    TcpOutput = cms.bool(False),
-    Debug = cms.bool(False),
-    Famos = cms.bool(False),
-    nOfSamples = cms.int32(1)
-)
-
-process.pNancy = cms.Path( process.EcalEBTrigPrimProducer )
+#
+##process.simEcalEBTriggerPrimitiveDigis = cms.EDProducer("EcalEBTrigPrimProducer",
+#process.EcalEBTrigPrimProducer = cms.EDProducer("EcalEBTrigPrimProducer",
+#    BarrelOnly = cms.bool(True),
+##    barrelEcalDigis = cms.InputTag("simEcalUnsuppressedDigis","ebDigis"),
+#    barrelEcalDigis = cms.InputTag("simEcalDigis","ebDigis"),
+##    barrelEcalDigis = cms.InputTag("selectDigi","selectedEcalEBDigiCollection"),
+#    binOfMaximum = cms.int32(6), ## optional from release 200 on, from 1-10
+#    TcpOutput = cms.bool(False),
+#    Debug = cms.bool(False),
+#    Famos = cms.bool(False),
+#    nOfSamples = cms.int32(1)
+#)
+#
+#process.pNancy = cms.Path( process.EcalEBTrigPrimProducer )
 
 
 
@@ -121,7 +120,8 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer","L1EGXtalClusterNoCuts"),
    genParticles = cms.InputTag("genParticles"),
    OfflineRecoClustersInputTag = cms.InputTag("correctedHybridSuperClusters"),
-   ecalTPEB = cms.InputTag("EcalEBTrigPrimProducer","","L1AlgoTest"),
+   #ecalTPEB = cms.InputTag("EcalEBTrigPrimProducer","","L1AlgoTest"),
+   ecalTPEB = cms.InputTag("simEcalEBTriggerPrimitiveDigis","","HLT"),
    doEfficiencyCalc = cms.untracked.bool(True),
    useOfflineClusters = cms.untracked.bool(False),
    useEndcap = cms.untracked.bool(False),
