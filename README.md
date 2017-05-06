@@ -16,6 +16,7 @@ cd CMSSW_9_0_0_pre6/src/
 cmsenv
 git cms-init
 
+git cms-merge-topic cms-l1t-offline:phase2-l1t-integration-CMSSW_9_0_0_pre6
 git cms-merge-topic truggles:phase2-l1eg-900pre6
 
 pushd L1Trigger/
