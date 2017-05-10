@@ -15,6 +15,10 @@ rateFile = ROOT.TFile( 'egTriggerRates.root', 'r' )
 eTree = effFile.Get("analyzer/crystal_tree")
 rTree = rateFile.Get("analyzer/crystal_tree")
 
+def addText( xPos, yPos, cName ) :
+    cutName = ROOT.TText(xPos, yPos, cName)
+    cutName.SetTextSize(0.03)
+    cutName.DrawTextNDC(xPos, yPos, cName )
 
 def tryCut( etree, rtree, var, cut, preCut="", verbose=True ) :
     if verbose :
@@ -65,12 +69,12 @@ def makeRatePlot( rateFile, tree, name, cut='', rateLimit=50, var='cluster_pt' )
     
     # Normalize to 30 MHz
     nEvents = rateFile.Get("analyzer/eventCount").GetBinContent(1)
-    #print "n events scanned %i,   events in tree %i" % (nEvents, tree.GetEntries())
+    print "n events scanned %i,   events in tree %i" % (nEvents, tree.GetEntries())
     factor = 30000. / nEvents
-    #print "factor",factor
+    print "factor",factor
     #factor = 30000. / tree.GetEntries()
     h2.Scale( factor )
-    #print "Bin cont bin 1",h2.GetBinContent(1)
+    print name,"Bin cont bin 1",h2.GetBinContent(1)
     h2.SetMarkerSize(0)
     h2.SetLineWidth(2)
     
@@ -90,13 +94,16 @@ def plotRateHists( name, hists=[] ) :
     c.SetGrid()
     if len(hists) > 5 : yStart = 0.60
     else : yStart = 0.78
-    leg = setLegStyle(0.53,yStart,0.95,0.92)
+    #leg = setLegStyle(0.53,yStart,0.95,0.92)
+    leg = setLegStyle(0.4,.65,0.95,0.92)
     leg.SetFillStyle(1001)
     leg.SetFillColor(ROOT.kWhite)
 
     max_ = 0.
+    min_ = 1000.
     for i, h in enumerate(hists) :
         if h.GetBinContent(1) > max_ : max_ = h.GetBinContent(1)
+        if h.GetBinContent( h.GetXaxis().GetNbins() ) < min_ : min_ = h.GetBinContent( h.GetXaxis().GetNbins() )
         h.SetLineColor( colors[i] )
         h.SetLineWidth( 2 )
         h.Draw('SAME')
@@ -105,7 +112,10 @@ def plotRateHists( name, hists=[] ) :
     # Redraw RCT on top
     hists[0].Draw('SAME')
     print "max",max_
+    print "min",min_
     hists[0].SetMaximum( max_ * 2. )
+    #hists[0].SetMinimum( min_ * 2. )
+    hists[0].SetMinimum( 1. )
     leg.Draw("same")
     cms = drawCMSString("CMS Simulation, <PU>=140 bx=25, Minimum-Bias")
     c.Update()
@@ -147,7 +157,8 @@ def plotEffHists( name, graphs=[], nCol = 1 ) :
     c = ROOT.TCanvas('c','c',canvasSize,canvasSize)
     c.SetTitle( name )
     c.SetGrid()
-    leg = setLegStyle(0.4,0.78,0.95,0.92)
+    xStart = 0.4 if nCol < 3 else 0.25
+    leg = setLegStyle(xStart,0.78,0.95,0.92)
     leg.SetNColumns(nCol)
     leg.SetFillStyle(1001)
     leg.SetFillColor(ROOT.kWhite)
@@ -155,36 +166,50 @@ def plotEffHists( name, graphs=[], nCol = 1 ) :
 
     mg = ROOT.TMultiGraph("mg", c.GetTitle())
     for i, g in enumerate(graphs) :
-        g.SetLineColor( colors[int(math.floor(i/2.))] )
+        g.SetLineColor( colors[int(math.floor(i/float(nCol)))] )
+        g.SetMarkerColor( colors[int(math.floor(i/float(nCol)))] )
         g.SetMarkerStyle(20)
-        if i%2==0: g.SetLineStyle(2)
+        if i%nCol==0: g.SetLineStyle(2)
+        elif nCol == 3 and i%nCol==1 : g.SetLineStyle(9)
         else: g.SetLineStyle(1)
-        g.SetMarkerColor( colors[int(math.floor(i/2.))] )
         mg.Add( g )
         leg.AddEntry(g, g.GetTitle(),"lpe")
 
     mg.Draw("aplez")
     mg.GetXaxis().SetTitle("Gen P_{T}")
     mg.GetYaxis().SetTitle( graphs[0].GetYaxis().GetTitle() )
-    mg.SetMaximum( 1.3 )
+    mg.SetMaximum( 1.4 )
     leg.Draw("same")
-    cms = drawCMSString("CMS Simulation, <PU>=140 bx=25, Single Electron")
+    cms = drawCMSString("CMS Simulation, <PU>=140 bx=25, L1EG Crystal Algo.")
+
+    # Add name of cut
+    xPos = .2
+    yPos = .735
+    addText( xPos, yPos, "Phase-2 L1EG Cut: "+name.replace('_',' ') )
+
     c.Update()
-    c.Print('plotsOpt/effs_'+name+'.png')    
+    c.Print('plotsOpt/effs_'+name.replace(' ','_')+'.png')    
     del c
 
 
-def makeComparisons( Cut, name, trkDetails=False, changeDenom=["",""], var='cluster_pt' ) :
+def makeComparisons( Cut, name, trkDetails=False, changeDenom=["",""], var='cluster_pt', doPhoton=False ) :
     oldRateFile = ROOT.TFile('egTriggerRates.root','r')
-    oldRateTrackFile = ROOT.TFile('egTriggerRateTracks.root','r')
+    if trkDetails :
+        oldRateTrackFile = ROOT.TFile('egTriggerRateTracks.root','r')
     oldRateTree = oldRateFile.Get('analyzer/crystal_tree')
+    if doPhoton :
+        oldPhoEffFile = ROOT.TFile('egTriggerPhoEff.root','r')
+        oldPhoEffTree = oldPhoEffFile.Get('analyzer/crystal_tree')
+        makeNewCutTrees( 'egTriggerPhoEff.root', 'effPhoTree.root', Cut )
+        effPhoFile = ROOT.TFile( 'effPhoTree.root', 'r' )
+        ePhoTree = effPhoFile.Get("events")
     oldEffFile = ROOT.TFile('egTriggerEff.root','r')
     oldEffTree = oldEffFile.Get('analyzer/crystal_tree')
     # With the porposed cut, make a new cut tree, then sort
     # to ensure that only 1 cluster per event
     makeNewCutTrees( 'egTriggerEff.root', 'effTree.root', Cut )
     makeNewCutTrees( 'egTriggerRates.root', 'rateTree.root', Cut )
-    makeNewCutTrees( 'egTriggerRateTracks.root', 'rateTreeTracks.root', 'trackPt > 10' )
+    makeNewCutTrees( 'egTriggerRates.root', 'rateTreeTracks.root', 'trackPt > 10' )
     effFile = ROOT.TFile( 'effTree.root', 'r' )
     eTree = effFile.Get("events")
     newRateFile = ROOT.TFile('rateTree.root','r')
@@ -206,18 +231,23 @@ def makeComparisons( Cut, name, trkDetails=False, changeDenom=["",""], var='clus
         rTracks10egIso = makeRatePlot( oldRateFile, oldRateTree, "Iso tracks p_{T}>10 GeV - EG Matched", "trackPt>10 &&"+trackIso2 )
         rTracks15egIso = makeRatePlot( oldRateFile, oldRateTree, "Iso tracks p_{T}>15 GeV - EG Matched", "trackPt>15 &&"+trackIso2 )
     if var != 'cluster_pt' :
+        #r5adj = makeRatePlot( oldRateFile, rTree, name, Cut, 50, var )
+        #r5_20adj = makeRatePlot( oldRateFile, rTree, name+" p_{T}>20", Cut+pt20, 50, var )
+        #r5_30adj = makeRatePlot( oldRateFile, rTree, name+" p_{T}>30", Cut+pt30, 50, var )
         r5adj = makeRatePlot( oldRateFile, rTree, name+" ptAdj", Cut, 50, var )
         r5_20adj = makeRatePlot( oldRateFile, rTree, name+" p_{T}>20 ptAdj", Cut+pt20, 50, var )
         r5_30adj = makeRatePlot( oldRateFile, rTree, name+" p_{T}>30 ptAdj", Cut+pt30, 50, var )
     rTracks10eg = makeRatePlot( oldRateFile, oldRateTree, "tracks p_{T}>10 GeV - EG Matched", "trackPt>10" )
     rTracks15eg = makeRatePlot( oldRateFile, oldRateTree, "tracks p_{T}>15 GeV - EG Matched", "trackPt>15" )
     noCuts = makeRatePlot( oldRateFile, oldRateTree, "Raw Rate - No Cuts", "" )
-    r5 = makeRatePlot( oldRateFile, rTree, name, Cut )
-    #r5_16 = makeRatePlot( oldRateFile, rTree, name+"_16", Cut+pt16 )
-    r5_20 = makeRatePlot( oldRateFile, rTree, name+" p_{T}>20", Cut+pt20 )
-    r5_30 = makeRatePlot( oldRateFile, rTree, name+" p_{T}>30", Cut+pt30 )
+    
+    #xMax = 50 if not doPhoton else 75
+    xMax = 50
+    r5 = makeRatePlot( oldRateFile, rTree, name, Cut, xMax )
+    r5_20 = makeRatePlot( oldRateFile, rTree, name+" p_{T}>20", Cut+pt20, xMax )
+    r5_30 = makeRatePlot( oldRateFile, rTree, name+" p_{T}>30", Cut+pt30, xMax )
     rTDR = oldRateFile.Get('analyzer/l1extraParticlesUCT:All_rate')
-    rTDR.SetTitle('Stage 1')
+    rTDR.SetTitle('Stage 1 Level 1 Trigger - 2015')
     if trkDetails and changeDenom == ["",""] :
         plotRateHists(  name+"_track_details", [noCuts, rTracks10, rTracks15, rTracks10eg, rTracks15eg] )
         plotRateHists(  name+"_track_details_iso", [noCuts, rTracks10, rTracks15, rTracks10eg, rTracks15eg, rTracks10Iso, rTracks15Iso, rTracks10egIso, rTracks15egIso] )
@@ -237,33 +267,45 @@ def makeComparisons( Cut, name, trkDetails=False, changeDenom=["",""], var='clus
         preCut = changeDenom[0]
         yEffLabel = changeDenom[1]
         saveName = name+"_modDenom"
-    e5 = makeEffPlot( eTree, oldEffTree, name, Cut, preCut, yEffLabel )
-    #e5_16 = makeEffPlot( eTree, oldEffTree, name+"_16", Cut+pt16, preCut, yEffLabel )
-    e5_20 = makeEffPlot( eTree, oldEffTree, name+" p_{T}>20", Cut+pt20, preCut, yEffLabel )
-    e5_30 = makeEffPlot( eTree, oldEffTree, name+" p_{T}>30", Cut+pt30, preCut, yEffLabel )
+    e5 = makeEffPlot( eTree, oldEffTree, "Phase-2 Electron: All", Cut, preCut, yEffLabel, xMax )
+    e5_20 = makeEffPlot( eTree, oldEffTree, "Phase-2 Electron: p_{T}>20", Cut+pt20, preCut, yEffLabel, xMax )
+    e5_30 = makeEffPlot( eTree, oldEffTree, "Phase-2 Electron: p_{T}>30", Cut+pt30, preCut, yEffLabel, xMax )
+    if doPhoton :
+        e5Pho = makeEffPlot( ePhoTree, oldPhoEffTree, "Phase-2 Photon: All", Cut, preCut, yEffLabel, xMax )
+        e5_20Pho = makeEffPlot( ePhoTree, oldPhoEffTree, "Phase-2 Photon: p_{T}>20", Cut+pt20, preCut, yEffLabel, xMax )
+        e5_30Pho = makeEffPlot( ePhoTree, oldPhoEffTree, "Phase-2 Photon: p_{T}>30", Cut+pt30, preCut, yEffLabel, xMax )
     neum = oldEffFile.Get('analyzer/l1extraParticlesUCT:All_efficiency_pt')
-    #neum16 = oldEffFile.Get('analyzer/l1extraParticlesUCT:All_threshold16_efficiency_gen_pt')
     neum20 = oldEffFile.Get('analyzer/l1extraParticlesUCT:All_threshold20_efficiency_gen_pt')
     neum30 = oldEffFile.Get('analyzer/l1extraParticlesUCT:All_threshold30_efficiency_gen_pt')
-    denom = oldEffFile.Get('analyzer/gen_pt')
-    # Bin width currently set at .83333 in these hists...
-    #for h in [denom, neum, neum16, neum20, neum30] :
-    for h in [denom, neum, neum20, neum30] :
-        h.Rebin(6) 
+    ###denom = oldEffFile.Get('analyzer/gen_pt')
+    denom = ROOT.TH1F('denomX', 'denomX',int(xMax/5),0,xMax)
+    oldEffTree.Draw('denom_pt >> denomX')
+
+    for h in [neum, neum20, neum30] :
+        h.Rebin(5) 
+    nBins = denom.GetXaxis().GetNbins()
+    for bin in range( 0, nBins+2 ) :
+        if denom.GetBinContent(bin) < neum.GetBinContent(bin) :
+            denom.SetBinContent(bin, neum.GetBinContent(bin) ) # FIXME
+            print " --- Bin: %i    Neum: %.2f    Denom %.2f" % (bin, neum.GetBinContent(bin), denom.GetBinContent(bin))
+
+
+
     eTDRall = ROOT.TGraphAsymmErrors( neum, denom )
-    #eTDR16 = ROOT.TGraphAsymmErrors( neum16, denom )
     eTDR20 = ROOT.TGraphAsymmErrors( neum20, denom )
     eTDR30 = ROOT.TGraphAsymmErrors( neum30, denom )
-    eTDRall.SetTitle('Stage 1: all')
-    #eTDR16.SetTitle('Stage 1: pt 16')
+    eTDRall.SetTitle('Stage 1: All')
     eTDR20.SetTitle('Stage 1: p_{T}>20')
     eTDR30.SetTitle('Stage 1: p_{T}>30')
-    #graphs = [eTDRall, e5, eTDR16, e5_16, eTDR20, e5_20, eTDR30, e5_30] 
-    graphs = [eTDRall, e5, eTDR20, e5_20, eTDR30, e5_30] 
+    if doPhoton :
+        graphs = [eTDRall, e5, e5Pho, eTDR20, e5_20, e5_20Pho, eTDR30, e5_30, e5_30Pho] 
+        nLegendCol = 3
+    else :
+        graphs = [eTDRall, e5, eTDR20, e5_20, eTDR30, e5_30] 
+        nLegendCol = 2
     for graph in graphs :
         graph.GetYaxis().SetTitle(yEffLabel)
-    #plotEffHists(  name+"_turnons16_20_30", [eTDRall, e5, eTDR16, e5_16, eTDR20, e5_20, eTDR30, e5_30], 2 )
-    plotEffHists(  saveName+"_turnons16_20_30", graphs, 2 )
+    plotEffHists(  saveName, graphs, nLegendCol )
 
 
 def findPercentage( cnt, tree, var, targetPercent=0.99, cut="", startNeg=True, xRange=[0.,0.] ) :
@@ -357,6 +399,8 @@ def makeCutROC( name, eTree, rTree, var, rocAry, prevCut, baseCut='', text='') :
     rTree.Draw( var, baseCut )
     hR = gPad.GetPrimitive( "htemp" )
     bkgInit = hR.Integral()
+    print "Signal Integral Inital:",sigInit
+    print "Bkg Integral Inital:",bkgInit
 
     # For storing our values as we check the cuts
     sigVals = array('d', [])
@@ -371,13 +415,12 @@ def makeCutROC( name, eTree, rTree, var, rocAry, prevCut, baseCut='', text='') :
     h2 = ROOT.TH1F('h2','h2',rocAry[0],rocAry[1],rocAry[2])
     rTree.Draw( var + ' >> h2', prevCut )
 
-    #for b in range( 1, h1.GetNbinsX()+1 ) :
-    for b in range( 0, h1.GetNbinsX() ) :
+    for b in range( 1, h1.GetNbinsX()+1 ) :
         paramVals.append( h1.GetXaxis().GetBinCenter( b ) )
         eInt = h1.Integral( 0, b )
         rInt = h2.Integral( 0, b )
-        #if b < 10 :
-        #    print "Eff: %f    Rate: %f" % (eInt,rInt)
+        if b % 50 == 0 or (b < 100 and b % 5 == 0) :
+            print "Bin: %i  Eff: %f    Rate: %f" % (b, eInt,rInt)
         sigVals.append( eInt / sigInit )
         bkgVals.append( 1. - rInt / bkgInit )
         if abs( sigVals[-1] - .9 ) < 0.001 :
@@ -526,12 +569,40 @@ if __name__ == '__main__' :
     tdrstyle.setTDRStyle()
     c = ROOT.TCanvas('c','c',canvasSize,canvasSize)
     showerShapes = "(-0.921128 + 0.180511*TMath::Exp(-0.0400725*cluster_pt)>(-1)*(e2x5/e5x5))"
+    showerShapesB = "(-0.998511 + -8.16648e-05*TMath::Exp(-0.210906*cluster_pt)>(-1)*(e2x5b/e5x5b))"
+    showerShapesC = "((-0.98 >(-1)*(e2x5/e5x5) || cluster_pt >35 ))"
+    IsolationB = "((0.42128 + -1.48187*TMath::Exp(-0.234355*cluster_pt))>cluster_isoGtr2)"
+    IsolationC = "((0.472785 + -8.17373*TMath::Exp(-0.821266*cluster_pt))>cluster_iso)"
+    ### These below are with ~99% efficiency at plateau
     Isolation = "((0.990748 + 5.64259*TMath::Exp(-0.0613952*cluster_pt))>cluster_iso)"
+    Isolation1 = "((-15.2726 + 15.9463*TMath::Exp(-0.000282339*cluster_pt))>cluster_isoGtr1)"
+    Isolation2 = "((0.42128 + -1.48187*TMath::Exp(-0.234355*cluster_pt))>cluster_isoGtr2)"
+    Isolation500 = "((0.562669 + 2.01266*TMath::Exp(-0.0559235*cluster_pt))>cluster_isoGtr500)"
+    IsolationX = "((0.617738 + 2.00979*TMath::Exp(-0.056631*cluster_pt))>((cluster_iso*corePt-ecalPUtoPt*0.496)/corePt))"
+    IsolationLobe = "((0.658715 + 1.9467*TMath::Exp(-0.0415617*cluster_pt))>((cluster_iso*corePt-(corePt*.1 < lslPt ? ecalPUtoPt-lslPt : (corePt*.1 < uslPt ? ecalPUtoPt-uslPt : ecalPUtoPt ) )*0.496)/corePt))"
+    ### Aiming for ~95% eff at plateau
+    #Isolation = "((0.884288 + 5.24376*TMath::Exp(-0.0838355*cluster_pt))>cluster_iso)"
+    #Isolation500 = "((0.369795 + 1.66704*TMath::Exp(-0.0738599*cluster_pt))>cluster_isoGtr500)"
+    #Isolation1 = "((-8.98409 + 9.35278*TMath::Exp(-0.000348177*cluster_pt))>cluster_isoGtr1)"
+    #Isolation2 = "((0.191302 + -0.351645*TMath::Exp(-0.116907*cluster_pt))>cluster_isoGtr2)"
+    #IsolationX = "((0.409748 + 1.52035*TMath::Exp(-0.0661331*cluster_pt))>((cluster_iso*corePt-ecalPUtoPt*0.496)/corePt))"
+
     tkIsoMatched = "((0.106544 + 0.00316748*cluster_pt)>(trackIsoConePtSum/trackPt))"
 
     cut_none = ""
     cut_ss = showerShapes
     cut_ss_cIso = showerShapes+"*"+Isolation
+    cut_ss_cIsoB = showerShapesB+"*"+IsolationB
+    cut_ss_cIsoC = showerShapesC+"*"+IsolationC
+    cut_ss_cIso1 = showerShapes+"*"+Isolation1
+    cut_ss_cIso2 = showerShapes+"*"+Isolation2
+    cut_ss_cIso500 = showerShapes+"*"+Isolation500
+    cut_ss_cIsoX = showerShapes+"*"+IsolationX
+    cut_ss_cIsoLobe = showerShapes+"*"+IsolationLobe
+    #cut_ss_cIso1 = Isolation1
+    #cut_ss_cIso2 = Isolation2
+    #cut_ss_cIso500 = Isolation500
+    #cut_ss_cIsoX = IsolationX
     cut_ss_cIso_tkNoM = cut_ss_cIso+"*(trackDeltaR>0.1)"
     cut_ss_cIso_tkM = cut_ss_cIso+"*(trackDeltaR<0.1)"
     cut_ss_cIso_tkM_tkIso = cut_ss_cIso_tkM+"*"+tkIsoMatched
@@ -546,6 +617,19 @@ if __name__ == '__main__' :
     rebase30 = "(cluster_pt>30)"
     rebaseAll = cut_ss_cIso
 
+    # Below cuts are for 500 MeV energy recHit cut
+    ss500 = "(-0.905265 + 0.0409635*TMath::Exp(-0.165703*cluster_pt)>(-1)*(e2x5/e5x5))"
+    iso500 = "((0.983083 + 3.32699*TMath::Exp(-0.0840977*cluster_pt))>cluster_iso)"
+    cut_ss_cIso500 = ss500+"*"+iso500
+    ss502 = "(-0.912155 + -0.0362738*TMath::Exp(-0.0482866*cluster_pt)>(-1)*(e2x5/e5x5))"
+    iso502 = "((0.836744 + 2.60678*TMath::Exp(-0.115636*cluster_pt))>cluster_iso)"
+    cut_ss_cIso502 = ss502+"*"+iso502
+    makeComparisons( cut_ss_cIso502, "e2x5OverE5x5 Iso", False, ["",""], 'cluster_pt' )
+    # Very aggressive in lower pt region below
+    ss5002 = "(-0.91957 + -0.0233851*TMath::Exp(-0.0305597*cluster_pt)>(-1)*(e2x5/e5x5))"
+    iso5002 = "((0.602232 + 2.78939*TMath::Exp(-0.0985843*cluster_pt))>cluster_iso)"
+    cut_ss_cIso5002 = ss5002+"*"+iso500
+    #makeComparisons( cut_ss_cIso5002, "e2x5OverE5x5 Iso", False, ["",""], 'cluster_pt' )
     #makeCutROC( "testDRCuts_ss_cIso", eTree, rTree, "trackDeltaR", rocAry, cut_ss_cIso, cut_none, textR )
     #makeCutROC( "testDPhiCuts_ss_cIso", eTree, rTree, "abs(trackDeltaPhi)", rocAry, cut_ss_cIso, cut_none, textPhi )
     #makeCutROC( "testDEtaCuts_ss_cIso", eTree, rTree, "abs(trackDeltaEta)", rocAry, cut_ss_cIso, cut_none, textEta )
@@ -562,7 +646,9 @@ if __name__ == '__main__' :
 
     ptRes = "(abs(((cluster_pt - trackPt) / cluster_pt )) < .5)"
     #makeCutROC( "testDRCutsBaselineCuts20_ss_cIso", eTree, rTree, "trackDeltaR", rocAry, cut_ss_cIso+"*"+rebase20, rebaseAll+"*"+rebase20, textR )
-    makeCutROC( "testDRCutsBaselineCuts20PtMatch_ss_cIso", eTree, rTree, "trackDeltaR", rocAry, cut_ss_cIso+"*"+rebase20+"*"+ptRes, rebaseAll+"*"+rebase20+"*"+ptRes, textR )
+#XXX    makeCutROC( "testDRCutsBaselineCuts20PtMatch_ss_cIso", eTree, rTree, "trackDeltaR", rocAry, cut_ss_cIso+"*"+rebase20+"*"+ptRes, rebaseAll+"*"+rebase20+"*"+ptRes, textR )
+#XXX    makeCutROC( "testDRCutsBaselineCuts20PtMatch_ss_cIsoC", eTree, rTree, "trackDeltaR", rocAry, cut_ss_cIsoC+"*"+rebase20+"*"+ptRes, rebaseAll+"*"+rebase20+"*"+ptRes, textR )
+    #XXX makeCutROC( "testDRCutsBaselineCuts20PtMatch_ss_cIsoB", eTree, rTree, "trackDeltaR", rocAry, cut_ss_cIsoB+"*"+rebase20+"*"+ptRes, rebaseAll+"*"+rebase20+"*"+ptRes, textR )
 
     #makeCutROC( "testDRCutsBaselineCuts20_ss_cIso", eTree, rTree, "trackDeltaR", rocAry, cut_ss_cIso, rebaseAll+"*"+rebase20, textR )
     #makeCutROC( "testDEtaCutsBaselineCuts20_ss_cIso", eTree, rTree, "abs(trackDeltaEta)", rocAry, cut_ss_cIso, rebaseAll+"*"+rebase20, textEta )
@@ -586,14 +672,23 @@ if __name__ == '__main__' :
 
     makeSet = False
     if makeSet :
-        makeComparisons( "(1)", "No_Cuts", True )
-        makeComparisons( cut_ss, "e2x5OverE5x5", False, ["",""], 'crystal_pt_to_RCT2015' )
-        makeComparisons( cut_ss_cIso, "e2x5OverE5x5 Iso", False, ["",""], 'crystal_pt_to_RCT2015' )
-        makeComparisons( cut_ss_cIso_tkM, "e2x5OverE5x5 Iso TkMatch", False, [tkMatched, "L1Tk Match #DeltaR<0.1, Eff. (L1/Gen)"] )
-        makeComparisons( cut_ss_cIso_tkM, "e2x5OverE5x5 Iso TkMatch", False, ["",""], 'crystal_pt_to_RCT2015' )
-        #tryCut( eTree, rTree, "cluster_pt", cutMatch, previousCut)
-        makeComparisons( cut_ss_cIso_tkM_tkIso, "e2x5OverE5x5 Iso TkMatch TkIso", False, [tkMatched, "L1Tk Match #DeltaR<0.1, Eff. (L1/Gen)"] )
-        makeComparisons( cut_ss_cIso_tkM_tkIso, "e2x5OverE5x5 Iso TkMatch TkIso", False, ["",""], 'crystal_pt_to_RCT2015'  )
+   #     makeComparisons( "(1)", "No_Cuts", True )
+   #     makeComparisons( "(passed>0)", "Passed", True )
+   #     makeComparisons( cut_ss, "e2x5OverE5x5", False, ["",""], 'crystal_pt_to_RCT2015' )
+   #     makeComparisons( cut_ss_cIso, "e2x5OverE5x5 Iso", False, ["",""], 'crystal_pt_to_RCT2015' )
+        makeComparisons( cut_ss_cIso, "e2x5OverE5x5 Iso", False, ["",""], 'cluster_pt' )
+        #XXX makeComparisons( cut_ss_cIsoB, "e2x5OverE5x5 Iso B", False, ["",""], 'cluster_pt' )
+        makeComparisons( cut_ss_cIso1, "e2x5OverE5x5 Iso 1 GeV", False, ["",""], 'cluster_pt' )
+        makeComparisons( cut_ss_cIso2, "e2x5OverE5x5 Iso 2 GeV", False, ["",""], 'cluster_pt' )
+        makeComparisons( cut_ss_cIso500, "e2x5OverE5x5 Iso 500 MeV", False, ["",""], 'cluster_pt' )
+        makeComparisons( cut_ss_cIsoX, "e2x5OverE5x5 Iso PU Corr", False, ["",""], 'cluster_pt' )
+        makeComparisons( cut_ss_cIsoLobe, "e2x5OverE5x5 Iso PU Corr Brem Sub", False, ["",""], 'cluster_pt' )
+   #     makeComparisons( cut_ss_cIso_tkM, "e2x5OverE5x5 Iso TkMatch", False, [tkMatched, "L1Tk Match #DeltaR<0.1, Eff. (L1/Gen)"] )
+   #     makeComparisons( cut_ss_cIso_tkM, "e2x5OverE5x5 Iso TkMatch", False, ["",""], 'crystal_pt_to_RCT2015' )
+   #     #tryCut( eTree, rTree, "cluster_pt", cutMatch, previousCut)
+   #     makeComparisons( cut_ss_cIso_tkM_tkIso, "e2x5OverE5x5 Iso TkMatch TkIso", False, [tkMatched, "L1Tk Match #DeltaR<0.1, Eff. (L1/Gen)"] )
+   #     makeComparisons( cut_ss_cIso_tkM_tkIso, "SLHC Level 1 EGamma Crystal Based Algo.", False, ["",""], 'crystal_pt_to_RCT2015'  )
+#XXX        makeComparisons( cut_ss_cIso_tkM_tkIso, "SLHC Level 1 EGamma Crystal Based Algo.", False, ["",""], 'cluster_pt'  )
 
         #tryCut( eTree, rTree, "cluster_pt", cut_ss, cut_none)
         #tryCut( eTree, rTree, "cluster_pt", showerShapes2, "")
