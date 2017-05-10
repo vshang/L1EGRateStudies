@@ -1,8 +1,8 @@
 
-DATE=20170503v1
+DATE=20170508v3
 
 # Different options
-doHitAnalyzer=false
+doHitAnalyzer=true
 doRates=true
 doEfficiencies=true
 

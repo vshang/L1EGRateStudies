@@ -1,19 +1,27 @@
 #!/bin/bash
 
-DATE=20170503v1
+DATE=20170508v3
 
 # Different options
 doHitAnalyzer=true
+#doHitAnalyzer=false
 doRates=true
+#doRates=false
 doEfficiencies=true
+#doEfficiencies=false
 
 
 # Signals for Efficiencies and Std Algo Studies
 doElectron=true
-#doPhoton=true
-#doPiZero=true
-#doPion=true
-#doTau=true
+doPhoton=true
+doPiZero=true
+doPion=true
+doTau=true
+doElectron=false
+#doPhoton=false
+#doPiZero=false
+#doPion=false
+#doTau=false
 
 # Hit Analyzer
 if $doHitAnalyzer; then
