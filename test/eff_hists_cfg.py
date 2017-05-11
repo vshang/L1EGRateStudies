@@ -126,9 +126,9 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    L1TrackPrimaryVertexTag = cms.InputTag("L1TkPrimaryVertex"),
    doEfficiencyCalc = cms.untracked.bool(True),
    useOfflineClusters = cms.untracked.bool(False),
-   useEndcap = cms.untracked.bool(False),
+   useEndcap = cms.untracked.bool(True),
    turnOnThresholds = cms.untracked.vint32(20, 30, 16),
-   histogramBinCount = cms.untracked.int32(60),
+   histogramBinCount = cms.untracked.int32(50),
    histogramRangeLow = cms.untracked.double(0),
    histogramRangeHigh = cms.untracked.double(50),
    histogramEtaBinCount = cms.untracked.int32(20),
@@ -136,9 +136,10 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    genMatchRelPtcut = cms.untracked.double(0.5)
 )
 
-process.load("SLHCUpgradeSimulations.L1EGRateStudies.L1EGCrystalsHeatMap_cff")
-process.L1EGCrystalsHeatMap.saveAllClusters = cms.untracked.bool(True)
-process.panalyzer = cms.Path(process.analyzer+process.L1EGCrystalsHeatMap)
+#process.load("SLHCUpgradeSimulations.L1EGRateStudies.L1EGCrystalsHeatMap_cff")
+#process.L1EGCrystalsHeatMap.saveAllClusters = cms.untracked.bool(True)
+#process.panalyzer = cms.Path(process.analyzer+process.L1EGCrystalsHeatMap)
+process.panalyzer = cms.Path(process.analyzer)
 
 process.TFileService = cms.Service("TFileService", 
    fileName = cms.string("$outputFileName"), 

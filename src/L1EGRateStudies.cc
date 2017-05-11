@@ -170,6 +170,9 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float isoGtr1;
          float isoGtr2;
          float bremStrength;
+         float e1x1;
+         float e2x1;
+         float e1x2;
          float e2x2;
          float e2x3;
          float e2x5;
@@ -398,6 +401,9 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("cluster_isoGtr1", &treeinfo.isoGtr1);
    crystal_tree->Branch("cluster_isoGtr2", &treeinfo.isoGtr2);
    crystal_tree->Branch("bremStrength", &treeinfo.bremStrength);
+   crystal_tree->Branch("e1x1", &treeinfo.e1x1);
+   crystal_tree->Branch("e2x1", &treeinfo.e2x1);
+   crystal_tree->Branch("e1x2", &treeinfo.e1x2);
    crystal_tree->Branch("e2x2", &treeinfo.e2x2);
    crystal_tree->Branch("e2x3", &treeinfo.e2x3);
    crystal_tree->Branch("e2x5", &treeinfo.e2x5);
@@ -711,7 +717,8 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          treeinfo.endcap = true;
       else
          treeinfo.endcap = false;
-      efficiency_denominator_eta_hist->Fill(trueElectron.eta());
+      if(trueElectron.pt() > 10) {
+        efficiency_denominator_eta_hist->Fill(trueElectron.eta());}
       if ( offlineRecoFound ) {
          treeinfo.reco_pt = reco_electron_pt;
          treeinfo.reco_eta = reco_electron_eta;
@@ -750,7 +757,8 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                if ( cluster_passes_cuts(cluster) )
                {
                   dyncrystal_efficiency_hist->Fill(trueElectron.pt());
-                  dyncrystal_efficiency_eta_hist->Fill(trueElectron.eta());
+                  if (trueElectron.pt() > 10) {
+                    dyncrystal_efficiency_eta_hist->Fill(trueElectron.eta());}
                   if ( offlineRecoFound )
                   {
                      for(auto& pair : dyncrystal_efficiency_reco_hists)
@@ -984,6 +992,9 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
    treeinfo.isoGtr1 = cluster.GetExperimentalParam("ECalIsolationGrt1");
    treeinfo.isoGtr2 = cluster.GetExperimentalParam("ECalIsolationGrt2");
    treeinfo.bremStrength = cluster.bremStrength();
+   treeinfo.e1x1 = cluster.GetExperimentalParam("E1x1");
+   treeinfo.e2x1 = cluster.GetExperimentalParam("E2x1");
+   treeinfo.e1x2 = cluster.GetExperimentalParam("E1x2");
    treeinfo.e2x2 = cluster.GetExperimentalParam("E2x2");
    treeinfo.e2x3 = cluster.GetExperimentalParam("E2x3");
    treeinfo.e2x5 = cluster.GetExperimentalParam("E2x5");
@@ -1009,24 +1020,24 @@ L1EGRateStudies::cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster) 
    // The following cut is based off of what was shown in the Phase-2 meeting
    // 23 June 2016.  Only the barrel is considered.  And track isolation
    // is not included.
-   if ( fabs(cluster.eta()) < 1.479 )
-   {
-      std::cout << "Starting passing check" << std::endl;
-      float cluster_pt = cluster.pt();
-      float clusterE2x5 = cluster.GetExperimentalParam("E2x5");
-      float clusterE5x5 = cluster.GetExperimentalParam("E5x5");
-      float cluster_iso = cluster.isolation();
-      bool passIso = false;
-      bool passShowerShape = false;
-      
-      if ( ( -0.92 + 0.18 * TMath::Exp( -0.04 * cluster_pt ) < (clusterE2x5 / clusterE5x5)) ) {
-	  passShowerShape = true; }
-      if ( (( 0.99 + 5.6 * TMath::Exp( -0.061 * cluster_pt )) > cluster_iso ) ) {
-          passIso = true; }
-      if ( passShowerShape && passIso ) {
-          std::cout << " --- Passed!" << std::endl;
-	  return true; }
-   }
+//   if ( fabs(cluster.eta()) < 1.479 )
+//   {
+   //std::cout << "Starting passing check" << std::endl;
+   float cluster_pt = cluster.pt();
+   float clusterE2x5 = cluster.GetExperimentalParam("E2x5");
+   float clusterE5x5 = cluster.GetExperimentalParam("E5x5");
+   float cluster_iso = cluster.isolation();
+   bool passIso = false;
+   bool passShowerShape = false;
+   
+   if ( ( -0.92 + 0.18 * TMath::Exp( -0.04 * cluster_pt ) < (clusterE2x5 / clusterE5x5)) ) {
+   passShowerShape = true; }
+   if ( (( 0.99 + 5.6 * TMath::Exp( -0.061 * cluster_pt )) > cluster_iso ) ) {
+       passIso = true; }
+   if ( passShowerShape && passIso ) {
+       //std::cout << " --- Passed!" << std::endl;
+       return true; }
+//   }
    return false;
 }
 
