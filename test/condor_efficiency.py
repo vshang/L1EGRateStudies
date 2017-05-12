@@ -21,7 +21,7 @@ process.source = cms.Source("PoolSource",
 # ---- Global Tag :
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, '90X_upgrade2023_realistic_v9', '')
 
 # Choose a 2030 geometry!
 process.load('Configuration.Geometry.GeometryExtended2023D4Reco_cff')
@@ -100,7 +100,7 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    histogramRangeHigh = cms.untracked.double(100),
    histogramEtaBinCount = cms.untracked.int32(20),
    genMatchDeltaRcut = cms.untracked.double(0.25),
-   genMatchRelPtcut = cms.untracked.double(0.25),
+   genMatchRelPtcut = cms.untracked.double(0.5),
    debug = cms.untracked.bool(False)
 )
 

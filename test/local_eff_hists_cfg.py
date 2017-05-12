@@ -43,7 +43,7 @@ process.source = cms.Source("PoolSource",
 # ---- Global Tag :
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, '90X_upgrade2023_realistic_v9', '')
 
 # Choose a 2030 geometry!
 # The ones which don't work all replace the ECAL Endcap geometry with HGCal stuff
