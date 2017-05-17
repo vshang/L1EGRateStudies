@@ -11,14 +11,20 @@ Other instructions here: https://twiki.cern.ch/twiki/bin/view/CMS/L1EGammaCrysta
 
 Checkout instructions:
 There are some auto-generated python file which is created in the "wrong" area and needs to be copied to run this code on Condor.
+
 ```bash
-cmsrel CMSSW_9_0_0_pre6
-cd CMSSW_9_0_0_pre6/src/
+cmsrel CMSSW_9_1_0_pre3
+cd CMSSW_9_1_0_pre3/src/
 cmsenv
 git cms-init
+git remote add cms-l1t-offline git@github.com:cms-l1t-offline/cmssw.git
+git fetch cms-l1t-offline
+git cms-merge-topic -u cms-l1t-offline:phase2-l1t-integration-CMSSW_9_1_0_pre3
+git clone https://github.com/cms-data/L1Trigger-L1THGCal.git L1Trigger/L1THGCal/data
 
-git cms-merge-topic cms-l1t-offline:phase2-l1t-integration-CMSSW_9_0_0_pre6
-git cms-merge-topic truggles:phase2-l1eg-900pre6
+git remote add trugges git@github.com:truggles/cmssw.git
+git fetch truggles
+git cms-merge-topic -u truggles:phase2-l1eg-910pre3
 
 pushd L1Trigger/
 git clone -b 900_pre6_L1EGCrystals https://github.com/truggles/L1EGRateStudies.git L1EGRateStudies
@@ -26,11 +32,8 @@ popd
 
 scramv1 b -j 8
 
-cp $CMSSW_BASE/cfipython/slc6_amd64_gcc530/Geometry/TrackerGeometryBuilder/tracker*.py $CMSSW_BASE/src/Geometry/TrackerGeometryBuilder/python/
-cp $CMSSW_BASE/cfipython/slc6_amd64_gcc530/SimGeneral/TrackingAnalysis/trackingParticleNumberOfLayersProducer_cfi.py $CMSSW_BASE/src/SimGeneral/TrackingAnalysis/python/
-
-scramv1 b -j 8
 ```
+
 
 
 
