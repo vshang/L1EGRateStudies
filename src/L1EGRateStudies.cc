@@ -61,7 +61,27 @@
 //#include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
 //#include "DataFormats/L1TrackTrigger/interface/TTPixelTrack.h"
 //#include "DataFormats/L1TrackTrigger/interface/L1TkPrimaryVertex.h"
-//#include "SLHCUpgradeSimulations/L1TrackTrigger/interface/L1TkElectronTrackMatchAlgo.h"
+//#include "L1Trigger/L1EGRateStudies/interface/L1TkElectronTrackMatchAlgo.h"
+#include "L1Trigger/L1CaloTrigger/interface/L1TkElectronTrackMatchAlgo.h"
+
+//track trigger data formats
+#include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
+#include "DataFormats/L1TrackTrigger/interface/TTCluster.h"
+#include "DataFormats/L1TrackTrigger/interface/TTStub.h"
+#include "DataFormats/L1TrackTrigger/interface/TTTrack.h"
+#include "SimDataFormats/TrackingAnalysis/interface/TrackingParticle.h"
+#include "SimDataFormats/TrackingAnalysis/interface/TrackingVertex.h"
+#include "SimDataFormats/TrackingHit/interface/PSimHitContainer.h"
+#include "SimDataFormats/TrackingHit/interface/PSimHit.h"
+#include "SimTracker/TrackTriggerAssociation/interface/TTClusterAssociationMap.h"
+#include "SimTracker/TrackTriggerAssociation/interface/TTStubAssociationMap.h"
+#include "SimTracker/TrackTriggerAssociation/interface/TTTrackAssociationMap.h"
+#include "Geometry/Records/interface/StackedTrackerGeometryRecord.h"
+#include "Geometry/Records/interface/TrackerDigiGeometryRecord.h"
+
+// Track PV
+#include "DataFormats/L1TrackTrigger/interface/L1TkPrimaryVertex.h"
+
 
 #include "DataFormats/EcalDigi/interface/EcalDigiCollections.h"
 #include "DataFormats/EcalRecHit/interface/EcalRecHit.h"
@@ -78,6 +98,7 @@
 // class declaration
 //
 class L1EGRateStudies : public edm::EDAnalyzer {
+   typedef std::vector< TTTrack < Ref_Phase2TrackerDigi_ >> L1TkTrackCollectionType;
 
    public:
       explicit L1EGRateStudies(const edm::ParameterSet&);
@@ -102,12 +123,14 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       bool cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
       bool checkTowerExists(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps) const;
       //void checkRecHitsFlags(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps, const EcalRecHitCollection &ecalRecHits) const;
+      void doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm::Handle<L1TkTrackCollectionType> l1trackHandle);
       
       // ----------member data ---------------------------
       bool doEfficiencyCalc;
       bool useOfflineClusters;
       bool debug;
       bool useEndcap;
+      bool doTracking;
       
       double genMatchDeltaRcut;
       double genMatchRelPtcut;
@@ -129,6 +152,9 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       //edm::EDGetTokenT<EcalEBTrigPrimDigiCollection> ecalTPEBToken_;
       //edm::EDGetTokenT<EcalRecHitCollection> ecalRecHitEBToken_;
       //edm::EDGetTokenT<EcalRecHitCollection> ecalRecHitEEToken_;
+
+      edm::EDGetTokenT<L1TkTrackCollectionType> L1TrackInputToken_;
+      edm::EDGetTokenT<L1TkPrimaryVertexCollection> L1TrackPVToken_;
 
       edm::EDGetTokenT<reco::SuperClusterCollection> offlineRecoClusterToken_;
       edm::Handle<reco::SuperClusterCollection> offlineRecoClustersHandle;
@@ -225,7 +251,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float trackPhi;
          float trackDeltaPhi;
          float trackDeltaEta;
-         float trackP;
+         float trackMomentum;
          float trackPt;
          float trackHighestPt;
          float trackHighestPtEta;
@@ -235,10 +261,14 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float trackHighestPtCutChi2Eta;
          float trackHighestPtCutChi2Phi;
          float trackHighestPtCutChi2Chi2;
-         float trackRInv;
+         float trackRInv;         
          float trackChi2;
          float trackIsoConeTrackCount;
          float trackIsoConePtSum;
+         float trackPUTrackPtGlobalDiffZ;
+         float trackPUTrackPtGlobalDiffZandPt;
+         float trackPUTrackPtGlobalSameZ;
+         float trackPUTrackPtGlobalAll;
          float trackPUTrackPt13x113DiffZ;
          float trackPUTrackPt13x113DiffZandPt;
          float trackPUTrackPt13x113SameZ;
@@ -255,6 +285,10 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float trackPUTrackPtTkIsoConeDiffZandPt;
          float trackPUTrackPtTkIsoConeSameZ;
          float trackPUTrackPtTkIsoConeAll;
+         float trackPUTrackCntGlobalDiffZ;
+         float trackPUTrackCntGlobalDiffZandPt;
+         float trackPUTrackCntGlobalSameZ;
+         float trackPUTrackCntGlobalAll;
          float trackPUTrackCnt13x113DiffZ;
          float trackPUTrackCnt13x113DiffZandPt;
          float trackPUTrackCnt13x113SameZ;
@@ -299,10 +333,13 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    useOfflineClusters(iConfig.getUntrackedParameter<bool>("useOfflineClusters", false)),
    debug(iConfig.getUntrackedParameter<bool>("debug", false)),
    useEndcap(iConfig.getUntrackedParameter<bool>("useEndcap", false)),
+   doTracking(iConfig.getUntrackedParameter<bool>("doTracking", false)),
    genMatchDeltaRcut(iConfig.getUntrackedParameter<double>("genMatchDeltaRcut", 0.1)),
    genMatchRelPtcut(iConfig.getUntrackedParameter<double>("genMatchRelPtcut", 0.5)),
    crystalClustersToken_(consumes<l1slhc::L1EGCrystalClusterCollection>(iConfig.getParameter<edm::InputTag>("L1CrystalClustersInputTag"))),
    genCollectionToken_(consumes<reco::GenParticleCollection>(iConfig.getParameter<edm::InputTag>("genParticles"))),
+   L1TrackInputToken_(consumes<L1TkTrackCollectionType>(iConfig.getParameter<edm::InputTag>("L1TrackInputTag"))),
+   L1TrackPVToken_(consumes<L1TkPrimaryVertexCollection>(iConfig.getParameter<edm::InputTag>("L1TrackPrimaryVertexTag"))),
    //ecalTPEBToken_(consumes<EcalEBTrigPrimDigiCollection>(iConfig.getParameter<edm::InputTag>("ecalTPEB"))),
    //ecalRecHitEBToken_(consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("ecalRecHitEB"))),
    //ecalRecHitEEToken_(consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("ecalRecHitEE"))),
@@ -439,7 +476,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("trackPhi", &treeinfo.trackPhi);
    crystal_tree->Branch("trackDeltaPhi", &treeinfo.trackDeltaPhi);
    crystal_tree->Branch("trackDeltaEta", &treeinfo.trackDeltaEta);
-   crystal_tree->Branch("trackP", &treeinfo.trackP);
+   crystal_tree->Branch("trackMomentum", &treeinfo.trackMomentum);
    crystal_tree->Branch("trackPt", &treeinfo.trackPt);
    crystal_tree->Branch("trackHighestPt", &treeinfo.trackHighestPt);
    crystal_tree->Branch("trackHighestPtEta", &treeinfo.trackHighestPtEta);
@@ -546,6 +583,27 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    //reco::GenParticleCollection genParticles;
    iEvent.getByToken(genCollectionToken_,genParticleHandle);
    genParticles = *genParticleHandle.product();
+
+   // L1 Tracks
+   edm::Handle<L1TkTrackCollectionType> l1trackHandle;
+   iEvent.getByToken(L1TrackInputToken_, l1trackHandle);
+
+   // L1 Track PV
+   edm::Handle<L1TkPrimaryVertexCollection> l1PrimaryVertexHandle;
+   iEvent.getByToken(L1TrackPVToken_, l1PrimaryVertexHandle);
+
+   if (doTracking) {
+      if ( l1PrimaryVertexHandle.isValid() )
+      {
+         L1TkPrimaryVertexCollection vertices = *l1PrimaryVertexHandle.product();
+         double vertexEnergy = vertices[0].getSum();
+         double z = vertices[0].getZvertex();
+         treeinfo.zVertex = z;
+         treeinfo.zVertexEnergy = vertexEnergy;
+         if (debug) std::cout << " - Vertex Position: " << z << " vertex energy: " << vertexEnergy << std::endl;
+      }
+      else std::cout << "No valid primary vertices" << std::endl;
+   } // end doTracking with PV
 
    // Trigger tower info (trigger primitives)
    //edm::Handle<EcalTrigPrimDigiCollection> tpH;
@@ -703,6 +761,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                   continue;
                bestClusterUsed = true;
                if ( debug ) std::cout << "using cluster dr = " << reco::deltaR(cluster, trueElectron) << std::endl;
+               if (doTracking) doTrackMatching(cluster, l1trackHandle);
                treeinfo.nthCandidate = clusterCount;
                treeinfo.deltaR = reco::deltaR(cluster, trueElectron);
                treeinfo.deltaPhi = reco::deltaPhi(cluster, trueElectron);
@@ -802,6 +861,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             treeinfo.endcap = true;
          else
             treeinfo.endcap = false;
+         if (doTracking) doTrackMatching(cluster, l1trackHandle);
          fill_tree(cluster);
          //checkRecHitsFlags(cluster, triggerPrimitives, ecalRecHits);
 
@@ -930,7 +990,7 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
    treeinfo.cluster_ptPUCorr = cluster.PUcorrPt(); // Brem & PU corrected
    treeinfo.corePt = cluster.GetExperimentalParam("uncorrectedPt"); // 3x5 Pt
    treeinfo.E_core = cluster.GetExperimentalParam("uncorrectedE"); // 3x5 Energy
-   treeinfo.ecalPUtoPt = cluster.GetExperimentalParam("ecalPUEnergyToPt");
+   //treeinfo.ecalPUtoPt = cluster.GetExperimentalParam("ecalPUEnergyToPt");
    treeinfo.crystalCount = cluster.GetExperimentalParam("crystalCount");
    treeinfo.cluster_energy = cluster.energy();
    treeinfo.eta = cluster.eta();
@@ -1053,6 +1113,345 @@ L1EGRateStudies::checkTowerExists(const l1slhc::L1EGCrystalCluster &cluster, con
 //      }
 //   }
 //}
+
+void
+L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm::Handle<L1TkTrackCollectionType> l1trackHandle)
+{
+  // track matching stuff
+  // match to closes track up to delta R = 0.3
+  // then match to the highest pt track < 0.3
+  double min_track_dr = 999.;
+  double max_track_pt = 0.;
+  double max_track_pt_all_tracks = 0.;
+  double max_track_pt_all_tracksEta = 0.;
+  double max_track_pt_all_tracksPhi = 0.;
+  double max_track_pt_all_tracksChi2 = 0.;
+  double max_track_pt_all_chi2_cut = 0.;
+  double max_track_pt_all_chi2_cutEta = 0.;
+  double max_track_pt_all_chi2_cutPhi = 0.;
+  double max_track_pt_all_chi2_cutChi2 = 0.;
+  double matched_z = 999.;
+  //edm::Ptr<TTTrack<Ref_PixelDigi_>> matched_track;
+  edm::Ptr<TTTrack<Ref_Phase2TrackerDigi_>> matched_track;
+  if ( l1trackHandle.isValid() )
+  {
+     for(size_t track_index=0; track_index<l1trackHandle->size(); ++track_index)
+     {
+        //edm::Ptr<TTTrack<Ref_PixelDigi_>> ptr(l1trackHandle, track_index);
+        edm::Ptr<TTTrack<Ref_Phase2TrackerDigi_>> ptr(l1trackHandle, track_index);
+        double pt = ptr->getMomentum().perp();
+
+        // Don't consider tracks with pt < 2 for studies, might be increased to 3 later
+        if (pt < 2.) continue;
+
+        // Record the highest pt track per event
+        // And, highest pt passing chi2 cut
+        // to see if brem is an issues for mis-matched tracks
+        double chi2 = ptr->getChi2();
+        if (pt > max_track_pt_all_tracks) {
+          max_track_pt_all_tracks = pt;
+          max_track_pt_all_tracksEta = ptr->getMomentum().eta();
+          max_track_pt_all_tracksPhi = ptr->getMomentum().phi();
+          max_track_pt_all_tracksChi2 = chi2;}
+        if (pt > max_track_pt_all_chi2_cut && chi2 < 100) {
+          max_track_pt_all_chi2_cut = pt;
+          max_track_pt_all_chi2_cutEta = ptr->getMomentum().eta();
+          max_track_pt_all_chi2_cutPhi = ptr->getMomentum().phi();
+          max_track_pt_all_chi2_cutChi2 = chi2;}
+        
+
+        // L1 Tracks are considered mis-measured if pt > 50
+        // Therefore pt -> 50 if pt > 50
+        // Only consider tracks if chi2 > 100
+        //double dr = .1;
+        double dr = L1TkElectronTrackMatchAlgo::deltaR(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), ptr);
+        if (pt > 50.) pt = 50;
+        // Choose closest track until dR < 0.3
+        if ( dr < min_track_dr && min_track_dr > 0.3 && chi2 < 100. )
+        {
+           min_track_dr = dr;
+           max_track_pt = pt;
+           matched_track = ptr;
+           matched_z = ptr->getPOCA().z();
+        }
+        // If dR < 0.3, choose highest pt track
+        else if ( dr < 0.3 && pt > max_track_pt && chi2 < 100. )
+        {
+           min_track_dr = dr;
+           max_track_pt = pt;
+           matched_track = ptr;
+           matched_z = ptr->getPOCA().z();
+        }
+     }
+     float isoConeTrackCount = 0.; // matched track will be in deltaR cone
+     float isoConePtSum = 0.;
+     for(size_t track_index=0; track_index<l1trackHandle->size(); ++track_index)
+     {
+        //edm::Ptr<TTTrack<Ref_PixelDigi_>> ptr(l1trackHandle, track_index);
+        edm::Ptr<TTTrack<Ref_Phase2TrackerDigi_>> ptr(l1trackHandle, track_index);
+    // don't double count the matched_track
+    if ( ptr == matched_track ) {
+      continue;
+    }
+        // Don't consider tracks with pt < 2 for studies, might be increased to 3 later
+    double pt = ptr->getMomentum().perp();
+        if (pt < 2.) continue;
+
+        // Track Isolation cuts have been updated based on the recommendations here:
+        // https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1TrackTriggerObjects62X#Matching_L1EG_objects_with_L1Tra
+        // Inner dR cone of 0.03, outer dR cone 0.2, momentum at least 2GeV
+        // L1 Tracks are considered mis-measured if pt > 50
+        // Therefore pt -> 50 if pt > 50
+        // Only consider tracks if chi2 < 100
+        // Only consider iso tracks from within dZ < 0.6
+        double dr_2 = reco::deltaR(ptr->getMomentum(), matched_track->getMomentum());
+    double chi2 = ptr->getChi2();
+    if (pt > 50.) pt = 50;
+        double this_z = ptr->getPOCA().z();
+    double deltaZ = abs(matched_z - this_z);
+        if ( dr_2 < 0.2 && dr_2 > 0.03 && pt > 2. && chi2 < 100 && deltaZ < 0.6 )
+        {
+          isoConeTrackCount++;
+          isoConePtSum += pt;
+        }
+     }
+
+     // Trying a track-based PU estimation for abs(dEta) <= 13*0.0173 && abs(dPhi) <= 113*0.0173
+     // using the same window as calo based PU
+     float PUTrackPtGlobalDiffZ = 0.;
+     float PUTrackPtGlobalDiffZandPt = 0.;
+     float PUTrackPtGlobalSameZ = 0.;
+     float PUTrackPtGlobalAll = 0.;
+     float PUTrackPt13x113DiffZ = 0.;
+     float PUTrackPt13x113DiffZandPt = 0.;
+     float PUTrackPt13x113SameZ = 0.;
+     float PUTrackPt13x113All = 0.;
+     float PUTrackPt3x5DiffZ = 0.;
+     float PUTrackPt3x5DiffZandPt = 0.;
+     float PUTrackPt3x5SameZ = 0.;
+     float PUTrackPt3x5All = 0.;
+     float PUTrackPtECalIsoConeDiffZ = 0.;
+     float PUTrackPtECalIsoConeDiffZandPt = 0.;
+     float PUTrackPtECalIsoConeSameZ = 0.;
+     float PUTrackPtECalIsoConeAll = 0.;
+     float PUTrackPtTkIsoConeDiffZ = 0.;
+     float PUTrackPtTkIsoConeDiffZandPt = 0.;
+     float PUTrackPtTkIsoConeSameZ = 0.;
+     float PUTrackPtTkIsoConeAll = 0.;
+     float PUTrackCntGlobalDiffZ = 0.;
+     float PUTrackCntGlobalDiffZandPt = 0.;
+     float PUTrackCntGlobalSameZ = 0.;
+     float PUTrackCntGlobalAll = 0.;
+     float PUTrackCnt13x113DiffZ = 0.;
+     float PUTrackCnt13x113DiffZandPt = 0.;
+     float PUTrackCnt13x113SameZ = 0.;
+     float PUTrackCnt13x113All = 0.;
+     float PUTrackCnt3x5DiffZ = 0.;
+     float PUTrackCnt3x5DiffZandPt = 0.;
+     float PUTrackCnt3x5SameZ = 0.;
+     float PUTrackCnt3x5All = 0.;
+     float PUTrackCntECalIsoConeDiffZ = 0.;
+     float PUTrackCntECalIsoConeDiffZandPt = 0.;
+     float PUTrackCntECalIsoConeSameZ = 0.;
+     float PUTrackCntECalIsoConeAll = 0.;
+     float PUTrackCntTkIsoConeDiffZ = 0.;
+     float PUTrackCntTkIsoConeDiffZandPt = 0.;
+     float PUTrackCntTkIsoConeSameZ = 0.;
+     float PUTrackCntTkIsoConeAll = 0.;
+     //int trkCnt = 0;
+     for(size_t track_index=0; track_index<l1trackHandle->size(); ++track_index)
+     {
+        //edm::Ptr<TTTrack<Ref_PixelDigi_>> ptr(l1trackHandle, track_index);
+        edm::Ptr<TTTrack<Ref_Phase2TrackerDigi_>> ptr(l1trackHandle, track_index);
+
+    // Cleaning section
+    // don't double count the matched_track
+    if ( ptr == matched_track ) continue;
+        // Don't consider tracks with pt < 2 for studies
+        // Don't consider track with pt > 5 b/c they aren't PU
+    double pt = ptr->getMomentum().perp();
+    double chi2 = ptr->getChi2();
+        //if (pt < 2. || pt > 5.) continue;
+        //trkCnt++;
+        //std::cout << trkCnt << " - Pt: " << pt << " Chi2: " << chi2 << std::endl;
+        if (pt < 2.) continue;
+    if (pt > 50.) pt = 50;
+    if (chi2 > 100.) continue;
+
+    // Categories
+    // 1. ECal PU Window 13x113
+    // 2. ECal Iso Window: 27x27
+    // 3. Trk Iso Window: dr < 0.2
+    // 4. Signal Region 3x5
+    // 5. Global!
+     
+    // Reject tracks not matching any of these areas
+         float trackDEta = L1TkElectronTrackMatchAlgo::deltaEta(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), ptr);
+         float trackDPhi = L1TkElectronTrackMatchAlgo::deltaPhi(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), ptr);
+
+    // Additional vars for following categories
+        float dr_2 = reco::deltaR(ptr->getMomentum(), matched_track->getMomentum());
+        float this_z = ptr->getPOCA().z();
+    float dz = abs(matched_z - this_z);
+
+    // Whole detector
+         PUTrackPtGlobalAll += pt;
+         PUTrackCntGlobalAll++;
+    if (dz < 0.6) {
+             PUTrackPtGlobalSameZ += pt;
+             PUTrackCntGlobalSameZ++;
+    }
+    if (dz > 0.6) {
+             PUTrackPtGlobalDiffZ += pt;
+             PUTrackCntGlobalDiffZ++;
+    }
+    if (dz > 0.6 && pt < 5.) {
+             PUTrackPtGlobalDiffZandPt += pt;
+             PUTrackCntGlobalDiffZandPt++;
+    }
+
+    // Going from integral crystal indices to track distance that could hit the farther edge of a crystal
+    if (fabs(trackDEta) > 13.5*0.0173 ) continue; // ECal Iso is widest in Eta, this cut is == dR > 0.23
+    if (fabs(trackDPhi) > 56.5*0.0173 ) continue; // ECal PU is widest in Phi
+
+    // Now many categories
+    // 13x113 ECal PU Region
+    if (fabs(trackDEta) < 6.5*0.0173 && fabs(trackDPhi) < 56.5*0.0173) {
+             PUTrackPt13x113All += pt;
+             PUTrackCnt13x113All++;
+        if (dz < 0.6) {
+                 PUTrackPt13x113SameZ += pt;
+                 PUTrackCnt13x113SameZ++;
+        }
+        if (dz > 0.6) {
+                 PUTrackPt13x113DiffZ += pt;
+                 PUTrackCnt13x113DiffZ++;
+        }
+        if (dz > 0.6 && pt < 5.) {
+                 PUTrackPt13x113DiffZandPt += pt;
+                 PUTrackCnt13x113DiffZandPt++;
+        }
+    } // end 13x113 ECal PU Region
+        
+    // 3x5 Cluster Core
+    if (fabs(trackDEta) < 1.5*0.0173 && fabs(trackDPhi) < 2.5*0.0173) {
+             PUTrackPt3x5All += pt;
+             PUTrackCnt3x5All++;
+        if (dz < 0.6) {
+                 PUTrackPt3x5SameZ += pt;
+                 PUTrackCnt3x5SameZ++;
+        }
+        if (dz > 0.6) {
+                 PUTrackPt3x5DiffZ += pt;
+                 PUTrackCnt3x5DiffZ++;
+        }
+        if (dz > 0.6 && pt < 5.) {
+                 PUTrackPt3x5DiffZandPt += pt;
+                 PUTrackCnt3x5DiffZandPt++;
+        }
+    } // end 3x5 Cluster Core
+        
+    // ECal Iso Cone
+    if (fabs(trackDEta) < 13.5*0.0173 && fabs(trackDPhi) < 13.5*0.0173) {
+             PUTrackPtECalIsoConeAll += pt;
+             PUTrackCntECalIsoConeAll++;
+        if (dz < 0.6) {
+                 PUTrackPtECalIsoConeSameZ += pt;
+                 PUTrackCntECalIsoConeSameZ++;
+        }
+        if (dz > 0.6) {
+                 PUTrackPtECalIsoConeDiffZ += pt;
+                 PUTrackCntECalIsoConeDiffZ++;
+        }
+        if (dz > 0.6 && pt < 5.) {
+                 PUTrackPtECalIsoConeDiffZandPt += pt;
+                 PUTrackCntECalIsoConeDiffZandPt++;
+        }
+    } // end ECal Iso Cone
+        
+    // Track Iso Cone
+    if (dr_2 < 0.2) {
+             PUTrackPtTkIsoConeAll += pt;
+             PUTrackCntTkIsoConeAll++;
+        if (dz < 0.6) {
+                 PUTrackPtTkIsoConeSameZ += pt;
+                 PUTrackCntTkIsoConeSameZ++;
+        }
+        if (dz > 0.6) {
+                 PUTrackPtTkIsoConeDiffZ += pt;
+                 PUTrackCntTkIsoConeDiffZ++;
+        }
+        if (dz > 0.6 && pt < 5.) {
+                 PUTrackPtTkIsoConeDiffZandPt += pt;
+                 PUTrackCntTkIsoConeDiffZandPt++;
+        }
+    } // end Track Iso Cone
+     } // end PU Tracks
+
+
+     treeinfo.trackDeltaR = min_track_dr;
+     treeinfo.trackZ = matched_track->getPOCA().z();
+     treeinfo.trackEta = matched_track->getMomentum().eta();
+     treeinfo.trackPhi = matched_track->getMomentum().phi();
+     treeinfo.trackPt = max_track_pt;
+     treeinfo.trackHighestPt = max_track_pt_all_tracks;
+     treeinfo.trackHighestPtEta = max_track_pt_all_tracksEta;
+     treeinfo.trackHighestPtPhi = max_track_pt_all_tracksPhi;
+     treeinfo.trackHighestPtChi2 = max_track_pt_all_tracksChi2;
+     treeinfo.trackHighestPtCutChi2 = max_track_pt_all_chi2_cut;
+     treeinfo.trackHighestPtCutChi2Eta = max_track_pt_all_chi2_cutEta;
+     treeinfo.trackHighestPtCutChi2Phi = max_track_pt_all_chi2_cutPhi;
+     treeinfo.trackHighestPtCutChi2Chi2 = max_track_pt_all_chi2_cutChi2;
+     treeinfo.trackDeltaPhi = L1TkElectronTrackMatchAlgo::deltaPhi(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), matched_track);
+     treeinfo.trackDeltaEta = L1TkElectronTrackMatchAlgo::deltaEta(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), matched_track);
+     treeinfo.trackMomentum = matched_track->getMomentum().mag();
+     treeinfo.trackRInv = matched_track->getRInv();
+     treeinfo.trackChi2 = matched_track->getChi2();
+     treeinfo.trackIsoConeTrackCount = isoConeTrackCount;
+     treeinfo.trackIsoConePtSum = isoConePtSum;
+     treeinfo.trackPUTrackPtGlobalDiffZ = PUTrackPtGlobalDiffZ;
+     treeinfo.trackPUTrackPtGlobalDiffZandPt = PUTrackPtGlobalDiffZandPt;
+     treeinfo.trackPUTrackPtGlobalSameZ = PUTrackPtGlobalSameZ;
+     treeinfo.trackPUTrackPtGlobalAll = PUTrackPtGlobalAll;
+     treeinfo.trackPUTrackPt13x113DiffZ = PUTrackPt13x113DiffZ;
+     treeinfo.trackPUTrackPt13x113DiffZandPt = PUTrackPt13x113DiffZandPt;
+     treeinfo.trackPUTrackPt13x113SameZ = PUTrackPt13x113SameZ;
+     treeinfo.trackPUTrackPt13x113All = PUTrackPt13x113All;
+     treeinfo.trackPUTrackPt3x5DiffZ = PUTrackPt3x5DiffZ;
+     treeinfo.trackPUTrackPt3x5DiffZandPt = PUTrackPt3x5DiffZandPt;
+     treeinfo.trackPUTrackPt3x5SameZ = PUTrackPt3x5SameZ;
+     treeinfo.trackPUTrackPt3x5All = PUTrackPt3x5All;
+     treeinfo.trackPUTrackPtECalIsoConeDiffZ = PUTrackPtECalIsoConeDiffZ;
+     treeinfo.trackPUTrackPtECalIsoConeDiffZandPt = PUTrackPtECalIsoConeDiffZandPt;
+     treeinfo.trackPUTrackPtECalIsoConeSameZ = PUTrackPtECalIsoConeSameZ;
+     treeinfo.trackPUTrackPtECalIsoConeAll = PUTrackPtECalIsoConeAll;
+     treeinfo.trackPUTrackPtTkIsoConeDiffZ = PUTrackPtTkIsoConeDiffZ;
+     treeinfo.trackPUTrackPtTkIsoConeDiffZandPt = PUTrackPtTkIsoConeDiffZandPt;
+     treeinfo.trackPUTrackPtTkIsoConeSameZ = PUTrackPtTkIsoConeSameZ;
+     treeinfo.trackPUTrackPtTkIsoConeAll = PUTrackPtTkIsoConeAll;
+     treeinfo.trackPUTrackCntGlobalDiffZ = PUTrackCntGlobalDiffZ;
+     treeinfo.trackPUTrackCntGlobalDiffZandPt = PUTrackCntGlobalDiffZandPt;
+     treeinfo.trackPUTrackCntGlobalSameZ = PUTrackCntGlobalSameZ;
+     treeinfo.trackPUTrackCntGlobalAll = PUTrackCntGlobalAll;
+     treeinfo.trackPUTrackCnt13x113DiffZ = PUTrackCnt13x113DiffZ;
+     treeinfo.trackPUTrackCnt13x113DiffZandPt = PUTrackCnt13x113DiffZandPt;
+     treeinfo.trackPUTrackCnt13x113SameZ = PUTrackCnt13x113SameZ;
+     treeinfo.trackPUTrackCnt13x113All = PUTrackCnt13x113All;
+     treeinfo.trackPUTrackCnt3x5DiffZ = PUTrackCnt3x5DiffZ;
+     treeinfo.trackPUTrackCnt3x5DiffZandPt = PUTrackCnt3x5DiffZandPt;
+     treeinfo.trackPUTrackCnt3x5SameZ = PUTrackCnt3x5SameZ;
+     treeinfo.trackPUTrackCnt3x5All = PUTrackCnt3x5All;
+     treeinfo.trackPUTrackCntECalIsoConeDiffZ = PUTrackCntECalIsoConeDiffZ;
+     treeinfo.trackPUTrackCntECalIsoConeDiffZandPt = PUTrackCntECalIsoConeDiffZandPt;
+     treeinfo.trackPUTrackCntECalIsoConeSameZ = PUTrackCntECalIsoConeSameZ;
+     treeinfo.trackPUTrackCntECalIsoConeAll = PUTrackCntECalIsoConeAll;
+     treeinfo.trackPUTrackCntTkIsoConeDiffZ = PUTrackCntTkIsoConeDiffZ;
+     treeinfo.trackPUTrackCntTkIsoConeDiffZandPt = PUTrackCntTkIsoConeDiffZandPt;
+     treeinfo.trackPUTrackCntTkIsoConeSameZ = PUTrackCntTkIsoConeSameZ;
+     treeinfo.trackPUTrackCntTkIsoConeAll = PUTrackCntTkIsoConeAll;
+     if ( debug ) std::cout << "Track dr: " << min_track_dr << ", chi2: " << matched_track->getChi2() << ", dp: " << (treeinfo.trackMomentum-cluster.energy())/cluster.energy() << std::endl;
+  }
+}
 
 //define this as a plug-in
 DEFINE_FWK_MODULE(L1EGRateStudies);

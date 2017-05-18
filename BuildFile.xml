@@ -15,4 +15,8 @@
 <use name="root"/>
 <use name="Geometry/HcalTowerAlgo"/>
 <use name="DataFormats/L1Trigger"/>
+<use name="L1Trigger/TrackFindingTracklet"/>
+<use name="DataFormats/L1TrackTrigger"/>
+<use name="L1Trigger/TrackTrigger"/>
+<use name="SimTracker/TrackTriggerAssociation"/>
 <flags EDM_PLUGIN="1"/>

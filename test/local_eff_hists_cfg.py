@@ -11,6 +11,7 @@ process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
 )
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(250) )
 
 process.source = cms.Source("PoolSource",
 # file dataset=/RelValSingleElectronPt35Extended/CMSSW_8_1_0_pre11-PU25ns_81X_mcRun2_asymptotic_v5_2023D1PU140-v1/GEN-SIM-DIGI-RAW
@@ -54,6 +55,16 @@ process.load('Configuration.Geometry.GeometryExtended2023D4Reco_cff') # D7 works
 process.load('Configuration.StandardSequences.MagneticField_38T_PostLS1_cff')
 
 
+# --------------------------------------------------------------------------------------------
+#
+# ----     L1 tracking
+
+process.load("L1Trigger.TrackFindingTracklet.L1TrackletTracks_cff")
+process.TTTracks = cms.Path(process.L1TrackletTracks)  #run only the tracking (no MC truth associators)
+
+# ----     L1 tracking Primary Vertex
+process.load("L1Trigger.L1TTrackMatch.L1TkPrimaryVertexProducer_cfi")
+process.TTTrackPV = cms.Path(process.L1TkPrimaryVertex)
 
 # --------------------------------------------------------------------------------------------
 #
@@ -119,12 +130,14 @@ process.TPAnalyzer = cms.EDAnalyzer('L1EGPreclusterAnalysis',
 process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer","L1EGXtalClusterNoCuts"),
    genParticles = cms.InputTag("genParticles"),
+   L1TrackInputTag = cms.InputTag("TTTracksFromTracklet", "Level1TTTracks"),
+   L1TrackPrimaryVertexTag = cms.InputTag("L1TkPrimaryVertex"),
    OfflineRecoClustersInputTag = cms.InputTag("correctedHybridSuperClusters"),
-   #ecalTPEB = cms.InputTag("EcalEBTrigPrimProducer","","L1AlgoTest"),
    ecalTPEB = cms.InputTag("simEcalEBTriggerPrimitiveDigis","","HLT"),
    doEfficiencyCalc = cms.untracked.bool(True),
    useOfflineClusters = cms.untracked.bool(False),
    useEndcap = cms.untracked.bool(False),
+   doTracking = cms.untracked.bool(True),
    turnOnThresholds = cms.untracked.vint32(20, 30, 16),
    histogramBinCount = cms.untracked.int32(60),
    histogramRangeLow = cms.untracked.double(0),
@@ -133,6 +146,7 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    genMatchDeltaRcut = cms.untracked.double(0.25),
    genMatchRelPtcut = cms.untracked.double(0.5),
    debug = cms.untracked.bool(False)
+   #debug = cms.untracked.bool(True)
 )
 
 process.panalyzer = cms.Path(process.TPAnalyzer+process.analyzer)
