@@ -93,12 +93,19 @@
 #include "SimCalorimetry/EcalEBTrigPrimProducers/plugins/EcalEBTrigPrimProducer.h"
 #include "DataFormats/EcalDigi/interface/EcalEBTriggerPrimitiveDigi.h"
 
+// Stage2
+#include "DataFormats/L1Trigger/interface/BXVector.h"
+#include "DataFormats/L1Trigger/interface/EGamma.h"
+#include "DataFormats/L1Trigger/interface/L1Candidate.h"
+
 
 //
 // class declaration
 //
 class L1EGRateStudies : public edm::EDAnalyzer {
    typedef std::vector< TTTrack < Ref_Phase2TrackerDigi_ >> L1TkTrackCollectionType;
+   typedef BXVector<l1t::EGamma> EGammaBxCollection;
+   typedef std::vector<l1t::EGamma> EGammaCollection;
 
    public:
       explicit L1EGRateStudies(const edm::ParameterSet&);
@@ -156,8 +163,11 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       edm::EDGetTokenT<L1TkTrackCollectionType> L1TrackInputToken_;
       edm::EDGetTokenT<L1TkPrimaryVertexCollection> L1TrackPVToken_;
 
-      edm::EDGetTokenT<reco::SuperClusterCollection> offlineRecoClusterToken_;
-      edm::Handle<reco::SuperClusterCollection> offlineRecoClustersHandle;
+      //edm::EDGetTokenT<reco::SuperClusterCollection> offlineRecoClusterToken_;
+      //edm::Handle<reco::SuperClusterCollection> offlineRecoClustersHandle;
+
+      // Stage2 Digis
+      edm::EDGetTokenT<BXVector<l1t::EGamma> > stage2egToken1_;
             
       int nHistBins, nHistEtaBins;
       double histLow;
@@ -181,17 +191,33 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       TH1F * dyncrystal_rate_hist;
       TH2F * dyncrystal_2DdeltaR_hist;
 
-      std::map<std::string, TH1F *> EGalg_efficiency_hists;
-      std::map<std::string, std::map<double, TH1F *>> EGalg_efficiency_reco_hists;
-      std::map<std::string, std::map<double, TH1F *>> EGalg_efficiency_gen_hists;
-      std::map<std::string, TH1F *> EGalg_efficiency_eta_hists;
-      std::map<std::string, TH1F *> EGalg_deltaR_hists;
-      std::map<std::string, TH1F *> EGalg_deta_hists;
-      std::map<std::string, TH1F *> EGalg_dphi_hists;
-      std::map<std::string, TH1F *> EGalg_rate_hists;
-      std::map<std::string, TH2F *> EGalg_2DdeltaR_hists;
-      std::map<std::string, TH2F *> EGalg_reco_gen_pt_hists;
-      std::map<std::string, TH1F *> EGalg_reco_gen_pt_1dHists;
+      TH1F * stage2_efficiency_hist;
+      std::map<double, TH1F *> stage2_efficiency_reco_hists; // Turn-on thresholds
+      std::map<double, TH1F *> stage2_efficiency_gen_hists; // Turn-on thresholds
+      TH1F * stage2_efficiency_bremcut_hist;
+      TH1F * stage2_efficiency_eta_hist;
+      TH1F * stage2_deltaR_hist;
+      TH1F * stage2_deltaR_bremcut_hist;
+      TH1F * stage2_deta_hist;
+      TH1F * stage2_dphi_hist;
+      TH1F * stage2_dphi_bremcut_hist;
+      TH1F * stage2_rate_hist;
+      TH1F * stage2_iso_rate_hist;
+      TH2F * stage2_2DdeltaR_hist;
+      TH2F * stage2_reco_gen_pt_hist;
+      TH1F * stage2_reco_gen_pt_1dHist;
+
+      //std::map<std::string, TH1F *> EGalg_efficiency_hists;
+      //std::map<std::string, std::map<double, TH1F *>> EGalg_efficiency_reco_hists;
+      //std::map<std::string, std::map<double, TH1F *>> EGalg_efficiency_gen_hists;
+      //std::map<std::string, TH1F *> EGalg_efficiency_eta_hists;
+      //std::map<std::string, TH1F *> EGalg_deltaR_hists;
+      //std::map<std::string, TH1F *> EGalg_deta_hists;
+      //std::map<std::string, TH1F *> EGalg_dphi_hists;
+      //std::map<std::string, TH1F *> EGalg_rate_hists;
+      //std::map<std::string, TH2F *> EGalg_2DdeltaR_hists;
+      //std::map<std::string, TH2F *> EGalg_reco_gen_pt_hists;
+      //std::map<std::string, TH1F *> EGalg_reco_gen_pt_1dHists;
 
       // EcalRecHits flags
       TH1I * RecHitFlagsTowerHist;
@@ -340,10 +366,11 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    genCollectionToken_(consumes<reco::GenParticleCollection>(iConfig.getParameter<edm::InputTag>("genParticles"))),
    L1TrackInputToken_(consumes<L1TkTrackCollectionType>(iConfig.getParameter<edm::InputTag>("L1TrackInputTag"))),
    L1TrackPVToken_(consumes<L1TkPrimaryVertexCollection>(iConfig.getParameter<edm::InputTag>("L1TrackPrimaryVertexTag"))),
+   stage2egToken1_(consumes<BXVector<l1t::EGamma>>(iConfig.getParameter<edm::InputTag>("Stage2EG1Tag"))),
    //ecalTPEBToken_(consumes<EcalEBTrigPrimDigiCollection>(iConfig.getParameter<edm::InputTag>("ecalTPEB"))),
    //ecalRecHitEBToken_(consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("ecalRecHitEB"))),
    //ecalRecHitEEToken_(consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("ecalRecHitEE"))),
-   offlineRecoClusterToken_(consumes<reco::SuperClusterCollection>(iConfig.getParameter<edm::InputTag>("OfflineRecoClustersInputTag"))),
+   //offlineRecoClusterToken_(consumes<reco::SuperClusterCollection>(iConfig.getParameter<edm::InputTag>("OfflineRecoClustersInputTag"))),
    nHistBins(iConfig.getUntrackedParameter<int>("histogramBinCount", 10)),
    nHistEtaBins(iConfig.getUntrackedParameter<int>("histogramEtaBinCount", 20)),
    histLow(iConfig.getUntrackedParameter<double>("histogramRangeLow", 0.)),
@@ -385,6 +412,25 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       dyncrystal_dphi_bremcut_hist = fs->make<TH1F>("dyncrystalEG_dphi_bremcut", ("Dynamic Crystal Trigger;d#phi "+drLabel).c_str(), 50, -0.1, 0.1);
       dyncrystal_2DdeltaR_hist = fs->make<TH2F>("dyncrystalEG_2DdeltaR_hist", "Dynamic Crystal Trigger;d#eta;d#phi;Counts", 50, -0.05, 0.05, 50, -0.05, 0.05);
 
+      // Make Stage 2 hists
+      stage2_efficiency_hist = fs->make<TH1F>("stage2EG_efficiency_pt", "Stage-2 Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
+      stage2_efficiency_bremcut_hist = fs->make<TH1F>("stage2EG_efficiency_bremcut_pt", "Stage-2 Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
+      stage2_efficiency_eta_hist = fs->make<TH1F>("stage2EG_efficiency_eta", "Stage-2 Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
+      // Implicit conversion from int to double
+      for(int threshold : thresholds)
+      {
+         stage2_efficiency_reco_hists[threshold] = fs->make<TH1F>(("stage2EG_threshold"+std::to_string(threshold)+"_efficiency_reco_pt").c_str(), "Stage-2 Trigger;Offline reco. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
+         stage2_efficiency_gen_hists[threshold] = fs->make<TH1F>(("stage2EG_threshold"+std::to_string(threshold)+"_efficiency_gen_pt").c_str(), "Stage-2 Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
+      }
+      stage2_deltaR_hist = fs->make<TH1F>("stage2EG_deltaR", ("Stage-2 Trigger;#Delta R "+drLabel).c_str(), 50, 0., genMatchDeltaRcut);
+      stage2_deltaR_bremcut_hist = fs->make<TH1F>("stage2EG_deltaR_bremcut", ("Stage-2 Trigger;#Delta R "+drLabel).c_str(), 50, 0., genMatchDeltaRcut);
+      stage2_deta_hist = fs->make<TH1F>("stage2EG_deta", ("Stage-2 Trigger;d#eta "+drLabel).c_str(), 100, -0.25, 0.25);
+      stage2_dphi_hist = fs->make<TH1F>("stage2EG_dphi", ("Stage-2 Trigger;d#phi "+drLabel).c_str(), 100, -0.25, 0.25);
+      stage2_dphi_bremcut_hist = fs->make<TH1F>("stage2EG_dphi_bremcut", ("Stage-2 Trigger;d#phi "+drLabel).c_str(), 50, -0.1, 0.1);
+      stage2_2DdeltaR_hist = fs->make<TH2F>("stage2EG_2DdeltaR_hist", "Stage-2 Trigger;d#eta;d#phi;Counts", 50, -0.05, 0.05, 50, -0.05, 0.05);
+      stage2_reco_gen_pt_hist = fs->make<TH2F>("stage2_reco_gen_pt", "Stage-2;Gen. pT (GeV);(reco-gen)/gen;Counts", 40, 0., 50., 40, -0.3, 0.3); 
+      stage2_reco_gen_pt_1dHist = fs->make<TH1F>("stage2_1d_reco_gen_pt", "Stage-2;(reco-gen)/gen;Counts", 100, -1., 1.); 
+
       //for(auto& inputTag : L1EGammaInputTags)
       //{
       //   const std::string &name = inputTag.encode();
@@ -415,6 +461,8 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    else
    {
       dyncrystal_rate_hist = fs->make<TH1F>("dyncrystalEG_rate" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
+      stage2_rate_hist = fs->make<TH1F>("stage2EG_rate" , "Stage-2 Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
+      stage2_iso_rate_hist = fs->make<TH1F>("stage2EG_iso_rate" , "Stage-2 Trigger Iso;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
       //for(auto& inputTag : L1EGammaInputTags)
       //{
       //   const std::string &name = inputTag.encode();
@@ -546,7 +594,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    eventCount++;
 
    // electron candidates
-   std::map<std::string, l1extra::L1EmParticleCollection> eGammaCollections;
+   //std::map<std::string, l1extra::L1EmParticleCollection> eGammaCollections;
    //for(const auto& inputTag : L1EGammaInputTags)
    //{
    //   if (inputTag.encode().compare("l1extraParticles:All") == 0) continue;
@@ -605,6 +653,23 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       else std::cout << "No valid primary vertices" << std::endl;
    } // end doTracking with PV
 
+
+   // Stage-2
+   edm::Handle<BXVector<l1t::EGamma>> stage2eg1Handle;
+   iEvent.getByToken(stage2egToken1_, stage2eg1Handle);
+   EGammaBxCollection stage2BXEGs;
+   EGammaCollection stage2EGs;
+   if ( stage2eg1Handle.isValid() )
+   {
+      stage2BXEGs = *stage2eg1Handle.product();
+      for(auto& eg : stage2BXEGs) {
+         stage2EGs.push_back( eg );
+      } 
+      std::sort(begin(stage2EGs), end(stage2EGs), [](l1t::EGamma& a, l1t::EGamma& b){return a.pt() > b.pt();});
+   }
+   else std::cout << "No valid stage2 EGs (2)" << std::endl;
+
+
    // Trigger tower info (trigger primitives)
    //edm::Handle<EcalTrigPrimDigiCollection> tpH;
    //iEvent.getByLabel(edm::InputTag("ecalDigis:EcalTriggerPrimitives"), tpH);
@@ -627,8 +692,8 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    // Sort clusters so we can always pick highest pt cluster matching cuts
    std::sort(begin(crystalClusters), end(crystalClusters), [](const l1slhc::L1EGCrystalCluster& a, const l1slhc::L1EGCrystalCluster& b){return a.pt() > b.pt();});
    // also sort old algorithm products
-   for(auto& collection : eGammaCollections)
-      std::sort(begin(collection.second), end(collection.second), [](const l1extra::L1EmParticle& a, const l1extra::L1EmParticle& b){return a.pt() > b.pt();});
+   //for(auto& collection : eGammaCollections)
+   //   std::sort(begin(collection.second), end(collection.second), [](const l1extra::L1EmParticle& a, const l1extra::L1EmParticle& b){return a.pt() > b.pt();});
    
    int clusterCount = 0;
    if ( doEfficiencyCalc )
@@ -812,43 +877,78 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             std::cerr << "Found a cluster but it wasn't the best so I lost efficiency!" << std::endl;
          }
       }
-      
-      for(const auto& eGammaCollection : eGammaCollections)
+
+      const std::string &name = "Stage-2";
+      for(const auto& EGCandidate : stage2EGs)
       {
-         const std::string &name = eGammaCollection.first;
-         for(const auto& EGCandidate : eGammaCollection.second)
+         if ( reco::deltaR(EGCandidate.polarP4(), trueElectron) < genMatchDeltaRcut &&
+              fabs(EGCandidate.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
          {
-            if ( reco::deltaR(EGCandidate.polarP4(), trueElectron) < genMatchDeltaRcut &&
-                 fabs(EGCandidate.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
+            if ( debug ) std::cout << "Filling hists for EG Collection: " << name << std::endl;
+            stage2_efficiency_hist->Fill(trueElectron.pt());
+            stage2_efficiency_eta_hist->Fill(trueElectron.eta());
+            if ( offlineRecoFound )
             {
-               if ( debug ) std::cout << "Filling hists for EG Collection: " << name << std::endl;
-               EGalg_efficiency_hists[name]->Fill(trueElectron.pt());
-               EGalg_efficiency_eta_hists[name]->Fill(trueElectron.eta());
-               if ( offlineRecoFound )
-               {
-                  for(auto& pair : EGalg_efficiency_reco_hists[name])
-                  {
-                     // (threshold, histogram)
-                     if (EGCandidate.pt() > pair.first)
-                        pair.second->Fill(reco_electron_pt);
-                  }
-               }
-               for(auto& pair : EGalg_efficiency_gen_hists[name])
+               for(auto& pair : stage2_efficiency_reco_hists)
                {
                   // (threshold, histogram)
                   if (EGCandidate.pt() > pair.first)
-                     pair.second->Fill(trueElectron.pt());
+                     pair.second->Fill(reco_electron_pt);
                }
-               EGalg_deltaR_hists[name]->Fill(reco::deltaR(EGCandidate.polarP4(), trueElectron));
-               EGalg_deta_hists[name]->Fill(trueElectron.eta()-EGCandidate.eta());
-               EGalg_dphi_hists[name]->Fill(reco::deltaPhi(EGCandidate.phi(), trueElectron.phi()));
-               EGalg_reco_gen_pt_hists[name]->Fill( trueElectron.pt(), (EGCandidate.pt() - trueElectron.pt())/trueElectron.pt() );
-               EGalg_reco_gen_pt_1dHists[name]->Fill( (EGCandidate.pt() - trueElectron.pt())/trueElectron.pt() );
-               EGalg_2DdeltaR_hists[name]->Fill(trueElectron.eta()-EGCandidate.eta(), reco::deltaPhi(EGCandidate, trueElectron));
-               break;
             }
+            for(auto& pair : stage2_efficiency_gen_hists)
+            {
+               // (threshold, histogram)
+               if (EGCandidate.pt() > pair.first)
+                  pair.second->Fill(trueElectron.pt());
+            }
+            stage2_deltaR_hist->Fill(reco::deltaR(EGCandidate.polarP4(), trueElectron));
+            stage2_deta_hist->Fill(trueElectron.eta()-EGCandidate.eta());
+            stage2_dphi_hist->Fill(reco::deltaPhi(EGCandidate.phi(), trueElectron.phi()));
+            stage2_reco_gen_pt_hist->Fill( trueElectron.pt(), (EGCandidate.pt() - trueElectron.pt())/trueElectron.pt() );
+            stage2_reco_gen_pt_1dHist->Fill( (EGCandidate.pt() - trueElectron.pt())/trueElectron.pt() );
+            stage2_2DdeltaR_hist->Fill(trueElectron.eta()-EGCandidate.eta(), reco::deltaPhi(EGCandidate, trueElectron));
+            break;
          }
       }
+      
+      
+      //for(const auto& eGammaCollection : eGammaCollections)
+      //{
+      //   const std::string &name = eGammaCollection.first;
+      //   for(const auto& EGCandidate : eGammaCollection.second)
+      //   {
+      //      if ( reco::deltaR(EGCandidate.polarP4(), trueElectron) < genMatchDeltaRcut &&
+      //           fabs(EGCandidate.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
+      //      {
+      //         if ( debug ) std::cout << "Filling hists for EG Collection: " << name << std::endl;
+      //         EGalg_efficiency_hists[name]->Fill(trueElectron.pt());
+      //         EGalg_efficiency_eta_hists[name]->Fill(trueElectron.eta());
+      //         if ( offlineRecoFound )
+      //         {
+      //            for(auto& pair : EGalg_efficiency_reco_hists[name])
+      //            {
+      //               // (threshold, histogram)
+      //               if (EGCandidate.pt() > pair.first)
+      //                  pair.second->Fill(reco_electron_pt);
+      //            }
+      //         }
+      //         for(auto& pair : EGalg_efficiency_gen_hists[name])
+      //         {
+      //            // (threshold, histogram)
+      //            if (EGCandidate.pt() > pair.first)
+      //               pair.second->Fill(trueElectron.pt());
+      //         }
+      //         EGalg_deltaR_hists[name]->Fill(reco::deltaR(EGCandidate.polarP4(), trueElectron));
+      //         EGalg_deta_hists[name]->Fill(trueElectron.eta()-EGCandidate.eta());
+      //         EGalg_dphi_hists[name]->Fill(reco::deltaPhi(EGCandidate.phi(), trueElectron.phi()));
+      //         EGalg_reco_gen_pt_hists[name]->Fill( trueElectron.pt(), (EGCandidate.pt() - trueElectron.pt())/trueElectron.pt() );
+      //         EGalg_reco_gen_pt_1dHists[name]->Fill( (EGCandidate.pt() - trueElectron.pt())/trueElectron.pt() );
+      //         EGalg_2DdeltaR_hists[name]->Fill(trueElectron.eta()-EGCandidate.eta(), reco::deltaPhi(EGCandidate, trueElectron));
+      //         break;
+      //      }
+      //   }
+      //}
    }
    else // !doEfficiencyCalc
    {
@@ -872,28 +972,62 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          }
       }
 
-      for(const auto& eGammaCollection : eGammaCollections)
+      const std::string &name = "stage-2";
+      if ( useEndcap )
       {
-         const std::string &name = eGammaCollection.first;
-         if ( eGammaCollection.second.size() == 0 ) continue;
-         if ( useEndcap )
-         {
-            auto& highestEGCandidate = eGammaCollection.second[0];
-            EGalg_rate_hists[name]->Fill(highestEGCandidate.pt());
-         }
-         else // !useEndcap
-         {
-            // Can't assume the highest candidate is in the barrel
-            for(const auto& candidate : eGammaCollection.second)
-            {
-               if ( fabs(candidate.eta()) < 1.479 )
-               {
-                  EGalg_rate_hists[name]->Fill(candidate.pt());
-                  break;
-               }
+         auto& highestEGCandidate = stage2EGs[0];
+         stage2_rate_hist->Fill(highestEGCandidate.pt());
+         for(const auto& eg : stage2EGs) {
+            if (eg.hwIso() > 0.) {
+               std::cout << "Stage-2 Iso: " << eg.hwIso() << std::endl;
+               stage2_iso_rate_hist->Fill(eg.pt());
+               break;
             }
          }
       }
+      else // !useEndcap
+      {
+         // Can't assume the highest candidate is in the barrel
+         for(const auto& candidate : stage2EGs)
+         {
+            if ( fabs(candidate.eta()) < 1.479 )
+            {
+               stage2_rate_hist->Fill(candidate.pt());
+               break;
+            }
+         }
+         for(const auto& candidate : stage2EGs)
+         {
+            if ( fabs(candidate.eta()) < 1.479 && candidate.hwIso() > 0. )
+            {
+               stage2_iso_rate_hist->Fill(candidate.pt());
+               break;
+            }
+         }
+      }
+
+      //for(const auto& eGammaCollection : eGammaCollections)
+      //{
+      //   const std::string &name = eGammaCollection.first;
+      //   if ( eGammaCollection.second.size() == 0 ) continue;
+      //   if ( useEndcap )
+      //   {
+      //      auto& highestEGCandidate = eGammaCollection.second[0];
+      //      EGalg_rate_hists[name]->Fill(highestEGCandidate.pt());
+      //   }
+      //   else // !useEndcap
+      //   {
+      //      // Can't assume the highest candidate is in the barrel
+      //      for(const auto& candidate : eGammaCollection.second)
+      //      {
+      //         if ( fabs(candidate.eta()) < 1.479 )
+      //         {
+      //            EGalg_rate_hists[name]->Fill(candidate.pt());
+      //            break;
+      //         }
+      //      }
+      //   }
+      //}
    }
 }
 
@@ -918,10 +1052,12 @@ L1EGRateStudies::endJob()
       TH1F* event_count = fs->make<TH1F>("eventCount", "Event Count", 1, -1, 1);
       event_count->SetBinContent(1, eventCount);
       integrateDown(dyncrystal_rate_hist);
-      for(auto& hist : EGalg_rate_hists)
-      {
-         integrateDown(hist.second);
-      }
+      integrateDown(stage2_rate_hist);
+      integrateDown(stage2_iso_rate_hist);
+      //for(auto& hist : EGalg_rate_hists)
+      //{
+      //   integrateDown(hist.second);
+      //}
    }
 }
 
