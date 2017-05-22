@@ -65,7 +65,7 @@ def makeRatePlot( rateFile, tree, name, cut='', rateLimit=50, var='cluster_pt' )
     
     for i in range(1, h1.GetNbinsX()+1) :
         h2.SetBinContent( i, h1.Integral( i, rateLimit ) )
-        h2.SetBinError( i, math.sqrt(h2.GetBinContent( i )) )
+        #FIXME h2.SetBinError( i, math.sqrt(h2.GetBinContent( i )) )
     
     # Normalize to 30 MHz
     nEvents = rateFile.Get("analyzer/eventCount").GetBinContent(1)
@@ -117,10 +117,10 @@ def plotRateHists( name, hists=[] ) :
     #hists[0].SetMinimum( min_ * 2. )
     hists[0].SetMinimum( 1. )
     leg.Draw("same")
-    cms = drawCMSString("CMS Simulation, <PU>=140 bx=25, Minimum-Bias")
+    cms = drawCMSString("CMS Simulation, Phase-II 90X, <PU>=200, Minimum-Bias")
     c.Update()
 
-    c.Print('plotsOpt/rates_'+name+'.png')    
+    c.Print('/afs/cern.ch/user/t/truggles/www/Phase-II/20170508v3/plotsOpt/rates_'+name+'.png')    
     del c
     
 def makeEffPlot( ntree, otree, name, cut='', preCut='', yLabel='Eff. (L1 / Gen)', effLimit=50 ) :
@@ -134,9 +134,11 @@ def makeEffPlot( ntree, otree, name, cut='', preCut='', yLabel='Eff. (L1 / Gen)'
     else : 
         neumCut = cut+"*"+preCut
 
-    denom = ROOT.TH1F('denom'+name, name,int(effLimit/binSize),0,effLimit)
+    nBins = int(effLimit/binSize)
+    nBins = 20
+    denom = ROOT.TH1F('denom'+name, name, nBins,0,effLimit)
     otree.Draw('gen_pt >> denom'+name, preCut)
-    neum = ROOT.TH1F('neum'+name, name,int(effLimit/binSize),0,effLimit)
+    neum = ROOT.TH1F('neum'+name, name, nBins,0,effLimit)
     ntree.Draw('gen_pt >> neum'+name, neumCut)
     graph = ROOT.TGraphAsymmErrors(neum, denom)
     graph.SetMarkerSize(0)
@@ -180,7 +182,7 @@ def plotEffHists( name, graphs=[], nCol = 1 ) :
     mg.GetYaxis().SetTitle( graphs[0].GetYaxis().GetTitle() )
     mg.SetMaximum( 1.4 )
     leg.Draw("same")
-    cms = drawCMSString("CMS Simulation, <PU>=140 bx=25, L1EG Crystal Algo.")
+    cms = drawCMSString("CMS Simulation, Phase-II 90X, <PU>=200, L1EG Crystal Algo.")
 
     # Add name of cut
     xPos = .2
@@ -188,12 +190,19 @@ def plotEffHists( name, graphs=[], nCol = 1 ) :
     addText( xPos, yPos, "Phase-2 L1EG Cut: "+name.replace('_',' ') )
 
     c.Update()
-    c.Print('plotsOpt/effs_'+name.replace(' ','_')+'.png')    
+    c.Print('/afs/cern.ch/user/t/truggles/www/Phase-II/20170508v3/plotsOpt/effs_'+name.replace(' ','_')+'.png')    
     del c
 
 
 def makeComparisons( Cut, name, trkDetails=False, changeDenom=["",""], var='cluster_pt', doPhoton=False ) :
-    oldRateFile = ROOT.TFile('egTriggerRates.root','r')
+
+    date = '20170508v3'
+    #date = '20170503v1'
+    newEffFileName = '%s/%s_singleElectron_eff.root' % (date, date)
+    newPhotonFileName = '%s/%s_singlePhoton_eff.root' % (date, date)
+    newRateFileName = '%s/%s_minBias_rate.root' % (date, date)
+
+    oldRateFile = ROOT.TFile(newRateFileName,'r')
     if trkDetails :
         oldRateTrackFile = ROOT.TFile('egTriggerRateTracks.root','r')
     oldRateTree = oldRateFile.Get('analyzer/crystal_tree')
@@ -203,19 +212,19 @@ def makeComparisons( Cut, name, trkDetails=False, changeDenom=["",""], var='clus
         makeNewCutTrees( 'egTriggerPhoEff.root', 'effPhoTree.root', Cut )
         effPhoFile = ROOT.TFile( 'effPhoTree.root', 'r' )
         ePhoTree = effPhoFile.Get("events")
-    oldEffFile = ROOT.TFile('egTriggerEff.root','r')
+    oldEffFile = ROOT.TFile(newEffFileName,'r')
     oldEffTree = oldEffFile.Get('analyzer/crystal_tree')
     # With the porposed cut, make a new cut tree, then sort
     # to ensure that only 1 cluster per event
-    makeNewCutTrees( 'egTriggerEff.root', 'effTree.root', Cut )
-    makeNewCutTrees( 'egTriggerRates.root', 'rateTree.root', Cut )
-    makeNewCutTrees( 'egTriggerRates.root', 'rateTreeTracks.root', 'trackPt > 10' )
+    makeNewCutTrees( newEffFileName, 'effTree.root', Cut )
+    makeNewCutTrees( newRateFileName, 'rateTree.root', Cut )
+    #makeNewCutTrees( 'egTriggerRates.root', 'rateTreeTracks.root', 'trackPt > 10' )
     effFile = ROOT.TFile( 'effTree.root', 'r' )
     eTree = effFile.Get("events")
     newRateFile = ROOT.TFile('rateTree.root','r')
     rTree = newRateFile.Get("events")
-    newRateFileTracks = ROOT.TFile('rateTreeTracks.root','r')
-    rTreeTracks = newRateFileTracks.Get("events")
+    #newRateFileTracks = ROOT.TFile('rateTreeTracks.root','r')
+    #rTreeTracks = newRateFileTracks.Get("events")
 
     # Additional pt cuts
     pt16 = "*("+var+" > 16)"
@@ -242,17 +251,18 @@ def makeComparisons( Cut, name, trkDetails=False, changeDenom=["",""], var='clus
     noCuts = makeRatePlot( oldRateFile, oldRateTree, "Raw Rate - No Cuts", "" )
     
     #xMax = 50 if not doPhoton else 75
-    xMax = 50
+    xMax = 60
     r5 = makeRatePlot( oldRateFile, rTree, name, Cut, xMax )
     r5_20 = makeRatePlot( oldRateFile, rTree, name+" p_{T}>20", Cut+pt20, xMax )
     r5_30 = makeRatePlot( oldRateFile, rTree, name+" p_{T}>30", Cut+pt30, xMax )
-    rTDR = oldRateFile.Get('analyzer/l1extraParticlesUCT:All_rate')
-    rTDR.SetTitle('Stage 1 Level 1 Trigger - 2015')
+    #rTDR = oldRateFile.Get('analyzer/l1extraParticlesUCT:All_rate')
+    #rTDR.SetTitle('Stage 1 Level 1 Trigger - 2015')
     if trkDetails and changeDenom == ["",""] :
         plotRateHists(  name+"_track_details", [noCuts, rTracks10, rTracks15, rTracks10eg, rTracks15eg] )
         plotRateHists(  name+"_track_details_iso", [noCuts, rTracks10, rTracks15, rTracks10eg, rTracks15eg, rTracks10Iso, rTracks15Iso, rTracks10egIso, rTracks15egIso] )
     if changeDenom == ["",""] and var == 'cluster_pt' : 
-        plotRateHists(  name+"_turnons_20_30", [rTDR, r5, r5_20, r5_30] )
+        #plotRateHists(  name+"_turnons_20_30", [rTDR, r5, r5_20, r5_30] )
+        plotRateHists(  name+"_turnons_20_30", [r5, r5_20, r5_30] )
     #plotRateHists(  name+"_turnons16_20_30", [rTDR, noCuts, rTracks10eg, rTracks15eg, r5, r5_20, r5_30] )
     #plotRateHists(  name+"_turnons16_20_30", [rTDR, noCuts, rTracks10, rTracks15, rTracks10eg, rTracks15eg, r5, r5_20, r5_30] )
     if var != 'cluster_pt' : 
@@ -274,34 +284,35 @@ def makeComparisons( Cut, name, trkDetails=False, changeDenom=["",""], var='clus
         e5Pho = makeEffPlot( ePhoTree, oldPhoEffTree, "Phase-2 Photon: All", Cut, preCut, yEffLabel, xMax )
         e5_20Pho = makeEffPlot( ePhoTree, oldPhoEffTree, "Phase-2 Photon: p_{T}>20", Cut+pt20, preCut, yEffLabel, xMax )
         e5_30Pho = makeEffPlot( ePhoTree, oldPhoEffTree, "Phase-2 Photon: p_{T}>30", Cut+pt30, preCut, yEffLabel, xMax )
-    neum = oldEffFile.Get('analyzer/l1extraParticlesUCT:All_efficiency_pt')
-    neum20 = oldEffFile.Get('analyzer/l1extraParticlesUCT:All_threshold20_efficiency_gen_pt')
-    neum30 = oldEffFile.Get('analyzer/l1extraParticlesUCT:All_threshold30_efficiency_gen_pt')
+    #neum = oldEffFile.Get('analyzer/l1extraParticlesUCT:All_efficiency_pt')
+    #neum20 = oldEffFile.Get('analyzer/l1extraParticlesUCT:All_threshold20_efficiency_gen_pt')
+    #neum30 = oldEffFile.Get('analyzer/l1extraParticlesUCT:All_threshold30_efficiency_gen_pt')
     ###denom = oldEffFile.Get('analyzer/gen_pt')
     denom = ROOT.TH1F('denomX', 'denomX',int(xMax/5),0,xMax)
     oldEffTree.Draw('denom_pt >> denomX')
 
-    for h in [neum, neum20, neum30] :
-        h.Rebin(5) 
-    nBins = denom.GetXaxis().GetNbins()
-    for bin in range( 0, nBins+2 ) :
-        if denom.GetBinContent(bin) < neum.GetBinContent(bin) :
-            denom.SetBinContent(bin, neum.GetBinContent(bin) ) # FIXME
-            print " --- Bin: %i    Neum: %.2f    Denom %.2f" % (bin, neum.GetBinContent(bin), denom.GetBinContent(bin))
+    #for h in [neum, neum20, neum30] :
+    #    h.Rebin(5) 
+    #nBins = denom.GetXaxis().GetNbins()
+    #for bin in range( 0, nBins+2 ) :
+    #    if denom.GetBinContent(bin) < neum.GetBinContent(bin) :
+    #        denom.SetBinContent(bin, neum.GetBinContent(bin) ) # FIXME
+    #        print " --- Bin: %i    Neum: %.2f    Denom %.2f" % (bin, neum.GetBinContent(bin), denom.GetBinContent(bin))
 
 
 
-    eTDRall = ROOT.TGraphAsymmErrors( neum, denom )
-    eTDR20 = ROOT.TGraphAsymmErrors( neum20, denom )
-    eTDR30 = ROOT.TGraphAsymmErrors( neum30, denom )
-    eTDRall.SetTitle('Stage 1: All')
-    eTDR20.SetTitle('Stage 1: p_{T}>20')
-    eTDR30.SetTitle('Stage 1: p_{T}>30')
+    #eTDRall = ROOT.TGraphAsymmErrors( neum, denom )
+    #eTDR20 = ROOT.TGraphAsymmErrors( neum20, denom )
+    #eTDR30 = ROOT.TGraphAsymmErrors( neum30, denom )
+    #eTDRall.SetTitle('Stage 1: All')
+    #eTDR20.SetTitle('Stage 1: p_{T}>20')
+    #eTDR30.SetTitle('Stage 1: p_{T}>30')
     if doPhoton :
         graphs = [eTDRall, e5, e5Pho, eTDR20, e5_20, e5_20Pho, eTDR30, e5_30, e5_30Pho] 
         nLegendCol = 3
     else :
-        graphs = [eTDRall, e5, eTDR20, e5_20, eTDR30, e5_30] 
+        #graphs = [eTDRall, e5, eTDR20, e5_20, eTDR30, e5_30] 
+        graphs = [e5, e5_20, e5_30] 
         nLegendCol = 2
     for graph in graphs :
         graph.GetYaxis().SetTitle(yEffLabel)
@@ -455,7 +466,7 @@ def makeCutROC( name, eTree, rTree, var, rocAry, prevCut, baseCut='', text='') :
         chan.SetTextSize(0.04)
         chan.DrawLatexNDC(.2, .2, text )
 
-    c.Print('plotsOpt/ROC_'+name+'.png')    
+    c.Print('/afs/cern.ch/user/t/truggles/www/Phase-II/20170508v3/plotsOpt/ROC_'+name+'.png')    
 
 
 def makeCutROCPlus( name, eTree, rTree, var, rocAry, prevCut, baseCut='', text='') :
@@ -558,7 +569,7 @@ def makeCutROCPlus( name, eTree, rTree, var, rocAry, prevCut, baseCut='', text='
             text2 = "All considered events passing: %s" % baseCut
             txt2.DrawLatexNDC(.2, .19, text2 )
 
-    c.Print('plotsOpt/ROCPlus_'+name+'.png')    
+    c.Print('/afs/cern.ch/user/t/truggles/www/Phase-II/20170508v3/plotsOpt/ROCPlus_'+name+'.png')    
 
 
 if __name__ == '__main__' :
