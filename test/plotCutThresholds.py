@@ -5,7 +5,7 @@ from ROOT import gStyle
 ROOT.gROOT.SetBatch(True)
 gStyle.SetOptStat(0)
 
-def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, points, linear=False, doFit=True, includeLine=False) :
+def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, points, linear=False, doFit=True, includeLine=False, invert=False) :
     title1 = "L1EGamma Crystal (Electrons)"
     title2 = "L1EGamma Crystal (Photons)"
     title3 = "L1EGamma Crystal (Fake)"
@@ -20,7 +20,7 @@ def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, poi
     yVals1 = array('f', [])
     for point in points :
         xVals1.append( point[0] )
-        yVals1.append( getPoint( h1, point[0], point[1] ) )
+        yVals1.append( getPoint( h1, point[0], point[1], invert ) )
     #print xVals1
     #print yVals1
     g1 = ROOT.TGraph(len(xVals1), xVals1, yVals1)
@@ -184,19 +184,28 @@ def drawPointsHists(h1, h2, title1, title2, xaxis, yaxis) :
 
 
 
-def getPoint( h, xVal, percentage ) :
+def getPoint( h, xVal, percentage, invert ) :
     val = 0.
     tot = 0.
     xBin = h.GetXaxis().FindBin( xVal )
     for i in range( 1, h.GetNbinsY() ) :
         tot += h.GetBinContent( xBin, i )
     targetVal = tot * percentage
-    for i in range( 1, h.GetNbinsY() ) :
-        val += h.GetBinContent( xBin, i )
-        if val >= targetVal :
-            yVal = h.GetYaxis().GetBinCenter(i)
-            #print "Reached target of %.3f at ybin %i with yval %.2f" % (percentage, i, yVal )
-            return yVal
+    if not invert :
+        for i in range( 1, h.GetNbinsY() ) :
+            val += h.GetBinContent( xBin, i )
+            if val >= targetVal :
+                yVal = h.GetYaxis().GetBinCenter(i)
+                #print "Non-Inverted Reached target of %.3f at ybin %i with yval %.2f" % (percentage, i, yVal )
+                return yVal
+    if invert :
+        for i in range( 1, h.GetNbinsY() ) :
+            invBin = h.GetNbinsY()+1-i
+            val += h.GetBinContent( xBin, invBin )
+            if val >= targetVal :
+                yVal = h.GetYaxis().GetBinCenter(invBin)
+                #print "Inverted Reached target of %.3f at ybin %i with yval %.2f" % (percentage, i, yVal )
+                return yVal
     print "Error, not supposed to get here"
 
 
@@ -223,15 +232,16 @@ def getAverage( h, xVal ) :
 
 if __name__ == '__main__' :
 
-    date = '20170508v3'
-    #date = '20170503v1'
-    newEffFileName = '%s/%s_singleElectron_eff.root' % (date, date)
-    newPhotonFileName = '%s/%s_singlePhoton_eff.root' % (date, date)
-    newRateFileName = '%s/%s_minBias_rate.root' % (date, date)
+    date = '20170518v3'
 
-    rateFile = ROOT.TFile( newRateFileName, 'r' )
-    effFile = ROOT.TFile( newEffFileName, 'r' )
-    effPhoFile = ROOT.TFile( newPhotonFileName, 'r' )
+    singleE = 'r2_phase2_singleElectron_%s.root' % date
+    singlePho = 'r2_phase2_singlePhoton_%s.root' % date
+    minBias = 'r2_phase2_minBias_%s.root' % date
+
+    rateFile = ROOT.TFile( minBias, 'r' )
+    effFile = ROOT.TFile( singleE, 'r' )
+    effPhoFile = ROOT.TFile( singlePho, 'r' )
+
     crystal_tree = effFile.Get("analyzer/crystal_tree")
     crystal_treePho = effPhoFile.Get("analyzer/crystal_tree")
     rate_tree = rateFile.Get("analyzer/crystal_tree")
@@ -325,22 +335,51 @@ if __name__ == '__main__' :
     #######################
     ### In Progress 90X ###
     #######################
-    Isolation9 = cutMap['90x']['isolation']
-    showerShapes9 = cutMap['90x']['showerShape']
+    # when changing from 500 to 250 MeV, you need to change the points settings
+    # to get a good fit.  Also change the fit function of clusterPtVClusterIso
+    # set as linear for 500 MeV, exponential for 250 MeV
+    energy = '250MeV'
+    isoLinear = False
+    Isolation9 = cutMap['90x'+energy]['isolation']
+    showerShapes9 = cutMap['90x'+energy]['showerShape']
     cut_ss_cIso9 = showerShapes9+" && "+Isolation9
     
+    points = [ # pt, percentile # Used for cut11
+        [  5,   .75 ], # 250 MeV
+        [ 7.5,  .80 ], # 250 MeV
+        [ 10,   .85 ], # 250 MeV
+        [ 12.5, .90 ], # 250 MeV
+        [ 15,   .925 ], # 250 MeV
+        #[  5,   .96 ], # 500 MeV
+        #[ 7.5,  .96 ], # 500 MeV
+        #[ 10,   .96 ], # 500 MeV
+        #[ 12.5, .96 ], # 500 MeV
+        #[ 15,   .96 ], # 500 MeV
+        [ 17.5, .96 ],
+        [ 22.5, .96 ],
+        [ 27.5, .97 ],
+        [ 32.5, .985 ],
+        [ 37.5, .99 ],
+        [ 42.5, .99 ],
+        [ 50, .995 ],
+        [ 60, .995 ],
+        [ 70, .995 ],
+        [ 80, .995 ],
+        [ 90, .995 ],
+        ]
 
 
-    var = "(-e2x5/e5x5):cluster_pt"
+    #var = "(-e2x5/e5x5):cluster_pt"
+    var = "(e2x5/e5x5):cluster_pt"
     xaxis = "Cluster P_{T} (GeV)"
-    yaxis = "Negative Energy 2x5/5x5"
+    yaxis = "Energy 2x5/5x5"
     xinfo = [25, 0., 100.]
-    yinfo = [100, -1.05, -0.7]
-    #yinfo = [30, 0.4, 1.1]
+    #yinfo = [100, -1.05, -0.7]
+    yinfo = [100, 0.7, 1.05]
     c.SetTitle("clusterPtVE2x5OverE5x5")
-    drawPoints(c, crystal_tree, var, cut_none, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, False)
+    drawPoints(c, crystal_tree, var, cut_none, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, False, True)
     c.SetTitle("clusterPtVE2x5OverE5x5_fitLine")
-    drawPoints(c, crystal_tree, var, cut_none, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, True) # Draw fit line
+    drawPoints(c, crystal_tree, var, cut_none, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, True, True) # Draw fit line
 
 
     # There is lots of discriminating power in Iso if we tighten it a bit at low Pt
@@ -369,9 +408,9 @@ if __name__ == '__main__' :
     xinfo = [20, 0., 100.]
     yinfo = [100, 0., 5.]
     c.SetTitle("clusterPtVClusterIso")
-    drawPoints(c, crystal_tree, var, showerShapes9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, True, True, False)
+    drawPoints(c, crystal_tree, var, showerShapes9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, isoLinear, True, False)
     c.SetTitle("clusterPtVClusterIso_fitLine")
-    drawPoints(c, crystal_tree, var, showerShapes9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, True, True, True) # Draw fit line
+    drawPoints(c, crystal_tree, var, showerShapes9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, isoLinear, True, True) # Draw fit line
 #
 #    var = "trackIsoConePtSum/trackPt:cluster_pt"
 #    xaxis = "Cluster P_{T} (GeV)"
