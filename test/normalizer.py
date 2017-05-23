@@ -1,22 +1,25 @@
 import ROOT
 import trigHelpers
 
+version = 'v3p2'
+version = 'v2p3'
+
 def normalizeHists() :
-    eff = ROOT.TFile("egTriggerEff.root", "UPDATE")
-    pho = ROOT.TFile("egTriggerPhoEff.root", "UPDATE")
-    rates = ROOT.TFile("egTriggerRates.root", "UPDATE")
+    eff = ROOT.TFile("r2_phase2_singleElectron_%s.root" % version, "UPDATE")
+    pho = ROOT.TFile("r2_phase2_singlePhoton_%s.root" % version, "UPDATE")
+    rates = ROOT.TFile("r2_phase2_minBias_%s.root" % version, "UPDATE")
 
     # We need to renormalize everything since these files were parallel processed
 
-    # Single Electrong and Photon are idential 
+    # Single Electron and Photon are idential 
     for file in [eff, pho] :
         effHistKeys = trigHelpers.getKeysOfClass(file, "analyzer", "TH1F")
-        effPtDenom = eff.Get("analyzer/gen_pt")
-        effEtaDenom = eff.Get("analyzer/gen_eta")
-        effRecoPtDenom = eff.Get("analyzer/reco_pt")
+        effPtDenom = file.Get("analyzer/gen_pt")
+        effEtaDenom = file.Get("analyzer/gen_eta")
+        effRecoPtDenom = file.Get("analyzer/reco_pt")
         if effPtDenom != None :
             print "Creating efficiency histograms"
-	    print "Eff hists in 2 categories 1) gen / gen and 2) reco / reco"
+            print "Eff hists in 2 categories 1) gen / gen and 2) reco / reco"
             print "Total event count: %f" % effPtDenom.Integral()
             print "Total offline reco event count: %f" % effRecoPtDenom.Integral()
 
@@ -88,7 +91,7 @@ def normalizeHists() :
             effTree.GetEntry( i )
             cnt += 1
             if cnt % 1000 == 0 : print "Efficiency Tree: %i" % cnt
-	    pt = effTree.cluster_pt
+            pt = effTree.cluster_pt
             effCorPt[0] = pt + corFunc( pt )*pt
             effCorPtB.Fill()
         file.Write("", ROOT.TObject.kOverwrite)
@@ -96,19 +99,19 @@ def normalizeHists() :
 
 
 
-    rateTree = rates.Get('analyzer/crystal_tree')
-    rateCorPt = array('f', [ 0 ] )
-    rateCorPtB = rateTree.Branch('crystal_pt_to_RCT2015', rateCorPt, 'crystal_pt_to_RCT2015/F')
+    #rateTree = rates.Get('analyzer/crystal_tree')
+    #rateCorPt = array('f', [ 0 ] )
+    #rateCorPtB = rateTree.Branch('crystal_pt_to_RCT2015', rateCorPt, 'crystal_pt_to_RCT2015/F')
 
-    cnt = 0
-    for i in range(0, rateTree.GetEntries() ) :
-        rateTree.GetEntry( i )
-        cnt += 1
-        if cnt % 1000 == 0 : print "Rates Tree: %i" % cnt
-        pt = rateTree.cluster_pt
-        rateCorPt[0] = pt + corFunc( pt )*pt
-        rateCorPtB.Fill()
-    rates.Write("", ROOT.TObject.kOverwrite)
+    #cnt = 0
+    #for i in range(0, rateTree.GetEntries() ) :
+    #    rateTree.GetEntry( i )
+    #    cnt += 1
+    #    if cnt % 1000 == 0 : print "Rates Tree: %i" % cnt
+    #    pt = rateTree.cluster_pt
+    #    rateCorPt[0] = pt + corFunc( pt )*pt
+    #    rateCorPtB.Fill()
+    #rates.Write("", ROOT.TObject.kOverwrite)
     rates.Close() 
 
 
