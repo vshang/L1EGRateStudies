@@ -17,9 +17,10 @@ ROOT.gROOT.SetBatch(True)
 
 date = '20170508v3'
 #date = '20170503v1'
-newEffFileName = '%s/%s_singleElectron_eff.root' % (date, date)
-newPhotonFileName = '%s/%s_singlePhoton_eff.root' % (date, date)
-newRateFileName = '%s/%s_minBias_rate.root' % (date, date)
+date = 'v2'
+newEffFileName = 'r2_phase2_singleElectron_%s.root' % (date)
+newPhotonFileName = 'r2_phase2_singlePhoton_%s.root' % (date)
+newRateFileName = 'r2_phase2_minBias_%s.root' % (date)
 
 rateFile = ROOT.TFile( newRateFileName, 'r' )
 effFile = ROOT.TFile( newEffFileName, 'r' )
@@ -79,9 +80,11 @@ c = ROOT.TCanvas('c','c',canvasSize,canvasSize)
 
 from loadCuts import getCutMap
 cutMap = getCutMap()
-Isolation9 = cutMap['90x']['isolation']
-showerShapes9 = cutMap['90x']['showerShape']
+Isolation9 = cutMap['90x500MeV']['isolation']
+showerShapes9 = cutMap['90x500MeV']['showerShape']
 cut_ss_cIso9 = showerShapes9+"*"+Isolation9
+cut_with_e2x2OverE2x5Window = cut_ss_cIso9+"*((e2x2/e2x5)>0.9)"
+cut_ss_cIso_TrkMatch = cut_ss_cIso9+"*(trackDeltaR<.1)"
 
 cut_none = "(1.)"
 cut_ss = showerShapes9
@@ -98,9 +101,8 @@ rebaseAll = cut_ss_cIso9
 
 #makeCutROC( "testDRCutsBaselineCuts20_ss_cIso", eTree, rTree, "trackDeltaR", rocAry, cut_ss_cIso9+"*"+rebase20, rebaseAll+"*"+rebase20, textR )
 makeComparisons( cut_ss_cIso9, "E_e2x5OverE5x5 Iso", False, ["",""], 'cluster_pt' )
-#cut_with_e2x2OverE2x5Window = cut_ss_cIso9+"*((e2x2/e2x5)>0.9)"
-#makeComparisons( cut_with_e2x2OverE2x5Window, "E_e2x5OverE5x5 Iso PhoWindow", False, ["",""], 'cluster_pt' )
-#makeComparisons( cut_ss_cIso_TrkMatch, "E_e2x5OverE5x5 Iso TrkMatch", False, ["",""], 'cluster_pt' )
+makeComparisons( cut_with_e2x2OverE2x5Window, "E_e2x5OverE5x5 Iso PhoWindow", False, ["",""], 'cluster_pt' )
+makeComparisons( cut_ss_cIso_TrkMatch, "E_e2x5OverE5x5 Iso TrkMatch", False, ["",""], 'cluster_pt' )
 
 
 

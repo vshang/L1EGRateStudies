@@ -36,6 +36,7 @@ def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, poi
 
     if not linear and doFit :
         f1 = ROOT.TF1( 'f1', '([0] + [1]*TMath::Exp(-[2]*x))', mini, maxi)
+        f1.SetLineWidth( 4 )
         f1.SetParName( 0, "y rise" )
         f1.SetParName( 1, "scale" )
         f1.SetParName( 2, "decay" )
@@ -45,6 +46,7 @@ def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, poi
         g1.Fit('f1', fitCode )
     if linear and doFit :
         f1 = ROOT.TF1( 'f1', '([0] + [1]*x)', mini, maxi)
+        f1.SetLineWidth( 4 )
         f1.SetParName( 0, "y intercept" )
         f1.SetParName( 1, "slope" )
         f1.SetParameter( 0, .0 )
@@ -60,6 +62,7 @@ def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, poi
             f2.SetParameter( 0, f1.GetParameter( 0 ) )
             f2.SetParameter( 1, f1.GetParameter( 1 ) )
             f2.SetParameter( 2, f1.GetParameter( 2 ) )
+        f2.SetLineWidth( 4 )
         f2.Draw('SAME')
     
     c.cd(2)
@@ -233,6 +236,7 @@ def getAverage( h, xVal ) :
 if __name__ == '__main__' :
 
     date = '20170518v3'
+    date = 'v2'
 
     singleE = 'r2_phase2_singleElectron_%s.root' % date
     singlePho = 'r2_phase2_singlePhoton_%s.root' % date
@@ -338,11 +342,13 @@ if __name__ == '__main__' :
     # when changing from 500 to 250 MeV, you need to change the points settings
     # to get a good fit.  Also change the fit function of clusterPtVClusterIso
     # set as linear for 500 MeV, exponential for 250 MeV
-    energy = '250MeV'
-    isoLinear = False
+    energy = '500MeV'
+    isoLinear = False # For 250 MeV
+    isoLinear = True # for 500 MeV
     Isolation9 = cutMap['90x'+energy]['isolation']
     showerShapes9 = cutMap['90x'+energy]['showerShape']
     cut_ss_cIso9 = showerShapes9+" && "+Isolation9
+    cut_ss_cIso9_pt10 = cut_ss_cIso9+" && cluster_pt>10"
     
     points = [ # pt, percentile # Used for cut11
         [  5,   .75 ], # 250 MeV
@@ -377,48 +383,79 @@ if __name__ == '__main__' :
     #yinfo = [100, -1.05, -0.7]
     yinfo = [100, 0.7, 1.05]
     c.SetTitle("clusterPtVE2x5OverE5x5")
-    drawPoints(c, crystal_tree, var, cut_none, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, False, True)
-    c.SetTitle("clusterPtVE2x5OverE5x5_fitLine")
-    drawPoints(c, crystal_tree, var, cut_none, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, True, True) # Draw fit line
-
-
-    # There is lots of discriminating power in Iso if we tighten it a bit at low Pt
-    points = [ # pt, percentile # Used for cut11
-        [  5,   .85 ],
-        [ 7.5,  .85 ],
-        [ 10,   .90 ],
-        [ 12.5, .90 ],
-        [ 15,   .94 ],
-        [ 17.5, .96 ],
-        [ 22.5, .96 ],
-        [ 27.5, .97 ],
-        [ 32.5, .985 ],
-        [ 37.5, .99 ],
-        [ 42.5, .99 ],
-        [ 50, .995 ],
-        [ 60, .995 ],
-        [ 70, .995 ],
-        [ 80, .995 ],
-        [ 90, .995 ],
-        ]
-
-    var = "cluster_iso:cluster_pt"
-    xaxis = "Cluster P_{T} (GeV)"
-    yaxis = "Cluster Iso"
-    xinfo = [20, 0., 100.]
-    yinfo = [100, 0., 5.]
-    c.SetTitle("clusterPtVClusterIso")
-    drawPoints(c, crystal_tree, var, showerShapes9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, isoLinear, True, False)
-    c.SetTitle("clusterPtVClusterIso_fitLine")
-    drawPoints(c, crystal_tree, var, showerShapes9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, isoLinear, True, True) # Draw fit line
+#    drawPoints(c, crystal_tree, var, cut_none, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, False, True)
+#    c.SetTitle("clusterPtVE2x5OverE5x5_fitLine")
+#    drawPoints(c, crystal_tree, var, cut_none, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, True, True) # Draw fit line
 #
-#    var = "trackIsoConePtSum/trackPt:cluster_pt"
+#
+#    # There is lots of discriminating power in Iso if we tighten it a bit at low Pt
+#    points = [ # pt, percentile # Used for cut11
+#        [  5,   .85 ],
+#        [ 7.5,  .85 ],
+#        [ 10,   .90 ],
+#        [ 12.5, .90 ],
+#        [ 15,   .94 ],
+#        [ 17.5, .96 ],
+#        [ 22.5, .96 ],
+#        [ 27.5, .97 ],
+#        [ 32.5, .985 ],
+#        [ 37.5, .99 ],
+#        [ 42.5, .99 ],
+#        [ 50, .995 ],
+#        [ 60, .995 ],
+#        [ 70, .995 ],
+#        [ 80, .995 ],
+#        [ 90, .995 ],
+#        ]
+#
+#    var = "cluster_iso:cluster_pt"
 #    xaxis = "Cluster P_{T} (GeV)"
-#    yaxis = "Trk Iso"
-#    xinfo = [20, 0., 50.]
-#    yinfo = [50, 0., 1.]
-#    c.SetTitle("clusterPtVTrackIso")
-#    drawPoints(c, crystal_tree, var, cut_ss_cIsoF, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points)
+#    yaxis = "Cluster Iso"
+#    xinfo = [20, 0., 100.]
+#    yinfo = [100, 0., 5.]
+#    c.SetTitle("clusterPtVClusterIso")
+#    drawPoints(c, crystal_tree, var, showerShapes9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, isoLinear, True, False)
+#    c.SetTitle("clusterPtVClusterIso_fitLine")
+#    drawPoints(c, crystal_tree, var, showerShapes9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, isoLinear, True, True) # Draw fit line
+#
+#    points = [ # pt, percentile # Used for cut11
+#        [  5,   .85 ],
+#        [ 7.5,  .85 ],
+#        [ 10,   .9 ],
+#        [ 12.5, .9 ],
+#        [ 15,   .9 ],
+#        [ 17.5, .9 ],
+#        [ 22.5, .9 ],
+#        [ 27.5, .9 ],
+#        [ 32.5, .9 ],
+#        [ 37.5, .9 ],
+#        [ 42.5, .9 ],
+#        [ 50, .9 ],
+#        [ 60, .9 ],
+#        [ 70, .9 ],
+#        [ 80, .9 ],
+#        [ 90, .9 ],
+#        ]
+    var = "trackDeltaR:cluster_pt"
+    xaxis = "Cluster P_{T} (GeV)"
+    yaxis = "Trk #DeltaR"
+    xinfo = [20, 0., 100.]
+    yinfo = [25, 0., 1.]
+    c.SetTitle("clusterPtVTrackDeltaR")
+    drawPoints(c, crystal_tree, var, cut_ss_cIso9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, False)
+    c.SetTitle("clusterPtVTrackDeltaR_fitLine")
+    drawPoints(c, crystal_tree, var, cut_ss_cIso9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, True)
+
+    # Photon Cut
+    var = "(e2x2/e2x5):cluster_pt"
+    xaxis = "Cluster P_{T} (GeV)"
+    yaxis = "Energy 2x2/2x5"
+    xinfo = [25, 0., 100.]
+    #yinfo = [100, -1.05, -0.7]
+    yinfo = [35, 0.7, 1.05]
+    c.SetTitle("clusterPtVE2x2OverE2x5")
+    drawPoints(c, crystal_tree, var, cut_ss_cIso9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, False)
+
 #
 #    points = [
 #        [  5,   .10 ],

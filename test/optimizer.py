@@ -10,8 +10,16 @@ ROOT.gROOT.SetBatch(True)
 
 canvasSize = 800
 
-effFile = ROOT.TFile( 'egTriggerEff.root', 'r' )
-rateFile = ROOT.TFile( 'egTriggerRates.root', 'r' )
+date = 'v2'
+newEffFileName = 'r2_phase2_singleElectron_%s.root' % (date)
+newPhotonFileName = 'r2_phase2_singlePhoton_%s.root' % (date)
+newRateFileName = 'r2_phase2_minBias_%s.root' % (date)
+
+rateFile = ROOT.TFile( newRateFileName, 'r' )
+effFile = ROOT.TFile( newEffFileName, 'r' )
+
+#effFile = ROOT.TFile( 'egTriggerEff.root', 'r' )
+#rateFile = ROOT.TFile( 'egTriggerRates.root', 'r' )
 eTree = effFile.Get("analyzer/crystal_tree")
 rTree = rateFile.Get("analyzer/crystal_tree")
 
@@ -120,7 +128,7 @@ def plotRateHists( name, hists=[] ) :
     cms = drawCMSString("CMS Simulation, Phase-II 90X, <PU>=200, Minimum-Bias")
     c.Update()
 
-    c.Print('/afs/cern.ch/user/t/truggles/www/Phase-II/20170508v3/plotsOpt/rates_'+name+'.png')    
+    c.Print('/afs/cern.ch/user/t/truggles/www/Phase-II/v2/plotsOpt/rates_'+name+'.png')    
     del c
     
 def makeEffPlot( ntree, otree, name, cut='', preCut='', yLabel='Eff. (L1 / Gen)', effLimit=50 ) :
@@ -190,17 +198,24 @@ def plotEffHists( name, graphs=[], nCol = 1 ) :
     addText( xPos, yPos, "Phase-2 L1EG Cut: "+name.replace('_',' ') )
 
     c.Update()
-    c.Print('/afs/cern.ch/user/t/truggles/www/Phase-II/20170508v3/plotsOpt/effs_'+name.replace(' ','_')+'.png')    
+    c.Print('/afs/cern.ch/user/t/truggles/www/Phase-II/v2/plotsOpt/effs_'+name.replace(' ','_')+'.png')    
     del c
 
 
 def makeComparisons( Cut, name, trkDetails=False, changeDenom=["",""], var='cluster_pt', doPhoton=False ) :
 
-    date = '20170508v3'
-    #date = '20170503v1'
-    newEffFileName = '%s/%s_singleElectron_eff.root' % (date, date)
-    newPhotonFileName = '%s/%s_singlePhoton_eff.root' % (date, date)
-    newRateFileName = '%s/%s_minBias_rate.root' % (date, date)
+    #date = 'v2'
+    ##date = '20170503v1'
+    #newEffFileName = '%s/%s_singleElectron_eff.root' % (date, date)
+    #newPhotonFileName = '%s/%s_singlePhoton_eff.root' % (date, date)
+    #newRateFileName = '%s/%s_minBias_rate.root' % (date, date)
+    date = 'v2'
+    newEffFileName = 'r2_phase2_singleElectron_%s.root' % (date)
+    newPhotonFileName = 'r2_phase2_singlePhoton_%s.root' % (date)
+    newRateFileName = 'r2_phase2_minBias_%s.root' % (date)
+    
+    rateFile = ROOT.TFile( newRateFileName, 'r' )
+    effFile = ROOT.TFile( newEffFileName, 'r' )
 
     oldRateFile = ROOT.TFile(newRateFileName,'r')
     if trkDetails :
@@ -466,7 +481,7 @@ def makeCutROC( name, eTree, rTree, var, rocAry, prevCut, baseCut='', text='') :
         chan.SetTextSize(0.04)
         chan.DrawLatexNDC(.2, .2, text )
 
-    c.Print('/afs/cern.ch/user/t/truggles/www/Phase-II/20170508v3/plotsOpt/ROC_'+name+'.png')    
+    c.Print('/afs/cern.ch/user/t/truggles/www/Phase-II/v2/plotsOpt/ROC_'+name+'.png')    
 
 
 def makeCutROCPlus( name, eTree, rTree, var, rocAry, prevCut, baseCut='', text='') :
@@ -569,7 +584,7 @@ def makeCutROCPlus( name, eTree, rTree, var, rocAry, prevCut, baseCut='', text='
             text2 = "All considered events passing: %s" % baseCut
             txt2.DrawLatexNDC(.2, .19, text2 )
 
-    c.Print('/afs/cern.ch/user/t/truggles/www/Phase-II/20170508v3/plotsOpt/ROCPlus_'+name+'.png')    
+    c.Print('/afs/cern.ch/user/t/truggles/www/Phase-II/v2/plotsOpt/ROCPlus_'+name+'.png')    
 
 
 if __name__ == '__main__' :
