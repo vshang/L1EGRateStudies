@@ -487,7 +487,7 @@ if __name__ == '__main__' :
         'L1EGamma Crystal Track' : 'analyzer/dyncrystalEG_track_rate',
         'L1EGamma Crystal Photon' : 'analyzer/dyncrystalEG_phoWindow_rate',
         'Stage-2 L1EG' : 'analyzer/stage2EG_rate',
-        'Stage-2 L1EG Iso' : 'analyzer/stage2EG_iso_rate',}
+        #'Stage-2 L1EG Iso' : 'analyzer/stage2EG_iso_rate',}
 
     effMap = {
         'newAlgEtaHist' : ('L1EGamma Crystal', 'analyzer/divide_dyncrystalEG_efficiency_eta_by_gen_eta'),
@@ -498,9 +498,9 @@ if __name__ == '__main__' :
         'newAlgPhotonPtHist' : ('L1EGamma Crystal - Photon', 'analyzer/divide_dyncrystalEG_efficiency_phoWindow_pt_by_gen_pt'),
         #'newAlgPtHist' : ('L1EGamma Crystal', 'analyzer/divide_dyncrystalEG_efficiency_track_pt_by_gen_pt'),
         'Stage2PtHist' : ('Stage-2 L1EG', 'analyzer/divide_stage2EG_efficiency_pt_by_gen_pt'),
-        'Stage2IsoPtHist' : ('Stage-2 L1EG - Iso', 'analyzer/divide_stage2EG_efficiency_iso_pt_by_gen_pt'),
+        #'Stage2IsoPtHist' : ('Stage-2 L1EG - Iso', 'analyzer/divide_stage2EG_efficiency_iso_pt_by_gen_pt'),
         'Stage2EtaHist' : ('Stage-2 L1EG', 'analyzer/divide_stage2EG_efficiency_eta_by_gen_eta'),
-        'Stage2IsoEtaHist' : ('Stage-2 L1EG - Iso', 'analyzer/divide_stage2EG_efficiency_iso_eta_by_gen_eta'),
+        #'Stage2IsoEtaHist' : ('Stage-2 L1EG - Iso', 'analyzer/divide_stage2EG_efficiency_iso_eta_by_gen_eta'),
         'stage2DRHist' : ('Stage-2 Crystal', 'analyzer/stage2EG_deltaR'),
         'stage2DEtaHist' : ('Stage-2 Crystal', 'analyzer/stage2EG_deta'),
         'stage2DPhiHist' : ('Stage-2 Crystal', 'analyzer/stage2EG_dphi'),
@@ -982,31 +982,31 @@ if __name__ == '__main__' :
     # Calo-based L1EG Rates
     c.SetName('dyncrystalEG_rate')
     c.SetTitle('')
-    toDraw = [ hists['Stage-2 L1EG'], hists['Stage-2 L1EG Iso'],hists['L1EGamma Crystal'], ]
+    toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal'], ]
     drawRates( toDraw, c, 40000., xrange)
 
     # Photon
     c.SetName('dyncrystalEG_photon_rate')
     c.SetTitle('')
-    toDraw = [ hists['Stage-2 L1EG'], hists['Stage-2 L1EG Iso'],hists['L1EGamma Crystal'], hists['L1EGamma Crystal Photon']]
+    toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal'], hists['L1EGamma Crystal Photon']]
     drawRates( toDraw, c, 40000., xrange)
 
     # Track
     c.SetName('dyncrystalEG_track_rate')
     c.SetTitle('')
-    toDraw = [ hists['Stage-2 L1EG'], hists['Stage-2 L1EG Iso'],hists['L1EGamma Crystal'], hists['L1EGamma Crystal Track']]
+    toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal'], hists['L1EGamma Crystal Track']]
     drawRates( toDraw, c, 40000., xrange)
 
     # All 
     c.SetName('dyncrystalEG_all_rate')
     c.SetTitle('')
-    toDraw = [ hists['Stage-2 L1EG'], hists['Stage-2 L1EG Iso'],hists['L1EGamma Crystal'], hists['L1EGamma Crystal Track'], hists['L1EGamma Crystal Photon']]
+    toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal'], hists['L1EGamma Crystal Track'], hists['L1EGamma Crystal Photon']]
     drawRates( toDraw, c, 40000., xrange)
 
     # Stage-2 rate solo
     c.SetName('stage2_rate')
     xrange = [0., 80.]
-    toDraw = [ hists['Stage-2 L1EG'], hists['Stage-2 L1EG Iso'],]
+    toDraw = [ hists['Stage-2 L1EG'],]
     drawRates( toDraw, c, 40000., xrange)
     
     #c.SetName('dyncrystalEG_rate_UW')
@@ -1019,23 +1019,23 @@ if __name__ == '__main__' :
     c.SetLogy(0)
     c.SetName("dyncrystalEG_efficiency_eta")
     c.SetTitle("EG Efficiencies")
-    drawEfficiency([effHists['Stage2EtaHist'], effHists['Stage2IsoEtaHist'], effHists['newAlgEtaHist']], c, 1.3, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
+    drawEfficiency([effHists['Stage2EtaHist'], effHists['newAlgEtaHist']], c, 1.3, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
     c.SetName("dyncrystalEG_efficiency_track_eta")
     c.SetTitle("EG Efficiencies")
-    drawEfficiency([effHists['Stage2EtaHist'], effHists['Stage2IsoEtaHist'], effHists['newAlgEtaHist'], effHists['newAlgTrkEtaHist']], c, 1.3, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
+    drawEfficiency([effHists['Stage2EtaHist'], effHists['newAlgEtaHist'], effHists['newAlgTrkEtaHist']], c, 1.3, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
 
     c.SetName("dyncrystalEG_efficiency_all_pt")
     c.SetTitle("")
-    drawEfficiency([effHists['Stage2PtHist'], effHists['Stage2IsoPtHist'], effHists['newAlgPtHist'], effHists['newAlgTrkPtHist'], effHists['newAlgPhotonPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
+    drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgTrkPtHist'], effHists['newAlgPhotonPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
     c.SetName("dyncrystalEG_efficiency_pt")
     c.SetTitle("")
-    drawEfficiency([effHists['Stage2PtHist'], effHists['Stage2IsoPtHist'], effHists['newAlgPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
+    drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
     c.SetName("dyncrystalEG_efficiency_track_pt")
     c.SetTitle("")
-    drawEfficiency([effHists['Stage2PtHist'], effHists['Stage2IsoPtHist'], effHists['newAlgPtHist'], effHists['newAlgTrkPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
+    drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgTrkPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
     c.SetName("dyncrystalEG_efficiency_photon_pt")
     c.SetTitle("")
-    drawEfficiency([effHists['Stage2PtHist'], effHists['Stage2IsoPtHist'], effHists['newAlgPtHist'], effHists['newAlgPhotonPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
+    drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgPhotonPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
 
     # Map of possible pt values from file with suggested fit function params
     possiblePts = {'20' : [0.9, 20., 1., 0.], '30' : [0.95, 30., 1., 0.], '40': [0.95, 16., 1., 0.]}

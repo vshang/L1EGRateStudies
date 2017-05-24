@@ -201,19 +201,19 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       TH2F * dyncrystal_2DdeltaR_hist;
 
       TH1F * stage2_efficiency_hist;
-      TH1F * stage2_efficiency_iso_hist;
+      //TH1F * stage2_efficiency_iso_hist;
       std::map<double, TH1F *> stage2_efficiency_reco_hists; // Turn-on thresholds
       std::map<double, TH1F *> stage2_efficiency_gen_hists; // Turn-on thresholds
       TH1F * stage2_efficiency_bremcut_hist;
       TH1F * stage2_efficiency_eta_hist;
-      TH1F * stage2_efficiency_iso_eta_hist;
+      //TH1F * stage2_efficiency_iso_eta_hist;
       TH1F * stage2_deltaR_hist;
       TH1F * stage2_deltaR_bremcut_hist;
       TH1F * stage2_deta_hist;
       TH1F * stage2_dphi_hist;
       TH1F * stage2_dphi_bremcut_hist;
       TH1F * stage2_rate_hist;
-      TH1F * stage2_iso_rate_hist;
+      //TH1F * stage2_iso_rate_hist;
       TH2F * stage2_2DdeltaR_hist;
       TH2F * stage2_reco_gen_pt_hist;
       TH1F * stage2_reco_gen_pt_1dHist;
@@ -430,10 +430,10 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
 
       // Make Stage 2 hists
       stage2_efficiency_hist = fs->make<TH1F>("stage2EG_efficiency_pt", "Stage-2 Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
-      stage2_efficiency_iso_hist = fs->make<TH1F>("stage2EG_efficiency_iso_pt", "Stage-2 Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
+      //stage2_efficiency_iso_hist = fs->make<TH1F>("stage2EG_efficiency_iso_pt", "Stage-2 Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       stage2_efficiency_bremcut_hist = fs->make<TH1F>("stage2EG_efficiency_bremcut_pt", "Stage-2 Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       stage2_efficiency_eta_hist = fs->make<TH1F>("stage2EG_efficiency_eta", "Stage-2 Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
-      stage2_efficiency_iso_eta_hist = fs->make<TH1F>("stage2EG_efficiency_iso_eta", "Stage-2 Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
+      //stage2_efficiency_iso_eta_hist = fs->make<TH1F>("stage2EG_efficiency_iso_eta", "Stage-2 Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
       // Implicit conversion from int to double
       for(int threshold : thresholds)
       {
@@ -482,7 +482,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       dyncrystal_track_rate_hist = fs->make<TH1F>("dyncrystalEG_track_rate" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
       dyncrystal_phoWindow_rate_hist = fs->make<TH1F>("dyncrystalEG_phoWindow_rate" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
       stage2_rate_hist = fs->make<TH1F>("stage2EG_rate" , "Stage-2 Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
-      stage2_iso_rate_hist = fs->make<TH1F>("stage2EG_iso_rate" , "Stage-2 Trigger Iso;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
+      //stage2_iso_rate_hist = fs->make<TH1F>("stage2EG_iso_rate" , "Stage-2 Trigger Iso;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
       //for(auto& inputTag : L1EGammaInputTags)
       //{
       //   const std::string &name = inputTag.encode();
@@ -921,10 +921,10 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          {
             stage2_efficiency_hist->Fill(trueElectron.pt());
             stage2_efficiency_eta_hist->Fill(trueElectron.eta());
-            if (EGCandidate.hwIso() > 0.) {
-               stage2_efficiency_iso_hist->Fill(trueElectron.pt());
-               stage2_efficiency_iso_eta_hist->Fill(trueElectron.eta());
-            }
+            //if (EGCandidate.hwIso() > 0.) {
+            //   stage2_efficiency_iso_hist->Fill(trueElectron.pt());
+            //   stage2_efficiency_iso_eta_hist->Fill(trueElectron.eta());
+            //}
             if ( offlineRecoFound )
             {
                for(auto& pair : stage2_efficiency_reco_hists)
@@ -1032,12 +1032,12 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       {
          auto& highestEGCandidate = stage2EGs[0];
          stage2_rate_hist->Fill(highestEGCandidate.pt());
-         for(const auto& eg : stage2EGs) {
-            if (eg.hwIso() > 0.) {
-               stage2_iso_rate_hist->Fill(eg.pt());
-               break;
-            }
-         }
+         //for(const auto& eg : stage2EGs) {
+         //   if (eg.hwIso() > 0.) {
+         //      stage2_iso_rate_hist->Fill(eg.pt());
+         //      break;
+         //   }
+         //}
       }
       else // !useEndcap
       {
@@ -1050,14 +1050,14 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                break;
             }
          }
-         for(const auto& candidate : stage2EGs)
-         {
-            if ( fabs(candidate.eta()) < 1.479 && candidate.hwIso() > 0. )
-            {
-               stage2_iso_rate_hist->Fill(candidate.pt());
-               break;
-            }
-         }
+         //for(const auto& candidate : stage2EGs)
+         //{
+         //   if ( fabs(candidate.eta()) < 1.479 && candidate.hwIso() > 0. )
+         //   {
+         //      stage2_iso_rate_hist->Fill(candidate.pt());
+         //      break;
+         //   }
+         //}
       }
 
       //for(const auto& eGammaCollection : eGammaCollections)
@@ -1109,7 +1109,7 @@ L1EGRateStudies::endJob()
       integrateDown(dyncrystal_track_rate_hist);
       integrateDown(dyncrystal_phoWindow_rate_hist);
       integrateDown(stage2_rate_hist);
-      integrateDown(stage2_iso_rate_hist);
+      //integrateDown(stage2_iso_rate_hist);
       //for(auto& hist : EGalg_rate_hists)
       //{
       //   integrateDown(hist.second);
