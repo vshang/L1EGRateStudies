@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DATE=20170518v3
+DATE=20170524v1
 
 # Different options
 
@@ -15,7 +15,7 @@ doTau=true
 #doMinBias=false
 #doElectron=false
 #doPhoton=false
-#doPiZero=false
+doPiZero=false
 doPion=false
 doTau=false
 
