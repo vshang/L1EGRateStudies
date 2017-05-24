@@ -1,6 +1,6 @@
 This repo provides some analysis tools for the Phase-II L1EG Crystal Algorithm.  You can find the producer here:
 ```
-https://github.com/cms-l1t-offline/cmssw/blob/phase2-l1t-integration-CMSSW_9_0_0_pre6/L1Trigger/L1CaloTrigger/plugins/L1EGammaCrystalsProducer.cc
+https://github.com/cms-l1t-offline/cmssw/blob/phase2-l1t-integration-CMSSW_9_2_0/L1Trigger/L1CaloTrigger/plugins/L1EGammaCrystalsProducer.cc
 ```
 
 For additional documentation, please see:
@@ -13,21 +13,21 @@ Checkout instructions:
 There are some auto-generated python file which is created in the "wrong" area and needs to be copied to run this code on Condor.
 
 ```bash
-cmsrel CMSSW_9_1_0_pre3
-cd CMSSW_9_1_0_pre3/src/
+cmsrel CMSSW_9_2_0
+cd CMSSW_9_2_0/src/
 cmsenv
 git cms-init
 git remote add cms-l1t-offline git@github.com:cms-l1t-offline/cmssw.git
 git fetch cms-l1t-offline
-git cms-merge-topic -u cms-l1t-offline:phase2-l1t-integration-CMSSW_9_1_0_pre3
+git cms-merge-topic -u cms-l1t-offline:phase2-l1t-integration-CMSSW_9_2_0
 git clone https://github.com/cms-data/L1Trigger-L1THGCal.git L1Trigger/L1THGCal/data
 
 git remote add trugges git@github.com:truggles/cmssw.git
 git fetch truggles
-git cms-merge-topic -u truggles:phase2-l1eg-910pre3
+git cms-merge-topic -u truggles:phase2-l1eg-920
 
 pushd L1Trigger/
-git clone -b 900_pre6_L1EGCrystals https://github.com/truggles/L1EGRateStudies.git L1EGRateStudies
+git clone -b 920_L1EGCrystals https://github.com/truggles/L1EGRateStudies.git L1EGRateStudies
 popd
 
 scramv1 b -j 8
