@@ -127,7 +127,9 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       // -- user functions
       void integrateDown(TH1F *);
       void fill_tree(const l1slhc::L1EGCrystalCluster& cluster);
-      bool cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
+      bool cluster_passes_base_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
+      bool cluster_passes_track_cuts(const l1slhc::L1EGCrystalCluster& cluster, float trackDeltaR) const;
+      bool cluster_passes_photon_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
       bool checkTowerExists(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps) const;
       //void checkRecHitsFlags(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps, const EcalRecHitCollection &ecalRecHits) const;
       void doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm::Handle<L1TkTrackCollectionType> l1trackHandle);
@@ -138,6 +140,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       bool debug;
       bool useEndcap;
       bool doTracking;
+      bool isPhoton;
       
       double genMatchDeltaRcut;
       double genMatchRelPtcut;
@@ -179,23 +182,31 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       TH1F * efficiency_denominator_reco_hist;
 
       TH1F * dyncrystal_efficiency_hist;
+      TH1F * dyncrystal_efficiency_track_hist;
+      TH1F * dyncrystal_efficiency_phoWindow_hist;
       std::map<double, TH1F *> dyncrystal_efficiency_reco_hists; // Turn-on thresholds
       std::map<double, TH1F *> dyncrystal_efficiency_gen_hists; // Turn-on thresholds
       TH1F * dyncrystal_efficiency_bremcut_hist;
       TH1F * dyncrystal_efficiency_eta_hist;
+      TH1F * dyncrystal_efficiency_track_eta_hist;
+      TH1F * dyncrystal_efficiency_phoWindow_eta_hist;
       TH1F * dyncrystal_deltaR_hist;
       TH1F * dyncrystal_deltaR_bremcut_hist;
       TH1F * dyncrystal_deta_hist;
       TH1F * dyncrystal_dphi_hist;
       TH1F * dyncrystal_dphi_bremcut_hist;
       TH1F * dyncrystal_rate_hist;
+      TH1F * dyncrystal_track_rate_hist;
+      TH1F * dyncrystal_phoWindow_rate_hist;
       TH2F * dyncrystal_2DdeltaR_hist;
 
       TH1F * stage2_efficiency_hist;
+      TH1F * stage2_efficiency_iso_hist;
       std::map<double, TH1F *> stage2_efficiency_reco_hists; // Turn-on thresholds
       std::map<double, TH1F *> stage2_efficiency_gen_hists; // Turn-on thresholds
       TH1F * stage2_efficiency_bremcut_hist;
       TH1F * stage2_efficiency_eta_hist;
+      TH1F * stage2_efficiency_iso_eta_hist;
       TH1F * stage2_deltaR_hist;
       TH1F * stage2_deltaR_bremcut_hist;
       TH1F * stage2_deta_hist;
@@ -259,7 +270,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float reco_pt = 0.;
          float reco_eta = -99.;
          float reco_phi = -99.;
-         bool  passed = false;
+         bool  passedBase = false;
          int   nthCandidate = -1;
          bool  endcap = false;
          float uslPt = 0.;
@@ -291,46 +302,46 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float trackChi2;
          float trackIsoConeTrackCount;
          float trackIsoConePtSum;
-         float trackPUTrackPtGlobalDiffZ;
-         float trackPUTrackPtGlobalDiffZandPt;
-         float trackPUTrackPtGlobalSameZ;
-         float trackPUTrackPtGlobalAll;
-         float trackPUTrackPt13x113DiffZ;
-         float trackPUTrackPt13x113DiffZandPt;
-         float trackPUTrackPt13x113SameZ;
-         float trackPUTrackPt13x113All;
-         float trackPUTrackPt3x5DiffZ;
-         float trackPUTrackPt3x5DiffZandPt;
-         float trackPUTrackPt3x5SameZ;
-         float trackPUTrackPt3x5All;
-         float trackPUTrackPtECalIsoConeDiffZ;
-         float trackPUTrackPtECalIsoConeDiffZandPt;
-         float trackPUTrackPtECalIsoConeSameZ;
-         float trackPUTrackPtECalIsoConeAll;
-         float trackPUTrackPtTkIsoConeDiffZ;
-         float trackPUTrackPtTkIsoConeDiffZandPt;
-         float trackPUTrackPtTkIsoConeSameZ;
-         float trackPUTrackPtTkIsoConeAll;
-         float trackPUTrackCntGlobalDiffZ;
-         float trackPUTrackCntGlobalDiffZandPt;
-         float trackPUTrackCntGlobalSameZ;
-         float trackPUTrackCntGlobalAll;
-         float trackPUTrackCnt13x113DiffZ;
-         float trackPUTrackCnt13x113DiffZandPt;
-         float trackPUTrackCnt13x113SameZ;
-         float trackPUTrackCnt13x113All;
-         float trackPUTrackCnt3x5DiffZ;
-         float trackPUTrackCnt3x5DiffZandPt;
-         float trackPUTrackCnt3x5SameZ;
-         float trackPUTrackCnt3x5All;
-         float trackPUTrackCntECalIsoConeDiffZ;
-         float trackPUTrackCntECalIsoConeDiffZandPt;
-         float trackPUTrackCntECalIsoConeSameZ;
-         float trackPUTrackCntECalIsoConeAll;
-         float trackPUTrackCntTkIsoConeDiffZ;
-         float trackPUTrackCntTkIsoConeDiffZandPt;
-         float trackPUTrackCntTkIsoConeSameZ;
-         float trackPUTrackCntTkIsoConeAll;
+         //float trackPUTrackPtGlobalDiffZ;
+         //float trackPUTrackPtGlobalDiffZandPt;
+         //float trackPUTrackPtGlobalSameZ;
+         //float trackPUTrackPtGlobalAll;
+         //float trackPUTrackPt13x113DiffZ;
+         //float trackPUTrackPt13x113DiffZandPt;
+         //float trackPUTrackPt13x113SameZ;
+         //float trackPUTrackPt13x113All;
+         //float trackPUTrackPt3x5DiffZ;
+         //float trackPUTrackPt3x5DiffZandPt;
+         //float trackPUTrackPt3x5SameZ;
+         //float trackPUTrackPt3x5All;
+         //float trackPUTrackPtECalIsoConeDiffZ;
+         //float trackPUTrackPtECalIsoConeDiffZandPt;
+         //float trackPUTrackPtECalIsoConeSameZ;
+         //float trackPUTrackPtECalIsoConeAll;
+         //float trackPUTrackPtTkIsoConeDiffZ;
+         //float trackPUTrackPtTkIsoConeDiffZandPt;
+         //float trackPUTrackPtTkIsoConeSameZ;
+         //float trackPUTrackPtTkIsoConeAll;
+         //float trackPUTrackCntGlobalDiffZ;
+         //float trackPUTrackCntGlobalDiffZandPt;
+         //float trackPUTrackCntGlobalSameZ;
+         //float trackPUTrackCntGlobalAll;
+         //float trackPUTrackCnt13x113DiffZ;
+         //float trackPUTrackCnt13x113DiffZandPt;
+         //float trackPUTrackCnt13x113SameZ;
+         //float trackPUTrackCnt13x113All;
+         //float trackPUTrackCnt3x5DiffZ;
+         //float trackPUTrackCnt3x5DiffZandPt;
+         //float trackPUTrackCnt3x5SameZ;
+         //float trackPUTrackCnt3x5All;
+         //float trackPUTrackCntECalIsoConeDiffZ;
+         //float trackPUTrackCntECalIsoConeDiffZandPt;
+         //float trackPUTrackCntECalIsoConeSameZ;
+         //float trackPUTrackCntECalIsoConeAll;
+         //float trackPUTrackCntTkIsoConeDiffZ;
+         //float trackPUTrackCntTkIsoConeDiffZandPt;
+         //float trackPUTrackCntTkIsoConeSameZ;
+         //float trackPUTrackCntTkIsoConeAll;
          float zVertex;
          float zVertexEnergy;
       } treeinfo;
@@ -360,6 +371,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    debug(iConfig.getUntrackedParameter<bool>("debug", false)),
    useEndcap(iConfig.getUntrackedParameter<bool>("useEndcap", false)),
    doTracking(iConfig.getUntrackedParameter<bool>("doTracking", false)),
+   isPhoton(iConfig.getUntrackedParameter<bool>("isPhoton", false)),
    genMatchDeltaRcut(iConfig.getUntrackedParameter<double>("genMatchDeltaRcut", 0.1)),
    genMatchRelPtcut(iConfig.getUntrackedParameter<double>("genMatchRelPtcut", 0.5)),
    crystalClustersToken_(consumes<l1slhc::L1EGCrystalClusterCollection>(iConfig.getParameter<edm::InputTag>("L1CrystalClustersInputTag"))),
@@ -397,8 +409,12 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       //offlineRecoClusterInputTag = iConfig.getParameter<edm::InputTag>("OfflineRecoClustersInputTag");
 
       dyncrystal_efficiency_hist = fs->make<TH1F>("dyncrystalEG_efficiency_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
+      dyncrystal_efficiency_track_hist = fs->make<TH1F>("dyncrystalEG_efficiency_track_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
+      dyncrystal_efficiency_phoWindow_hist = fs->make<TH1F>("dyncrystalEG_efficiency_phoWindow_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dyncrystal_efficiency_bremcut_hist = fs->make<TH1F>("dyncrystalEG_efficiency_bremcut_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dyncrystal_efficiency_eta_hist = fs->make<TH1F>("dyncrystalEG_efficiency_eta", "Dynamic Crystal Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
+      dyncrystal_efficiency_track_eta_hist = fs->make<TH1F>("dyncrystalEG_efficiency_track_eta", "Dynamic Crystal Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
+      dyncrystal_efficiency_phoWindow_eta_hist = fs->make<TH1F>("dyncrystalEG_efficiency_phoWindow_eta", "Dynamic Crystal Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
       // Implicit conversion from int to double
       for(int threshold : thresholds)
       {
@@ -414,8 +430,10 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
 
       // Make Stage 2 hists
       stage2_efficiency_hist = fs->make<TH1F>("stage2EG_efficiency_pt", "Stage-2 Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
+      stage2_efficiency_iso_hist = fs->make<TH1F>("stage2EG_efficiency_iso_pt", "Stage-2 Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       stage2_efficiency_bremcut_hist = fs->make<TH1F>("stage2EG_efficiency_bremcut_pt", "Stage-2 Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       stage2_efficiency_eta_hist = fs->make<TH1F>("stage2EG_efficiency_eta", "Stage-2 Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
+      stage2_efficiency_iso_eta_hist = fs->make<TH1F>("stage2EG_efficiency_iso_eta", "Stage-2 Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
       // Implicit conversion from int to double
       for(int threshold : thresholds)
       {
@@ -461,6 +479,8 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    else
    {
       dyncrystal_rate_hist = fs->make<TH1F>("dyncrystalEG_rate" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
+      dyncrystal_track_rate_hist = fs->make<TH1F>("dyncrystalEG_track_rate" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
+      dyncrystal_phoWindow_rate_hist = fs->make<TH1F>("dyncrystalEG_phoWindow_rate" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
       stage2_rate_hist = fs->make<TH1F>("stage2EG_rate" , "Stage-2 Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
       stage2_iso_rate_hist = fs->make<TH1F>("stage2EG_iso_rate" , "Stage-2 Trigger Iso;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
       //for(auto& inputTag : L1EGammaInputTags)
@@ -476,7 +496,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("run", &treeinfo.run);
    crystal_tree->Branch("lumi", &treeinfo.lumi);
    crystal_tree->Branch("event", &treeinfo.event);
-   crystal_tree->Branch("passed", &treeinfo.passed);
+   crystal_tree->Branch("passedBase", &treeinfo.passedBase);
    crystal_tree->Branch("pt", &treeinfo.crystal_pt, "1:2:3:4:5:6");
    crystal_tree->Branch("crystalCount", &treeinfo.crystalCount);
    crystal_tree->Branch("cluster_pt", &treeinfo.cluster_pt);
@@ -538,38 +558,38 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("trackChi2", &treeinfo.trackChi2);
    crystal_tree->Branch("trackIsoConeTrackCount", &treeinfo.trackIsoConeTrackCount);
    crystal_tree->Branch("trackIsoConePtSum", &treeinfo.trackIsoConePtSum);
-   crystal_tree->Branch("trackPUTrackPt13x113DiffZ", &treeinfo.trackPUTrackPt13x113DiffZ);
-   crystal_tree->Branch("trackPUTrackPt13x113DiffZandPt", &treeinfo.trackPUTrackPt13x113DiffZandPt);
-   crystal_tree->Branch("trackPUTrackPt13x113SameZ", &treeinfo.trackPUTrackPt13x113SameZ);
-   crystal_tree->Branch("trackPUTrackPt13x113All", &treeinfo.trackPUTrackPt13x113All);
-   crystal_tree->Branch("trackPUTrackPt3x5DiffZ", &treeinfo.trackPUTrackPt3x5DiffZ);
-   crystal_tree->Branch("trackPUTrackPt3x5DiffZandPt", &treeinfo.trackPUTrackPt3x5DiffZandPt);
-   crystal_tree->Branch("trackPUTrackPt3x5SameZ", &treeinfo.trackPUTrackPt3x5SameZ);
-   crystal_tree->Branch("trackPUTrackPt3x5All", &treeinfo.trackPUTrackPt3x5All);
-   crystal_tree->Branch("trackPUTrackPtECalIsoConeDiffZ", &treeinfo.trackPUTrackPtECalIsoConeDiffZ);
-   crystal_tree->Branch("trackPUTrackPtECalIsoConeDiffZandPt", &treeinfo.trackPUTrackPtECalIsoConeDiffZandPt);
-   crystal_tree->Branch("trackPUTrackPtECalIsoConeSameZ", &treeinfo.trackPUTrackPtECalIsoConeSameZ);
-   crystal_tree->Branch("trackPUTrackPtECalIsoConeAll", &treeinfo.trackPUTrackPtECalIsoConeAll);
-   crystal_tree->Branch("trackPUTrackPtTkIsoConeDiffZ", &treeinfo.trackPUTrackPtTkIsoConeDiffZ);
-   crystal_tree->Branch("trackPUTrackPtTkIsoConeDiffZandPt", &treeinfo.trackPUTrackPtTkIsoConeDiffZandPt);
-   crystal_tree->Branch("trackPUTrackPtTkIsoConeSameZ", &treeinfo.trackPUTrackPtTkIsoConeSameZ);
-   crystal_tree->Branch("trackPUTrackPtTkIsoConeAll", &treeinfo.trackPUTrackPtTkIsoConeAll);
-   crystal_tree->Branch("trackPUTrackCnt13x113DiffZ", &treeinfo.trackPUTrackCnt13x113DiffZ);
-   crystal_tree->Branch("trackPUTrackCnt13x113DiffZandPt", &treeinfo.trackPUTrackCnt13x113DiffZandPt);
-   crystal_tree->Branch("trackPUTrackCnt13x113SameZ", &treeinfo.trackPUTrackCnt13x113SameZ);
-   crystal_tree->Branch("trackPUTrackCnt13x113All", &treeinfo.trackPUTrackCnt13x113All);
-   crystal_tree->Branch("trackPUTrackCnt3x5DiffZ", &treeinfo.trackPUTrackCnt3x5DiffZ);
-   crystal_tree->Branch("trackPUTrackCnt3x5DiffZandPt", &treeinfo.trackPUTrackCnt3x5DiffZandPt);
-   crystal_tree->Branch("trackPUTrackCnt3x5SameZ", &treeinfo.trackPUTrackCnt3x5SameZ);
-   crystal_tree->Branch("trackPUTrackCnt3x5All", &treeinfo.trackPUTrackCnt3x5All);
-   crystal_tree->Branch("trackPUTrackCntECalIsoConeDiffZ", &treeinfo.trackPUTrackCntECalIsoConeDiffZ);
-   crystal_tree->Branch("trackPUTrackCntECalIsoConeDiffZandPt", &treeinfo.trackPUTrackCntECalIsoConeDiffZandPt);
-   crystal_tree->Branch("trackPUTrackCntECalIsoConeSameZ", &treeinfo.trackPUTrackCntECalIsoConeSameZ);
-   crystal_tree->Branch("trackPUTrackCntECalIsoConeAll", &treeinfo.trackPUTrackCntECalIsoConeAll);
-   crystal_tree->Branch("trackPUTrackCntTkIsoConeDiffZ", &treeinfo.trackPUTrackCntTkIsoConeDiffZ);
-   crystal_tree->Branch("trackPUTrackCntTkIsoConeDiffZandPt", &treeinfo.trackPUTrackCntTkIsoConeDiffZandPt);
-   crystal_tree->Branch("trackPUTrackCntTkIsoConeSameZ", &treeinfo.trackPUTrackCntTkIsoConeSameZ);
-   crystal_tree->Branch("trackPUTrackCntTkIsoConeAll", &treeinfo.trackPUTrackCntTkIsoConeAll);
+   //crystal_tree->Branch("trackPUTrackPt13x113DiffZ", &treeinfo.trackPUTrackPt13x113DiffZ);
+   //crystal_tree->Branch("trackPUTrackPt13x113DiffZandPt", &treeinfo.trackPUTrackPt13x113DiffZandPt);
+   //crystal_tree->Branch("trackPUTrackPt13x113SameZ", &treeinfo.trackPUTrackPt13x113SameZ);
+   //crystal_tree->Branch("trackPUTrackPt13x113All", &treeinfo.trackPUTrackPt13x113All);
+   //crystal_tree->Branch("trackPUTrackPt3x5DiffZ", &treeinfo.trackPUTrackPt3x5DiffZ);
+   //crystal_tree->Branch("trackPUTrackPt3x5DiffZandPt", &treeinfo.trackPUTrackPt3x5DiffZandPt);
+   //crystal_tree->Branch("trackPUTrackPt3x5SameZ", &treeinfo.trackPUTrackPt3x5SameZ);
+   //crystal_tree->Branch("trackPUTrackPt3x5All", &treeinfo.trackPUTrackPt3x5All);
+   //crystal_tree->Branch("trackPUTrackPtECalIsoConeDiffZ", &treeinfo.trackPUTrackPtECalIsoConeDiffZ);
+   //crystal_tree->Branch("trackPUTrackPtECalIsoConeDiffZandPt", &treeinfo.trackPUTrackPtECalIsoConeDiffZandPt);
+   //crystal_tree->Branch("trackPUTrackPtECalIsoConeSameZ", &treeinfo.trackPUTrackPtECalIsoConeSameZ);
+   //crystal_tree->Branch("trackPUTrackPtECalIsoConeAll", &treeinfo.trackPUTrackPtECalIsoConeAll);
+   //crystal_tree->Branch("trackPUTrackPtTkIsoConeDiffZ", &treeinfo.trackPUTrackPtTkIsoConeDiffZ);
+   //crystal_tree->Branch("trackPUTrackPtTkIsoConeDiffZandPt", &treeinfo.trackPUTrackPtTkIsoConeDiffZandPt);
+   //crystal_tree->Branch("trackPUTrackPtTkIsoConeSameZ", &treeinfo.trackPUTrackPtTkIsoConeSameZ);
+   //crystal_tree->Branch("trackPUTrackPtTkIsoConeAll", &treeinfo.trackPUTrackPtTkIsoConeAll);
+   //crystal_tree->Branch("trackPUTrackCnt13x113DiffZ", &treeinfo.trackPUTrackCnt13x113DiffZ);
+   //crystal_tree->Branch("trackPUTrackCnt13x113DiffZandPt", &treeinfo.trackPUTrackCnt13x113DiffZandPt);
+   //crystal_tree->Branch("trackPUTrackCnt13x113SameZ", &treeinfo.trackPUTrackCnt13x113SameZ);
+   //crystal_tree->Branch("trackPUTrackCnt13x113All", &treeinfo.trackPUTrackCnt13x113All);
+   //crystal_tree->Branch("trackPUTrackCnt3x5DiffZ", &treeinfo.trackPUTrackCnt3x5DiffZ);
+   //crystal_tree->Branch("trackPUTrackCnt3x5DiffZandPt", &treeinfo.trackPUTrackCnt3x5DiffZandPt);
+   //crystal_tree->Branch("trackPUTrackCnt3x5SameZ", &treeinfo.trackPUTrackCnt3x5SameZ);
+   //crystal_tree->Branch("trackPUTrackCnt3x5All", &treeinfo.trackPUTrackCnt3x5All);
+   //crystal_tree->Branch("trackPUTrackCntECalIsoConeDiffZ", &treeinfo.trackPUTrackCntECalIsoConeDiffZ);
+   //crystal_tree->Branch("trackPUTrackCntECalIsoConeDiffZandPt", &treeinfo.trackPUTrackCntECalIsoConeDiffZandPt);
+   //crystal_tree->Branch("trackPUTrackCntECalIsoConeSameZ", &treeinfo.trackPUTrackCntECalIsoConeSameZ);
+   //crystal_tree->Branch("trackPUTrackCntECalIsoConeAll", &treeinfo.trackPUTrackCntECalIsoConeAll);
+   //crystal_tree->Branch("trackPUTrackCntTkIsoConeDiffZ", &treeinfo.trackPUTrackCntTkIsoConeDiffZ);
+   //crystal_tree->Branch("trackPUTrackCntTkIsoConeDiffZandPt", &treeinfo.trackPUTrackCntTkIsoConeDiffZandPt);
+   //crystal_tree->Branch("trackPUTrackCntTkIsoConeSameZ", &treeinfo.trackPUTrackCntTkIsoConeSameZ);
+   //crystal_tree->Branch("trackPUTrackCntTkIsoConeAll", &treeinfo.trackPUTrackCntTkIsoConeAll);
    crystal_tree->Branch("zVertex", &treeinfo.zVertex);
    crystal_tree->Branch("zVertexEnergy", &treeinfo.zVertexEnergy);
 }
@@ -757,6 +777,10 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             particle.setCharge( -1.0 ); }
          if (pdgId < 0) {
             particle.setCharge( 1.0 ); }
+         if (isPhoton) {
+            particle.setMass(0.0);
+            particle.setCharge( 0.0 );
+         }
          BaseParticlePropagator prop(particle, 0., 0., 4.);
          BaseParticlePropagator start(prop);
          prop.propagateToEcalEntrance();
@@ -771,6 +795,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          else
          {
             // something failed?
+            if ( debug ) std::cout << "Taking defaul, non-propagated gen object" << std::endl;
             trueElectron = genParticles[0].polarP4();
          }
       }
@@ -835,10 +860,21 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                fill_tree(cluster);
                //checkRecHitsFlags(cluster, triggerPrimitives, ecalRecHits);
 
-               if ( cluster_passes_cuts(cluster) )
+               if ( cluster_passes_base_cuts(cluster) )
                {
                   dyncrystal_efficiency_hist->Fill(trueElectron.pt());
                   dyncrystal_efficiency_eta_hist->Fill(trueElectron.eta());
+
+                  if ( cluster_passes_track_cuts(cluster, treeinfo.trackDeltaR) ) {
+                     dyncrystal_efficiency_track_hist->Fill(trueElectron.pt());
+                     dyncrystal_efficiency_track_eta_hist->Fill(trueElectron.eta());
+                  }
+
+                  if ( cluster_passes_photon_cuts(cluster) ) {
+                     dyncrystal_efficiency_phoWindow_hist->Fill(trueElectron.pt());
+                     dyncrystal_efficiency_phoWindow_eta_hist->Fill(trueElectron.eta());
+                  }
+
                   if ( offlineRecoFound )
                   {
                      for(auto& pair : dyncrystal_efficiency_reco_hists)
@@ -870,7 +906,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                   brem_dphi_hist->Fill( cluster.bremStrength(), reco::deltaPhi(cluster, trueElectron) );
                   break;
                }
-            }
+            } // end passes Pt and dR match
          }
          if ( clusterFound && !bestClusterUsed )
          {
@@ -878,15 +914,17 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          }
       }
 
-      const std::string &name = "Stage-2";
       for(const auto& EGCandidate : stage2EGs)
       {
          if ( reco::deltaR(EGCandidate.polarP4(), trueElectron) < genMatchDeltaRcut &&
               fabs(EGCandidate.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
          {
-            if ( debug ) std::cout << "Filling hists for EG Collection: " << name << std::endl;
             stage2_efficiency_hist->Fill(trueElectron.pt());
             stage2_efficiency_eta_hist->Fill(trueElectron.eta());
+            if (EGCandidate.hwIso() > 0.) {
+               stage2_efficiency_iso_hist->Fill(trueElectron.pt());
+               stage2_efficiency_iso_eta_hist->Fill(trueElectron.eta());
+            }
             if ( offlineRecoFound )
             {
                for(auto& pair : stage2_efficiency_reco_hists)
@@ -952,6 +990,10 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    }
    else // !doEfficiencyCalc
    {
+      // L1EG Crystal Algo
+      bool filledBasicCuts = false;
+      bool filledTrackMatch = false;
+      bool filledPhotonTag = false;
       for(const auto& cluster : crystalClusters)
       {
          if ( !useEndcap && fabs(cluster.eta()) >= 1.479 ) continue;
@@ -965,21 +1007,33 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          fill_tree(cluster);
          //checkRecHitsFlags(cluster, triggerPrimitives, ecalRecHits);
 
-         if ( cluster_passes_cuts(cluster) )
+         if ( cluster_passes_base_cuts(cluster) )
          {
-            dyncrystal_rate_hist->Fill(cluster.pt());
-            break;
+
+            if (!filledBasicCuts) {
+               filledBasicCuts = true;
+               dyncrystal_rate_hist->Fill(cluster.pt());
+            }
+
+            if ( cluster_passes_track_cuts(cluster, treeinfo.trackDeltaR) && (!filledTrackMatch) ) {
+               filledTrackMatch = true;
+               dyncrystal_track_rate_hist->Fill(cluster.pt());
+            }
+
+            if ( cluster_passes_photon_cuts(cluster) && (!filledPhotonTag) ) {
+               filledPhotonTag = true;
+               dyncrystal_track_rate_hist->Fill(cluster.pt());
+            }
          }
       }
 
-      const std::string &name = "stage-2";
+      // Stage-2
       if ( useEndcap )
       {
          auto& highestEGCandidate = stage2EGs[0];
          stage2_rate_hist->Fill(highestEGCandidate.pt());
          for(const auto& eg : stage2EGs) {
             if (eg.hwIso() > 0.) {
-               std::cout << "Stage-2 Iso: " << eg.hwIso() << std::endl;
                stage2_iso_rate_hist->Fill(eg.pt());
                break;
             }
@@ -1052,6 +1106,8 @@ L1EGRateStudies::endJob()
       TH1F* event_count = fs->make<TH1F>("eventCount", "Event Count", 1, -1, 1);
       event_count->SetBinContent(1, eventCount);
       integrateDown(dyncrystal_rate_hist);
+      integrateDown(dyncrystal_track_rate_hist);
+      integrateDown(dyncrystal_phoWindow_rate_hist);
       integrateDown(stage2_rate_hist);
       integrateDown(stage2_iso_rate_hist);
       //for(auto& hist : EGalg_rate_hists)
@@ -1140,7 +1196,7 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
    treeinfo.e2x5 = cluster.e2x5();
    treeinfo.e3x5 = cluster.e3x5();
    treeinfo.e5x5 = cluster.e5x5();
-   treeinfo.passed = cluster_passes_cuts(cluster);
+   treeinfo.passedBase = cluster_passes_base_cuts(cluster);
    treeinfo.uslPt = cluster.GetExperimentalParam("upperSideLobePt");
    treeinfo.lslPt = cluster.GetExperimentalParam("lowerSideLobePt");
    treeinfo.phiStripContiguous0 = cluster.GetExperimentalParam("phiStripContiguous0");
@@ -1152,14 +1208,13 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
 }
 
 bool
-L1EGRateStudies::cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster) const {
+L1EGRateStudies::cluster_passes_base_cuts(const l1slhc::L1EGCrystalCluster& cluster) const {
    // return true;
    
    // Currently this producer is optimized based on cluster isolation and shower shape
    // the previous H/E cut has been removed for the moment.
    // The following cut is based off of what was shown in the Phase-2 meeting
-   // 23 June 2016.  Only the barrel is considered.  And track isolation
-   // is not included.
+   // 23 May 2017.  Only the barrel is considered.
    if ( fabs(cluster.eta()) < 1.479 )
    {
       //std::cout << "Starting passing check" << std::endl;
@@ -1170,13 +1225,52 @@ L1EGRateStudies::cluster_passes_cuts(const l1slhc::L1EGCrystalCluster& cluster) 
       bool passIso = false;
       bool passShowerShape = false;
       
-      if ( ( -0.92 + 0.18 * TMath::Exp( -0.04 * cluster_pt ) < (clusterE2x5 / clusterE5x5)) ) {
+      // 250 MeV option
+      //if ( ( 0.94 + 0.11 * TMath::Exp( -0.11 * cluster_pt ) < (clusterE2x5 / clusterE5x5)) ) {
+	  //passShowerShape = true; }
+      //if ( (( -0.27 + 1.5 * TMath::Exp( -0.013 * cluster_pt )) > cluster_iso ) ) {
+      //    passIso = true; }
+      //if ( passShowerShape && passIso ) {
+      //    //std::cout << " --- Passed!" << std::endl;
+	  //    return true; }
+
+	  // 500 MeV
+      if ( ( 0.94 + 0.087 * TMath::Exp( -0.047 * cluster_pt ) < (clusterE2x5 / clusterE5x5)) ) {
 	  passShowerShape = true; }
-      if ( (( 0.99 + 5.6 * TMath::Exp( -0.061 * cluster_pt )) > cluster_iso ) ) {
+      if ( ( 0.85 + -0.0080 * cluster_pt ) > cluster_iso ) {
           passIso = true; }
       if ( passShowerShape && passIso ) {
           //std::cout << " --- Passed!" << std::endl;
-	  return true; }
+	      return true; }
+   }
+   return false;
+}
+
+bool
+L1EGRateStudies::cluster_passes_track_cuts(const l1slhc::L1EGCrystalCluster& cluster, float trackDeltaR) const {
+   // return true;
+   
+   // Add track cut
+   if ( fabs(cluster.eta()) < 1.479 )
+   {
+      //std::cout << "Starting passing check" << std::endl;
+      if ( trackDeltaR < 0.05 ) {
+         return true; }
+   }
+   return false;
+}
+
+bool
+L1EGRateStudies::cluster_passes_photon_cuts(const l1slhc::L1EGCrystalCluster& cluster) const {
+   // return true;
+   
+   // Add track cut
+   if ( fabs(cluster.eta()) < 1.479 )
+   {
+      float clusterE2x2 = cluster.GetExperimentalParam("E2x2");
+      float clusterE2x5 = cluster.GetExperimentalParam("E2x5");
+      if ( clusterE2x2/clusterE2x5 > 0.95 ) {
+         return true; }
    }
    return false;
 }
@@ -1199,7 +1293,7 @@ L1EGRateStudies::checkTowerExists(const l1slhc::L1EGCrystalCluster &cluster, con
 
 //void
 //L1EGRateStudies::checkRecHitsFlags(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps, const EcalRecHitCollection &ecalRecHits) const {
-//   if ( cluster_passes_cuts(cluster) )
+//   if ( cluster_passes_base_cuts(cluster) )
 //   {
 //      if ( debug ) std::cout << "Event (pt = " << cluster.pt() << ") passed cuts, ";
 //      if ( debug && checkTowerExists(cluster, tps) )
@@ -1250,6 +1344,7 @@ L1EGRateStudies::checkTowerExists(const l1slhc::L1EGCrystalCluster &cluster, con
 //   }
 //}
 
+
 void
 L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm::Handle<L1TkTrackCollectionType> l1trackHandle)
 {
@@ -1268,6 +1363,7 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
   double max_track_pt_all_chi2_cutChi2 = 0.;
   double matched_z = 999.;
   //edm::Ptr<TTTrack<Ref_PixelDigi_>> matched_track;
+  bool foundMatchedTrack = false;
   edm::Ptr<TTTrack<Ref_Phase2TrackerDigi_>> matched_track;
   if ( l1trackHandle.isValid() )
   {
@@ -1308,6 +1404,7 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
            min_track_dr = dr;
            max_track_pt = pt;
            matched_track = ptr;
+           foundMatchedTrack = true;
            matched_z = ptr->getPOCA().z();
         }
         // If dR < 0.3, choose highest pt track
@@ -1316,6 +1413,7 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
            min_track_dr = dr;
            max_track_pt = pt;
            matched_track = ptr;
+           foundMatchedTrack = true;
            matched_z = ptr->getPOCA().z();
         }
      }
@@ -1325,12 +1423,12 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
      {
         //edm::Ptr<TTTrack<Ref_PixelDigi_>> ptr(l1trackHandle, track_index);
         edm::Ptr<TTTrack<Ref_Phase2TrackerDigi_>> ptr(l1trackHandle, track_index);
-    // don't double count the matched_track
-    if ( ptr == matched_track ) {
-      continue;
-    }
+        // don't double count the matched_track
+        if ( ptr == matched_track ) {
+          continue;
+        }
         // Don't consider tracks with pt < 2 for studies, might be increased to 3 later
-    double pt = ptr->getMomentum().perp();
+        double pt = ptr->getMomentum().perp();
         if (pt < 2.) continue;
 
         // Track Isolation cuts have been updated based on the recommendations here:
@@ -1340,195 +1438,220 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
         // Therefore pt -> 50 if pt > 50
         // Only consider tracks if chi2 < 100
         // Only consider iso tracks from within dZ < 0.6
-        double dr_2 = reco::deltaR(ptr->getMomentum(), matched_track->getMomentum());
-    double chi2 = ptr->getChi2();
-    if (pt > 50.) pt = 50;
+        double dr_2 = 99.;
+        if (foundMatchedTrack) {
+           dr_2 = reco::deltaR(ptr->getMomentum(), matched_track->getMomentum());}
+        double chi2 = ptr->getChi2();
+        if (pt > 50.) pt = 50;
         double this_z = ptr->getPOCA().z();
-    double deltaZ = abs(matched_z - this_z);
+        double deltaZ = abs(matched_z - this_z);
         if ( dr_2 < 0.2 && dr_2 > 0.03 && pt > 2. && chi2 < 100 && deltaZ < 0.6 )
         {
           isoConeTrackCount++;
           isoConePtSum += pt;
         }
      }
+//
+//     // Trying a track-based PU estimation for abs(dEta) <= 13*0.0173 && abs(dPhi) <= 113*0.0173
+//     // using the same window as calo based PU
+//     float PUTrackPtGlobalDiffZ = 0.;
+//     float PUTrackPtGlobalDiffZandPt = 0.;
+//     float PUTrackPtGlobalSameZ = 0.;
+//     float PUTrackPtGlobalAll = 0.;
+//     float PUTrackPt13x113DiffZ = 0.;
+//     float PUTrackPt13x113DiffZandPt = 0.;
+//     float PUTrackPt13x113SameZ = 0.;
+//     float PUTrackPt13x113All = 0.;
+//     float PUTrackPt3x5DiffZ = 0.;
+//     float PUTrackPt3x5DiffZandPt = 0.;
+//     float PUTrackPt3x5SameZ = 0.;
+//     float PUTrackPt3x5All = 0.;
+//     float PUTrackPtECalIsoConeDiffZ = 0.;
+//     float PUTrackPtECalIsoConeDiffZandPt = 0.;
+//     float PUTrackPtECalIsoConeSameZ = 0.;
+//     float PUTrackPtECalIsoConeAll = 0.;
+//     float PUTrackPtTkIsoConeDiffZ = 0.;
+//     float PUTrackPtTkIsoConeDiffZandPt = 0.;
+//     float PUTrackPtTkIsoConeSameZ = 0.;
+//     float PUTrackPtTkIsoConeAll = 0.;
+//     float PUTrackCntGlobalDiffZ = 0.;
+//     float PUTrackCntGlobalDiffZandPt = 0.;
+//     float PUTrackCntGlobalSameZ = 0.;
+//     float PUTrackCntGlobalAll = 0.;
+//     float PUTrackCnt13x113DiffZ = 0.;
+//     float PUTrackCnt13x113DiffZandPt = 0.;
+//     float PUTrackCnt13x113SameZ = 0.;
+//     float PUTrackCnt13x113All = 0.;
+//     float PUTrackCnt3x5DiffZ = 0.;
+//     float PUTrackCnt3x5DiffZandPt = 0.;
+//     float PUTrackCnt3x5SameZ = 0.;
+//     float PUTrackCnt3x5All = 0.;
+//     float PUTrackCntECalIsoConeDiffZ = 0.;
+//     float PUTrackCntECalIsoConeDiffZandPt = 0.;
+//     float PUTrackCntECalIsoConeSameZ = 0.;
+//     float PUTrackCntECalIsoConeAll = 0.;
+//     float PUTrackCntTkIsoConeDiffZ = 0.;
+//     float PUTrackCntTkIsoConeDiffZandPt = 0.;
+//     float PUTrackCntTkIsoConeSameZ = 0.;
+//     float PUTrackCntTkIsoConeAll = 0.;
+//     //int trkCnt = 0;
+//     for(size_t track_index=0; track_index<l1trackHandle->size(); ++track_index)
+//     {
+//       //edm::Ptr<TTTrack<Ref_PixelDigi_>> ptr(l1trackHandle, track_index);
+//       edm::Ptr<TTTrack<Ref_Phase2TrackerDigi_>> ptr(l1trackHandle, track_index);
+//
+//       // Cleaning section
+//       // don't double count the matched_track
+//       if ( ptr == matched_track ) continue;
+//       // Don't consider tracks with pt < 2 for studies
+//       // Don't consider track with pt > 5 b/c they aren't PU
+//       double pt = ptr->getMomentum().perp();
+//       double chi2 = ptr->getChi2();
+//       //if (pt < 2. || pt > 5.) continue;
+//       //trkCnt++;
+//       //std::cout << trkCnt << " - Pt: " << pt << " Chi2: " << chi2 << std::endl;
+//       if (pt < 2.) continue;
+//       if (pt > 50.) pt = 50;
+//       if (chi2 > 100.) continue;
+//
+//       // Categories
+//       // 1. ECal PU Window 13x113
+//       // 2. ECal Iso Window: 27x27
+//       // 3. Trk Iso Window: dr < 0.2
+//       // 4. Signal Region 3x5
+//       // 5. Global!
+//        
+//       // Reject tracks not matching any of these areas
+//       float trackDEta = L1TkElectronTrackMatchAlgo::deltaEta(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), ptr);
+//       float trackDPhi = L1TkElectronTrackMatchAlgo::deltaPhi(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), ptr);
+//
+//       // Additional vars for following categories
+//       float dr_2 = 99.;
+//       if (foundMatchedTrack) {
+//          dr_2 = reco::deltaR(ptr->getMomentum(), matched_track->getMomentum());}
+//       float this_z = ptr->getPOCA().z();
+//       float dz = abs(matched_z - this_z);
+//
+//       // Whole detector
+//       PUTrackPtGlobalAll += pt;
+//       PUTrackCntGlobalAll++;
+//       if (dz < 0.6) {
+//          PUTrackPtGlobalSameZ += pt;
+//          PUTrackCntGlobalSameZ++;
+//       }
+//       if (dz > 0.6) {
+//          PUTrackPtGlobalDiffZ += pt;
+//          PUTrackCntGlobalDiffZ++;
+//       }
+//       if (dz > 0.6 && pt < 5.) {
+//          PUTrackPtGlobalDiffZandPt += pt;
+//          PUTrackCntGlobalDiffZandPt++;
+//       }
+//
+//    // Going from integral crystal indices to track distance that could hit the farther edge of a crystal
+//    if (fabs(trackDEta) > 13.5*0.0173 ) continue; // ECal Iso is widest in Eta, this cut is == dR > 0.23
+//    if (fabs(trackDPhi) > 56.5*0.0173 ) continue; // ECal PU is widest in Phi
+//
+//    // Now many categories
+//    // 13x113 ECal PU Region
+//    if (fabs(trackDEta) < 6.5*0.0173 && fabs(trackDPhi) < 56.5*0.0173) {
+//             PUTrackPt13x113All += pt;
+//             PUTrackCnt13x113All++;
+//        if (dz < 0.6) {
+//                 PUTrackPt13x113SameZ += pt;
+//                 PUTrackCnt13x113SameZ++;
+//        }
+//        if (dz > 0.6) {
+//                 PUTrackPt13x113DiffZ += pt;
+//                 PUTrackCnt13x113DiffZ++;
+//        }
+//        if (dz > 0.6 && pt < 5.) {
+//                 PUTrackPt13x113DiffZandPt += pt;
+//                 PUTrackCnt13x113DiffZandPt++;
+//        }
+//    } // end 13x113 ECal PU Region
+//        
+//    // 3x5 Cluster Core
+//    if (fabs(trackDEta) < 1.5*0.0173 && fabs(trackDPhi) < 2.5*0.0173) {
+//             PUTrackPt3x5All += pt;
+//             PUTrackCnt3x5All++;
+//        if (dz < 0.6) {
+//                 PUTrackPt3x5SameZ += pt;
+//                 PUTrackCnt3x5SameZ++;
+//        }
+//        if (dz > 0.6) {
+//                 PUTrackPt3x5DiffZ += pt;
+//                 PUTrackCnt3x5DiffZ++;
+//        }
+//        if (dz > 0.6 && pt < 5.) {
+//                 PUTrackPt3x5DiffZandPt += pt;
+//                 PUTrackCnt3x5DiffZandPt++;
+//        }
+//    } // end 3x5 Cluster Core
+//        
+//    // ECal Iso Cone
+//    if (fabs(trackDEta) < 13.5*0.0173 && fabs(trackDPhi) < 13.5*0.0173) {
+//             PUTrackPtECalIsoConeAll += pt;
+//             PUTrackCntECalIsoConeAll++;
+//        if (dz < 0.6) {
+//                 PUTrackPtECalIsoConeSameZ += pt;
+//                 PUTrackCntECalIsoConeSameZ++;
+//        }
+//        if (dz > 0.6) {
+//                 PUTrackPtECalIsoConeDiffZ += pt;
+//                 PUTrackCntECalIsoConeDiffZ++;
+//        }
+//        if (dz > 0.6 && pt < 5.) {
+//                 PUTrackPtECalIsoConeDiffZandPt += pt;
+//                 PUTrackCntECalIsoConeDiffZandPt++;
+//        }
+//    } // end ECal Iso Cone
+//        
+//    // Track Iso Cone
+//    if (dr_2 < 0.2) {
+//             PUTrackPtTkIsoConeAll += pt;
+//             PUTrackCntTkIsoConeAll++;
+//        if (dz < 0.6) {
+//                 PUTrackPtTkIsoConeSameZ += pt;
+//                 PUTrackCntTkIsoConeSameZ++;
+//        }
+//        if (dz > 0.6) {
+//                 PUTrackPtTkIsoConeDiffZ += pt;
+//                 PUTrackCntTkIsoConeDiffZ++;
+//        }
+//        if (dz > 0.6 && pt < 5.) {
+//                 PUTrackPtTkIsoConeDiffZandPt += pt;
+//                 PUTrackCntTkIsoConeDiffZandPt++;
+//        }
+//    } // end Track Iso Cone
+//     } // end PU Tracks
 
-     // Trying a track-based PU estimation for abs(dEta) <= 13*0.0173 && abs(dPhi) <= 113*0.0173
-     // using the same window as calo based PU
-     float PUTrackPtGlobalDiffZ = 0.;
-     float PUTrackPtGlobalDiffZandPt = 0.;
-     float PUTrackPtGlobalSameZ = 0.;
-     float PUTrackPtGlobalAll = 0.;
-     float PUTrackPt13x113DiffZ = 0.;
-     float PUTrackPt13x113DiffZandPt = 0.;
-     float PUTrackPt13x113SameZ = 0.;
-     float PUTrackPt13x113All = 0.;
-     float PUTrackPt3x5DiffZ = 0.;
-     float PUTrackPt3x5DiffZandPt = 0.;
-     float PUTrackPt3x5SameZ = 0.;
-     float PUTrackPt3x5All = 0.;
-     float PUTrackPtECalIsoConeDiffZ = 0.;
-     float PUTrackPtECalIsoConeDiffZandPt = 0.;
-     float PUTrackPtECalIsoConeSameZ = 0.;
-     float PUTrackPtECalIsoConeAll = 0.;
-     float PUTrackPtTkIsoConeDiffZ = 0.;
-     float PUTrackPtTkIsoConeDiffZandPt = 0.;
-     float PUTrackPtTkIsoConeSameZ = 0.;
-     float PUTrackPtTkIsoConeAll = 0.;
-     float PUTrackCntGlobalDiffZ = 0.;
-     float PUTrackCntGlobalDiffZandPt = 0.;
-     float PUTrackCntGlobalSameZ = 0.;
-     float PUTrackCntGlobalAll = 0.;
-     float PUTrackCnt13x113DiffZ = 0.;
-     float PUTrackCnt13x113DiffZandPt = 0.;
-     float PUTrackCnt13x113SameZ = 0.;
-     float PUTrackCnt13x113All = 0.;
-     float PUTrackCnt3x5DiffZ = 0.;
-     float PUTrackCnt3x5DiffZandPt = 0.;
-     float PUTrackCnt3x5SameZ = 0.;
-     float PUTrackCnt3x5All = 0.;
-     float PUTrackCntECalIsoConeDiffZ = 0.;
-     float PUTrackCntECalIsoConeDiffZandPt = 0.;
-     float PUTrackCntECalIsoConeSameZ = 0.;
-     float PUTrackCntECalIsoConeAll = 0.;
-     float PUTrackCntTkIsoConeDiffZ = 0.;
-     float PUTrackCntTkIsoConeDiffZandPt = 0.;
-     float PUTrackCntTkIsoConeSameZ = 0.;
-     float PUTrackCntTkIsoConeAll = 0.;
-     //int trkCnt = 0;
-     for(size_t track_index=0; track_index<l1trackHandle->size(); ++track_index)
-     {
-        //edm::Ptr<TTTrack<Ref_PixelDigi_>> ptr(l1trackHandle, track_index);
-        edm::Ptr<TTTrack<Ref_Phase2TrackerDigi_>> ptr(l1trackHandle, track_index);
 
-    // Cleaning section
-    // don't double count the matched_track
-    if ( ptr == matched_track ) continue;
-        // Don't consider tracks with pt < 2 for studies
-        // Don't consider track with pt > 5 b/c they aren't PU
-    double pt = ptr->getMomentum().perp();
-    double chi2 = ptr->getChi2();
-        //if (pt < 2. || pt > 5.) continue;
-        //trkCnt++;
-        //std::cout << trkCnt << " - Pt: " << pt << " Chi2: " << chi2 << std::endl;
-        if (pt < 2.) continue;
-    if (pt > 50.) pt = 50;
-    if (chi2 > 100.) continue;
-
-    // Categories
-    // 1. ECal PU Window 13x113
-    // 2. ECal Iso Window: 27x27
-    // 3. Trk Iso Window: dr < 0.2
-    // 4. Signal Region 3x5
-    // 5. Global!
-     
-    // Reject tracks not matching any of these areas
-         float trackDEta = L1TkElectronTrackMatchAlgo::deltaEta(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), ptr);
-         float trackDPhi = L1TkElectronTrackMatchAlgo::deltaPhi(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), ptr);
-
-    // Additional vars for following categories
-        float dr_2 = reco::deltaR(ptr->getMomentum(), matched_track->getMomentum());
-        float this_z = ptr->getPOCA().z();
-    float dz = abs(matched_z - this_z);
-
-    // Whole detector
-         PUTrackPtGlobalAll += pt;
-         PUTrackCntGlobalAll++;
-    if (dz < 0.6) {
-             PUTrackPtGlobalSameZ += pt;
-             PUTrackCntGlobalSameZ++;
-    }
-    if (dz > 0.6) {
-             PUTrackPtGlobalDiffZ += pt;
-             PUTrackCntGlobalDiffZ++;
-    }
-    if (dz > 0.6 && pt < 5.) {
-             PUTrackPtGlobalDiffZandPt += pt;
-             PUTrackCntGlobalDiffZandPt++;
-    }
-
-    // Going from integral crystal indices to track distance that could hit the farther edge of a crystal
-    if (fabs(trackDEta) > 13.5*0.0173 ) continue; // ECal Iso is widest in Eta, this cut is == dR > 0.23
-    if (fabs(trackDPhi) > 56.5*0.0173 ) continue; // ECal PU is widest in Phi
-
-    // Now many categories
-    // 13x113 ECal PU Region
-    if (fabs(trackDEta) < 6.5*0.0173 && fabs(trackDPhi) < 56.5*0.0173) {
-             PUTrackPt13x113All += pt;
-             PUTrackCnt13x113All++;
-        if (dz < 0.6) {
-                 PUTrackPt13x113SameZ += pt;
-                 PUTrackCnt13x113SameZ++;
-        }
-        if (dz > 0.6) {
-                 PUTrackPt13x113DiffZ += pt;
-                 PUTrackCnt13x113DiffZ++;
-        }
-        if (dz > 0.6 && pt < 5.) {
-                 PUTrackPt13x113DiffZandPt += pt;
-                 PUTrackCnt13x113DiffZandPt++;
-        }
-    } // end 13x113 ECal PU Region
-        
-    // 3x5 Cluster Core
-    if (fabs(trackDEta) < 1.5*0.0173 && fabs(trackDPhi) < 2.5*0.0173) {
-             PUTrackPt3x5All += pt;
-             PUTrackCnt3x5All++;
-        if (dz < 0.6) {
-                 PUTrackPt3x5SameZ += pt;
-                 PUTrackCnt3x5SameZ++;
-        }
-        if (dz > 0.6) {
-                 PUTrackPt3x5DiffZ += pt;
-                 PUTrackCnt3x5DiffZ++;
-        }
-        if (dz > 0.6 && pt < 5.) {
-                 PUTrackPt3x5DiffZandPt += pt;
-                 PUTrackCnt3x5DiffZandPt++;
-        }
-    } // end 3x5 Cluster Core
-        
-    // ECal Iso Cone
-    if (fabs(trackDEta) < 13.5*0.0173 && fabs(trackDPhi) < 13.5*0.0173) {
-             PUTrackPtECalIsoConeAll += pt;
-             PUTrackCntECalIsoConeAll++;
-        if (dz < 0.6) {
-                 PUTrackPtECalIsoConeSameZ += pt;
-                 PUTrackCntECalIsoConeSameZ++;
-        }
-        if (dz > 0.6) {
-                 PUTrackPtECalIsoConeDiffZ += pt;
-                 PUTrackCntECalIsoConeDiffZ++;
-        }
-        if (dz > 0.6 && pt < 5.) {
-                 PUTrackPtECalIsoConeDiffZandPt += pt;
-                 PUTrackCntECalIsoConeDiffZandPt++;
-        }
-    } // end ECal Iso Cone
-        
-    // Track Iso Cone
-    if (dr_2 < 0.2) {
-             PUTrackPtTkIsoConeAll += pt;
-             PUTrackCntTkIsoConeAll++;
-        if (dz < 0.6) {
-                 PUTrackPtTkIsoConeSameZ += pt;
-                 PUTrackCntTkIsoConeSameZ++;
-        }
-        if (dz > 0.6) {
-                 PUTrackPtTkIsoConeDiffZ += pt;
-                 PUTrackCntTkIsoConeDiffZ++;
-        }
-        if (dz > 0.6 && pt < 5.) {
-                 PUTrackPtTkIsoConeDiffZandPt += pt;
-                 PUTrackCntTkIsoConeDiffZandPt++;
-        }
-    } // end Track Iso Cone
-     } // end PU Tracks
-
-
+     if (foundMatchedTrack) {
+        treeinfo.trackRInv = matched_track->getRInv();
+        treeinfo.trackChi2 = matched_track->getChi2();
+        treeinfo.trackZ = matched_track->getPOCA().z();
+        treeinfo.trackDeltaPhi = L1TkElectronTrackMatchAlgo::deltaPhi(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), matched_track);
+        treeinfo.trackDeltaEta = L1TkElectronTrackMatchAlgo::deltaEta(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), matched_track);
+        treeinfo.trackEta = matched_track->getMomentum().eta();
+        treeinfo.trackPhi = matched_track->getMomentum().phi();
+        treeinfo.trackMomentum = matched_track->getMomentum().mag();
+        treeinfo.trackRInv = matched_track->getRInv();
+        treeinfo.trackChi2 = matched_track->getChi2();
+     }
+     else {
+        treeinfo.trackRInv = -99.;
+        treeinfo.trackChi2 = -99.;
+        treeinfo.trackZ = -99.;
+        treeinfo.trackDeltaPhi = -99.;
+        treeinfo.trackDeltaEta = -99.;
+        treeinfo.trackEta = -99.;
+        treeinfo.trackPhi = -99.;
+        treeinfo.trackMomentum = -99.;
+        treeinfo.trackRInv = -99.;
+        treeinfo.trackChi2 = -99.;
+     }
      treeinfo.trackDeltaR = min_track_dr;
-     treeinfo.trackZ = matched_track->getPOCA().z();
-     treeinfo.trackEta = matched_track->getMomentum().eta();
-     treeinfo.trackPhi = matched_track->getMomentum().phi();
      treeinfo.trackPt = max_track_pt;
      treeinfo.trackHighestPt = max_track_pt_all_tracks;
      treeinfo.trackHighestPtEta = max_track_pt_all_tracksEta;
@@ -1538,54 +1661,49 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
      treeinfo.trackHighestPtCutChi2Eta = max_track_pt_all_chi2_cutEta;
      treeinfo.trackHighestPtCutChi2Phi = max_track_pt_all_chi2_cutPhi;
      treeinfo.trackHighestPtCutChi2Chi2 = max_track_pt_all_chi2_cutChi2;
-     treeinfo.trackDeltaPhi = L1TkElectronTrackMatchAlgo::deltaPhi(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), matched_track);
-     treeinfo.trackDeltaEta = L1TkElectronTrackMatchAlgo::deltaEta(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), matched_track);
-     treeinfo.trackMomentum = matched_track->getMomentum().mag();
-     treeinfo.trackRInv = matched_track->getRInv();
-     treeinfo.trackChi2 = matched_track->getChi2();
      treeinfo.trackIsoConeTrackCount = isoConeTrackCount;
      treeinfo.trackIsoConePtSum = isoConePtSum;
-     treeinfo.trackPUTrackPtGlobalDiffZ = PUTrackPtGlobalDiffZ;
-     treeinfo.trackPUTrackPtGlobalDiffZandPt = PUTrackPtGlobalDiffZandPt;
-     treeinfo.trackPUTrackPtGlobalSameZ = PUTrackPtGlobalSameZ;
-     treeinfo.trackPUTrackPtGlobalAll = PUTrackPtGlobalAll;
-     treeinfo.trackPUTrackPt13x113DiffZ = PUTrackPt13x113DiffZ;
-     treeinfo.trackPUTrackPt13x113DiffZandPt = PUTrackPt13x113DiffZandPt;
-     treeinfo.trackPUTrackPt13x113SameZ = PUTrackPt13x113SameZ;
-     treeinfo.trackPUTrackPt13x113All = PUTrackPt13x113All;
-     treeinfo.trackPUTrackPt3x5DiffZ = PUTrackPt3x5DiffZ;
-     treeinfo.trackPUTrackPt3x5DiffZandPt = PUTrackPt3x5DiffZandPt;
-     treeinfo.trackPUTrackPt3x5SameZ = PUTrackPt3x5SameZ;
-     treeinfo.trackPUTrackPt3x5All = PUTrackPt3x5All;
-     treeinfo.trackPUTrackPtECalIsoConeDiffZ = PUTrackPtECalIsoConeDiffZ;
-     treeinfo.trackPUTrackPtECalIsoConeDiffZandPt = PUTrackPtECalIsoConeDiffZandPt;
-     treeinfo.trackPUTrackPtECalIsoConeSameZ = PUTrackPtECalIsoConeSameZ;
-     treeinfo.trackPUTrackPtECalIsoConeAll = PUTrackPtECalIsoConeAll;
-     treeinfo.trackPUTrackPtTkIsoConeDiffZ = PUTrackPtTkIsoConeDiffZ;
-     treeinfo.trackPUTrackPtTkIsoConeDiffZandPt = PUTrackPtTkIsoConeDiffZandPt;
-     treeinfo.trackPUTrackPtTkIsoConeSameZ = PUTrackPtTkIsoConeSameZ;
-     treeinfo.trackPUTrackPtTkIsoConeAll = PUTrackPtTkIsoConeAll;
-     treeinfo.trackPUTrackCntGlobalDiffZ = PUTrackCntGlobalDiffZ;
-     treeinfo.trackPUTrackCntGlobalDiffZandPt = PUTrackCntGlobalDiffZandPt;
-     treeinfo.trackPUTrackCntGlobalSameZ = PUTrackCntGlobalSameZ;
-     treeinfo.trackPUTrackCntGlobalAll = PUTrackCntGlobalAll;
-     treeinfo.trackPUTrackCnt13x113DiffZ = PUTrackCnt13x113DiffZ;
-     treeinfo.trackPUTrackCnt13x113DiffZandPt = PUTrackCnt13x113DiffZandPt;
-     treeinfo.trackPUTrackCnt13x113SameZ = PUTrackCnt13x113SameZ;
-     treeinfo.trackPUTrackCnt13x113All = PUTrackCnt13x113All;
-     treeinfo.trackPUTrackCnt3x5DiffZ = PUTrackCnt3x5DiffZ;
-     treeinfo.trackPUTrackCnt3x5DiffZandPt = PUTrackCnt3x5DiffZandPt;
-     treeinfo.trackPUTrackCnt3x5SameZ = PUTrackCnt3x5SameZ;
-     treeinfo.trackPUTrackCnt3x5All = PUTrackCnt3x5All;
-     treeinfo.trackPUTrackCntECalIsoConeDiffZ = PUTrackCntECalIsoConeDiffZ;
-     treeinfo.trackPUTrackCntECalIsoConeDiffZandPt = PUTrackCntECalIsoConeDiffZandPt;
-     treeinfo.trackPUTrackCntECalIsoConeSameZ = PUTrackCntECalIsoConeSameZ;
-     treeinfo.trackPUTrackCntECalIsoConeAll = PUTrackCntECalIsoConeAll;
-     treeinfo.trackPUTrackCntTkIsoConeDiffZ = PUTrackCntTkIsoConeDiffZ;
-     treeinfo.trackPUTrackCntTkIsoConeDiffZandPt = PUTrackCntTkIsoConeDiffZandPt;
-     treeinfo.trackPUTrackCntTkIsoConeSameZ = PUTrackCntTkIsoConeSameZ;
-     treeinfo.trackPUTrackCntTkIsoConeAll = PUTrackCntTkIsoConeAll;
-     if ( debug ) std::cout << "Track dr: " << min_track_dr << ", chi2: " << matched_track->getChi2() << ", dp: " << (treeinfo.trackMomentum-cluster.energy())/cluster.energy() << std::endl;
+     //treeinfo.trackPUTrackPtGlobalDiffZ = PUTrackPtGlobalDiffZ;
+     //treeinfo.trackPUTrackPtGlobalDiffZandPt = PUTrackPtGlobalDiffZandPt;
+     //treeinfo.trackPUTrackPtGlobalSameZ = PUTrackPtGlobalSameZ;
+     //treeinfo.trackPUTrackPtGlobalAll = PUTrackPtGlobalAll;
+     //treeinfo.trackPUTrackPt13x113DiffZ = PUTrackPt13x113DiffZ;
+     //treeinfo.trackPUTrackPt13x113DiffZandPt = PUTrackPt13x113DiffZandPt;
+     //treeinfo.trackPUTrackPt13x113SameZ = PUTrackPt13x113SameZ;
+     //treeinfo.trackPUTrackPt13x113All = PUTrackPt13x113All;
+     //treeinfo.trackPUTrackPt3x5DiffZ = PUTrackPt3x5DiffZ;
+     //treeinfo.trackPUTrackPt3x5DiffZandPt = PUTrackPt3x5DiffZandPt;
+     //treeinfo.trackPUTrackPt3x5SameZ = PUTrackPt3x5SameZ;
+     //treeinfo.trackPUTrackPt3x5All = PUTrackPt3x5All;
+     //treeinfo.trackPUTrackPtECalIsoConeDiffZ = PUTrackPtECalIsoConeDiffZ;
+     //treeinfo.trackPUTrackPtECalIsoConeDiffZandPt = PUTrackPtECalIsoConeDiffZandPt;
+     //treeinfo.trackPUTrackPtECalIsoConeSameZ = PUTrackPtECalIsoConeSameZ;
+     //treeinfo.trackPUTrackPtECalIsoConeAll = PUTrackPtECalIsoConeAll;
+     //treeinfo.trackPUTrackPtTkIsoConeDiffZ = PUTrackPtTkIsoConeDiffZ;
+     //treeinfo.trackPUTrackPtTkIsoConeDiffZandPt = PUTrackPtTkIsoConeDiffZandPt;
+     //treeinfo.trackPUTrackPtTkIsoConeSameZ = PUTrackPtTkIsoConeSameZ;
+     //treeinfo.trackPUTrackPtTkIsoConeAll = PUTrackPtTkIsoConeAll;
+     //treeinfo.trackPUTrackCntGlobalDiffZ = PUTrackCntGlobalDiffZ;
+     //treeinfo.trackPUTrackCntGlobalDiffZandPt = PUTrackCntGlobalDiffZandPt;
+     //treeinfo.trackPUTrackCntGlobalSameZ = PUTrackCntGlobalSameZ;
+     //treeinfo.trackPUTrackCntGlobalAll = PUTrackCntGlobalAll;
+     //treeinfo.trackPUTrackCnt13x113DiffZ = PUTrackCnt13x113DiffZ;
+     //treeinfo.trackPUTrackCnt13x113DiffZandPt = PUTrackCnt13x113DiffZandPt;
+     //treeinfo.trackPUTrackCnt13x113SameZ = PUTrackCnt13x113SameZ;
+     //treeinfo.trackPUTrackCnt13x113All = PUTrackCnt13x113All;
+     //treeinfo.trackPUTrackCnt3x5DiffZ = PUTrackCnt3x5DiffZ;
+     //treeinfo.trackPUTrackCnt3x5DiffZandPt = PUTrackCnt3x5DiffZandPt;
+     //treeinfo.trackPUTrackCnt3x5SameZ = PUTrackCnt3x5SameZ;
+     //treeinfo.trackPUTrackCnt3x5All = PUTrackCnt3x5All;
+     //treeinfo.trackPUTrackCntECalIsoConeDiffZ = PUTrackCntECalIsoConeDiffZ;
+     //treeinfo.trackPUTrackCntECalIsoConeDiffZandPt = PUTrackCntECalIsoConeDiffZandPt;
+     //treeinfo.trackPUTrackCntECalIsoConeSameZ = PUTrackCntECalIsoConeSameZ;
+     //treeinfo.trackPUTrackCntECalIsoConeAll = PUTrackCntECalIsoConeAll;
+     //treeinfo.trackPUTrackCntTkIsoConeDiffZ = PUTrackCntTkIsoConeDiffZ;
+     //treeinfo.trackPUTrackCntTkIsoConeDiffZandPt = PUTrackCntTkIsoConeDiffZandPt;
+     //treeinfo.trackPUTrackCntTkIsoConeSameZ = PUTrackCntTkIsoConeSameZ;
+     //treeinfo.trackPUTrackCntTkIsoConeAll = PUTrackCntTkIsoConeAll;
+     if ( debug ) std::cout << "Track dr: " << min_track_dr << ", chi2: " << treeinfo.trackChi2 << ", dp: " << (treeinfo.trackMomentum-cluster.energy())/cluster.energy() << std::endl;
   }
 }
 
