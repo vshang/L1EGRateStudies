@@ -487,7 +487,8 @@ if __name__ == '__main__' :
         'L1EGamma Crystal Track' : 'analyzer/dyncrystalEG_track_rate',
         'L1EGamma Crystal Photon' : 'analyzer/dyncrystalEG_phoWindow_rate',
         'Stage-2 L1EG' : 'analyzer/stage2EG_rate',
-        #'Stage-2 L1EG Iso' : 'analyzer/stage2EG_iso_rate',}
+        #'Stage-2 L1EG Iso' : 'analyzer/stage2EG_iso_rate',
+    }
 
     effMap = {
         'newAlgEtaHist' : ('L1EGamma Crystal', 'analyzer/divide_dyncrystalEG_efficiency_eta_by_gen_eta'),
