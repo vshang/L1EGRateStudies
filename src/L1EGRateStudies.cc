@@ -994,18 +994,24 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       bool filledBasicCuts = false;
       bool filledTrackMatch = false;
       bool filledPhotonTag = false;
+      bool filledLeadCand = false;
       for(const auto& cluster : crystalClusters)
       {
          if ( !useEndcap && fabs(cluster.eta()) >= 1.479 ) continue;
          clusterCount++;
-         treeinfo.nthCandidate = clusterCount;
-         if ( fabs(cluster.eta()) > 1.479 )
-            treeinfo.endcap = true;
-         else
-            treeinfo.endcap = false;
-         if (doTracking) doTrackMatching(cluster, l1trackHandle);
-         fill_tree(cluster);
-         //checkRecHitsFlags(cluster, triggerPrimitives, ecalRecHits);
+
+         // Only fill this once, the first time through
+         if (!filledLeadCand) {
+            filledLeadCand = true;
+            treeinfo.nthCandidate = clusterCount;
+            if ( fabs(cluster.eta()) > 1.479 )
+               treeinfo.endcap = true;
+            else
+               treeinfo.endcap = false;
+            if (doTracking) doTrackMatching(cluster, l1trackHandle);
+            fill_tree(cluster);
+            //checkRecHitsFlags(cluster, triggerPrimitives, ecalRecHits);
+         }
 
          if ( cluster_passes_base_cuts(cluster) )
          {
@@ -1022,7 +1028,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
             if ( cluster_passes_photon_cuts(cluster) && (!filledPhotonTag) ) {
                filledPhotonTag = true;
-               dyncrystal_track_rate_hist->Fill(cluster.pt());
+               dyncrystal_phoWindow_rate_hist->Fill(cluster.pt());
             }
          }
       }
