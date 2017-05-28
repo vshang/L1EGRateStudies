@@ -54,11 +54,11 @@ def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, poi
         g1.Fit('f1', fitCode )
     if doFit :
         if linear :
-            f2 = ROOT.TF1( 'f1', '([0] + [1]*x)', mini, maxi)
+            f2 = ROOT.TF1( 'f1', '([0] + [1]*x)', xinfo[1], xinfo[2])
             f2.SetParameter( 0, f1.GetParameter( 0 ) )
             f2.SetParameter( 1, f1.GetParameter( 1 ) )
         else :
-            f2 = ROOT.TF1( 'f2', '([0] + [1]*TMath::Exp(-[2]*x))', mini, maxi)
+            f2 = ROOT.TF1( 'f2', '([0] + [1]*TMath::Exp(-[2]*x))', xinfo[1], xinfo[2])
             f2.SetParameter( 0, f1.GetParameter( 0 ) )
             f2.SetParameter( 1, f1.GetParameter( 1 ) )
             f2.SetParameter( 2, f1.GetParameter( 2 ) )
@@ -105,14 +105,18 @@ def drawPointsHists(h1, h2, title1, title2, xaxis, yaxis) :
     h1.GetXaxis().SetTitle( xaxis )
     h1.GetYaxis().SetTitle( yaxis )
     h1.Draw("colz")
+    ROOT.gPad.SetGrid()
     xVals1 = array('f', [])
     yVals1 = array('f', [])
 
     points = []
-    for i in range(7, 50) : points.append( i )
+    for i in range(10, 95) : points.append( i )
     for point in points :
+        # if empty column, don't appent to points
+        avg = getAverage( h1, point )
+        if avg == -999 : continue
         xVals1.append( point )
-        yVals1.append( getAverage( h1, point ) )
+        yVals1.append( avg )
     #print xVals1
     #print yVals1
     g1 = ROOT.TGraph(len(xVals1), xVals1, yVals1)
@@ -130,6 +134,7 @@ def drawPointsHists(h1, h2, title1, title2, xaxis, yaxis) :
     
     c2.cd(2)
     h2.Draw("colz")
+    ROOT.gPad.SetGrid()
     h2.GetXaxis().SetTitle( xaxis )
     h2.GetYaxis().SetTitle( yaxis )
     xVals2 = array('f', [])
@@ -168,12 +173,17 @@ def drawPointsHists(h1, h2, title1, title2, xaxis, yaxis) :
     f3.SetParameter( 3, f2.GetParameter( 0 ) )
     f3.SetParameter( 4, f2.GetParameter( 1 ) )
     f3.SetParameter( 5, f2.GetParameter( 2 ) )
+
+    f3.Draw()
+    #g1.Draw('SAME')
+    #g2.Draw('SAME')
+    
     for i in range( 0, 6 ) :
         print "Fit Param: %i = %f" % (i, f3.GetParameter( i ) )
-    f3.Draw()
-    g1.Draw('SAME')
-    g2.Draw('SAME')
-    
+        fitVal = ROOT.TLatex()
+        fitVal.SetTextSize(0.04)
+        fitVal.DrawLatexNDC(.45, .80-(i*.1), "Fit Param: %i = %f" % (i, f3.GetParameter( i ) ) )
+
     # Just to show the resulting fit
     # plot local
     #plotDir = 'plotCuts'
@@ -214,6 +224,7 @@ def getPoint( h, xVal, percentage, invert ) :
 
 
 def getAverage( h, xVal ) :
+    #print h
     val = 0.
     weightedTot = 0.
     tot = 0.
@@ -222,21 +233,23 @@ def getAverage( h, xVal ) :
         weightedTot += h.GetBinContent( xBin, i )*h.GetYaxis().GetBinCenter( i )
         tot += h.GetBinContent( xBin, i )
         #print weightedTot
-    assert tot > 0., "Something is wrong here..."
+    # Catch for empty columns
+    if tot == 0. :
+        return -999
     avgTot = weightedTot/tot
+    
     #print "Final average total: ",avgTot
     
     answer = h.GetYaxis().FindBin( avgTot )
     #print "Associated bin: ",answer
     return avgTot
-    print "Error, not supposed to get here"
 
 
 
 if __name__ == '__main__' :
 
     date = '20170518v3'
-    date = 'v2'
+    date = 'v8'
 
     singleE = 'r2_phase2_singleElectron_%s.root' % date
     singlePho = 'r2_phase2_singlePhoton_%s.root' % date
@@ -281,12 +294,27 @@ if __name__ == '__main__' :
     cut = ""
 
 
-    recoGenPtHist = effFile.Get("analyzer/reco_gen_pt")
-    tdrRecoGenPtHist = effFile.Get("analyzer/l1extraParticlesUCT:All_reco_gen_pt")
+    l1Crystal2DPtResHist = effFile.Get("analyzer/reco_gen_pt")
+    stage22DPtResHist = effFile.Get("analyzer/stage2_reco_gen_pt")
     xaxis = "Gen P_{T} (GeV)"
     yaxis = "Relative Error in P_{T} (reco-gen)/gen"
-    #c.SetTitle("genPtVPtResFit")
-    #drawPointsHists(recoGenPtHist, tdrRecoGenPtHist, title1, title2, xaxis, yaxis)
+    title1 = "L1EG Crystal Algo"
+    title2 = "Stage-2"
+    c.SetTitle("genPtVPtResFit")
+    drawPointsHists(l1Crystal2DPtResHist, stage22DPtResHist, title1, title2, xaxis, yaxis)
+
+    l1Crystal2DPtResHist2 = effFile.Get("analyzer/reco_gen_pt2")
+    stage22DPtResHist2 = effFile.Get("analyzer/stage2_reco_gen_pt2")
+    xaxis = "Reco P_{T} (GeV)"
+    yaxis = "Relative Error in P_{T} (reco-gen)/gen"
+    title1 = "L1EG Crystal Algo"
+    title2 = "Stage-2"
+    c.SetTitle("genPtVPtResFit2")
+    drawPointsHists(l1Crystal2DPtResHist2, stage22DPtResHist2, title1, title2, xaxis, yaxis)
+
+    l1Crystal2DPtAdjResHist = effFile.Get("analyzer/reco_gen_pt_adj")
+    c.SetTitle("genPtVPtAdjResFit")
+    drawPointsHists(l1Crystal2DPtAdjResHist, stage22DPtResHist2, title1, title2, xaxis, yaxis)
 
     #c.SetTitle("genPtVPtResFit_CrystalsAdjusted")
     #h1 = ROOT.TH2F('h1_', 'EG Relative Momentum Error', 50, 0, 50, 60, -.3, .3)
@@ -314,19 +342,6 @@ if __name__ == '__main__' :
     #del h1
 
 
-    """ Our different cuts """
-    showerShapes = "(-0.921128 + 0.180511*TMath::Exp(-0.0400725*cluster_pt)>(-1)*(e2x5/e5x5))"
-    Isolation = "((0.990748 + 5.64259*TMath::Exp(-0.0613952*cluster_pt))>cluster_iso)"
-    tkIsoMatched = "((0.106544 + 0.00316748*cluster_pt)>(trackIsoConePtSum/trackPt))"
-
-    cut_none = ""
-    cut_ss = showerShapes
-    cut_ss_cIso = showerShapes+"*"+Isolation
-    cut_ss_cIso_tkNoM = cut_ss_cIso+"*(trackDeltaR>0.1)"
-    cut_ss_cIso_tkM = cut_ss_cIso+"*(trackDeltaR<0.1)"
-    cut_ss_cIso_tkM_tkIso = cut_ss_cIso_tkM+"*"+tkIsoMatched
-
-
     ##################
     ### FROZEN 62X ###
     ##################
@@ -351,16 +366,7 @@ if __name__ == '__main__' :
     cut_ss_cIso9_pt10 = cut_ss_cIso9+" && cluster_pt>10"
     
     points = [ # pt, percentile # Used for cut11
-        [  5,   .75 ], # 250 MeV
-        [ 7.5,  .80 ], # 250 MeV
-        [ 10,   .85 ], # 250 MeV
-        [ 12.5, .90 ], # 250 MeV
-        [ 15,   .925 ], # 250 MeV
-        #[  5,   .96 ], # 500 MeV
-        #[ 7.5,  .96 ], # 500 MeV
-        #[ 10,   .96 ], # 500 MeV
-        #[ 12.5, .96 ], # 500 MeV
-        #[ 15,   .96 ], # 500 MeV
+        [ 15,   .95 ],
         [ 17.5, .96 ],
         [ 22.5, .96 ],
         [ 27.5, .97 ],
@@ -383,59 +389,60 @@ if __name__ == '__main__' :
     #yinfo = [100, -1.05, -0.7]
     yinfo = [100, 0.7, 1.05]
     c.SetTitle("clusterPtVE2x5OverE5x5")
-#    drawPoints(c, crystal_tree, var, cut_none, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, False, True)
-#    c.SetTitle("clusterPtVE2x5OverE5x5_fitLine")
-#    drawPoints(c, crystal_tree, var, cut_none, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, True, True) # Draw fit line
-#
-#
-#    # There is lots of discriminating power in Iso if we tighten it a bit at low Pt
-#    points = [ # pt, percentile # Used for cut11
-#        [  5,   .85 ],
-#        [ 7.5,  .85 ],
-#        [ 10,   .90 ],
-#        [ 12.5, .90 ],
-#        [ 15,   .94 ],
-#        [ 17.5, .96 ],
-#        [ 22.5, .96 ],
-#        [ 27.5, .97 ],
-#        [ 32.5, .985 ],
-#        [ 37.5, .99 ],
-#        [ 42.5, .99 ],
-#        [ 50, .995 ],
-#        [ 60, .995 ],
-#        [ 70, .995 ],
-#        [ 80, .995 ],
-#        [ 90, .995 ],
-#        ]
-#
-#    var = "cluster_iso:cluster_pt"
-#    xaxis = "Cluster P_{T} (GeV)"
-#    yaxis = "Cluster Iso"
-#    xinfo = [20, 0., 100.]
-#    yinfo = [100, 0., 5.]
-#    c.SetTitle("clusterPtVClusterIso")
-#    drawPoints(c, crystal_tree, var, showerShapes9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, isoLinear, True, False)
-#    c.SetTitle("clusterPtVClusterIso_fitLine")
-#    drawPoints(c, crystal_tree, var, showerShapes9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, isoLinear, True, True) # Draw fit line
-#
-#    points = [ # pt, percentile # Used for cut11
-#        [  5,   .85 ],
-#        [ 7.5,  .85 ],
-#        [ 10,   .9 ],
-#        [ 12.5, .9 ],
-#        [ 15,   .9 ],
-#        [ 17.5, .9 ],
-#        [ 22.5, .9 ],
-#        [ 27.5, .9 ],
-#        [ 32.5, .9 ],
-#        [ 37.5, .9 ],
-#        [ 42.5, .9 ],
-#        [ 50, .9 ],
-#        [ 60, .9 ],
-#        [ 70, .9 ],
-#        [ 80, .9 ],
-#        [ 90, .9 ],
-#        ]
+    drawPoints(c, crystal_tree, var, cut_none, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, False, True)
+    c.SetTitle("clusterPtVE2x5OverE5x5_fitLine")
+    drawPoints(c, crystal_tree, var, cut_none, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, True, True) # Draw fit line
+
+
+    # There is lots of discriminating power in Iso if we tighten it a bit at low Pt
+    points = [ # pt, percentile # Used for cut11
+        [ 2.5,   .85 ],
+        [ 7.5,  .85 ],
+        [ 10,   .90 ],
+        [ 12.5, .90 ],
+        [ 15,   .94 ],
+        [ 17.5, .96 ],
+        [ 22.5, .96 ],
+        [ 27.5, .97 ],
+        [ 32.5, .985 ],
+        [ 37.5, .99 ],
+        [ 42.5, .99 ],
+        [ 50, .995 ],
+        [ 60, .995 ],
+        [ 70, .995 ],
+        [ 80, .995 ],
+        [ 90, .995 ],
+        [ 97, 1. ],
+        ]
+
+    var = "cluster_iso:cluster_pt"
+    xaxis = "Cluster P_{T} (GeV)"
+    yaxis = "Cluster Iso"
+    xinfo = [20, 0., 100.]
+    yinfo = [100, 0., 5.]
+    c.SetTitle("clusterPtVClusterIso")
+    drawPoints(c, crystal_tree, var, showerShapes9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, isoLinear, True, False)
+    c.SetTitle("clusterPtVClusterIso_fitLine")
+    drawPoints(c, crystal_tree, var, showerShapes9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, isoLinear, True, True) # Draw fit line
+
+    points = [ # pt, percentile # Used for cut11
+        [  5,   .85 ],
+        [ 7.5,  .85 ],
+        [ 10,   .9 ],
+        [ 12.5, .9 ],
+        [ 15,   .9 ],
+        [ 17.5, .9 ],
+        [ 22.5, .9 ],
+        [ 27.5, .9 ],
+        [ 32.5, .9 ],
+        [ 37.5, .9 ],
+        [ 42.5, .9 ],
+        [ 50, .9 ],
+        [ 60, .9 ],
+        [ 70, .9 ],
+        [ 80, .9 ],
+        [ 90, .9 ],
+        ]
     var = "trackDeltaR:cluster_pt"
     xaxis = "Cluster P_{T} (GeV)"
     yaxis = "Trk #DeltaR"
@@ -454,7 +461,10 @@ if __name__ == '__main__' :
     #yinfo = [100, -1.05, -0.7]
     yinfo = [35, 0.7, 1.05]
     c.SetTitle("clusterPtVE2x2OverE2x5")
-    drawPoints(c, crystal_tree, var, cut_ss_cIso9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, False)
+    drawPoints(c, crystal_tree, var, cut_ss_cIso9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, False, True)
+    c.SetTitle("clusterPtVE2x2OverE2x5_fitLine")
+    drawPoints(c, crystal_tree, var, cut_ss_cIso9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, True, True)
+#def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, points, linear=False, doFit=True, includeLine=False, invert=False) :
 
 #
 #    points = [

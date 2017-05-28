@@ -7,8 +7,9 @@
 def getCutMap() :
     cutMap = {
     '90x500MeV' : {
-        'showerShape' : '(0.940187 + 0.0874984*TMath::Exp(-0.0472648*cluster_pt)<(e2x5/e5x5))',
+        'showerShape' : '(0.943562 + 0.0520763*TMath::Exp(-0.0443794*cluster_pt)<(e2x5/e5x5))',
         'isolation' : '((0.849167 + (-0.00799425)*cluster_pt) > cluster_iso)',
+        #'isolation' : '((0.214497 + 1.20357*TMath::Exp(-0.0129899*cluster_pt))>cluster_iso)',
         'trackMatch' : '(trackDeltaR < 0.05)',
         'photonTag' : '(e2x2/e2x5 > 0.95)',
     },
