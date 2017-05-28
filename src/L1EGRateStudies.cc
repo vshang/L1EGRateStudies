@@ -446,7 +446,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       stage2_dphi_hist = fs->make<TH1F>("stage2EG_dphi", ("Stage-2 Trigger;d#phi "+drLabel).c_str(), 100, -0.25, 0.25);
       stage2_dphi_bremcut_hist = fs->make<TH1F>("stage2EG_dphi_bremcut", ("Stage-2 Trigger;d#phi "+drLabel).c_str(), 50, -0.1, 0.1);
       stage2_2DdeltaR_hist = fs->make<TH2F>("stage2EG_2DdeltaR_hist", "Stage-2 Trigger;d#eta;d#phi;Counts", 50, -0.05, 0.05, 50, -0.05, 0.05);
-      stage2_reco_gen_pt_hist = fs->make<TH2F>("stage2_reco_gen_pt", "Stage-2;Gen. pT (GeV);(reco-gen)/gen;Counts", 40, 0., 50., 40, -0.3, 0.3); 
+      stage2_reco_gen_pt_hist = fs->make<TH2F>("stage2_reco_gen_pt", "Stage-2;Gen. pT (GeV);(reco-gen)/gen;Counts", 100, 0., 100., 100, -0.5, 0.5); 
       stage2_reco_gen_pt_1dHist = fs->make<TH1F>("stage2_1d_reco_gen_pt", "Stage-2;(reco-gen)/gen;Counts", 100, -1., 1.); 
 
       //for(auto& inputTag : L1EGammaInputTags)
@@ -468,7 +468,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       //   EGalg_reco_gen_pt_1dHists[name] = fs->make<TH1F>((name+"_1d_reco_gen_pt").c_str(), (name+";(reco-gen)/gen;Counts").c_str(), 100, -1., 1.); 
       //}
 
-      reco_gen_pt_hist = fs->make<TH2F>("reco_gen_pt" , "EG relative momentum error;Gen. pT (GeV);(reco-gen)/gen;Counts", 40, 0., 50., 40, -0.3, 0.3); 
+      reco_gen_pt_hist = fs->make<TH2F>("reco_gen_pt" , "EG relative momentum error;Gen. pT (GeV);(reco-gen)/gen;Counts", 100, 0., 100., 100, -0.5, 0.5); 
       reco_gen_pt_1dHist = fs->make<TH1F>("1d_reco_gen_pt" , "EG relative momentum error;(reco-gen)/gen;Counts", 100, -1., 1.); 
       brem_dphi_hist = fs->make<TH2F>("brem_dphi_hist" , "Brem. strength vs. d#phi;Brem. Strength;d#phi;Counts", 40, 0., 2., 40, -0.05, 0.05); 
 
@@ -1241,7 +1241,7 @@ L1EGRateStudies::cluster_passes_base_cuts(const l1slhc::L1EGCrystalCluster& clus
 	  //    return true; }
 
 	  // 500 MeV
-      if ( ( 0.94 + 0.087 * TMath::Exp( -0.047 * cluster_pt ) < (clusterE2x5 / clusterE5x5)) ) {
+      if ( ( 0.94 + 0.052 * TMath::Exp( -0.044 * cluster_pt ) < (clusterE2x5 / clusterE5x5)) ) {
 	  passShowerShape = true; }
       if ( ( 0.85 + -0.0080 * cluster_pt ) > cluster_iso ) {
           passIso = true; }
