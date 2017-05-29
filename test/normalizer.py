@@ -2,7 +2,7 @@ import ROOT
 import trigHelpers
 
 version = 'v3p2'
-version = 'v2p3'
+version = 'v8'
 
 def normalizeHists() :
     eff = ROOT.TFile("r2_phase2_singleElectron_%s.root" % version, "UPDATE")
@@ -27,10 +27,11 @@ def normalizeHists() :
             file.cd("analyzer") 
             effPtHists = trigHelpers.loadObjectsMatchingPattern( file, "analyzer", effHistKeys, "*_efficiency*pt" )
             for hist in effPtHists :
-                if "reco_" not in hist.GetName() :
-                    denom = effPtDenom.Clone()
-                if "reco_" in hist.GetName() :
-                    denom = effRecoPtDenom.Clone()
+                #if "reco_" not in hist.GetName() :
+                #    denom = effPtDenom.Clone()
+                #if "reco_" in hist.GetName() :
+                #    denom = effRecoPtDenom.Clone()
+                denom = effPtDenom.Clone()
                 print "    Dividing " + hist.GetName() + " by " + denom.GetName()
                 graph = ROOT.TGraphAsymmErrors(hist, denom)
                 graph.GetXaxis().SetTitle(hist.GetXaxis().GetTitle())

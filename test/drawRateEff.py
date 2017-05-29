@@ -77,7 +77,8 @@ def draw2DPtRes( hist, c, name ) :
     hist.SetMaximum(50)
     hist.Draw("colz")
     cmsString = drawCMSString("CMS Simulation, <PU>=200 bx=25, Single Electron")
-    c.Print("plots/"+name+"_reco_gen_pt.png")
+    c.Print("/afs/cern.ch/user/t/truggles/www/Phase-II/v8/"+name+"_reco_gen_pt.png")
+    c.Print("/afs/cern.ch/user/t/truggles/www/Phase-II/v8/"+name+"_reco_gen_pt.C")
     del cmsString
 
 
@@ -123,7 +124,8 @@ def drawRates( hists, c, ymax, xrange = [0., 0.] ) :
     cmsString = drawCMSString("CMS Simulation, <PU>=200 bx=25, MinBias")
     ROOT.gPad.SetGrid()
     
-    c.Print("/afs/cern.ch/user/t/truggles/www/Phase-II/v2p3/"+c.GetName()+".png")
+    c.Print("/afs/cern.ch/user/t/truggles/www/Phase-II/v8/"+c.GetName()+".png")
+    c.Print("/afs/cern.ch/user/t/truggles/www/Phase-II/v8/"+c.GetName()+".C")
 
 
 def drawEfficiency( hists, c, ymax, xTitle, xrange = [0., 0.], fit = False, fitHint = [1., 15., 3., 0.]) :
@@ -182,7 +184,8 @@ def drawEfficiency( hists, c, ymax, xTitle, xrange = [0., 0.], fit = False, fitH
     cmsString = drawCMSString("CMS Simulation, <PU>=200 bx=25, Single Electron")
     #cmsString = drawCMSString("CMS Simulation, <PU>=200 bx=25, Single Photon")
  
-    c.Print(("/afs/cern.ch/user/t/truggles/www/Phase-II/v2p3/"+c.GetName()+".png"))
+    c.Print(("/afs/cern.ch/user/t/truggles/www/Phase-II/v8/"+c.GetName()+".png"))
+    c.Print(("/afs/cern.ch/user/t/truggles/www/Phase-II/v8/"+c.GetName()+".C"))
 
 
 def draw2DdeltaRHist(hist, c) :
@@ -405,6 +408,7 @@ def drawDRHists(hists, c, ymax, doFit = False, targetDir = 'plots' ) :
         #cmsString = drawCMSString("CMS Simulation, <PU>=200 bx=25, Min-Bias")
                 
     c.Print(targetDir+"/"+c.GetName()+".png")
+    c.Print(targetDir+"/"+c.GetName()+".C")
 
     # Don't produce CDFs at the moment
     #del markers
@@ -486,6 +490,9 @@ if __name__ == '__main__' :
         'L1EGamma Crystal' : 'analyzer/dyncrystalEG_rate',
         'L1EGamma Crystal Track' : 'analyzer/dyncrystalEG_track_rate',
         'L1EGamma Crystal Photon' : 'analyzer/dyncrystalEG_phoWindow_rate',
+        'L1EGamma Crystal PtAdj' : 'analyzer/dyncrystalEG_adj_rate',
+        'L1EGamma Crystal Track PtAdj' : 'analyzer/dyncrystalEG_track_adj_rate',
+        'L1EGamma Crystal Photon PtAdj' : 'analyzer/dyncrystalEG_phoWindow_adj_rate',
         'Stage-2 L1EG' : 'analyzer/stage2EG_rate',
         #'Stage-2 L1EG Iso' : 'analyzer/stage2EG_iso_rate',
     }
@@ -493,6 +500,7 @@ if __name__ == '__main__' :
     effMap = {
         'newAlgEtaHist' : ('L1EGamma Crystal', 'analyzer/divide_dyncrystalEG_efficiency_eta_by_gen_eta'),
         'newAlgTrkEtaHist' : ('L1EGamma Crystal - Trk Match', 'analyzer/divide_dyncrystalEG_efficiency_track_eta_by_gen_eta'),
+        'newAlgPhotonEtaHist' : ('L1EGamma Crystal - Trk Match', 'analyzer/divide_dyncrystalEG_efficiency_phoWindow_eta_by_gen_eta'),
         #'newAlgEtaHist' : ('L1EGamma Crystal', 'analyzer/divide_dyncrystalEG_efficiency_track_eta_by_gen_eta'),
         'newAlgPtHist' : ('L1EGamma Crystal', 'analyzer/divide_dyncrystalEG_efficiency_pt_by_gen_pt'),
         'newAlgTrkPtHist' : ('L1EGamma Crystal - Trk Match', 'analyzer/divide_dyncrystalEG_efficiency_track_pt_by_gen_pt'),
@@ -513,7 +521,7 @@ if __name__ == '__main__' :
     }
     
     date = 'v3p2'
-    date = 'v2p3'
+    date = 'v8'
 
     singleE = 'r2_phase2_singleElectron_%s.root' % date
     singlePho = 'r2_phase2_singlePhoton_%s.root' % date
@@ -529,8 +537,10 @@ if __name__ == '__main__' :
     effHists = loadHists( effFile, effMap )
     #newAlgRecoPtHists = trigHelpers.loadObjectsMatchingPattern( effFile, "analyzer", effHistsKeys, "divide_dyncrystalEG_threshold*_reco_pt")
     #for h in newAlgRecoPtHists : h.SetTitle("Crystal Algorithm")
-    newAlgGenPtHists = trigHelpers.loadObjectsMatchingPattern( effFile, "analyzer", effHistsKeys, "divide_dyncrystalEG_threshold*_gen_pt")
+    newAlgGenPtHists = trigHelpers.loadObjectsMatchingPattern( effFile, "analyzer", effHistsKeys, "divide_dyncrystalEG_threshold*gen_pt_by_gen_pt")
     for h in newAlgGenPtHists : h.SetTitle("L1EG Crystal Algo")
+    newAlgGenPtHistsRecoAdj = trigHelpers.loadObjectsMatchingPattern( effFile, "analyzer", effHistsKeys, "divide_dyncrystalEG_threshold*reco_adj_pt_by_gen_pt")
+    for h in newAlgGenPtHistsRecoAdj : h.SetTitle("L1EG Crystal Algo Pt Adj")
     stage2GenPtHists = trigHelpers.loadObjectsMatchingPattern( effFile, "analyzer", effHistsKeys, "divide_stage2EG_threshold*_gen_pt")
     for h in stage2GenPtHists : h.SetTitle("Stage-2 Algorithm")
     #oldAlgRecoPtHists = trigHelpers.loadObjectsMatchingPattern( effFile, "analyzer", effHistsKeys, "divide_SLHCL1ExtraParticles:EGamma_threshold*_reco_pt")
@@ -973,6 +983,7 @@ if __name__ == '__main__' :
     
     c = ROOT.TCanvas('c', 'c', 800, 600)
     c.SetLogy(1)
+    c.SetTitle('')
     #c.SetGridx(1)
     #c.SetGridy(1)
     #gStyle.SetGridStyle(2)
@@ -982,26 +993,34 @@ if __name__ == '__main__' :
     xrange = [0., 60.]
     # Calo-based L1EG Rates
     c.SetName('dyncrystalEG_rate')
-    c.SetTitle('')
     toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal'], ]
+    drawRates( toDraw, c, 40000., xrange)
+    c.SetName('dyncrystalEG_rate_adj')
+    toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], ]
     drawRates( toDraw, c, 40000., xrange)
 
     # Photon
-    c.SetName('dyncrystalEG_photon_rate')
-    c.SetTitle('')
+    c.SetName('dyncrystalEG_rate_photon')
     toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal'], hists['L1EGamma Crystal Photon']]
+    drawRates( toDraw, c, 40000., xrange)
+    c.SetName('dyncrystalEG_rate_photon_adj')
+    toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Photon PtAdj']]
     drawRates( toDraw, c, 40000., xrange)
 
     # Track
-    c.SetName('dyncrystalEG_track_rate')
-    c.SetTitle('')
+    c.SetName('dyncrystalEG_rate_track')
     toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal'], hists['L1EGamma Crystal Track']]
+    drawRates( toDraw, c, 40000., xrange)
+    c.SetName('dyncrystalEG_rate_track_adj')
+    toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj']]
     drawRates( toDraw, c, 40000., xrange)
 
     # All 
-    c.SetName('dyncrystalEG_all_rate')
-    c.SetTitle('')
+    c.SetName('dyncrystalEG_rate_all')
     toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal'], hists['L1EGamma Crystal Track'], hists['L1EGamma Crystal Photon']]
+    drawRates( toDraw, c, 40000., xrange)
+    c.SetName('dyncrystalEG_rate_all_adj')
+    toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj'], hists['L1EGamma Crystal Photon PtAdj']]
     drawRates( toDraw, c, 40000., xrange)
 
     # Stage-2 rate solo
@@ -1024,6 +1043,9 @@ if __name__ == '__main__' :
     c.SetName("dyncrystalEG_efficiency_track_eta")
     c.SetTitle("EG Efficiencies")
     drawEfficiency([effHists['Stage2EtaHist'], effHists['newAlgEtaHist'], effHists['newAlgTrkEtaHist']], c, 1.3, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
+    c.SetName("dyncrystalEG_efficiency_eta_all")
+    c.SetTitle("EG Efficiencies")
+    drawEfficiency([effHists['Stage2EtaHist'], effHists['newAlgEtaHist'], effHists['newAlgTrkEtaHist'], effHists['newAlgPhotonEtaHist']], c, 1.3, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
 
     c.SetName("dyncrystalEG_efficiency_all_pt")
     c.SetTitle("")
@@ -1040,10 +1062,13 @@ if __name__ == '__main__' :
 
     # Map of possible pt values from file with suggested fit function params
     possiblePts = {'20' : [0.9, 20., 1., 0.], '30' : [0.95, 30., 1., 0.], '40': [0.95, 16., 1., 0.]}
+    # Non-Stage-2 adjusted turn on thresholds
     for crystalPt in newAlgGenPtHists :
+        if 'reco_pt' in crystalPt.GetName() : continue
         print crystalPt
         toPlot = []
         for s2 in stage2GenPtHists :
+            if 'reco_pt' in s2.GetName() : continue
             print s2
             for pt in possiblePts.keys() :
                 if pt in crystalPt.GetName() and pt in s2.GetName() :
@@ -1051,6 +1076,21 @@ if __name__ == '__main__' :
                     toPlot.append( crystalPt )
                     toPlot.append( s2 )
                     c.SetName("dyncrystalEG_threshold"+pt+"_efficiency_gen_pt")
+                    drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, True, possiblePts[pt])
+    # Turn on thresholds adjusted to match Stage-2
+    for crystalPt in newAlgGenPtHistsRecoAdj :
+        if 'reco_pt' in crystalPt.GetName() : continue
+        print crystalPt
+        toPlot = []
+        for s2 in stage2GenPtHists :
+            if 'reco_pt' in s2.GetName() : continue
+            print s2
+            for pt in possiblePts.keys() :
+                if pt in crystalPt.GetName() and pt in s2.GetName() :
+                    print pt, crystalPt.GetName(), s2.GetName()
+                    toPlot.append( crystalPt )
+                    toPlot.append( s2 )
+                    c.SetName("dyncrystalEG_threshold"+pt+"_efficiency_gen_pt_ptAdj")
                     drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, True, possiblePts[pt])
 
 
@@ -1060,7 +1100,7 @@ if __name__ == '__main__' :
     c.SetGridy(0)
     c.SetName("dyncrystalEG_deltaR")
     c.SetTitle("")
-    tDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/v2p3'
+    tDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/v8'
     drawDRHists([effHists['newAlgDRHist'], effHists['stage2DRHist']], c, 0., False, tDir)
 
     # Delta Eta / Phi

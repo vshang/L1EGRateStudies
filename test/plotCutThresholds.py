@@ -93,17 +93,19 @@ def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, poi
     # plot web
     plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date
     c.Print(plotDir+"/"+c.GetTitle()+".png")
+    c.Print(plotDir+"/"+c.GetTitle()+".C")
     c.Print(plotDir+"/"+c.GetTitle()+".pdf")
 
     del h1, h2, h3, g1
 
 
-def drawPointsHists(h1, h2, title1, title2, xaxis, yaxis) :
+def drawPointsHists(h1, h2, title1, title2, xaxis, yaxis, new=False) :
     c2 = ROOT.TCanvas('c2', 'c2', 1200, 600)
     c2.Divide(2)
     c2.cd(1)
     h1.GetXaxis().SetTitle( xaxis )
     h1.GetYaxis().SetTitle( yaxis )
+    h1.SetTitle( title1 )
     h1.Draw("colz")
     ROOT.gPad.SetGrid()
     xVals1 = array('f', [])
@@ -133,6 +135,7 @@ def drawPointsHists(h1, h2, title1, title2, xaxis, yaxis) :
     fit1 = g1.Fit('f1', 'R S')
     
     c2.cd(2)
+    h2.SetTitle( title2 )
     h2.Draw("colz")
     ROOT.gPad.SetGrid()
     h2.GetXaxis().SetTitle( xaxis )
@@ -161,12 +164,16 @@ def drawPointsHists(h1, h2, title1, title2, xaxis, yaxis) :
     # plot web
     plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date
     c2.Print(plotDir+"/"+c.GetTitle()+".png")
+    c2.Print(plotDir+"/"+c.GetTitle()+".C")
     c2.Print(plotDir+"/"+c.GetTitle()+".pdf")
 
     cx = ROOT.TCanvas('cx','cx',600,600)
     cx.SetGridx()
     cx.SetGridy()
-    f3 = ROOT.TF1( 'f3', '(-([0] + [1]*TMath::Exp(-[2]*x))+([3] + [4]*TMath::Exp(-[5]*x)))', mini, maxi)
+    if new :
+        f3 = ROOT.TF1( 'f3', '(([0] + [1]*TMath::Exp(-[2]*x))*(1./([3] + [4]*TMath::Exp(-[5]*x))))', mini, maxi)
+    else :
+        f3 = ROOT.TF1( 'f3', '(-([0] + [1]*TMath::Exp(-[2]*x))+([3] + [4]*TMath::Exp(-[5]*x)))', mini, maxi)
     f3.SetParameter( 0, f1.GetParameter( 0 ) )
     f3.SetParameter( 1, f1.GetParameter( 1 ) )
     f3.SetParameter( 2, f1.GetParameter( 2 ) )
@@ -190,6 +197,7 @@ def drawPointsHists(h1, h2, title1, title2, xaxis, yaxis) :
     # plot web
     plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date
     cx.Print(plotDir+"/"+c.GetTitle()+"_fits.png")
+    cx.Print(plotDir+"/"+c.GetTitle()+"_fits.C")
     cx.Print(plotDir+"/"+c.GetTitle()+"_fits.pdf")
 
     del c2, h1, h2, g1, g2, cx
@@ -312,9 +320,24 @@ if __name__ == '__main__' :
     c.SetTitle("genPtVPtResFit2")
     drawPointsHists(l1Crystal2DPtResHist2, stage22DPtResHist2, title1, title2, xaxis, yaxis)
 
+    l1Crystal2DPtResHist3 = effFile.Get("analyzer/reco_gen_pt3")
+    stage22DPtResHist3 = effFile.Get("analyzer/stage2_reco_gen_pt3")
+    xaxis = "Reco P_{T} (GeV)"
+    yaxis = "Relative Error in P_{T} gen/reco"
+    title1 = "L1EG Crystal Algo"
+    title2 = "Stage-2"
+    c.SetTitle("genPtVPtResFit3")
+    drawPointsHists(l1Crystal2DPtResHist3, stage22DPtResHist3, title1, title2, xaxis, yaxis, True)
+
     l1Crystal2DPtAdjResHist = effFile.Get("analyzer/reco_gen_pt_adj")
+    yaxis = "Relative Error in P_{T} (reco-gen)/gen"
     c.SetTitle("genPtVPtAdjResFit")
     drawPointsHists(l1Crystal2DPtAdjResHist, stage22DPtResHist2, title1, title2, xaxis, yaxis)
+
+    l1Crystal2DPtAdjResHist = effFile.Get("analyzer/reco_gen_pt_adj3")
+    yaxis = "Relative Error in P_{T} gen/reco"
+    c.SetTitle("genPtVPtAdjResFit3")
+    drawPointsHists(l1Crystal2DPtAdjResHist, stage22DPtResHist3, title1, title2, xaxis, yaxis)
 
     #c.SetTitle("genPtVPtResFit_CrystalsAdjusted")
     #h1 = ROOT.TH2F('h1_', 'EG Relative Momentum Error', 50, 0, 50, 60, -.3, .3)
@@ -362,6 +385,7 @@ if __name__ == '__main__' :
     isoLinear = True # for 500 MeV
     Isolation9 = cutMap['90x'+energy]['isolation']
     showerShapes9 = cutMap['90x'+energy]['showerShape']
+    cut_none = ""
     cut_ss_cIso9 = showerShapes9+" && "+Isolation9
     cut_ss_cIso9_pt10 = cut_ss_cIso9+" && cluster_pt>10"
     
