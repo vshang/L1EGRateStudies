@@ -227,7 +227,7 @@ def getPoint( h, xVal, percentage, invert ) :
                 yVal = h.GetYaxis().GetBinCenter(invBin)
                 #print "Inverted Reached target of %.3f at ybin %i with yval %.2f" % (percentage, i, yVal )
                 return yVal
-    print "Error, not supposed to get here"
+    print "\n\nError, not supposed to get here\nAre you accidently asking for inverted or non-inverted when it should be the opposite?\n"
 
 
 
@@ -337,7 +337,7 @@ if __name__ == '__main__' :
     l1Crystal2DPtAdjResHist = effFile.Get("analyzer/reco_gen_pt_adj3")
     yaxis = "Relative Error in P_{T} gen/reco"
     c.SetTitle("genPtVPtAdjResFit3")
-    drawPointsHists(l1Crystal2DPtAdjResHist, stage22DPtResHist3, title1, title2, xaxis, yaxis)
+    drawPointsHists(l1Crystal2DPtAdjResHist, stage22DPtResHist3, title1, title2, xaxis, yaxis, True)
 
     #c.SetTitle("genPtVPtResFit_CrystalsAdjusted")
     #h1 = ROOT.TH2F('h1_', 'EG Relative Momentum Error', 50, 0, 50, 60, -.3, .3)
@@ -488,6 +488,31 @@ if __name__ == '__main__' :
     drawPoints(c, crystal_tree, var, cut_ss_cIso9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, False, True)
     c.SetTitle("clusterPtVE2x2OverE2x5_fitLine")
     drawPoints(c, crystal_tree, var, cut_ss_cIso9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, True, True)
+
+    points = [ # pt, percentile # Used for cut11
+        [ 15,   .95 ],
+        [ 17.5, .96 ],
+        [ 22.5, .96 ],
+        [ 27.5, .97 ],
+        [ 32.5, .985 ],
+        [ 37.5, .99 ],
+        [ 42.5, .99 ],
+        [ 50, .995 ],
+        [ 60, .995 ],
+        [ 70, .995 ],
+        [ 80, .995 ],
+        [ 90, .995 ],
+        ]
+    # Check H/E
+    var = "cluster_hovere:cluster_pt"
+    xaxis = "Cluster P_{T} (GeV)"
+    yaxis = "H/E"
+    xinfo = [25, 0., 100.]
+    yinfo = [50, 0., 5.]
+    c.SetTitle("clusterPtVHoverE")
+    drawPoints(c, crystal_tree, var, cut_ss_cIso9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True)
+    c.SetTitle("clusterPtVHoverE_fitLine")
+    drawPoints(c, crystal_tree, var, cut_ss_cIso9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True)
 #def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, points, linear=False, doFit=True, includeLine=False, invert=False) :
 
 #

@@ -1,6 +1,7 @@
 #!/bin/bash
 
-DATE=20170524v1
+DATE=20170525v1
+DATE=20170530v1
 
 # Different options
 
@@ -13,9 +14,9 @@ doPiZero=true
 doPion=true
 doTau=true
 #doMinBias=false
-#doElectron=false
-#doPhoton=false
-doPiZero=false
+doElectron=false
+doPhoton=false
+#doPiZero=false
 doPion=false
 doTau=false
 
@@ -30,7 +31,7 @@ fi
 if $doElectron; then
     farmoutAnalysisJobs \
         --output-dir=. \
-        --input-files-per-job=30 \
+        --input-files-per-job=10 \
         --input-file-list=submitFileLists/singleElectronFilesPU200.txt \
         phaseII_singleElectron_${DATE} $CMSSW_BASE round1_condor_cfg.py
 fi

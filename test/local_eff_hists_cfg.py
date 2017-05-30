@@ -7,14 +7,15 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 process.load('Configuration.EventContent.EventContent_cff')
 process.MessageLogger.categories = cms.untracked.vstring('L1EGRateStudies', 'FwkReport')
 process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
-   reportEvery = cms.untracked.int32(100)
+   reportEvery = cms.untracked.int32(1)
 )
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        'file:l1egCrystalTest.root',
+        'file:root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/002A4121-132C-E711-87AD-008CFAFBF618.root',
     )
 )
 
@@ -29,10 +30,19 @@ process.GlobalTag = GlobalTag(process.GlobalTag, '90X_upgrade2023_realistic_v9',
 # The ones which don't work all replace the ECAL Endcap geometry with HGCal stuff
 # Options in cmssw_810_pre16: (each also has an option without the Reco)
 process.load('Configuration.Geometry.GeometryExtended2023D4Reco_cff') # D7 works, D4 is the choosen config by Phase-2 L1Trig
-
-
 process.load('Configuration.StandardSequences.MagneticField_38T_PostLS1_cff')
 
+
+# --------------------------------------------------------------------------------------------
+#
+# ----     L1 tracking
+
+process.load("L1Trigger.TrackFindingTracklet.L1TrackletTracks_cff")
+process.TTTracks = cms.Path(process.L1TrackletTracks)  #run only the tracking (no MC truth associators)
+
+# ----     L1 tracking Primary Vertex
+process.load("L1Trigger.L1TTrackMatch.L1TkPrimaryVertexProducer_cfi")
+process.TTTrackPV = cms.Path(process.L1TkPrimaryVertex)
 
 
 # --------------------------------------------------------------------------------------------
@@ -42,6 +52,7 @@ process.load('Configuration.StandardSequences.MagneticField_38T_PostLS1_cff')
 process.L1EGammaCrystalsProducer = cms.EDProducer("L1EGCrystalClusterProducer",
    EtminForStore = cms.double(0.),
    debug = cms.untracked.bool(False),
+   #debug = cms.untracked.bool(True),
    useRecHits = cms.bool(False),
    #ecalTPEB = cms.InputTag("EcalEBTrigPrimProducer","","L1AlgoTest"),
    ecalTPEB = cms.InputTag("simEcalEBTriggerPrimitiveDigis","","HLT"),
@@ -80,6 +91,7 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    genParticles = cms.InputTag("genParticles"),
    L1TrackInputTag = cms.InputTag("TTTracksFromTracklet", "Level1TTTracks"),
    L1TrackPrimaryVertexTag = cms.InputTag("L1TkPrimaryVertex"),
+   Stage2EG1Tag = cms.InputTag("simCaloStage2Digis", "", "HLT"),
    OfflineRecoClustersInputTag = cms.InputTag("correctedHybridSuperClusters"),
    ecalTPEB = cms.InputTag("simEcalEBTriggerPrimitiveDigis","","HLT"),
    doEfficiencyCalc = cms.untracked.bool(True),
