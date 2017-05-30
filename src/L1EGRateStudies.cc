@@ -262,8 +262,11 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float hovere;
          float iso;
          float bremStrength;
-         float electronWP98;
-         float photonWP90;
+         bool  passedBase = false;
+         bool  passedPhoton = false;
+         bool  passedTrack = false;
+         bool electronWP98 = false;
+         bool photonWP80 = false;
          float e2x2;
          float e2x5;
          float e3x5;
@@ -282,7 +285,6 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float reco_pt = 0.;
          float reco_eta = -99.;
          float reco_phi = -99.;
-         bool  passedBase = false;
          int   nthCandidate = -1;
          bool  endcap = false;
          float uslPt = 0.;
@@ -536,6 +538,10 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("lumi", &treeinfo.lumi);
    crystal_tree->Branch("event", &treeinfo.event);
    crystal_tree->Branch("passedBase", &treeinfo.passedBase);
+   crystal_tree->Branch("electronWP98", &treeinfo.electronWP98);
+   crystal_tree->Branch("photonWP80", &treeinfo.photonWP80);
+   crystal_tree->Branch("passedPhoton", &treeinfo.passedPhoton);
+   crystal_tree->Branch("passedTrack", &treeinfo.passedTrack);
    crystal_tree->Branch("pt", &treeinfo.crystal_pt, "1:2:3:4:5:6");
    crystal_tree->Branch("crystalCount", &treeinfo.crystalCount);
    crystal_tree->Branch("cluster_pt", &treeinfo.cluster_pt);
@@ -547,8 +553,6 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("cluster_hovere", &treeinfo.hovere);
    crystal_tree->Branch("cluster_iso", &treeinfo.iso);
    crystal_tree->Branch("bremStrength", &treeinfo.bremStrength);
-   crystal_tree->Branch("electronWP98", &treeinfo.electronWP98);
-   crystal_tree->Branch("photonWP90", &treeinfo.photonWP90);
    crystal_tree->Branch("e2x2", &treeinfo.e2x2);
    crystal_tree->Branch("e2x5", &treeinfo.e2x5);
    crystal_tree->Branch("e3x5", &treeinfo.e3x5);
@@ -1257,12 +1261,13 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
    treeinfo.iso = cluster.isolation();
    treeinfo.bremStrength = cluster.bremStrength();
    treeinfo.electronWP98 = cluster.electronWP98();
-   treeinfo.photonWP90 = cluster.photonWP90();
+   treeinfo.photonWP80 = cluster.photonWP80();
+   treeinfo.passedBase = cluster_passes_base_cuts(cluster);
+   treeinfo.passedPhoton = (cluster_passes_photon_cuts(cluster) && cluster_passes_base_cuts(cluster));
    treeinfo.e2x2 = cluster.e2x2();
    treeinfo.e2x5 = cluster.e2x5();
    treeinfo.e3x5 = cluster.e3x5();
    treeinfo.e5x5 = cluster.e5x5();
-   treeinfo.passedBase = cluster_passes_base_cuts(cluster);
    treeinfo.uslPt = cluster.GetExperimentalParam("upperSideLobePt");
    treeinfo.lslPt = cluster.GetExperimentalParam("lowerSideLobePt");
    treeinfo.phiStripContiguous0 = cluster.GetExperimentalParam("phiStripContiguous0");
@@ -1729,6 +1734,7 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
      treeinfo.trackHighestPtCutChi2Chi2 = max_track_pt_all_chi2_cutChi2;
      treeinfo.trackIsoConeTrackCount = isoConeTrackCount;
      treeinfo.trackIsoConePtSum = isoConePtSum;
+     treeinfo.passedTrack = (cluster_passes_track_cuts(cluster, min_track_dr) && cluster_passes_base_cuts(cluster));
      //treeinfo.trackPUTrackPtGlobalDiffZ = PUTrackPtGlobalDiffZ;
      //treeinfo.trackPUTrackPtGlobalDiffZandPt = PUTrackPtGlobalDiffZandPt;
      //treeinfo.trackPUTrackPtGlobalSameZ = PUTrackPtGlobalSameZ;
