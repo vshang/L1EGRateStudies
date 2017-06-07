@@ -955,8 +955,8 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                   reco_gen_pt_hist2->Fill( cluster.pt(), (cluster.pt() - trueElectron.pt())/trueElectron.pt() );
                   reco_gen_pt_hist3->Fill( cluster.pt(), trueElectron.pt()/cluster.pt() );
                   reco_gen_pt_adj_hist->Fill( trueElectron.pt(), ( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) - trueElectron.pt())/trueElectron.pt() );
-                  reco_gen_pt_adj_hist2->Fill( cluster.pt(), ( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) - trueElectron.pt())/trueElectron.pt() );
-                  reco_gen_pt_adj_hist3->Fill( cluster.pt(), trueElectron.pt() / ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) );
+                  reco_gen_pt_adj_hist2->Fill( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ), ( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) - trueElectron.pt())/trueElectron.pt() );
+                  reco_gen_pt_adj_hist3->Fill( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ), trueElectron.pt() / ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) );
                   reco_gen_pt_1dHist->Fill( (cluster.pt() - trueElectron.pt())/trueElectron.pt() );
                   brem_dphi_hist->Fill( cluster.bremStrength(), reco::deltaPhi(cluster, trueElectron) );
                   break;
