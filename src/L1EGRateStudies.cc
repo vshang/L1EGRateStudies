@@ -854,7 +854,12 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          eventCount--;
          return;
       }
+
       efficiency_denominator_hist->Fill(trueElectron.pt());
+      // Only fill eta efficiencies if gen pt > 20
+      if (trueElectron.pt()>20 && trueElectron.pt()<100)
+         efficiency_denominator_eta_hist->Fill(trueElectron.eta());
+
       treeinfo.gen_pt = genParticles[0].pt();
       treeinfo.gen_z = genParticles[0].vz();
       treeinfo.gen_eta = genParticles[0].eta();
@@ -867,7 +872,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          treeinfo.endcap = true;
       else
          treeinfo.endcap = false;
-      efficiency_denominator_eta_hist->Fill(trueElectron.eta());
+
       if ( offlineRecoFound ) {
          treeinfo.reco_pt = reco_electron_pt;
          treeinfo.reco_eta = reco_electron_eta;
@@ -907,16 +912,19 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                if ( cluster_passes_base_cuts(cluster) )
                {
                   dyncrystal_efficiency_hist->Fill(trueElectron.pt());
-                  dyncrystal_efficiency_eta_hist->Fill(trueElectron.eta());
+                  if (trueElectron.pt()>20 && trueElectron.pt()<100)
+                     dyncrystal_efficiency_eta_hist->Fill(trueElectron.eta());
 
                   if ( cluster_passes_track_cuts(cluster, treeinfo.trackDeltaR) ) {
                      dyncrystal_efficiency_track_hist->Fill(trueElectron.pt());
-                     dyncrystal_efficiency_track_eta_hist->Fill(trueElectron.eta());
+                     if (trueElectron.pt()>20 && trueElectron.pt()<100)
+                        dyncrystal_efficiency_track_eta_hist->Fill(trueElectron.eta());
                   }
 
                   if ( cluster_passes_photon_cuts(cluster) ) {
                      dyncrystal_efficiency_phoWindow_hist->Fill(trueElectron.pt());
-                     dyncrystal_efficiency_phoWindow_eta_hist->Fill(trueElectron.eta());
+                     if (trueElectron.pt()>20 && trueElectron.pt()<100)
+                        dyncrystal_efficiency_phoWindow_eta_hist->Fill(trueElectron.eta());
                   }
 
                   if ( offlineRecoFound )
@@ -975,7 +983,8 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
               fabs(EGCandidate.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
          {
             stage2_efficiency_hist->Fill(trueElectron.pt());
-            stage2_efficiency_eta_hist->Fill(trueElectron.eta());
+            if (trueElectron.pt()>20 && trueElectron.pt()<100)
+               stage2_efficiency_eta_hist->Fill(trueElectron.eta());
             //if (EGCandidate.hwIso() > 0.) {
             //   stage2_efficiency_iso_hist->Fill(trueElectron.pt());
             //   stage2_efficiency_iso_eta_hist->Fill(trueElectron.eta());
