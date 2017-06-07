@@ -42,7 +42,9 @@ def normalizeHists() :
             effEtaHists = trigHelpers.loadObjectsMatchingPattern(file, "analyzer", effHistKeys, "*_efficiency*eta")
             effEtaDenom.Sumw2()
             for hist in effEtaHists :
-                graph = ROOT.TGraphAsymmErrors(hist, effEtaDenom)
+                denom = effEtaDenom.Clone()
+                print "    Dividing " + hist.GetName() + " by " + denom.GetName()
+                graph = ROOT.TGraphAsymmErrors(hist, denom)
                 graph.GetXaxis().SetTitle(hist.GetXaxis().GetTitle())
                 graph.GetYaxis().SetTitle("Efficiency")
                 graph.Write()

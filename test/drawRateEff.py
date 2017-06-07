@@ -60,6 +60,7 @@ def draw2DSets(c, tree1, var, cut, title1, tree2, title2, xaxis, xinfo, yaxis, y
     h2.GetYaxis().SetTitle( yaxis )
     h2.Draw("colz")
     c.Print("plots/"+c.GetTitle()+".png")
+    c.Print("plots/"+c.GetTitle()+".pdf")
     del h1
     del h2
 
@@ -78,6 +79,7 @@ def draw2DPtRes( hist, c, name ) :
     hist.Draw("colz")
     cmsString = drawCMSString("CMS Simulation, <PU>=200 bx=25, Single Electron")
     c.Print("/afs/cern.ch/user/t/truggles/www/Phase-II/v8/"+name+"_reco_gen_pt.png")
+    c.Print("/afs/cern.ch/user/t/truggles/www/Phase-II/v8/"+name+"_reco_gen_pt.pdf")
     c.Print("/afs/cern.ch/user/t/truggles/www/Phase-II/v8/"+name+"_reco_gen_pt.C")
     del cmsString
 
@@ -112,7 +114,7 @@ def drawRates( hists, c, ymax, xrange = [0., 0.] ) :
     #leg = setLegStyle(0.53,0.78,0.95,0.92)
     leg = setLegStyle(0.45,0.6,0.95,0.92)
     for graph in graphs :
-        leg.AddEntry(graph, graph.GetTitle(),"lpe")
+        leg.AddEntry(graph, graph.GetTitle().replace(' PtAdj',''),"lpe")
     leg.Draw("same")
     c.Update()
     
@@ -125,6 +127,7 @@ def drawRates( hists, c, ymax, xrange = [0., 0.] ) :
     ROOT.gPad.SetGrid()
     
     c.Print("/afs/cern.ch/user/t/truggles/www/Phase-II/v8/"+c.GetName()+".png")
+    c.Print("/afs/cern.ch/user/t/truggles/www/Phase-II/v8/"+c.GetName()+".pdf")
     c.Print("/afs/cern.ch/user/t/truggles/www/Phase-II/v8/"+c.GetName()+".C")
 
 
@@ -181,10 +184,14 @@ def drawEfficiency( hists, c, ymax, xTitle, xrange = [0., 0.], fit = False, fitH
     #mg.GetYaxis().SetTitle(graphs[0].GetYaxis().GetTitle())
     mg.GetYaxis().SetTitle("Eff. (L1 Algo./Generated)")
  
-    cmsString = drawCMSString("CMS Simulation, <PU>=200 bx=25, Single Electron")
+    if 'combo' in c.GetName() :
+        cmsString = drawCMSString("CMS Simulation, <PU>=200 bx=25, Single Electron/Photon")
+    else :
+        cmsString = drawCMSString("CMS Simulation, <PU>=200 bx=25, Single Electron")
     #cmsString = drawCMSString("CMS Simulation, <PU>=200 bx=25, Single Photon")
  
     c.Print(("/afs/cern.ch/user/t/truggles/www/Phase-II/v8/"+c.GetName()+".png"))
+    c.Print(("/afs/cern.ch/user/t/truggles/www/Phase-II/v8/"+c.GetName()+".pdf"))
     c.Print(("/afs/cern.ch/user/t/truggles/www/Phase-II/v8/"+c.GetName()+".C"))
 
 
@@ -345,6 +352,7 @@ def draw2DdeltaRHist(hist, c) :
     gPad.Update()
  
     c.Print("plots/"+c.GetName()+".png")
+    c.Print("plots/"+c.GetName()+".pdf")
     
     gStyle.SetOptTitle(1)
 
@@ -408,6 +416,7 @@ def drawDRHists(hists, c, ymax, doFit = False, targetDir = 'plots' ) :
         #cmsString = drawCMSString("CMS Simulation, <PU>=200 bx=25, Min-Bias")
                 
     c.Print(targetDir+"/"+c.GetName()+".png")
+    c.Print(targetDir+"/"+c.GetName()+".pdf")
     c.Print(targetDir+"/"+c.GetName()+".C")
 
     # Don't produce CDFs at the moment
@@ -462,6 +471,7 @@ def drawDRHists(hists, c, ymax, doFit = False, targetDir = 'plots' ) :
             fitResults[i].Draw()
 
         c.Print( "plots/"+c.GetName()+"_fit.png" )
+        c.Print( "plots/"+c.GetName()+"_fit.pdf" )
 
     c.Clear()
  
@@ -500,7 +510,7 @@ if __name__ == '__main__' :
     effMap = {
         'newAlgEtaHist' : ('L1EGamma Crystal', 'analyzer/divide_dyncrystalEG_efficiency_eta_by_gen_eta'),
         'newAlgTrkEtaHist' : ('L1EGamma Crystal - Trk Match', 'analyzer/divide_dyncrystalEG_efficiency_track_eta_by_gen_eta'),
-        'newAlgPhotonEtaHist' : ('L1EGamma Crystal - Trk Match', 'analyzer/divide_dyncrystalEG_efficiency_phoWindow_eta_by_gen_eta'),
+        'newAlgPhotonEtaHist' : ('L1EGamma Crystal - Trk Photon', 'analyzer/divide_dyncrystalEG_efficiency_phoWindow_eta_by_gen_eta'),
         #'newAlgEtaHist' : ('L1EGamma Crystal', 'analyzer/divide_dyncrystalEG_efficiency_track_eta_by_gen_eta'),
         'newAlgPtHist' : ('L1EGamma Crystal', 'analyzer/divide_dyncrystalEG_efficiency_pt_by_gen_pt'),
         'newAlgTrkPtHist' : ('L1EGamma Crystal - Trk Match', 'analyzer/divide_dyncrystalEG_efficiency_track_pt_by_gen_pt'),
@@ -518,6 +528,7 @@ if __name__ == '__main__' :
         'newAlgDEtaHist' : ('L1EGamma Crystal', 'analyzer/dyncrystalEG_deta'),
         'newAlgDPhiHist' : ('L1EGamma Crystal', 'analyzer/dyncrystalEG_dphi'),
         'newAlgGenRecoPtHist' : ('L1EGamma Crystal', 'analyzer/1d_reco_gen_pt'),
+        'newAlgGenRecoPtHistAdj' : ('L1EGamma Crystal', 'analyzer/1d_reco_gen_pt_adj'),
     }
     
     date = 'v3p2'
@@ -1035,30 +1046,44 @@ if __name__ == '__main__' :
     #drawRates( toDraw, c, 40000., xrange)
     
     ''' EFFICIENCY SECTION '''
+    # Grab photon efficiencies from photon file
+    phoEffEta = effPhoFile.Get('analyzer/divide_dyncrystalEG_efficiency_phoWindow_eta_by_gen_eta')
+    phoEffEta.SetTitle('L1EGamma Crystal - Photon')
+    phoEffPt = effPhoFile.Get('analyzer/divide_dyncrystalEG_efficiency_phoWindow_pt_by_gen_pt')
+    phoEffPt.SetTitle('L1EGamma Crystal - Photon')
+
     xrange = [0., 100.]
     c.SetLogy(0)
     c.SetName("dyncrystalEG_efficiency_eta")
     c.SetTitle("EG Efficiencies")
     drawEfficiency([effHists['Stage2EtaHist'], effHists['newAlgEtaHist']], c, 1.3, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
-    c.SetName("dyncrystalEG_efficiency_track_eta")
+    c.SetName("dyncrystalEG_efficiency_eta_track")
     c.SetTitle("EG Efficiencies")
     drawEfficiency([effHists['Stage2EtaHist'], effHists['newAlgEtaHist'], effHists['newAlgTrkEtaHist']], c, 1.3, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
     c.SetName("dyncrystalEG_efficiency_eta_all")
     c.SetTitle("EG Efficiencies")
     drawEfficiency([effHists['Stage2EtaHist'], effHists['newAlgEtaHist'], effHists['newAlgTrkEtaHist'], effHists['newAlgPhotonEtaHist']], c, 1.3, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
+    # Combo of singleE and singleGamma
+    c.SetName("dyncrystalEG_efficiency_eta_combo")
+    c.SetTitle("EG Efficiencies")
+    drawEfficiency([effHists['Stage2EtaHist'], effHists['newAlgEtaHist'], effHists['newAlgTrkEtaHist'], phoEffEta], c, 1.3, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
 
-    c.SetName("dyncrystalEG_efficiency_all_pt")
+    c.SetName("dyncrystalEG_efficiency_pt_all")
     c.SetTitle("")
     drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgTrkPtHist'], effHists['newAlgPhotonPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
     c.SetName("dyncrystalEG_efficiency_pt")
     c.SetTitle("")
     drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
-    c.SetName("dyncrystalEG_efficiency_track_pt")
+    c.SetName("dyncrystalEG_efficiency_pt_track")
     c.SetTitle("")
     drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgTrkPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
-    c.SetName("dyncrystalEG_efficiency_photon_pt")
+    c.SetName("dyncrystalEG_efficiency_pt_photon")
     c.SetTitle("")
     drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgPhotonPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
+    # Combo of singleE and singleGamma
+    c.SetName("dyncrystalEG_efficiency_pt_combo")
+    c.SetTitle("")
+    drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgTrkPtHist'], phoEffPt], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
 
     # Map of possible pt values from file with suggested fit function params
     possiblePts = {'20' : [0.9, 20., 1., 0.], '30' : [0.95, 30., 1., 0.], '40': [0.95, 16., 1., 0.]}
@@ -1110,6 +1135,8 @@ if __name__ == '__main__' :
     drawDRHists([effHists['newAlgDPhiHist'], effHists['stage2DPhiHist']], c, 0., False, tDir)
     c.SetName("dyncrystalEG_1D_pt_res")
     drawDRHists([effHists['newAlgGenRecoPtHist'], effHists['stage2GenRecoPtHist']], c, 0., False, tDir)
+    c.SetName("dyncrystalEG_1D_pt_res_adj")
+    drawDRHists([effHists['newAlgGenRecoPtHistAdj'], effHists['stage2GenRecoPtHist']], c, 0., False, tDir)
 
 #XXX    """ 81X Check """
 #XXX    Check81x = False
