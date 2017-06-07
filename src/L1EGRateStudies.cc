@@ -368,6 +368,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       TH2F * reco_gen_pt_adj_hist2;
       TH2F * reco_gen_pt_adj_hist3;
       TH1F * reco_gen_pt_1dHist;
+      TH1F * reco_gen_pt_adj_1dHist;
 
       // dphi vs. brem
       TH2F * brem_dphi_hist;
@@ -452,8 +453,8 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
          dyncrystal_efficiency_reco_adj_hists[threshold] = fs->make<TH1F>(("dyncrystalEG_threshold"+std::to_string(threshold)+"_efficiency_reco_adj_pt").c_str(), "Dynamic Crystal Trigger;Offline reco. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
          dyncrystal_efficiency_gen_hists[threshold] = fs->make<TH1F>(("dyncrystalEG_threshold"+std::to_string(threshold)+"_efficiency_gen_pt").c_str(), "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       }
-      dyncrystal_deltaR_hist = fs->make<TH1F>("dyncrystalEG_deltaR", ("Dynamic Crystal Trigger;#Delta R "+drLabel).c_str(), 50, 0., genMatchDeltaRcut);
-      dyncrystal_deltaR_bremcut_hist = fs->make<TH1F>("dyncrystalEG_deltaR_bremcut", ("Dynamic Crystal Trigger;#Delta R "+drLabel).c_str(), 50, 0., genMatchDeltaRcut);
+      dyncrystal_deltaR_hist = fs->make<TH1F>("dyncrystalEG_deltaR", ("Dynamic Crystal Trigger;#Delta R "+drLabel).c_str(), 100, 0., genMatchDeltaRcut);
+      dyncrystal_deltaR_bremcut_hist = fs->make<TH1F>("dyncrystalEG_deltaR_bremcut", ("Dynamic Crystal Trigger;#Delta R "+drLabel).c_str(), 100, 0., genMatchDeltaRcut);
       dyncrystal_deta_hist = fs->make<TH1F>("dyncrystalEG_deta", ("Dynamic Crystal Trigger;d#eta "+drLabel).c_str(), 100, -0.25, 0.25);
       dyncrystal_dphi_hist = fs->make<TH1F>("dyncrystalEG_dphi", ("Dynamic Crystal Trigger;d#phi "+drLabel).c_str(), 100, -0.25, 0.25);
       dyncrystal_dphi_bremcut_hist = fs->make<TH1F>("dyncrystalEG_dphi_bremcut", ("Dynamic Crystal Trigger;d#phi "+drLabel).c_str(), 50, -0.1, 0.1);
@@ -471,8 +472,8 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
          stage2_efficiency_reco_hists[threshold] = fs->make<TH1F>(("stage2EG_threshold"+std::to_string(threshold)+"_efficiency_reco_pt").c_str(), "Stage-2 Trigger;Offline reco. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
          stage2_efficiency_gen_hists[threshold] = fs->make<TH1F>(("stage2EG_threshold"+std::to_string(threshold)+"_efficiency_gen_pt").c_str(), "Stage-2 Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       }
-      stage2_deltaR_hist = fs->make<TH1F>("stage2EG_deltaR", ("Stage-2 Trigger;#Delta R "+drLabel).c_str(), 50, 0., genMatchDeltaRcut);
-      stage2_deltaR_bremcut_hist = fs->make<TH1F>("stage2EG_deltaR_bremcut", ("Stage-2 Trigger;#Delta R "+drLabel).c_str(), 50, 0., genMatchDeltaRcut);
+      stage2_deltaR_hist = fs->make<TH1F>("stage2EG_deltaR", ("Stage-2 Trigger;#Delta R "+drLabel).c_str(), 100, 0., genMatchDeltaRcut);
+      stage2_deltaR_bremcut_hist = fs->make<TH1F>("stage2EG_deltaR_bremcut", ("Stage-2 Trigger;#Delta R "+drLabel).c_str(), 100, 0., genMatchDeltaRcut);
       stage2_deta_hist = fs->make<TH1F>("stage2EG_deta", ("Stage-2 Trigger;d#eta "+drLabel).c_str(), 100, -0.25, 0.25);
       stage2_dphi_hist = fs->make<TH1F>("stage2EG_dphi", ("Stage-2 Trigger;d#phi "+drLabel).c_str(), 100, -0.25, 0.25);
       stage2_dphi_bremcut_hist = fs->make<TH1F>("stage2EG_dphi_bremcut", ("Stage-2 Trigger;d#phi "+drLabel).c_str(), 50, -0.1, 0.1);
@@ -508,6 +509,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       reco_gen_pt_adj_hist2 = fs->make<TH2F>("reco_gen_pt_adj2" , "EG relative momentum error;Reco pT (GeV);(reco-gen)/gen;Counts", 100, 0., 100., 100, -0.5, 0.5); 
       reco_gen_pt_adj_hist3 = fs->make<TH2F>("reco_gen_pt_adj3" , "EG relative momentum error;Reco pT (GeV);gen/reco;Counts", 100, 0., 100., 100, 0.0, 2.0); 
       reco_gen_pt_1dHist = fs->make<TH1F>("1d_reco_gen_pt" , "EG relative momentum error;(reco-gen)/gen;Counts", 100, -1., 1.); 
+      reco_gen_pt_adj_1dHist = fs->make<TH1F>("1d_reco_gen_pt_adj" , "EG relative momentum error;(reco-gen)/gen;Counts", 100, -1., 1.); 
       brem_dphi_hist = fs->make<TH2F>("brem_dphi_hist" , "Brem. strength vs. d#phi;Brem. Strength;d#phi;Counts", 40, 0., 2., 40, -0.05, 0.05); 
 
       efficiency_denominator_hist = fs->make<TH1F>("gen_pt", "Gen. pt;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
@@ -966,6 +968,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                   reco_gen_pt_adj_hist2->Fill( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ), ( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) - trueElectron.pt())/trueElectron.pt() );
                   reco_gen_pt_adj_hist3->Fill( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ), trueElectron.pt() / ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) );
                   reco_gen_pt_1dHist->Fill( (cluster.pt() - trueElectron.pt())/trueElectron.pt() );
+                  reco_gen_pt_adj_1dHist->Fill( ( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) - trueElectron.pt())/trueElectron.pt() );
                   brem_dphi_hist->Fill( cluster.bremStrength(), reco::deltaPhi(cluster, trueElectron) );
                   break;
                }
