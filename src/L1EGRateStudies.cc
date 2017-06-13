@@ -267,10 +267,12 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          bool  passedTrack = false;
          bool electronWP98 = false;
          bool photonWP80 = false;
+         float e1x1;
          float e2x2;
          float e2x5;
          float e3x5;
          float e5x5;
+         float eCross;
          float deltaR = 0.;
          float deltaPhi = 0.;
          float deltaEta = 0.;
@@ -555,10 +557,12 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("cluster_hovere", &treeinfo.hovere);
    crystal_tree->Branch("cluster_iso", &treeinfo.iso);
    crystal_tree->Branch("bremStrength", &treeinfo.bremStrength);
+   crystal_tree->Branch("e1x1", &treeinfo.e1x1);
    crystal_tree->Branch("e2x2", &treeinfo.e2x2);
    crystal_tree->Branch("e2x5", &treeinfo.e2x5);
    crystal_tree->Branch("e3x5", &treeinfo.e3x5);
    crystal_tree->Branch("e5x5", &treeinfo.e5x5);
+   crystal_tree->Branch("eCross", &treeinfo.eCross);
    crystal_tree->Branch("deltaR", &treeinfo.deltaR);
    crystal_tree->Branch("deltaPhi", &treeinfo.deltaPhi);
    crystal_tree->Branch("deltaEta", &treeinfo.deltaEta);
@@ -1276,10 +1280,12 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
    treeinfo.photonWP80 = cluster.photonWP80();
    treeinfo.passedBase = cluster_passes_base_cuts(cluster);
    treeinfo.passedPhoton = (cluster_passes_photon_cuts(cluster) && cluster_passes_base_cuts(cluster));
+   treeinfo.e1x1 = cluster.GetExperimentalParam("E1x1");
    treeinfo.e2x2 = cluster.e2x2();
    treeinfo.e2x5 = cluster.e2x5();
    treeinfo.e3x5 = cluster.e3x5();
    treeinfo.e5x5 = cluster.e5x5();
+   treeinfo.eCross = cluster.GetExperimentalParam("ECross");
    treeinfo.uslPt = cluster.GetExperimentalParam("upperSideLobePt");
    treeinfo.lslPt = cluster.GetExperimentalParam("lowerSideLobePt");
    treeinfo.phiStripContiguous0 = cluster.GetExperimentalParam("phiStripContiguous0");

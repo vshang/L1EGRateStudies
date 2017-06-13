@@ -1,18 +1,18 @@
 import ROOT
 import trigHelpers
 
-version = 'v3p2'
-version = 'v8'
+version = 'v9'
 
 def normalizeHists() :
     eff = ROOT.TFile("r2_phase2_singleElectron_%s.root" % version, "UPDATE")
     pho = ROOT.TFile("r2_phase2_singlePhoton_%s.root" % version, "UPDATE")
+    piZero = ROOT.TFile("r2_phase2_singlePiZero_%s.root" % version, "UPDATE")
     rates = ROOT.TFile("r2_phase2_minBias_%s.root" % version, "UPDATE")
 
     # We need to renormalize everything since these files were parallel processed
 
     # Single Electron and Photon are idential 
-    for file in [eff, pho] :
+    for file in [eff, pho, piZero, ] :
         effHistKeys = trigHelpers.getKeysOfClass(file, "analyzer", "TH1F")
         effPtDenom = file.Get("analyzer/gen_pt")
         effEtaDenom = file.Get("analyzer/gen_eta")
@@ -55,19 +55,21 @@ def normalizeHists() :
             file.Write("", ROOT.TObject.kOverwrite)
 
 
-    rateHistKeys = trigHelpers.getKeysOfClass(rates, "analyzer", "TH1F")
-    if rates.Get("analyzer/eventCount") != None :
-        print "Normalizing rate histograms to 30MHz"
-        nEvents = rates.Get("analyzer/eventCount").GetBinContent(1)
-        print "Total event count:", nEvents
-        rateHists = trigHelpers.loadObjectsMatchingPattern(rates, "analyzer", rateHistKeys, "*_rate*")
-        dir_ = rates.Get("analyzer")
-        dir_.cd()
-        for hist in rateHists :
-            hist.Sumw2()
-            hist.Scale(30000./nEvents)
-        #dir_.Delete("eventCount*")
-        rates.Write("", ROOT.TObject.kOverwrite)
+    doRate = False
+    if doRate :
+        rateHistKeys = trigHelpers.getKeysOfClass(rates, "analyzer", "TH1F")
+        if rates.Get("analyzer/eventCount") != None :
+            print "Normalizing rate histograms to 30MHz"
+            nEvents = rates.Get("analyzer/eventCount").GetBinContent(1)
+            print "Total event count:", nEvents
+            rateHists = trigHelpers.loadObjectsMatchingPattern(rates, "analyzer", rateHistKeys, "*_rate*")
+            dir_ = rates.Get("analyzer")
+            dir_.cd()
+            for hist in rateHists :
+                hist.Sumw2()
+                hist.Scale(30000./nEvents)
+            #dir_.Delete("eventCount*")
+            rates.Write("", ROOT.TObject.kOverwrite)
 
 
 
