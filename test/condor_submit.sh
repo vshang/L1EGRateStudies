@@ -5,9 +5,9 @@
 #scram b
 #popd
 
-jobNum=48
+jobNum=105
 jobopts=''
-doeff=true
+doeff=false
 dorate=true
 dofakes=false
 rmold=false
@@ -49,7 +49,7 @@ if $doeff; then
         gsido rm /hdfs/store/user/${USER}/egalg_eff* -r
     fi
     farmoutAnalysisJobs \
-        --input-dir=/store/mc/TTI2023Upg14D/SingleElectronFlatPt0p2To50/GEN-SIM-DIGI-RAW/PU140bx25_PH2_1K_FB_V3-v2/00000 \
+        --input-file-list=SingleElectronFlatPt0p2To50.txt \
         --input-files-per-job=1 $jobopts \
         egalg_eff_hists${jobNum} $CMSSW_BASE eff_hists_cfg.py
     # Single Photo
@@ -58,9 +58,9 @@ if $doeff; then
         gsido rm /hdfs/store/user/${USER}/egalgPho_eff* -r
     fi
     farmoutAnalysisJobs \
-        --input-dir=/store/mc/TTI2023Upg14D/SinglePhotonFlatPt5To75/GEN-SIM-DIGI-RAW/PU140bx25_PH2_1K_FB_V3-v2/00000 \
+        --input-file-list=SinglePhotonFlatPt5To75.txt \
         --input-files-per-job=1 $jobopts \
-        egalgPho_eff_hists${jobNum} $CMSSW_BASE eff_hists_cfg.py
+        egalgPho_eff_hists${jobNum} $CMSSW_BASE eff_pho_hists_cfg.py
 fi
 
 if $dorate; then
@@ -69,19 +69,19 @@ if $dorate; then
         gsido rm /hdfs/store/user/${USER}/egalg_rate* -r
     fi
     farmoutAnalysisJobs \
-        --input-dir=/store/mc/TTI2023Upg14D/Neutrino_Pt2to20_gun/GEN-SIM-DIGI-RAW/PU140bx25_PH2_1K_FB_V3-v2/00000 \
+        --input-file-list=Neutrino_Pt2to20_gun.txt \
         --input-files-per-job=1 $jobopts \
         egalg_rate_hists${jobNum} $CMSSW_BASE rate_hists_cfg.py
 fi
-
-if $dofakes; then
-    if $rmold; then
-        rm /nfs_scratch/${USER}/egalg_fakes* -r
-        gsido rm /hdfs/store/user/${USER}/egalg_fakes* -r
-    fi
-    farmoutAnalysisJobs \
-        --input-dir=/store/mc/TTI2023Upg14D/Neutrino_Pt2to20_gun/GEN-SIM-DIGI-RAW/PU140bx25_PH2_1K_FB_V3-v2/00000 \
-        --input-files-per-job=1 $jobopts \
-        egalg_fakes $CMSSW_BASE fake_heatmap_cfg.py
-fi
+#
+#if $dofakes; then
+#    if $rmold; then
+#        rm /nfs_scratch/${USER}/egalg_fakes* -r
+#        gsido rm /hdfs/store/user/${USER}/egalg_fakes* -r
+#    fi
+#    farmoutAnalysisJobs \
+#        --input-file-list=Neutrino_Pt2to20_gun.txt \
+#        --input-files-per-job=1 $jobopts \
+#        egalg_fakes $CMSSW_BASE fake_heatmap_cfg.py
+#fi
 
