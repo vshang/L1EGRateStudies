@@ -68,10 +68,16 @@ if $dorate; then
         rm /nfs_scratch/${USER}/egalg_rate* -r
         gsido rm /hdfs/store/user/${USER}/egalg_rate* -r
     fi
+    #farmoutAnalysisJobs \
+    #    --input-file-list=Neutrino_Pt2to20_gun.txt \
+    #    --input-files-per-job=1 $jobopts \
+    #    --input-basenames-not-unique \
+    #    egalg_rate_hists${jobNum} $CMSSW_BASE rate_hists_cfg.py
     farmoutAnalysisJobs \
-        --input-file-list=Neutrino_Pt2to20_gun.txt \
-        --input-files-per-job=1 $jobopts \
-        egalg_rate_hists${jobNum} $CMSSW_BASE rate_hists_cfg.py
+        --input-file-list=NeutrinoGun_E2023TTI_PU200.txt \
+        --input-files-per-job=2 $jobopts \
+        --input-basenames-not-unique \
+        egalg_rate_histsPU200${jobNum} $CMSSW_BASE rate_hists_cfg.py
 fi
 #
 #if $dofakes; then
