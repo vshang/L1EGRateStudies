@@ -133,6 +133,11 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       TH1F * dyncrystal_dphi_hist;
       TH1F * dyncrystal_dphi_bremcut_hist;
       TH1F * dyncrystal_rate_hist;
+      TH1F * dyncrystal_rate_barrel_hist;
+      TH1F * dyncrystal_rate_endcap_hist;
+      TH1F * dyncrystal_rate_track_hist;
+      TH1F * dyncrystal_rate_track_barrel_hist;
+      TH1F * dyncrystal_rate_track_endcap_hist;
       TH2F * dyncrystal_2DdeltaR_hist;
 
       std::map<std::string, TH1F *> EGalg_efficiency_hists;
@@ -374,6 +379,11 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    else
    {
       dyncrystal_rate_hist = fs->make<TH1F>("dyncrystalEG_rate" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
+      dyncrystal_rate_barrel_hist = fs->make<TH1F>("dyncrystalEG_rate_barrel" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
+      dyncrystal_rate_endcap_hist = fs->make<TH1F>("dyncrystalEG_rate_endcap" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
+      dyncrystal_rate_track_hist = fs->make<TH1F>("dyncrystalEG_rate_track" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
+      dyncrystal_rate_track_barrel_hist = fs->make<TH1F>("dyncrystalEG_rate_track_barrel" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
+      dyncrystal_rate_track_endcap_hist = fs->make<TH1F>("dyncrystalEG_rate_track_endcap" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
       for(auto& inputTag : L1EGammaInputTags)
       {
          const std::string &name = inputTag.encode();
@@ -837,6 +847,13 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    }
    else // !doEfficiencyCalc
    {
+      bool passedBaseAll = false;
+      bool passedBaseBarrel = false;
+      bool passedBaseEndcap = false;
+      bool passedTrackAll = false;
+      bool passedTrackBarrel = false;
+      bool passedTrackEndcap = false;
+      bool filled = false;
       for(const auto& cluster : crystalClusters)
       {
          if ( !useEndcap && fabs(cluster.eta()) >= 1.479 ) continue;
@@ -847,13 +864,41 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          else
             treeinfo.endcap = false;
          doTrackMatching(cluster, l1trackHandle);
-         fill_tree(cluster);
+         // just take highest pt one
+         if (!filled) {
+            filled = true;
+            fill_tree(cluster);
+         }
          checkRecHitsFlags(cluster, triggerPrimitives, ecalRecHits);
 
          if ( cluster_passes_cuts(cluster) )
          {
-            dyncrystal_rate_hist->Fill(cluster.pt());
-            break;
+            if (!passedBaseAll) {
+                passedBaseAll = true;
+                dyncrystal_rate_hist->Fill(cluster.pt());
+            }
+            if (treeinfo.endcap && !passedBaseEndcap) {
+                passedBaseEndcap = true;
+                dyncrystal_rate_endcap_hist->Fill(cluster.pt());
+            }
+            if (!treeinfo.endcap && !passedBaseBarrel) {
+                passedBaseBarrel = true;
+                dyncrystal_rate_barrel_hist->Fill(cluster.pt());
+            }
+            if (treeinfo.trackDeltaR<0.1) {
+                if (!passedTrackAll) {
+                    passedTrackAll = true;
+                    dyncrystal_rate_track_hist->Fill(cluster.pt());
+                }
+                if (treeinfo.endcap && !passedTrackEndcap) {
+                    passedTrackEndcap = true;
+                    dyncrystal_rate_track_endcap_hist->Fill(cluster.pt());
+                }
+                if (!treeinfo.endcap && !passedTrackBarrel) {
+                    passedTrackBarrel = true;
+                    dyncrystal_rate_track_barrel_hist->Fill(cluster.pt());
+                }
+            }
          }
       }
 
@@ -903,6 +948,11 @@ L1EGRateStudies::endJob()
       TH1F* event_count = fs->make<TH1F>("eventCount", "Event Count", 1, -1, 1);
       event_count->SetBinContent(1, eventCount);
       integrateDown(dyncrystal_rate_hist);
+      integrateDown(dyncrystal_rate_barrel_hist);
+      integrateDown(dyncrystal_rate_endcap_hist);
+      integrateDown(dyncrystal_rate_track_hist);
+      integrateDown(dyncrystal_rate_track_barrel_hist);
+      integrateDown(dyncrystal_rate_track_endcap_hist);
       for(auto& hist : EGalg_rate_hists)
       {
          integrateDown(hist.second);
