@@ -4,13 +4,15 @@ from array import array
 from ROOT import gStyle, gPad
 import CMS_lumi, tdrstyle
 
-version = 'v9'
+version = 'v10'
 universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"/"
 
 singleE = 'r2_phase2_singleElectron_%s.root' % version
+minBias = 'r2_phase2_minBias_%s.root' % version
+version = 'v9'
 singlePho = 'r2_phase2_singlePhoton_%s.root' % version
 singlePiZero = 'r2_phase2_singlePiZero_%s.root' % version
-minBias = 'r2_phase2_minBias_%s.root' % version
+#minBias = '/data/truggles/egTriggerRates.root'
 
 rateFile = ROOT.TFile( minBias, 'r' )
 effFile = ROOT.TFile( singleE, 'r' )
@@ -517,6 +519,12 @@ if __name__ == '__main__' :
         'L1EGamma Crystal Track PtAdj' : 'analyzer/dyncrystalEG_track_adj_rate',
         'L1EGamma Crystal Photon PtAdj' : 'analyzer/dyncrystalEG_phoWindow_adj_rate',
         'Stage-2 L1EG' : 'analyzer/stage2EG_rate',
+        #'62X PU140 L1EGamma Crystal' : 'analyzer/dyncrystalEG_rate',
+        #'62X PU140 L1EGamma Crystal - Barrel' : 'analyzer/dyncrystalEG_rate_barrel',
+        #'62X PU140 L1EGamma Crystal - EndCap' : 'analyzer/dyncrystalEG_rate_endcap',
+        #'62X PU140 L1EGamma Crystal Track' : 'analyzer/dyncrystalEG_rate_track',
+        #'62X PU140 L1EGamma Crystal Track - Barrel' : 'analyzer/dyncrystalEG_rate_track_barrel',
+        #'62X PU140 L1EGamma Crystal Track - EndCap' : 'analyzer/dyncrystalEG_rate_track_endcap',
         #'Stage-2 L1EG Iso' : 'analyzer/stage2EG_iso_rate',
     }
 
@@ -612,7 +620,7 @@ if __name__ == '__main__' :
     title2 = "L1EGamma Crystal (Fake)"
 
     lotsOf2DPlots = False
-    lotsOf2DPlots = True
+    #lotsOf2DPlots = True
     if lotsOf2DPlots :
 
         var = "zVertexEnergy:abs(trackZ-zVertex)"
@@ -948,7 +956,7 @@ if __name__ == '__main__' :
     gStyle.SetOptStat(0)
 
     
-    c = ROOT.TCanvas('c', 'c', 800, 600)
+    c = ROOT.TCanvas('c', 'c', 1200, 1000)
     c.SetLogy(1)
     c.SetTitle('')
     #c.SetGridx(1)
@@ -958,50 +966,76 @@ if __name__ == '__main__' :
     
     ''' RATE SECTION '''    
     doRates = False
-    #doRates = True
+    doRates = True
     if doRates :
         xrange = [0., 60.]
-        # Calo-based L1EG Rates
-        c.SetName('dyncrystalEG_rate')
-        toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal'], ]
-        drawRates( toDraw, c, 40000., xrange)
+        ### Calo-based L1EG Rates
+        ##fx = ROOT.TFile('r2_phase2_minBias_v9.root','r')
+        ##hx = fx.Get('analyzer/dyncrystalEG_adj_rate')
+        ##hx.SetTitle('91X PU200 - Barrel')
+        ##fy = ROOT.TFile('/hdfs/store/user/truggles/20170626_egTriggerRatesPU200.root','r')
+        ##hy = fy.Get('analyzer/dyncrystalEG_rate_barrel')
+        ##hy.SetTitle('62X PU200 - Barrel')
+        ##c.SetName('dyncrystalEG_rate_All_with_91X_and_62X')
+        ###toDraw = [ hists['62X PU140 L1EGamma Crystal'], hists['62X PU140 L1EGamma Crystal - Barrel'], hists['62X PU140 L1EGamma Crystal - EndCap'], hx]
+        ##toDraw = [ hists['62X PU140 L1EGamma Crystal'], hists['62X PU140 L1EGamma Crystal - Barrel'], hx, hy]
+        ##drawRates( toDraw, c, 40000., xrange)
+        #c.SetName('dyncrystalEG_rate_Barrel')
+        #toDraw = [ hists['62X L1EGamma Crystal - Barrel'], hists['62X L1EGamma Crystal Track - Barrel'], ]
+        #drawRates( toDraw, c, 40000., xrange)
+        #c.SetName('dyncrystalEG_rate_EndCap')
+        #toDraw = [ hists['62X L1EGamma Crystal - EndCap'], hists['62X L1EGamma Crystal Track - EndCap'], ]
+        #drawRates( toDraw, c, 40000., xrange)
+        #c.SetName('dyncrystalEG_rate')
+        #toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal'], ]
+        #drawRates( toDraw, c, 40000., xrange)
         c.SetName('dyncrystalEG_rate_adj')
         toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], ]
         drawRates( toDraw, c, 40000., xrange)
 
-        # Photon
-        c.SetName('dyncrystalEG_rate_photon')
-        toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal'], hists['L1EGamma Crystal Photon']]
-        drawRates( toDraw, c, 40000., xrange)
-        c.SetName('dyncrystalEG_rate_photon_adj')
-        toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Photon PtAdj']]
-        drawRates( toDraw, c, 40000., xrange)
+        ## Photon
+        #c.SetName('dyncrystalEG_rate_photon')
+        #toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal'], hists['L1EGamma Crystal Photon']]
+        #drawRates( toDraw, c, 40000., xrange)
+        #c.SetName('dyncrystalEG_rate_photon_adj')
+        #toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Photon PtAdj']]
+        #drawRates( toDraw, c, 40000., xrange)
 
-        # Track
-        c.SetName('dyncrystalEG_rate_track')
-        toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal'], hists['L1EGamma Crystal Track']]
-        drawRates( toDraw, c, 40000., xrange)
-        c.SetName('dyncrystalEG_rate_track_adj')
-        toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj']]
-        drawRates( toDraw, c, 40000., xrange)
+        ## Track
+        #c.SetName('dyncrystalEG_rate_track')
+        #toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal'], hists['L1EGamma Crystal Track']]
+        #drawRates( toDraw, c, 40000., xrange)
+        #c.SetName('dyncrystalEG_rate_track_adj')
+        #toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj']]
+        #drawRates( toDraw, c, 40000., xrange)
 
-        # All 
-        c.SetName('dyncrystalEG_rate_all')
-        toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal'], hists['L1EGamma Crystal Track'], hists['L1EGamma Crystal Photon']]
-        drawRates( toDraw, c, 40000., xrange)
-        c.SetName('dyncrystalEG_rate_all_adj')
-        toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj'], hists['L1EGamma Crystal Photon PtAdj']]
-        drawRates( toDraw, c, 40000., xrange)
+        ## All 
+        #c.SetName('dyncrystalEG_rate_all')
+        #toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal'], hists['L1EGamma Crystal Track'], hists['L1EGamma Crystal Photon']]
+        #drawRates( toDraw, c, 40000., xrange)
+        #c.SetName('dyncrystalEG_rate_all_adj')
+        #toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj'], hists['L1EGamma Crystal Photon PtAdj']]
+        #drawRates( toDraw, c, 40000., xrange)
 
-        # Stage-2 rate solo
-        c.SetName('stage2_rate')
-        xrange = [0., 80.]
-        toDraw = [ hists['Stage-2 L1EG'],]
-        drawRates( toDraw, c, 40000., xrange)
+        ## Stage-2 rate solo
+        #c.SetName('stage2_rate')
+        #xrange = [0., 80.]
+        #toDraw = [ hists['Stage-2 L1EG'],]
+        #drawRates( toDraw, c, 40000., xrange)
     
+        # Default vs. New Method
+        minBiasv9 = 'r2_phase2_minBias_v9.root'
+        minB9 = ROOT.TFile( minBiasv9, 'r' )
+        oldRate = minB9.Get('analyzer/dyncrystalEG_adj_rate')
+        oldRate.SetTitle('Whole Detector Mthd')
+        hists['L1EGamma Crystal PtAdj'].SetTitle('New Top 20 Hits Mthd')
+        c.SetName('dyncrystalEG_top20_rate_adj')
+        toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], oldRate ]
+        drawRates( toDraw, c, 40000., xrange)
+
     ''' EFFICIENCY SECTION '''
     doEfficiencySection = False
-    #doEfficiencySection = True
+    doEfficiencySection = True
     if doEfficiencySection :
         # Grab photon efficiencies from photon file
         phoEffEta = effPhoFile.Get('analyzer/divide_dyncrystalEG_efficiency_phoWindow_eta_by_gen_eta')
@@ -1041,6 +1075,16 @@ if __name__ == '__main__' :
         c.SetName("dyncrystalEG_efficiency_pt_combo")
         c.SetTitle("")
         drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgTrkPtHist'], phoEffPt], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
+
+        # Default vs. New Method
+        singleEv9 = 'r2_phase2_singleElectron_v9.root'
+        elec9 = ROOT.TFile( singleEv9, 'r' )
+        oldEff = elec9.Get('analyzer/divide_dyncrystalEG_efficiency_pt_by_gen_pt')
+        oldEff.SetTitle('Whole Detector Mthd')
+        c.SetName("dyncrystalEG_top20_efficiency_pt")
+        effHists['newAlgPtHist'].SetTitle('New Top 20 Mthd')
+        c.SetTitle("")
+        drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], oldEff], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
 
         # Map of possible pt values from file with suggested fit function params
         possiblePts = {'20' : [0.9, 20., 1., 0.], '30' : [0.95, 30., 1., 0.], '40': [0.95, 16., 1., 0.]}
@@ -1094,9 +1138,25 @@ if __name__ == '__main__' :
     drawDRHists([effHists['newAlgGenRecoPtHist'], effHists['stage2GenRecoPtHist']], c, 0., False)
     c.SetName("dyncrystalEG_1D_pt_res_adj")
     drawDRHists([effHists['newAlgGenRecoPtHistAdj'], effHists['stage2GenRecoPtHist']], c, 0., False)
+    # New comparison of only taking top 20 ECAL TPs
+    top20elecF = ROOT.TFile('r2_phase2_singleElectron_v9.root','r')
+    newAlgDEtaHist = top20elecF.Get('analyzer/dyncrystalEG_deta')
+    newAlgDPhiHist = top20elecF.Get('analyzer/dyncrystalEG_dphi')
+    newAlgGenRecoPtHist = top20elecF.Get('analyzer/1d_reco_gen_pt')
+    newAlgGenRecoPtHistAdj = top20elecF.Get('analyzer/1d_reco_gen_pt_adj')
+    for h in [newAlgDEtaHist, newAlgDPhiHist, newAlgGenRecoPtHist, newAlgGenRecoPtHistAdj] :
+        h.SetTitle('New Top 20 Mthd')
+    c.SetName("dyncrystalEG_top20_deltaEta")
+    drawDRHists([effHists['newAlgDEtaHist'], newAlgDEtaHist], c, 0., False)
+    c.SetName("dyncrystalEG_top20_deltaPhi")
+    drawDRHists([effHists['newAlgDPhiHist'], newAlgDPhiHist], c, 0., False)
+    c.SetName("dyncrystalEG_top20_1D_pt_res")
+    drawDRHists([effHists['newAlgGenRecoPtHist'], newAlgGenRecoPtHist], c, 0., False)
+    c.SetName("dyncrystalEG_top20_1D_pt_res_adj")
+    drawDRHists([effHists['newAlgGenRecoPtHistAdj'], newAlgGenRecoPtHistAdj], c, 0., False)
 
 
-    doPhotonComp = True
+    doPhotonComp = False
     if doPhotonComp :
         min_ = 0.
         max_ = 1.2
