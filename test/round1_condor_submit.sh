@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DATE=20170612v1
+DATE=20170715v1
 
 
 # Signals for Efficiencies and Std Algo Studies
@@ -12,9 +12,9 @@ doPion=true
 doTau=true
 #doMinBias=false
 #doElectron=false
-#doPhoton=false
-#doPiZero=false
-#doPion=false
+doPhoton=false
+doPiZero=false
+doPion=false
 doTau=false
 
 if $doMinBias; then
