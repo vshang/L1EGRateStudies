@@ -59,7 +59,7 @@ def makeMapping( phiNum, etaNum ) :
 
 
 def printJson( jDict ) :
-    with open('map.json', 'w') as outFile :
+    with open('map36.json', 'w') as outFile :
         json.dump( jDict, outFile, indent=2 )
         outFile.close()
 
@@ -68,7 +68,7 @@ if __name__ == '__main__' :
     eta = 1
     phi = 24 # first recommended config
     eta = 1
-    phi = 12 # second test config
+    phi = 18 # second test config
     eta = 2
     tMap = makeMapping( phi, eta )
 
