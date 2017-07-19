@@ -1,0 +1,7 @@
+/data/truggles/phaseII_minBias_20170716top10-round1_condor_cfg/round1_condor_cfg-0CF06B14-6C29-E711-A269-0242AC130003/round1_condor_cfg-0CF06B14-6C29-E711-A269-0242AC130003.root
+/data/truggles/phaseII_minBias_20170716top10-round1_condor_cfg/round1_condor_cfg-34FECDCA-4128-E711-BC02-0242AC130002/round1_condor_cfg-34FECDCA-4128-E711-BC02-0242AC130002.root
+/data/truggles/phaseII_minBias_20170716top10-round1_condor_cfg/round1_condor_cfg-640FBD0C-5926-E711-AA4A-0242AC130002/round1_condor_cfg-640FBD0C-5926-E711-AA4A-0242AC130002.root
+/data/truggles/phaseII_minBias_20170716top10-round1_condor_cfg/round1_condor_cfg-7C63EACA-6526-E711-984E-0242AC130005/round1_condor_cfg-7C63EACA-6526-E711-984E-0242AC130005.root
+/data/truggles/phaseII_minBias_20170716top10-round1_condor_cfg/round1_condor_cfg-E2D807F9-032A-E711-A2C5-0242AC130003/round1_condor_cfg-E2D807F9-032A-E711-A2C5-0242AC130003.root
+/data/truggles/phaseII_minBias_20170716top10-round1_condor_cfg/round1_condor_cfg-E4F66C6C-DA28-E711-AB51-0242AC130003/round1_condor_cfg-E4F66C6C-DA28-E711-AB51-0242AC130003.root
+/data/truggles/phaseII_minBias_20170716top10-round1_condor_cfg/round1_condor_cfg-EA8C53B5-C229-E711-9D27-0242AC130004/round1_condor_cfg-EA8C53B5-C229-E711-9D27-0242AC130004.root
