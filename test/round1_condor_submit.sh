@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DATE=20170715v1
+DATE=20170717noSkimRecoPerCard36v2
 
 
 # Signals for Efficiencies and Std Algo Studies
@@ -16,6 +16,9 @@ doPhoton=false
 doPiZero=false
 doPion=false
 doTau=false
+
+resubmitFailedJobs=true
+resubmitFailedJobs=false
 
 if $doMinBias; then
     farmoutAnalysisJobs \
@@ -65,4 +68,25 @@ if $doTau; then
         phaseII_singleTau_${DATE} $CMSSW_BASE round1_condor_cfg.py
 fi
 
-
+# probably need to redefine the DATE group here for future use!
+if resubmitFailedJobs; then
+    for DATE in 20170612v1 20170716top20 20170716top10 20170716top05; do
+        if $doMinBias; then
+            farmoutAnalysisJobs \
+                --output-dir=. \
+                --input-files-per-job=50 \
+                --input-file-list=submitFileLists/singleNeutrinoFilesPU200.txt \
+                --resubmit-failed-jobs \
+                phaseII_minBias_${DATE} $CMSSW_BASE round1_condor_cfg.py
+        fi
+        
+        if $doElectron; then
+            farmoutAnalysisJobs \
+                --output-dir=. \
+                --input-files-per-job=10 \
+                --input-file-list=submitFileLists/singleElectronFilesPU200.txt \
+                --resubmit-failed-jobs \
+                phaseII_singleElectron_${DATE} $CMSSW_BASE round1_condor_cfg.py
+        fi
+    done
+fi
