@@ -3,6 +3,7 @@ import trigHelpers
 from array import array
 from ROOT import gStyle, gPad
 import CMS_lumi, tdrstyle
+from collections import OrderedDict
 
 version = 'v10'
 universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"/"
@@ -1022,17 +1023,24 @@ if __name__ == '__main__' :
         #xrange = [0., 80.]
         #toDraw = [ hists['Stage-2 L1EG'],]
         #drawRates( toDraw, c, 40000., xrange)
-    
-        # Default vs. New Method
-        minBiasv9 = 'r2_phase2_minBias_v9.root'
-        minB9 = ROOT.TFile( minBiasv9, 'r' )
-        oldRate = minB9.Get('analyzer/dyncrystalEG_adj_rate')
-        oldRate.SetTitle('Whole Detector Mthd')
-        hists['L1EGamma Crystal PtAdj'].SetTitle('New Top 20 Hits Mthd')
-        c.SetName('dyncrystalEG_top20_rate_adj')
-        toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], oldRate ]
-        drawRates( toDraw, c, 40000., xrange)
 
+        minBiasFiles = OrderedDict()
+        minBiasFiles['r2_phase2_minBias_20170612v1.root'] = 'Default Whole Det Mthd'
+        minBiasFiles['r2_phase2_minBias_20170717noSkimRecoPerCard36v2.root'] = 'all ECAL TPs, confine RECO to 1 card'
+        minBiasFiles['r2_phase2_minBias_20170716top20.root'] = 'slim TPs to 20 per card'
+        minBiasFiles['r2_phase2_minBias_20170716top10.root'] = 'slim TPs to 10 per card'
+        minBiasFiles['r2_phase2_minBias_20170716top05.root'] = 'slim TPs to 5 per card'
+
+        rateHists = []
+        for fname in minBiasFiles :
+            f = ROOT.TFile( fname, 'r' )
+            h = f.Get('analyzer/dyncrystalEG_adj_rate')
+            h.SetTitle( minBiasFiles[fname] )
+            h.SetDirectory(0)
+            rateHists.append( h )
+        c.SetName('dyncrystalEG_NEW_COMP_rate_adj')
+        drawRates( rateHists, c, 40000., xrange)
+    
     ''' EFFICIENCY SECTION '''
     doEfficiencySection = False
     doEfficiencySection = True
@@ -1077,14 +1085,21 @@ if __name__ == '__main__' :
         drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgTrkPtHist'], phoEffPt], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
 
         # Default vs. New Method
-        singleEv9 = 'r2_phase2_singleElectron_v9.root'
-        elec9 = ROOT.TFile( singleEv9, 'r' )
-        oldEff = elec9.Get('analyzer/divide_dyncrystalEG_efficiency_pt_by_gen_pt')
-        oldEff.SetTitle('Whole Detector Mthd')
-        c.SetName("dyncrystalEG_top20_efficiency_pt")
-        effHists['newAlgPtHist'].SetTitle('New Top 20 Mthd')
-        c.SetTitle("")
-        drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], oldEff], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
+        singleElectronFiles = OrderedDict()
+        singleElectronFiles['r2_phase2_singleElectron_20170612v1.root'] = 'Default Whole Det Mthd'
+        singleElectronFiles['r2_phase2_singleElectron_20170717noSkimRecoPerCard36v2.root'] = 'all ECAL TPs, confine RECO to 1 card'
+        singleElectronFiles['r2_phase2_singleElectron_20170716top20.root'] = 'slim TPs to 20 per card'
+        singleElectronFiles['r2_phase2_singleElectron_20170716top10.root'] = 'slim TPs to 10 per card'
+        singleElectronFiles['r2_phase2_singleElectron_20170716top05.root'] = 'slim TPs to 5 per card'
+
+        newEffHists = []
+        for fname in singleElectronFiles :
+            f = ROOT.TFile( fname, 'r' )
+            h = f.Get('analyzer/divide_dyncrystalEG_efficiency_pt_by_gen_pt')
+            h.SetTitle( singleElectronFiles[fname] )
+            newEffHists.append( h )
+        c.SetName('dyncrystalEG_NEW_COMP_efficiency_pt')
+        drawEfficiency(newEffHists, c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
 
         # Map of possible pt values from file with suggested fit function params
         possiblePts = {'20' : [0.9, 20., 1., 0.], '30' : [0.95, 30., 1., 0.], '40': [0.95, 16., 1., 0.]}
@@ -1154,6 +1169,37 @@ if __name__ == '__main__' :
     drawDRHists([effHists['newAlgGenRecoPtHist'], newAlgGenRecoPtHist], c, 0., False)
     c.SetName("dyncrystalEG_top20_1D_pt_res_adj")
     drawDRHists([effHists['newAlgGenRecoPtHistAdj'], newAlgGenRecoPtHistAdj], c, 0., False)
+
+    # Default vs. New Method
+    singleElectronFiles = OrderedDict()
+    singleElectronFiles['r2_phase2_singleElectron_20170612v1.root'] = 'Default Whole Det Mthd'
+    singleElectronFiles['r2_phase2_singleElectron_20170717noSkimRecoPerCard36v2.root'] = 'all ECAL TPs, confine RECO to 1 card'
+    singleElectronFiles['r2_phase2_singleElectron_20170716top20.root'] = 'slim TPs to 20 per card'
+    singleElectronFiles['r2_phase2_singleElectron_20170716top10.root'] = 'slim TPs to 10 per card'
+    singleElectronFiles['r2_phase2_singleElectron_20170716top05.root'] = 'slim TPs to 5 per card'
+
+    newEtaHists = []
+    newPhiHists = []
+    newPtHists = []
+    newPtAdjHists = []
+    for fname in singleElectronFiles :
+        f = ROOT.TFile( fname, 'r' )
+        for hName in ['analyzer/dyncrystalEG_deta','analyzer/dyncrystalEG_dphi','analyzer/1d_reco_gen_pt','analyzer/1d_reco_gen_pt_adj'] :
+            h = f.Get( hName )
+            h.SetTitle( singleElectronFiles[fname] )
+            h.SetDirectory(0)
+            if hName == 'analyzer/dyncrystalEG_deta' : newEtaHists.append( h )
+            if hName == 'analyzer/dyncrystalEG_dphi' : newPhiHists.append( h )
+            if hName == 'analyzer/1d_reco_gen_pt' : newPtHists.append( h )
+            if hName == 'analyzer/1d_reco_gen_pt_adj' : newPtAdjHists.append( h )
+    c.SetName('dyncrystalEG_NEW_COMP_deltaEta')
+    drawDRHists(newEtaHists, c, 0., False)
+    c.SetName('dyncrystalEG_NEW_COMP_deltaPhi')
+    drawDRHists(newPhiHists, c, 0., False)
+    c.SetName('dyncrystalEG_NEW_COMP_deltaPt')
+    drawDRHists(newPtHists, c, 0., False)
+    c.SetName('dyncrystalEG_NEW_COMP_deltaPtAdj')
+    drawDRHists(newPtAdjHists, c, 0., False)
 
 
     doPhotonComp = False
