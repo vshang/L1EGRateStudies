@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DATE=20170717noSkimRecoPerCard36v2
+DATE=20170721NormalV1
 
 
 # Signals for Efficiencies and Std Algo Studies
@@ -10,12 +10,17 @@ doPhoton=true
 doPiZero=true
 doPion=true
 doTau=true
-#doMinBias=false
-#doElectron=false
+doHZZ=true
+doTTbar=true
+
+doMinBias=false
+doElectron=false
 doPhoton=false
 doPiZero=false
 doPion=false
 doTau=false
+#doHZZ=false
+#doTTbar=false
 
 resubmitFailedJobs=true
 resubmitFailedJobs=false
@@ -66,6 +71,22 @@ if $doTau; then
         --input-files-per-job=30 \
         --input-file-list=submitFileLists/singleTauFilesPU200.txt \
         phaseII_singleTau_${DATE} $CMSSW_BASE round1_condor_cfg.py
+fi
+
+if $doHZZ; then
+    farmoutAnalysisJobs \
+        --output-dir=. \
+        --input-files-per-job=30 \
+        --input-file-list=submitFileLists/GluGluHToZZTo4LPU200.txt \
+        phaseII_HZZ4l_${DATE} $CMSSW_BASE round1_condor_cfg.py
+fi
+
+if $doTTbar; then
+    farmoutAnalysisJobs \
+        --output-dir=. \
+        --input-files-per-job=30 \
+        --input-file-list=submitFileLists/TTbarPU200.txt \
+        phaseII_TTbar_${DATE} $CMSSW_BASE round1_condor_cfg.py
 fi
 
 # probably need to redefine the DATE group here for future use!
