@@ -5,9 +5,10 @@ from ROOT import gStyle, gPad
 import CMS_lumi, tdrstyle
 from collections import OrderedDict
 
-version = 'v10'
+version = 'v20'
 universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"/"
 
+version = 'v9'
 singleE = 'r2_phase2_singleElectron_%s.root' % version
 minBias = 'r2_phase2_minBias_%s.root' % version
 version = 'v9'
@@ -56,7 +57,7 @@ def setLegStyle( x1,y1,x2,y2 ) :
     leg.SetLineStyle(1)
     leg.SetLineWidth(1)
     leg.SetFillColor(0)
-    leg.SetFillStyle(0)
+    leg.SetFillStyle(1001)
     leg.SetTextFont(42)
     return leg
 
@@ -143,8 +144,8 @@ def drawRates( hists, c, ymax, xrange = [0., 0.] ) :
     ROOT.gPad.SetGrid()
     
     c.Print(universalSaveDir+c.GetName()+".png")
-    #c.Print(universalSaveDir+c.GetName()+".pdf")
-    #c.Print(universalSaveDir+c.GetName()+".C")
+    c.Print(universalSaveDir+c.GetName()+".pdf")
+    c.Print(universalSaveDir+c.GetName()+".C")
 
 
 def drawEfficiency( hists, c, ymax, xTitle, xrange = [0., 0.], fit = False, fitHint = [1., 15., 3., 0.]) :
@@ -167,6 +168,7 @@ def drawEfficiency( hists, c, ymax, xTitle, xrange = [0., 0.], fit = False, fitH
         graphs.append( graph )
     
     mg.Draw("aplez")
+    #mg.Draw("apez")
 
     if c.GetLogy() == 0 : # linear
         mg.SetMinimum(0.)
@@ -175,6 +177,10 @@ def drawEfficiency( hists, c, ymax, xTitle, xrange = [0., 0.], fit = False, fitH
     
     if ymax != 0. :
         mg.SetMaximum( ymax ) 
+
+    # TMP XXX FIXME
+    #mg.SetMinimum( 0.7 )
+    #mg.SetMaximum( 1.1 )
     
 
     if ( fit and xrange[1] != xrange[0] ) :
@@ -187,7 +193,7 @@ def drawEfficiency( hists, c, ymax, xTitle, xrange = [0., 0.], fit = False, fitH
           graph.GetFunction("shape").SetLineColor(graph.GetLineColor())
           graph.GetFunction("shape").SetLineWidth(graph.GetLineWidth()*2)
  
-    leg = setLegStyle(0.53,0.80,0.95,0.92)
+    leg = setLegStyle(0.48,0.77,0.94,0.94)
     for graph in graphs :
         leg.AddEntry(graph, graph.GetTitle(),"lpe")
     leg.Draw("same")
@@ -207,8 +213,8 @@ def drawEfficiency( hists, c, ymax, xTitle, xrange = [0., 0.], fit = False, fitH
     #cmsString = drawCMSString("CMS Simulation, <PU>=200 bx=25, Single Photon")
  
     c.Print((universalSaveDir+c.GetName()+".png"))
-    #c.Print((universalSaveDir+c.GetName()+".pdf"))
-    #c.Print((universalSaveDir+c.GetName()+".C"))
+    c.Print((universalSaveDir+c.GetName()+".pdf"))
+    c.Print((universalSaveDir+c.GetName()+".C"))
 
 
 def draw2DdeltaRHist(hist, c) :
@@ -413,7 +419,7 @@ def drawDRHists(hists, c, ymax, doFit = False ) :
     #fit.Draw("lsame")
  
     #leg = setLegStyle(0.53,0.78,0.95,0.92)
-    leg = setLegStyle(0.43,0.72,0.95,0.92)
+    leg = setLegStyle(0.38,0.7,0.9,0.9)
     for hist in hists :
         leg.AddEntry(hist, hist.GetTitle(),"elp")
     leg.Draw("same")
@@ -423,7 +429,8 @@ def drawDRHists(hists, c, ymax, doFit = False ) :
     #hs.GetYaxis().SetTitle(hists[0].GetYaxis().GetTitle())
     hs.GetYaxis().SetTitleOffset(1.2)
     hs.GetYaxis().SetTitle("Fraction of Events")
-    #hs.GetXaxis().SetRangeUser(0., 0.1)
+    if c.GetName() == "dyncrystalEG_deltaR2" :
+        hs.GetXaxis().SetRangeUser(0., 0.15)
  
     if "Stage2" in c.GetName() :
         cmsString = drawCMSString("CMS Simulation")
@@ -432,8 +439,8 @@ def drawDRHists(hists, c, ymax, doFit = False ) :
         #cmsString = drawCMSString("CMS Simulation, <PU>=200 bx=25, Min-Bias")
                 
     c.Print(universalSaveDir+c.GetName()+".png")
-    #c.Print(universalSaveDir+"/"+c.GetName()+".pdf")
-    #c.Print(universalSaveDir+"/"+c.GetName()+".C")
+    c.Print(universalSaveDir+"/"+c.GetName()+".pdf")
+    c.Print(universalSaveDir+"/"+c.GetName()+".C")
 
     # Don't produce CDFs at the moment
     #del markers
@@ -958,6 +965,7 @@ if __name__ == '__main__' :
 
     
     c = ROOT.TCanvas('c', 'c', 1200, 1000)
+    ROOT.gPad.SetRightMargin( ROOT.gPad.GetRightMargin() * 2.5 )
     c.SetLogy(1)
     c.SetTitle('')
     #c.SetGridx(1)
@@ -970,6 +978,16 @@ if __name__ == '__main__' :
     doRates = True
     if doRates :
         xrange = [0., 60.]
+        hists['Stage-2 L1EG'].SetName('Phase-1 L1EG Trigger')
+        hists['Stage-2 L1EG'].SetTitle('Phase-1 L1EG Trigger')
+        hists['L1EGamma Crystal PtAdj'].SetName('HL-LHC L1EG Trigger')
+        hists['L1EGamma Crystal PtAdj'].SetTitle('HL-LHC L1EG Trigger')
+        hists['L1EGamma Crystal Track PtAdj'].SetName('HL-LHC L1EG Trigger - Trk Match')
+        hists['L1EGamma Crystal Track PtAdj'].SetTitle('HL-LHC L1EG Trigger - Trk Match')
+        hists['L1EGamma Crystal Photon PtAdj'].SetName('HL-LHC L1EG Trigger - Photon')
+        hists['L1EGamma Crystal Photon PtAdj'].SetTitle('HL-LHC L1EG Trigger - Photon')
+
+        toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj'], hists['L1EGamma Crystal Photon PtAdj']]
         ### Calo-based L1EG Rates
         ##fx = ROOT.TFile('r2_phase2_minBias_v9.root','r')
         ##hx = fx.Get('analyzer/dyncrystalEG_adj_rate')
@@ -1010,13 +1028,13 @@ if __name__ == '__main__' :
         #toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj']]
         #drawRates( toDraw, c, 40000., xrange)
 
-        ## All 
+        # All 
         #c.SetName('dyncrystalEG_rate_all')
         #toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal'], hists['L1EGamma Crystal Track'], hists['L1EGamma Crystal Photon']]
         #drawRates( toDraw, c, 40000., xrange)
-        #c.SetName('dyncrystalEG_rate_all_adj')
-        #toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj'], hists['L1EGamma Crystal Photon PtAdj']]
-        #drawRates( toDraw, c, 40000., xrange)
+        c.SetName('dyncrystalEG_rate_all_adj')
+        toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj'], hists['L1EGamma Crystal Photon PtAdj']]
+        drawRates( toDraw, c, 40000., xrange)
 
         ## Stage-2 rate solo
         #c.SetName('stage2_rate')
@@ -1052,6 +1070,23 @@ if __name__ == '__main__' :
         phoEffPt.SetTitle('L1EGamma Crystal - Photon')
 
         xrange = [0., 100.]
+        effHists['Stage2EtaHist'].SetName('Phase-1 L1EG Trigger')
+        effHists['Stage2EtaHist'].SetTitle('Phase-1 L1EG Trigger')
+        effHists['Stage2PtHist'].SetName('Phase-1 L1EG Trigger')
+        effHists['Stage2PtHist'].SetTitle('Phase-1 L1EG Trigger')
+        effHists['newAlgEtaHist'].SetName('HL-LHC L1EG Trigger')
+        effHists['newAlgEtaHist'].SetTitle('HL-LHC L1EG Trigger')
+        effHists['newAlgTrkEtaHist'].SetName('HL-LHC L1EG Trigger - Trk Match')
+        effHists['newAlgTrkEtaHist'].SetTitle('HL-LHC L1EG Trigger - Trk Match')
+        effHists['newAlgPhotonEtaHist'].SetName('HL-LHC L1EG Trigger - Photon')
+        effHists['newAlgPhotonEtaHist'].SetTitle('HL-LHC L1EG Trigger - Photon')
+        effHists['newAlgPtHist'].SetName('HL-LHC L1EG Trigger')
+        effHists['newAlgPtHist'].SetTitle('HL-LHC L1EG Trigger')
+        effHists['newAlgTrkPtHist'].SetName('HL-LHC L1EG Trigger - Trk Match')
+        effHists['newAlgTrkPtHist'].SetTitle('HL-LHC L1EG Trigger - Trk Match')
+        effHists['newAlgPhotonPtHist'].SetName('HL-LHC L1EG Trigger - Photon')
+        effHists['newAlgPhotonPtHist'].SetTitle('HL-LHC L1EG Trigger - Photon')
+
         c.SetLogy(0)
         c.SetName("dyncrystalEG_efficiency_eta")
         c.SetTitle("EG Efficiencies")
@@ -1086,38 +1121,49 @@ if __name__ == '__main__' :
 
         # Default vs. New Method
         singleElectronFiles = OrderedDict()
-        singleElectronFiles['r2_phase2_singleElectron_20170612v1.root'] = 'Default Whole Det Mthd'
-        singleElectronFiles['r2_phase2_singleElectron_20170717noSkimRecoPerCard36v2.root'] = 'all ECAL TPs, confine RECO to 1 card'
-        singleElectronFiles['r2_phase2_singleElectron_20170716top20.root'] = 'slim TPs to 20 per card'
-        singleElectronFiles['r2_phase2_singleElectron_20170716top10.root'] = 'slim TPs to 10 per card'
-        singleElectronFiles['r2_phase2_singleElectron_20170716top05.root'] = 'slim TPs to 5 per card'
+        singleElectronFiles['r2_phase2x_singleElectron_20170612v1.root'] = 'Default Whole Det Mthd'
+        singleElectronFiles['r2_phase2x_singleElectron_20170717noSkimRecoPerCard36v2.root'] = 'all ECAL TPs, confine RECO to 1 card'
+        singleElectronFiles['r2_phase2x_singleElectron_20170716top20.root'] = 'slim TPs to 20 per card'
+        singleElectronFiles['r2_phase2x_singleElectron_20170716top10.root'] = 'slim TPs to 10 per card'
+        singleElectronFiles['r2_phase2x_singleElectron_20170716top05.root'] = 'slim TPs to 5 per card'
 
         newEffHists = []
+        newEffEtaHists = []
         for fname in singleElectronFiles :
             f = ROOT.TFile( fname, 'r' )
             h = f.Get('analyzer/divide_dyncrystalEG_efficiency_pt_by_gen_pt')
             h.SetTitle( singleElectronFiles[fname] )
             newEffHists.append( h )
+            h1 = f.Get('analyzer/divide_dyncrystalEG_efficiency_eta_by_gen_eta')
+            h1.SetTitle( singleElectronFiles[fname] )
+            newEffEtaHists.append( h1 )
         c.SetName('dyncrystalEG_NEW_COMP_efficiency_pt')
         drawEfficiency(newEffHists, c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
+        c.SetName('dyncrystalEG_NEW_COMP_efficiency_eta')
+        drawEfficiency(newEffEtaHists, c, 1.3, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
 
         # Map of possible pt values from file with suggested fit function params
         possiblePts = {'20' : [0.9, 20., 1., 0.], '30' : [0.95, 30., 1., 0.], '40': [0.95, 16., 1., 0.]}
-        # Non-Stage-2 adjusted turn on thresholds
-        for crystalPt in newAlgGenPtHists :
-            if 'reco_pt' in crystalPt.GetName() : continue
-            print crystalPt
-            toPlot = []
-            for s2 in stage2GenPtHists :
-                if 'reco_pt' in s2.GetName() : continue
-                print s2
-                for pt in possiblePts.keys() :
-                    if pt in crystalPt.GetName() and pt in s2.GetName() :
-                        print pt, crystalPt.GetName(), s2.GetName()
-                        toPlot.append( crystalPt )
-                        toPlot.append( s2 )
-                        c.SetName("dyncrystalEG_threshold"+pt+"_efficiency_gen_pt")
-                        drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, True, possiblePts[pt])
+        ## Non-Stage-2 adjusted turn on thresholds
+        #for crystalPt in newAlgGenPtHists :
+        #    if 'reco_pt' in crystalPt.GetName() : continue
+        #    print crystalPt
+        #    toPlot = []
+        #    for s2 in stage2GenPtHists :
+        #        if 'reco_pt' in s2.GetName() : continue
+        #        print s2
+        #        for pt in possiblePts.keys() :
+        #            if pt in crystalPt.GetName() and pt in s2.GetName() :
+        #                print pt, crystalPt.GetName(), s2.GetName()
+        #                s2.SetTitle('Phase-1 L1EG Trigger')
+        #                s2.SetName('Phase-1 L1EG Trigger')
+        #                crystalPt.SetTitle('HL-LHC L1EG Trigger')
+        #                crystalPt.SetName('HL-LHC L1EG Trigger')
+        #                toPlot.append( crystalPt )
+        #                toPlot.append( s2 )
+        #                c.SetName("dyncrystalEG_threshold"+pt+"_efficiency_gen_pt")
+        #                #drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, True, possiblePts[pt])
+        #                drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, False, possiblePts[pt])
         # Turn on thresholds adjusted to match Stage-2
         for crystalPt in newAlgGenPtHistsRecoAdj :
             if 'reco_pt' in crystalPt.GetName() : continue
@@ -1129,10 +1175,16 @@ if __name__ == '__main__' :
                 for pt in possiblePts.keys() :
                     if pt in crystalPt.GetName() and pt in s2.GetName() :
                         print pt, crystalPt.GetName(), s2.GetName()
-                        toPlot.append( crystalPt )
+                        s2.SetTitle('Phase-1 L1EG Trigger')
+                        s2.SetName('Phase-1 L1EG Trigger')
+                        crystalPt.SetTitle('HL-LHC L1EG Trigger')
+                        crystalPt.SetName('HL-LHC L1EG Trigger')
+                        print pt, crystalPt.GetName(), s2.GetName()
                         toPlot.append( s2 )
+                        toPlot.append( crystalPt )
                         c.SetName("dyncrystalEG_threshold"+pt+"_efficiency_gen_pt_ptAdj")
-                        drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, True, possiblePts[pt])
+                        #drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, True, possiblePts[pt])
+                        drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, False, possiblePts[pt])
 
 
     ''' POSITION RECONSTRUCTION '''
@@ -1140,9 +1192,15 @@ if __name__ == '__main__' :
     c.SetGridx(0)
     c.SetGridy(0)
     c.SetLogy(0)
-    c.SetName("dyncrystalEG_deltaR")
     c.SetTitle("")
-    drawDRHists([effHists['newAlgDRHist'], effHists['stage2DRHist']], c, 0., False)
+    effHists['stage2DRHist'].SetTitle('Phase-1 L1EG Trigger')
+    effHists['newAlgDRHist'].SetTitle('HL-LHC L1EG Trigger')
+    c.SetName("dyncrystalEG_deltaR")
+    drawDRHists([effHists['stage2DRHist'], effHists['newAlgDRHist']], c, 0., False)
+    c.SetName("dyncrystalEG_deltaR2")
+    effHists['stage2DRHist'].GetXaxis().SetRangeUser(0., 0.15)
+    effHists['newAlgDRHist'].GetXaxis().SetRangeUser(0., 0.15)
+    drawDRHists([effHists['stage2DRHist'], effHists['newAlgDRHist']], c, 0., False)
 
     # Delta Eta / Phi
     c.SetName("dyncrystalEG_deltaEta")
