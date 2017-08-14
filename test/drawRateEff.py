@@ -5,7 +5,7 @@ from ROOT import gStyle, gPad
 import CMS_lumi, tdrstyle
 from collections import OrderedDict
 
-version = 'v20'
+version = 'v21'
 universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"/"
 
 version = 'v9'
@@ -543,7 +543,7 @@ if __name__ == '__main__' :
         #'newAlgEtaHist' : ('L1EGamma Crystal', 'analyzer/divide_dyncrystalEG_efficiency_track_eta_by_gen_eta'),
         'newAlgPtHist' : ('L1EGamma Crystal', 'analyzer/divide_dyncrystalEG_efficiency_pt_by_gen_pt'),
         'newAlgTrkPtHist' : ('L1EGamma Crystal - Trk Match', 'analyzer/divide_dyncrystalEG_efficiency_track_pt_by_gen_pt'),
-        'newAlgPhotonPtHist' : ('L1EGamma Crystal - Photon', 'analyzer/divide_dyncrystalEG_efficiency_phoWindow_pt_by_gen_pt'),
+        'newAlgPhotonPtHist' : ('Phase-2 L1EG (Crystal) Photon', 'analyzer/divide_dyncrystalEG_efficiency_phoWindow_pt_by_gen_pt'),
         #'newAlgPtHist' : ('L1EGamma Crystal', 'analyzer/divide_dyncrystalEG_efficiency_track_pt_by_gen_pt'),
         'Stage2PtHist' : ('Stage-2 L1EG', 'analyzer/divide_stage2EG_efficiency_pt_by_gen_pt'),
         #'Stage2IsoPtHist' : ('Stage-2 L1EG - Iso', 'analyzer/divide_stage2EG_efficiency_iso_pt_by_gen_pt'),
@@ -978,14 +978,14 @@ if __name__ == '__main__' :
     doRates = True
     if doRates :
         xrange = [0., 60.]
-        hists['Stage-2 L1EG'].SetName('Phase-1 L1EG Trigger')
-        hists['Stage-2 L1EG'].SetTitle('Phase-1 L1EG Trigger')
-        hists['L1EGamma Crystal PtAdj'].SetName('HL-LHC L1EG Trigger')
-        hists['L1EGamma Crystal PtAdj'].SetTitle('HL-LHC L1EG Trigger')
-        hists['L1EGamma Crystal Track PtAdj'].SetName('HL-LHC L1EG Trigger - Trk Match')
-        hists['L1EGamma Crystal Track PtAdj'].SetTitle('HL-LHC L1EG Trigger - Trk Match')
-        hists['L1EGamma Crystal Photon PtAdj'].SetName('HL-LHC L1EG Trigger - Photon')
-        hists['L1EGamma Crystal Photon PtAdj'].SetTitle('HL-LHC L1EG Trigger - Photon')
+        hists['Stage-2 L1EG'].SetName('Phase-1 L1EG (Tower)')
+        hists['Stage-2 L1EG'].SetTitle('Phase-1 L1EG (Tower)')
+        hists['L1EGamma Crystal PtAdj'].SetName('Phase-2 L1EG (Crystal)')
+        hists['L1EGamma Crystal PtAdj'].SetTitle('Phase-2 L1EG (Crystal)')
+        hists['L1EGamma Crystal Track PtAdj'].SetName('Phase-2 L1EG (Crystal + Trk) Electron')
+        hists['L1EGamma Crystal Track PtAdj'].SetTitle('Phase-2 L1EG (Crystal + Trk) Electron')
+        hists['L1EGamma Crystal Photon PtAdj'].SetName('Phase-2 L1EG (Crystal) Photon')
+        hists['L1EGamma Crystal Photon PtAdj'].SetTitle('Phase-2 L1EG (Crystal) Photon')
 
         toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj'], hists['L1EGamma Crystal Photon PtAdj']]
         ### Calo-based L1EG Rates
@@ -1065,27 +1065,27 @@ if __name__ == '__main__' :
     if doEfficiencySection :
         # Grab photon efficiencies from photon file
         phoEffEta = effPhoFile.Get('analyzer/divide_dyncrystalEG_efficiency_phoWindow_eta_by_gen_eta')
-        phoEffEta.SetTitle('L1EGamma Crystal - Photon')
+        phoEffEta.SetTitle('Phase-2 L1EG (Crystal) Photon')
         phoEffPt = effPhoFile.Get('analyzer/divide_dyncrystalEG_efficiency_phoWindow_pt_by_gen_pt')
-        phoEffPt.SetTitle('L1EGamma Crystal - Photon')
+        phoEffPt.SetTitle('Phase-2 L1EG (Crystal) Photon')
 
         xrange = [0., 100.]
-        effHists['Stage2EtaHist'].SetName('Phase-1 L1EG Trigger')
-        effHists['Stage2EtaHist'].SetTitle('Phase-1 L1EG Trigger')
-        effHists['Stage2PtHist'].SetName('Phase-1 L1EG Trigger')
-        effHists['Stage2PtHist'].SetTitle('Phase-1 L1EG Trigger')
-        effHists['newAlgEtaHist'].SetName('HL-LHC L1EG Trigger')
-        effHists['newAlgEtaHist'].SetTitle('HL-LHC L1EG Trigger')
-        effHists['newAlgTrkEtaHist'].SetName('HL-LHC L1EG Trigger - Trk Match')
-        effHists['newAlgTrkEtaHist'].SetTitle('HL-LHC L1EG Trigger - Trk Match')
-        effHists['newAlgPhotonEtaHist'].SetName('HL-LHC L1EG Trigger - Photon')
-        effHists['newAlgPhotonEtaHist'].SetTitle('HL-LHC L1EG Trigger - Photon')
-        effHists['newAlgPtHist'].SetName('HL-LHC L1EG Trigger')
-        effHists['newAlgPtHist'].SetTitle('HL-LHC L1EG Trigger')
-        effHists['newAlgTrkPtHist'].SetName('HL-LHC L1EG Trigger - Trk Match')
-        effHists['newAlgTrkPtHist'].SetTitle('HL-LHC L1EG Trigger - Trk Match')
-        effHists['newAlgPhotonPtHist'].SetName('HL-LHC L1EG Trigger - Photon')
-        effHists['newAlgPhotonPtHist'].SetTitle('HL-LHC L1EG Trigger - Photon')
+        effHists['Stage2EtaHist'].SetName('Phase-1 L1EG (Tower)')
+        effHists['Stage2EtaHist'].SetTitle('Phase-1 L1EG (Tower)')
+        effHists['Stage2PtHist'].SetName('Phase-1 L1EG (Tower)')
+        effHists['Stage2PtHist'].SetTitle('Phase-1 L1EG (Tower)')
+        effHists['newAlgEtaHist'].SetName('Phase-2 L1EG (Crystal)')
+        effHists['newAlgEtaHist'].SetTitle('Phase-2 L1EG (Crystal)')
+        effHists['newAlgTrkEtaHist'].SetName('Phase-2 L1EG (Crystal + Trk) Electron')
+        effHists['newAlgTrkEtaHist'].SetTitle('Phase-2 L1EG (Crystal + Trk) Electron')
+        effHists['newAlgPhotonEtaHist'].SetName('Phase-2 L1EG (Crystal) Photon')
+        effHists['newAlgPhotonEtaHist'].SetTitle('Phase-2 L1EG (Crystal) Photon')
+        effHists['newAlgPtHist'].SetName('Phase-2 L1EG (Crystal)')
+        effHists['newAlgPtHist'].SetTitle('Phase-2 L1EG (Crystal)')
+        effHists['newAlgTrkPtHist'].SetName('Phase-2 L1EG (Crystal + Trk) Electron')
+        effHists['newAlgTrkPtHist'].SetTitle('Phase-2 L1EG (Crystal + Trk) Electron')
+        effHists['newAlgPhotonPtHist'].SetName('Phase-2 L1EG (Crystal) Photon')
+        effHists['newAlgPhotonPtHist'].SetTitle('Phase-2 L1EG (Crystal) Photon')
 
         c.SetLogy(0)
         c.SetName("dyncrystalEG_efficiency_eta")
@@ -1155,10 +1155,10 @@ if __name__ == '__main__' :
         #        for pt in possiblePts.keys() :
         #            if pt in crystalPt.GetName() and pt in s2.GetName() :
         #                print pt, crystalPt.GetName(), s2.GetName()
-        #                s2.SetTitle('Phase-1 L1EG Trigger')
-        #                s2.SetName('Phase-1 L1EG Trigger')
-        #                crystalPt.SetTitle('HL-LHC L1EG Trigger')
-        #                crystalPt.SetName('HL-LHC L1EG Trigger')
+        #                s2.SetTitle('Phase-1 L1EG (Tower)')
+        #                s2.SetName('Phase-1 L1EG (Tower)')
+        #                crystalPt.SetTitle('Phase-2 L1EG (Crystal)')
+        #                crystalPt.SetName('Phase-2 L1EG (Crystal)')
         #                toPlot.append( crystalPt )
         #                toPlot.append( s2 )
         #                c.SetName("dyncrystalEG_threshold"+pt+"_efficiency_gen_pt")
@@ -1175,10 +1175,10 @@ if __name__ == '__main__' :
                 for pt in possiblePts.keys() :
                     if pt in crystalPt.GetName() and pt in s2.GetName() :
                         print pt, crystalPt.GetName(), s2.GetName()
-                        s2.SetTitle('Phase-1 L1EG Trigger')
-                        s2.SetName('Phase-1 L1EG Trigger')
-                        crystalPt.SetTitle('HL-LHC L1EG Trigger')
-                        crystalPt.SetName('HL-LHC L1EG Trigger')
+                        s2.SetTitle('Phase-1 L1EG (Tower)')
+                        s2.SetName('Phase-1 L1EG (Tower)')
+                        crystalPt.SetTitle('Phase-2 L1EG (Crystal)')
+                        crystalPt.SetName('Phase-2 L1EG (Crystal)')
                         print pt, crystalPt.GetName(), s2.GetName()
                         toPlot.append( s2 )
                         toPlot.append( crystalPt )
@@ -1193,8 +1193,9 @@ if __name__ == '__main__' :
     c.SetGridy(0)
     c.SetLogy(0)
     c.SetTitle("")
-    effHists['stage2DRHist'].SetTitle('Phase-1 L1EG Trigger')
-    effHists['newAlgDRHist'].SetTitle('HL-LHC L1EG Trigger')
+    effHists['stage2DRHist'].SetTitle('Phase-1 L1EG (Tower)')
+    effHists['stage2DRHist'].GetXaxis().SetTitle('#DeltaR(L1-GEN)')
+    effHists['newAlgDRHist'].SetTitle('Phase-2 L1EG (Crystal)')
     c.SetName("dyncrystalEG_deltaR")
     drawDRHists([effHists['stage2DRHist'], effHists['newAlgDRHist']], c, 0., False)
     c.SetName("dyncrystalEG_deltaR2")
