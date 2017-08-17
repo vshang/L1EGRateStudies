@@ -182,6 +182,10 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       double histHigh;
       double histetaLow;
       double histetaHigh;
+      float etaEffBinning[18] = 
+          {-2.,-1.75,-1.5,-1.25,-1.,-.75,-.5,-.25,-.02,.02,.25,.5,.75,1.,1.25,1.5,1.75,2.};
+      int nEtaVarBins = 17;
+
       TH1F * efficiency_denominator_hist;
       TH1F * efficiency_denominator_eta_hist;
       TH1F * efficiency_denominator_reco_hist;
@@ -445,9 +449,9 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       dyncrystal_efficiency_track_hist = fs->make<TH1F>("dyncrystalEG_efficiency_track_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dyncrystal_efficiency_phoWindow_hist = fs->make<TH1F>("dyncrystalEG_efficiency_phoWindow_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dyncrystal_efficiency_bremcut_hist = fs->make<TH1F>("dyncrystalEG_efficiency_bremcut_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
-      dyncrystal_efficiency_eta_hist = fs->make<TH1F>("dyncrystalEG_efficiency_eta", "Dynamic Crystal Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
-      dyncrystal_efficiency_track_eta_hist = fs->make<TH1F>("dyncrystalEG_efficiency_track_eta", "Dynamic Crystal Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
-      dyncrystal_efficiency_phoWindow_eta_hist = fs->make<TH1F>("dyncrystalEG_efficiency_phoWindow_eta", "Dynamic Crystal Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
+      dyncrystal_efficiency_eta_hist = fs->make<TH1F>("dyncrystalEG_efficiency_eta", "Dynamic Crystal Trigger;Gen. #eta;Efficiency", nEtaVarBins, etaEffBinning);
+      dyncrystal_efficiency_track_eta_hist = fs->make<TH1F>("dyncrystalEG_efficiency_track_eta", "Dynamic Crystal Trigger;Gen. #eta;Efficiency", nEtaVarBins, etaEffBinning);
+      dyncrystal_efficiency_phoWindow_eta_hist = fs->make<TH1F>("dyncrystalEG_efficiency_phoWindow_eta", "Dynamic Crystal Trigger;Gen. #eta;Efficiency", nEtaVarBins, etaEffBinning);
       // Implicit conversion from int to double
       for(int threshold : thresholds)
       {
@@ -466,8 +470,8 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       stage2_efficiency_hist = fs->make<TH1F>("stage2EG_efficiency_pt", "Stage-2 Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       //stage2_efficiency_iso_hist = fs->make<TH1F>("stage2EG_efficiency_iso_pt", "Stage-2 Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       stage2_efficiency_bremcut_hist = fs->make<TH1F>("stage2EG_efficiency_bremcut_pt", "Stage-2 Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
-      stage2_efficiency_eta_hist = fs->make<TH1F>("stage2EG_efficiency_eta", "Stage-2 Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
-      //stage2_efficiency_iso_eta_hist = fs->make<TH1F>("stage2EG_efficiency_iso_eta", "Stage-2 Trigger;Gen. #eta;Efficiency", nHistEtaBins, histetaLow, histetaHigh);
+      stage2_efficiency_eta_hist = fs->make<TH1F>("stage2EG_efficiency_eta", "Stage-2 Trigger;Gen. #eta;Efficiency", nEtaVarBins, etaEffBinning);
+      //stage2_efficiency_iso_eta_hist = fs->make<TH1F>("stage2EG_efficiency_iso_eta", "Stage-2 Trigger;Gen. #eta;Efficiency", nEtaVarBins, etaEffBinning);
       // Implicit conversion from int to double
       for(int threshold : thresholds)
       {
@@ -489,7 +493,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       //{
       //   const std::string &name = inputTag.encode();
       //   EGalg_efficiency_hists[name] = fs->make<TH1F>((name+"_efficiency_pt").c_str(), (name+";Gen. pT (GeV);Efficiency").c_str(), nHistBins, histLow, histHigh);
-      //   EGalg_efficiency_eta_hists[name] = fs->make<TH1F>((name+"_efficiency_eta").c_str(), (name+";Gen. #eta;Efficiency").c_str(), nHistEtaBins, histetaLow, histetaHigh);
+      //   EGalg_efficiency_eta_hists[name] = fs->make<TH1F>((name+"_efficiency_eta").c_str(), (name+";Gen. #eta;Efficiency").c_str(), nEtaVarBins, etaEffBinning);
       //   // Implicit conversion from int to double
       //   for(int threshold : thresholds)
       //   {
@@ -516,7 +520,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
 
       efficiency_denominator_hist = fs->make<TH1F>("gen_pt", "Gen. pt;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
       efficiency_denominator_reco_hist = fs->make<TH1F>("reco_pt", "Offline reco. pt;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
-      efficiency_denominator_eta_hist = fs->make<TH1F>("gen_eta", "Gen. #eta;Gen. #eta; Counts", nHistEtaBins, histetaLow, histetaHigh);
+      efficiency_denominator_eta_hist = fs->make<TH1F>("gen_eta", "Gen. #eta;Gen. #eta; Counts", nEtaVarBins, etaEffBinning);
    }
    else
    {
