@@ -1118,6 +1118,9 @@ if __name__ == '__main__' :
         c.SetName("dyncrystalEG_efficiency_pt_combo")
         c.SetTitle("")
         drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgTrkPtHist'], phoEffPt], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
+        c.SetName("dyncrystalEG_efficiency_pt_combo_calo_only")
+        c.SetTitle("")
+        drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], phoEffPt], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
 
         # Default vs. New Method
         singleElectronFiles = OrderedDict()
