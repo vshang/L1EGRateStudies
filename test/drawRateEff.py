@@ -1024,9 +1024,9 @@ if __name__ == '__main__' :
         #c.SetName('dyncrystalEG_rate_track')
         #toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal'], hists['L1EGamma Crystal Track']]
         #drawRates( toDraw, c, 40000., xrange)
-        #c.SetName('dyncrystalEG_rate_track_adj')
-        #toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj']]
-        #drawRates( toDraw, c, 40000., xrange)
+        c.SetName('dyncrystalEG_rate_track_adj')
+        toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj']]
+        drawRates( toDraw, c, 40000., xrange)
 
         # All 
         #c.SetName('dyncrystalEG_rate_all')
@@ -1034,6 +1034,9 @@ if __name__ == '__main__' :
         #drawRates( toDraw, c, 40000., xrange)
         c.SetName('dyncrystalEG_rate_all_adj')
         toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj'], hists['L1EGamma Crystal Photon PtAdj']]
+        drawRates( toDraw, c, 40000., xrange)
+        c.SetName('dyncrystalEG_rate_all_adj_calo_only')
+        toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Photon PtAdj']]
         drawRates( toDraw, c, 40000., xrange)
 
         ## Stage-2 rate solo
@@ -1101,6 +1104,9 @@ if __name__ == '__main__' :
         c.SetName("dyncrystalEG_efficiency_eta_combo")
         c.SetTitle("EG Efficiencies")
         drawEfficiency([effHists['Stage2EtaHist'], effHists['newAlgEtaHist'], effHists['newAlgTrkEtaHist'], phoEffEta], c, 1.3, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
+        c.SetName("dyncrystalEG_efficiency_eta_combo_calo_only")
+        c.SetTitle("EG Efficiencies")
+        drawEfficiency([effHists['Stage2EtaHist'], effHists['newAlgEtaHist'], phoEffEta], c, 1.3, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
 
         c.SetName("dyncrystalEG_efficiency_pt_all")
         c.SetTitle("")
