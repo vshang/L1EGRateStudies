@@ -41,7 +41,7 @@ process.TTTrackPV = cms.Path(process.L1TkPrimaryVertex)
 
 process.EcalTPSorterProducer = cms.EDProducer("EcalTPSorterProducer",
    tpsToKeep = cms.untracked.double(20),
-   towerMapName = cms.untracked.string("newMap.json"),
+   towerMapName = cms.untracked.string("map36.json"),
    ecalTPEB = cms.InputTag("simEcalEBTriggerPrimitiveDigis","","HLT"),
 )
 
@@ -55,15 +55,14 @@ process.L1EGammaCrystalsProducer = cms.EDProducer("L1EGCrystalClusterProducer",
    #EcalTpEtMin = cms.untracked.double(0.25), # 500 MeV default per each Ecal TP
    debug = cms.untracked.bool(False),
    useRecHits = cms.bool(False),
-   #ecalTPEB = cms.InputTag("simEcalEBTriggerPrimitiveDigis","","HLT"),
-   ecalTPEB = cms.InputTag("EcalTPSorterProducer","EcalTPsTopPerRegion","L1AlgoTest"),
+   ecalTPEB = cms.InputTag("simEcalEBTriggerPrimitiveDigis","","HLT"), # Whole Detector Method
+   #ecalTPEB = cms.InputTag("EcalTPSorterProducer","EcalTPsTopPerRegion","L1AlgoTest"), # Regional Method with ECAL TP skimming
    ecalRecHitEB = cms.InputTag("ecalRecHit","EcalRecHitsEB","RECO"),
    hcalRecHit = cms.InputTag("hbhereco"),
    hcalTP = cms.InputTag("simHcalTriggerPrimitiveDigis","","HLT"),
    useTowerMap = cms.untracked.bool(False)
    #useTowerMap = cms.untracked.bool(True),
-   #towerMapName = cms.untracked.string("map170x15.json")
-   #towerMapName = cms.untracked.string("map85x30.json")
+   #towerMapName = cms.untracked.string("map36.json")
 )
 
 process.pSasha = cms.Path( process.EcalTPSorterProducer + process.L1EGammaCrystalsProducer )
