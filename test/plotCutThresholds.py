@@ -53,15 +53,33 @@ def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, poi
         f1.SetParameter( 1, 1. )
         g1.Fit('f1', fitCode )
     if doFit :
-        if linear :
-            f2 = ROOT.TF1( 'f1', '([0] + [1]*x)', xinfo[1], xinfo[2])
-            f2.SetParameter( 0, f1.GetParameter( 0 ) )
-            f2.SetParameter( 1, f1.GetParameter( 1 ) )
+        if "clusterPtVClusterIso" == c.GetTitle() :
+            if linear :
+                f2 = ROOT.TF1( 'f2', '([0] + [1]*x)', xinfo[1], 80)
+                f2.SetParameter( 0, f1.GetParameter( 0 ) )
+                f2.SetParameter( 1, f1.GetParameter( 1 ) )
+            else :
+                f2 = ROOT.TF1( 'f2', '([0] + [1]*TMath::Exp(-[2]*x))', xinfo[1], xinfo[2])
+                f2.SetParameter( 0, f1.GetParameter( 0 ) )
+                f2.SetParameter( 1, f1.GetParameter( 1 ) )
+                f2.SetParameter( 2, f1.GetParameter( 2 ) )
+            f3 = ROOT.TF1( 'f3', '([0] + [1]*x)', 80, 100 )
+            #f3.SetParameter( 0, 0.1471537 ) # 85 GeV swap
+            f3.SetParameter( 0, 0.1962996 ) # 80 GeV swap
+            f3.SetParameter( 1, 0.0 )
+            f3.SetLineWidth( 4 )
+            f3.Draw('SAME')
+            
         else :
-            f2 = ROOT.TF1( 'f2', '([0] + [1]*TMath::Exp(-[2]*x))', xinfo[1], xinfo[2])
-            f2.SetParameter( 0, f1.GetParameter( 0 ) )
-            f2.SetParameter( 1, f1.GetParameter( 1 ) )
-            f2.SetParameter( 2, f1.GetParameter( 2 ) )
+            if linear :
+                f2 = ROOT.TF1( 'f2', '([0] + [1]*x)', xinfo[1], xinfo[2])
+                f2.SetParameter( 0, f1.GetParameter( 0 ) )
+                f2.SetParameter( 1, f1.GetParameter( 1 ) )
+            else :
+                f2 = ROOT.TF1( 'f2', '([0] + [1]*TMath::Exp(-[2]*x))', xinfo[1], xinfo[2])
+                f2.SetParameter( 0, f1.GetParameter( 0 ) )
+                f2.SetParameter( 1, f1.GetParameter( 1 ) )
+                f2.SetParameter( 2, f1.GetParameter( 2 ) )
         f2.SetLineWidth( 4 )
         f2.Draw('SAME')
     
@@ -75,6 +93,8 @@ def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, poi
         g1.Draw('SAME')
     if doFit :
         f2.Draw('SAME')
+        if "clusterPtVClusterIso" == c.GetTitle() :
+            f3.Draw('SAME')
     c.cd(3)
     h3 = ROOT.TH2F("h3", title3, xinfo[0], xinfo[1], xinfo[2], yinfo[0], yinfo[1], yinfo[2])
     tree3.Draw( var + " >> h3", cut )
@@ -87,6 +107,8 @@ def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, poi
         g1.Draw('SAME')
     if doFit :
         f2.Draw('SAME')
+        if "clusterPtVClusterIso" == c.GetTitle() :
+            f3.Draw('SAME')
 
     # plot local
     #plotDir = 'plotCuts'
@@ -256,12 +278,13 @@ def getAverage( h, xVal ) :
 
 if __name__ == '__main__' :
 
-    date = '20170518v3'
-    date = 'v8'
+    date = 'v9'
 
     singleE = 'r2_phase2_singleElectron_%s.root' % date
     singlePho = 'r2_phase2_singlePhoton_%s.root' % date
     minBias = 'r2_phase2_minBias_%s.root' % date
+
+    date = '20170819v1'
 
     rateFile = ROOT.TFile( minBias, 'r' )
     effFile = ROOT.TFile( singleE, 'r' )
