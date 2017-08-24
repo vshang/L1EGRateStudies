@@ -182,9 +182,13 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       double histHigh;
       double histetaLow;
       double histetaHigh;
-      float etaEffBinning[18] = 
-          {-2.,-1.75,-1.5,-1.25,-1.,-.75,-.5,-.25,-.02,.02,.25,.5,.75,1.,1.25,1.5,1.75,2.};
-      int nEtaVarBins = 17;
+      // For checking the effect of the barrel gap
+      //float etaEffBinning[18] = 
+      //    {-2.,-1.75,-1.5,-1.25,-1.,-.75,-.5,-.25,-.02,.02,.25,.5,.75,1.,1.25,1.5,1.75,2.};
+      //int nEtaVarBins = 17;
+      float etaEffBinning[17] = 
+          {-2.,-1.75,-1.5,-1.25,-1.,-.75,-.5,-.25,0.0,.25,.5,.75,1.,1.25,1.5,1.75,2.};
+      int nEtaVarBins = 16;
 
       TH1F * efficiency_denominator_hist;
       TH1F * efficiency_denominator_eta_hist;
@@ -1330,14 +1334,19 @@ L1EGRateStudies::cluster_passes_base_cuts(const l1slhc::L1EGCrystalCluster& clus
 	  // 500 MeV
       if ( ( 0.94 + 0.052 * TMath::Exp( -0.044 * cluster_pt ) < (clusterE2x5 / clusterE5x5)) ) {
 	  passShowerShape = true; }
-      if ( ( 0.85 + -0.0080 * cluster_pt ) > cluster_iso ) {
-          passIso = true; }
+      if ( cluster_pt < 80 ) {
+         if ( ( 0.85 + -0.0080 * cluster_pt ) > cluster_iso ) passIso = true;
+      }
+      if ( cluster_pt >= 80 ) { // do flat line extension of isolation cut
+         if ( 0.21 > cluster_iso ) passIso = true;
+      }
       if ( passShowerShape && passIso ) {
           //std::cout << " --- Passed!" << std::endl;
 	      return true; }
    }
    return false;
 }
+
 
 bool
 L1EGRateStudies::cluster_passes_track_cuts(const l1slhc::L1EGCrystalCluster& cluster, float trackDeltaR) const {
@@ -1362,7 +1371,7 @@ L1EGRateStudies::cluster_passes_photon_cuts(const l1slhc::L1EGCrystalCluster& cl
    {
       float clusterE2x2 = cluster.GetExperimentalParam("E2x2");
       float clusterE2x5 = cluster.GetExperimentalParam("E2x5");
-      if ( clusterE2x2/clusterE2x5 > 0.95 ) {
+      if ( clusterE2x2/clusterE2x5 > 0.96 - 0.0003 * cluster.pt() ) {
          return true; }
    }
    return false;
