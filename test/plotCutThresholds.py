@@ -69,6 +69,16 @@ def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, poi
             f3.SetParameter( 1, 0.0 )
             f3.SetLineWidth( 4 )
             f3.Draw('SAME')
+        elif "clusterPtVE2x2OverE2x5" == c.GetTitle() :
+            f2 = ROOT.TF1( 'f2', '([0] + [1]*x)', xinfo[1], xinfo[2])
+            #f2.SetParameter( 0, 0.95 )
+            #f2.SetParameter( 1, 0.0 )
+            f2.SetParameter( 0, 0.96 )
+            f2.SetParameter( 1, -0.0003 )
+        elif "clusterPtVTrackDeltaR" == c.GetTitle() :
+            f2 = ROOT.TF1( 'f2', '([0] + [1]*x)', xinfo[1], xinfo[2])
+            f2.SetParameter( 0, 0.05 )
+            f2.SetParameter( 1, 0.0 )
             
         else :
             if linear :
@@ -115,8 +125,8 @@ def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, poi
     # plot web
     plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date
     c.Print(plotDir+"/"+c.GetTitle()+".png")
-    c.Print(plotDir+"/"+c.GetTitle()+".C")
-    c.Print(plotDir+"/"+c.GetTitle()+".pdf")
+    #c.Print(plotDir+"/"+c.GetTitle()+".C")
+    #c.Print(plotDir+"/"+c.GetTitle()+".pdf")
 
     del h1, h2, h3, g1
 
@@ -186,8 +196,8 @@ def drawPointsHists(h1, h2, title1, title2, xaxis, yaxis, new=False) :
     # plot web
     plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date
     c2.Print(plotDir+"/"+c.GetTitle()+".png")
-    c2.Print(plotDir+"/"+c.GetTitle()+".C")
-    c2.Print(plotDir+"/"+c.GetTitle()+".pdf")
+    #c2.Print(plotDir+"/"+c.GetTitle()+".C")
+    #c2.Print(plotDir+"/"+c.GetTitle()+".pdf")
 
     cx = ROOT.TCanvas('cx','cx',600,600)
     cx.SetGridx()
@@ -219,8 +229,8 @@ def drawPointsHists(h1, h2, title1, title2, xaxis, yaxis, new=False) :
     # plot web
     plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date
     cx.Print(plotDir+"/"+c.GetTitle()+"_fits.png")
-    cx.Print(plotDir+"/"+c.GetTitle()+"_fits.C")
-    cx.Print(plotDir+"/"+c.GetTitle()+"_fits.pdf")
+    #cx.Print(plotDir+"/"+c.GetTitle()+"_fits.C")
+    #cx.Print(plotDir+"/"+c.GetTitle()+"_fits.pdf")
 
     del c2, h1, h2, g1, g2, cx
 
@@ -284,7 +294,7 @@ if __name__ == '__main__' :
     singlePho = 'r2_phase2_singlePhoton_%s.root' % date
     minBias = 'r2_phase2_minBias_%s.root' % date
 
-    date = '20170819v1'
+    date = '20170824cutStudy'
 
     rateFile = ROOT.TFile( minBias, 'r' )
     effFile = ROOT.TFile( singleE, 'r' )
@@ -496,6 +506,8 @@ if __name__ == '__main__' :
     xinfo = [20, 0., 100.]
     yinfo = [25, 0., 1.]
     c.SetTitle("clusterPtVTrackDeltaR")
+    drawPoints(c, crystal_tree, var, cut_ss_cIso9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True)
+    c.SetTitle("clusterPtVTrackDeltaR_noFit")
     drawPoints(c, crystal_tree, var, cut_ss_cIso9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, False)
     c.SetTitle("clusterPtVTrackDeltaR_fitLine")
     drawPoints(c, crystal_tree, var, cut_ss_cIso9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, True)
@@ -509,8 +521,8 @@ if __name__ == '__main__' :
     yinfo = [35, 0.7, 1.05]
     c.SetTitle("clusterPtVE2x2OverE2x5")
     drawPoints(c, crystal_tree, var, cut_ss_cIso9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, False, True)
-    c.SetTitle("clusterPtVE2x2OverE2x5_fitLine")
-    drawPoints(c, crystal_tree, var, cut_ss_cIso9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, True, True)
+    #c.SetTitle("clusterPtVE2x2OverE2x5_fitLine")
+    #drawPoints(c, crystal_tree, var, cut_ss_cIso9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, True, True)
 
     points = [ # pt, percentile # Used for cut11
         [ 15,   .95 ],
