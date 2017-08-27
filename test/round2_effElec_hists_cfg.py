@@ -19,6 +19,7 @@ name = 'singleElectron_20170612v1'
 #name = 'singleElectron_20170716top10'
 #name = 'singleElectron_20170716top05'
 #name = 'singleElectron_20170717noSkimRecoPerCard36v2'
+name = 'singleElectron_20170820_flatIsoExt'
 
 
 process.source = cms.Source("PoolSource",
@@ -72,7 +73,7 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    useOfflineClusters = cms.untracked.bool(False),
    useEndcap = cms.untracked.bool(False),
    doTracking = cms.untracked.bool(True),
-   turnOnThresholds = cms.untracked.vint32(20, 30, 40),
+   turnOnThresholds = cms.untracked.vint32(10, 20, 30, 40),
    histogramBinCount = cms.untracked.int32(100),
    histogramRangeLow = cms.untracked.double(0),
    histogramRangeHigh = cms.untracked.double(100),
@@ -86,7 +87,7 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
 process.panalyzer = cms.Path(process.TPAnalyzer+process.analyzer)
 
 process.TFileService = cms.Service("TFileService", 
-   fileName = cms.string("r2_phase2_"+name+".root"), 
+   fileName = cms.string("r2_phase2_"+name+"_all2.root"), 
    closeFileFast = cms.untracked.bool(True)
 )
 

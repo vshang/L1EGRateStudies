@@ -20,6 +20,7 @@ name = 'minBias_20170612v1'
 #name = 'minBias_20170716top10'
 #name = 'minBias_20170716top05'
 #name = 'minBias_20170717noSkimRecoPerCard36v2'
+name = 'minBias_20170820_flatIsoExt'
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
         #'file:l1egCrystalTest.root',
@@ -83,7 +84,7 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
 process.panalyzer = cms.Path(process.TPAnalyzer+process.analyzer)
 
 process.TFileService = cms.Service("TFileService", 
-   fileName = cms.string("r2_phase2_"+name+".root"), 
+   fileName = cms.string("r2_phase2_"+name+"_all.root"), 
    closeFileFast = cms.untracked.bool(True)
 )
 
