@@ -5,14 +5,15 @@ from ROOT import gStyle, gPad
 import CMS_lumi, tdrstyle
 from collections import OrderedDict
 
-version = 'v21'
+version = '20170820_flatIsoExt_all'
 universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"/"
 
-version = 'v9'
+#version = 'v9'
 singleE = 'r2_phase2_singleElectron_%s.root' % version
 minBias = 'r2_phase2_minBias_%s.root' % version
-version = 'v9'
+version = '20170820_flatIsoExt2'
 singlePho = 'r2_phase2_singlePhoton_%s.root' % version
+version = 'v9'
 singlePiZero = 'r2_phase2_singlePiZero_%s.root' % version
 #minBias = '/data/truggles/egTriggerRates.root'
 
@@ -138,6 +139,7 @@ def drawRates( hists, c, ymax, xrange = [0., 0.] ) :
     mg.GetXaxis().SetTitle(hists[0].GetXaxis().GetTitle())
     if xrange[0] != 0. or xrange[1] != 0 :
         mg.GetXaxis().SetRangeUser(xrange[0], xrange[1])
+        #mg.SetAxisRange(xrange[0], xrange[1])
     mg.GetYaxis().SetTitle(hists[0].GetYaxis().GetTitle())
     
     cmsString = drawCMSString("CMS Simulation, <PU>=200 bx=25, MinBias")
@@ -169,6 +171,8 @@ def drawEfficiency( hists, c, ymax, xTitle, xrange = [0., 0.], fit = False, fitH
     
     mg.Draw("aplez")
     #mg.Draw("apez")
+    mg.GetYaxis().SetNdivisions(13)
+    ROOT.gPad.Update()
 
     if c.GetLogy() == 0 : # linear
         mg.SetMinimum(0.)
@@ -521,6 +525,9 @@ if __name__ == '__main__' :
     
     ratesMap = {
         'L1EGamma Crystal' : 'analyzer/dyncrystalEG_rate',
+        'L1EGamma Crystal Stage-2' : 'analyzer/dyncrystalEG_adj_rate_stage2',
+        'L1EGamma Crystal 95' : 'analyzer/dyncrystalEG_adj_rate_95',
+        'L1EGamma Crystal 90' : 'analyzer/dyncrystalEG_adj_rate_90',
         'L1EGamma Crystal Track' : 'analyzer/dyncrystalEG_track_rate',
         'L1EGamma Crystal Photon' : 'analyzer/dyncrystalEG_phoWindow_rate',
         'L1EGamma Crystal PtAdj' : 'analyzer/dyncrystalEG_adj_rate',
@@ -541,6 +548,17 @@ if __name__ == '__main__' :
         'newAlgTrkEtaHist' : ('L1EGamma Crystal - Trk Match', 'analyzer/divide_dyncrystalEG_efficiency_track_eta_by_gen_eta'),
         'newAlgPhotonEtaHist' : ('L1EGamma Crystal - Trk Photon', 'analyzer/divide_dyncrystalEG_efficiency_phoWindow_eta_by_gen_eta'),
         #'newAlgEtaHist' : ('L1EGamma Crystal', 'analyzer/divide_dyncrystalEG_efficiency_track_eta_by_gen_eta'),
+
+        'newAlgPtHistStage2' : ('L1EGamma Crystal', 'analyzer/divide_dyncrystalEG_efficiency_pt_stage2_by_gen_pt'),
+        'newAlgPtHist95' : ('L1EGamma Crystal', 'analyzer/divide_dyncrystalEG_efficiency_pt_95_by_gen_pt'),
+        'newAlgPtHist90' : ('L1EGamma Crystal', 'analyzer/divide_dyncrystalEG_efficiency_pt_90_by_gen_pt'),
+
+        'newAlgPtHistStage2Reco10' : ('L1EGamma Crystal', 'analyzer/divide_dyncrystalEG_efficiency_pt_stage2_reco10_by_gen_pt'),
+        'newAlgPtHist95Reco10' : ('L1EGamma Crystal', 'analyzer/divide_dyncrystalEG_efficiency_pt_95_reco10_by_gen_pt'),
+        'newAlgPtHist90Reco10' : ('L1EGamma Crystal', 'analyzer/divide_dyncrystalEG_efficiency_pt_90_reco10_by_gen_pt'),
+        'newAlgPtHistReco10' : ('L1EGamma Crystal', 'analyzer/divide_dyncrystalEG_threshold10_efficiency_reco_adj_pt_by_gen_pt'),
+        'Stage2PtHistReco10' : ('L1EG - Stage-2', 'analyzer/divide_stage2EG_threshold10_efficiency_gen_pt_by_gen_pt'),
+
         'newAlgPtHist' : ('L1EGamma Crystal', 'analyzer/divide_dyncrystalEG_efficiency_pt_by_gen_pt'),
         'newAlgTrkPtHist' : ('L1EGamma Crystal - Trk Match', 'analyzer/divide_dyncrystalEG_efficiency_track_pt_by_gen_pt'),
         'newAlgPhotonPtHist' : ('Phase-2 L1EG (Crystal) Photon', 'analyzer/divide_dyncrystalEG_efficiency_phoWindow_pt_by_gen_pt'),
@@ -987,6 +1005,13 @@ if __name__ == '__main__' :
         hists['L1EGamma Crystal Photon PtAdj'].SetName('Phase-2 L1EG (Crystal) Photon')
         hists['L1EGamma Crystal Photon PtAdj'].SetTitle('Phase-2 L1EG (Crystal) Photon')
 
+        hists['L1EGamma Crystal Stage-2'].SetName('Phase-2 L1EG (Crystal) - Phase-1 Match WP')
+        hists['L1EGamma Crystal Stage-2'].SetTitle('Phase-2 L1EG (Crystal) - Phase-1 Match WP')
+        hists['L1EGamma Crystal 95'].SetName('Phase-2 L1EG (Crystal) - 95% WP')
+        hists['L1EGamma Crystal 95'].SetTitle('Phase-2 L1EG (Crystal) - 95% WP')
+        hists['L1EGamma Crystal 90'].SetName('Phase-2 L1EG (Crystal) - 90% WP')
+        hists['L1EGamma Crystal 90'].SetTitle('Phase-2 L1EG (Crystal) - 90% WP')
+
         toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj'], hists['L1EGamma Crystal Photon PtAdj']]
         ### Calo-based L1EG Rates
         ##fx = ROOT.TFile('r2_phase2_minBias_v9.root','r')
@@ -1035,9 +1060,19 @@ if __name__ == '__main__' :
         c.SetName('dyncrystalEG_rate_all_adj')
         toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj'], hists['L1EGamma Crystal Photon PtAdj']]
         drawRates( toDraw, c, 40000., xrange)
-        c.SetName('dyncrystalEG_rate_all_adj_calo_only')
-        toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Photon PtAdj']]
+        #c.SetName('dyncrystalEG_rate_all_adj_calo_only')
+        #toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Photon PtAdj']]
+        #drawRates( toDraw, c, 40000., xrange)
+
+        # NEW WPs - YYY
+        c.SetName('dyncrystalEG_rate_newWPs_adj')
+        #toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Stage-2'], hists['L1EGamma Crystal 95'], hists['L1EGamma Crystal 90'], ]
+        toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Stage-2'], hists['L1EGamma Crystal 90'], ]
         drawRates( toDraw, c, 40000., xrange)
+        xrange = [10., 60.]
+        c.SetName('dyncrystalEG_rate_newWPs_pt10min_adj')
+        drawRates( toDraw, c, 40000., xrange)
+        xrange = [0., 60.]
 
         ## Stage-2 rate solo
         #c.SetName('stage2_rate')
@@ -1045,22 +1080,23 @@ if __name__ == '__main__' :
         #toDraw = [ hists['Stage-2 L1EG'],]
         #drawRates( toDraw, c, 40000., xrange)
 
-        minBiasFiles = OrderedDict()
-        minBiasFiles['r2_phase2_minBias_20170612v1.root'] = 'Default Whole Det Mthd'
-        minBiasFiles['r2_phase2_minBias_20170717noSkimRecoPerCard36v2.root'] = 'all ECAL TPs, confine RECO to 1 card'
-        minBiasFiles['r2_phase2_minBias_20170716top20.root'] = 'slim TPs to 20 per card'
-        minBiasFiles['r2_phase2_minBias_20170716top10.root'] = 'slim TPs to 10 per card'
-        minBiasFiles['r2_phase2_minBias_20170716top05.root'] = 'slim TPs to 5 per card'
+        # Detector Comparison Code
+        #minBiasFiles = OrderedDict()
+        #minBiasFiles['r2_phase2_minBias_20170612v1.root'] = 'Default Whole Det Mthd'
+        #minBiasFiles['r2_phase2_minBias_20170717noSkimRecoPerCard36v2.root'] = 'all ECAL TPs, confine RECO to 1 card'
+        #minBiasFiles['r2_phase2_minBias_20170716top20.root'] = 'slim TPs to 20 per card'
+        #minBiasFiles['r2_phase2_minBias_20170716top10.root'] = 'slim TPs to 10 per card'
+        #minBiasFiles['r2_phase2_minBias_20170716top05.root'] = 'slim TPs to 5 per card'
 
-        rateHists = []
-        for fname in minBiasFiles :
-            f = ROOT.TFile( fname, 'r' )
-            h = f.Get('analyzer/dyncrystalEG_adj_rate')
-            h.SetTitle( minBiasFiles[fname] )
-            h.SetDirectory(0)
-            rateHists.append( h )
-        c.SetName('dyncrystalEG_NEW_COMP_rate_adj')
-        drawRates( rateHists, c, 40000., xrange)
+        #rateHists = []
+        #for fname in minBiasFiles :
+        #    f = ROOT.TFile( fname, 'r' )
+        #    h = f.Get('analyzer/dyncrystalEG_adj_rate')
+        #    h.SetTitle( minBiasFiles[fname] )
+        #    h.SetDirectory(0)
+        #    rateHists.append( h )
+        #c.SetName('dyncrystalEG_NEW_COMP_rate_adj')
+        #drawRates( rateHists, c, 40000., xrange)
     
     ''' EFFICIENCY SECTION '''
     doEfficiencySection = False
@@ -1090,6 +1126,24 @@ if __name__ == '__main__' :
         effHists['newAlgPhotonPtHist'].SetName('Phase-2 L1EG (Crystal) Photon')
         effHists['newAlgPhotonPtHist'].SetTitle('Phase-2 L1EG (Crystal) Photon')
 
+        effHists['newAlgPtHistStage2'].SetName('Phase-2 L1EG (Crystal) - Phase-1 Match WP')
+        effHists['newAlgPtHistStage2'].SetTitle('Phase-2 L1EG (Crystal) - Phase-1 Match WP')
+        effHists['newAlgPtHist95'].SetName('Phase-2 L1EG (Crystal) - 95% WP')
+        effHists['newAlgPtHist95'].SetTitle('Phase-2 L1EG (Crystal) - 95% WP')
+        effHists['newAlgPtHist90'].SetName('Phase-2 L1EG (Crystal) - 90% WP')
+        effHists['newAlgPtHist90'].SetTitle('Phase-2 L1EG (Crystal) - 90% WP')
+
+        effHists['newAlgPtHistReco10'].SetName('Phase-2 L1EG (Crystal)')
+        effHists['newAlgPtHistReco10'].SetTitle('Phase-2 L1EG (Crystal)')
+        effHists['Stage2PtHistReco10'].SetName('Phase-1 L1EG (Tower)')
+        effHists['Stage2PtHistReco10'].SetTitle('Phase-1 L1EG (Tower)')
+        effHists['newAlgPtHistStage2Reco10'].SetName('Phase-2 L1EG (Crystal) - Phase-1 Match WP')
+        effHists['newAlgPtHistStage2Reco10'].SetTitle('Phase-2 L1EG (Crystal) - Phase-1 Match WP')
+        effHists['newAlgPtHist95Reco10'].SetName('Phase-2 L1EG (Crystal) - 95% WP')
+        effHists['newAlgPtHist95Reco10'].SetTitle('Phase-2 L1EG (Crystal) - 95% WP')
+        effHists['newAlgPtHist90Reco10'].SetName('Phase-2 L1EG (Crystal) - 90% WP')
+        effHists['newAlgPtHist90Reco10'].SetTitle('Phase-2 L1EG (Crystal) - 90% WP')
+
         c.SetLogy(0)
         c.SetName("dyncrystalEG_efficiency_eta")
         c.SetTitle("EG Efficiencies")
@@ -1104,55 +1158,67 @@ if __name__ == '__main__' :
         c.SetName("dyncrystalEG_efficiency_eta_combo")
         c.SetTitle("EG Efficiencies")
         drawEfficiency([effHists['Stage2EtaHist'], effHists['newAlgEtaHist'], effHists['newAlgTrkEtaHist'], phoEffEta], c, 1.3, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
-        c.SetName("dyncrystalEG_efficiency_eta_combo_calo_only")
-        c.SetTitle("EG Efficiencies")
-        drawEfficiency([effHists['Stage2EtaHist'], effHists['newAlgEtaHist'], phoEffEta], c, 1.3, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
+        #c.SetName("dyncrystalEG_efficiency_eta_combo_calo_only")
+        #c.SetTitle("EG Efficiencies")
+        #drawEfficiency([effHists['Stage2EtaHist'], effHists['newAlgEtaHist'], phoEffEta], c, 1.3, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
 
-        c.SetName("dyncrystalEG_efficiency_pt_all")
-        c.SetTitle("")
-        drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgTrkPtHist'], effHists['newAlgPhotonPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
+        #c.SetName("dyncrystalEG_efficiency_pt_all")
+        #c.SetTitle("")
+        #drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgTrkPtHist'], effHists['newAlgPhotonPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
         c.SetName("dyncrystalEG_efficiency_pt")
         c.SetTitle("")
         drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
         c.SetName("dyncrystalEG_efficiency_pt_track")
         c.SetTitle("")
         drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgTrkPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
-        c.SetName("dyncrystalEG_efficiency_pt_photon")
-        c.SetTitle("")
-        drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgPhotonPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
+        #c.SetName("dyncrystalEG_efficiency_pt_photon")
+        #c.SetTitle("")
+        #drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgPhotonPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
         # Combo of singleE and singleGamma
         c.SetName("dyncrystalEG_efficiency_pt_combo")
         c.SetTitle("")
         drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgTrkPtHist'], phoEffPt], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
-        c.SetName("dyncrystalEG_efficiency_pt_combo_calo_only")
+        #c.SetName("dyncrystalEG_efficiency_pt_combo_calo_only")
+        #c.SetTitle("")
+        #drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], phoEffPt], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
+
+        # New WPs - YYY
+        c.SetName("dyncrystalEG_efficiency_newWPs_pt")
         c.SetTitle("")
-        drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], phoEffPt], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
+        #drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgPtHistStage2'], effHists['newAlgPtHist95'], effHists['newAlgPtHist90']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
+        drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgPtHistStage2'], effHists['newAlgPtHist90']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
+        xrange = [10., 100.]
+        c.SetName("dyncrystalEG_efficiency_newWPs_pt10min_pt")
+        drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgPtHistStage2'], effHists['newAlgPtHist90']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
+        xrange = [0., 100.]
+        c.SetName("dyncrystalEG_efficiency_newWPs_threshold10_pt")
+        drawEfficiency([effHists['Stage2PtHistReco10'], effHists['newAlgPtHistReco10'], effHists['newAlgPtHistStage2Reco10'], effHists['newAlgPtHist90Reco10']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
 
-        # Default vs. New Method
-        singleElectronFiles = OrderedDict()
-        singleElectronFiles['r2_phase2x_singleElectron_20170612v1.root'] = 'Default Whole Det Mthd'
-        singleElectronFiles['r2_phase2x_singleElectron_20170717noSkimRecoPerCard36v2.root'] = 'all ECAL TPs, confine RECO to 1 card'
-        singleElectronFiles['r2_phase2x_singleElectron_20170716top20.root'] = 'slim TPs to 20 per card'
-        singleElectronFiles['r2_phase2x_singleElectron_20170716top10.root'] = 'slim TPs to 10 per card'
-        singleElectronFiles['r2_phase2x_singleElectron_20170716top05.root'] = 'slim TPs to 5 per card'
+        ## Default vs. New Method
+        #singleElectronFiles = OrderedDict()
+        #singleElectronFiles['r2_phase2x_singleElectron_20170612v1.root'] = 'Default Whole Det Mthd'
+        #singleElectronFiles['r2_phase2x_singleElectron_20170717noSkimRecoPerCard36v2.root'] = 'all ECAL TPs, confine RECO to 1 card'
+        #singleElectronFiles['r2_phase2x_singleElectron_20170716top20.root'] = 'slim TPs to 20 per card'
+        #singleElectronFiles['r2_phase2x_singleElectron_20170716top10.root'] = 'slim TPs to 10 per card'
+        #singleElectronFiles['r2_phase2x_singleElectron_20170716top05.root'] = 'slim TPs to 5 per card'
 
-        newEffHists = []
-        newEffEtaHists = []
-        for fname in singleElectronFiles :
-            f = ROOT.TFile( fname, 'r' )
-            h = f.Get('analyzer/divide_dyncrystalEG_efficiency_pt_by_gen_pt')
-            h.SetTitle( singleElectronFiles[fname] )
-            newEffHists.append( h )
-            h1 = f.Get('analyzer/divide_dyncrystalEG_efficiency_eta_by_gen_eta')
-            h1.SetTitle( singleElectronFiles[fname] )
-            newEffEtaHists.append( h1 )
-        c.SetName('dyncrystalEG_NEW_COMP_efficiency_pt')
-        drawEfficiency(newEffHists, c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
-        c.SetName('dyncrystalEG_NEW_COMP_efficiency_eta')
-        drawEfficiency(newEffEtaHists, c, 1.3, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
+        #newEffHists = []
+        #newEffEtaHists = []
+        #for fname in singleElectronFiles :
+        #    f = ROOT.TFile( fname, 'r' )
+        #    h = f.Get('analyzer/divide_dyncrystalEG_efficiency_pt_by_gen_pt')
+        #    h.SetTitle( singleElectronFiles[fname] )
+        #    newEffHists.append( h )
+        #    h1 = f.Get('analyzer/divide_dyncrystalEG_efficiency_eta_by_gen_eta')
+        #    h1.SetTitle( singleElectronFiles[fname] )
+        #    newEffEtaHists.append( h1 )
+        #c.SetName('dyncrystalEG_NEW_COMP_efficiency_pt')
+        #drawEfficiency(newEffHists, c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
+        #c.SetName('dyncrystalEG_NEW_COMP_efficiency_eta')
+        #drawEfficiency(newEffEtaHists, c, 1.3, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
 
         # Map of possible pt values from file with suggested fit function params
-        possiblePts = {'20' : [0.9, 20., 1., 0.], '30' : [0.95, 30., 1., 0.], '40': [0.95, 16., 1., 0.]}
+        possiblePts = {'10' : [0.9, 20., 1., 0.], '20' : [0.9, 20., 1., 0.], '30' : [0.95, 30., 1., 0.], '40': [0.95, 16., 1., 0.]}
         ## Non-Stage-2 adjusted turn on thresholds
         #for crystalPt in newAlgGenPtHists :
         #    if 'reco_pt' in crystalPt.GetName() : continue
@@ -1221,53 +1287,53 @@ if __name__ == '__main__' :
     drawDRHists([effHists['newAlgGenRecoPtHist'], effHists['stage2GenRecoPtHist']], c, 0., False)
     c.SetName("dyncrystalEG_1D_pt_res_adj")
     drawDRHists([effHists['newAlgGenRecoPtHistAdj'], effHists['stage2GenRecoPtHist']], c, 0., False)
-    # New comparison of only taking top 20 ECAL TPs
-    top20elecF = ROOT.TFile('r2_phase2_singleElectron_v9.root','r')
-    newAlgDEtaHist = top20elecF.Get('analyzer/dyncrystalEG_deta')
-    newAlgDPhiHist = top20elecF.Get('analyzer/dyncrystalEG_dphi')
-    newAlgGenRecoPtHist = top20elecF.Get('analyzer/1d_reco_gen_pt')
-    newAlgGenRecoPtHistAdj = top20elecF.Get('analyzer/1d_reco_gen_pt_adj')
-    for h in [newAlgDEtaHist, newAlgDPhiHist, newAlgGenRecoPtHist, newAlgGenRecoPtHistAdj] :
-        h.SetTitle('New Top 20 Mthd')
-    c.SetName("dyncrystalEG_top20_deltaEta")
-    drawDRHists([effHists['newAlgDEtaHist'], newAlgDEtaHist], c, 0., False)
-    c.SetName("dyncrystalEG_top20_deltaPhi")
-    drawDRHists([effHists['newAlgDPhiHist'], newAlgDPhiHist], c, 0., False)
-    c.SetName("dyncrystalEG_top20_1D_pt_res")
-    drawDRHists([effHists['newAlgGenRecoPtHist'], newAlgGenRecoPtHist], c, 0., False)
-    c.SetName("dyncrystalEG_top20_1D_pt_res_adj")
-    drawDRHists([effHists['newAlgGenRecoPtHistAdj'], newAlgGenRecoPtHistAdj], c, 0., False)
+    ## New comparison of only taking top 20 ECAL TPs
+    #top20elecF = ROOT.TFile('r2_phase2_singleElectron_v9.root','r')
+    #newAlgDEtaHist = top20elecF.Get('analyzer/dyncrystalEG_deta')
+    #newAlgDPhiHist = top20elecF.Get('analyzer/dyncrystalEG_dphi')
+    #newAlgGenRecoPtHist = top20elecF.Get('analyzer/1d_reco_gen_pt')
+    #newAlgGenRecoPtHistAdj = top20elecF.Get('analyzer/1d_reco_gen_pt_adj')
+    #for h in [newAlgDEtaHist, newAlgDPhiHist, newAlgGenRecoPtHist, newAlgGenRecoPtHistAdj] :
+    #    h.SetTitle('New Top 20 Mthd')
+    #c.SetName("dyncrystalEG_top20_deltaEta")
+    #drawDRHists([effHists['newAlgDEtaHist'], newAlgDEtaHist], c, 0., False)
+    #c.SetName("dyncrystalEG_top20_deltaPhi")
+    #drawDRHists([effHists['newAlgDPhiHist'], newAlgDPhiHist], c, 0., False)
+    #c.SetName("dyncrystalEG_top20_1D_pt_res")
+    #drawDRHists([effHists['newAlgGenRecoPtHist'], newAlgGenRecoPtHist], c, 0., False)
+    #c.SetName("dyncrystalEG_top20_1D_pt_res_adj")
+    #drawDRHists([effHists['newAlgGenRecoPtHistAdj'], newAlgGenRecoPtHistAdj], c, 0., False)
 
-    # Default vs. New Method
-    singleElectronFiles = OrderedDict()
-    singleElectronFiles['r2_phase2_singleElectron_20170612v1.root'] = 'Default Whole Det Mthd'
-    singleElectronFiles['r2_phase2_singleElectron_20170717noSkimRecoPerCard36v2.root'] = 'all ECAL TPs, confine RECO to 1 card'
-    singleElectronFiles['r2_phase2_singleElectron_20170716top20.root'] = 'slim TPs to 20 per card'
-    singleElectronFiles['r2_phase2_singleElectron_20170716top10.root'] = 'slim TPs to 10 per card'
-    singleElectronFiles['r2_phase2_singleElectron_20170716top05.root'] = 'slim TPs to 5 per card'
+    ## Default vs. New Method
+    #singleElectronFiles = OrderedDict()
+    #singleElectronFiles['r2_phase2_singleElectron_20170612v1.root'] = 'Default Whole Det Mthd'
+    #singleElectronFiles['r2_phase2_singleElectron_20170717noSkimRecoPerCard36v2.root'] = 'all ECAL TPs, confine RECO to 1 card'
+    #singleElectronFiles['r2_phase2_singleElectron_20170716top20.root'] = 'slim TPs to 20 per card'
+    #singleElectronFiles['r2_phase2_singleElectron_20170716top10.root'] = 'slim TPs to 10 per card'
+    #singleElectronFiles['r2_phase2_singleElectron_20170716top05.root'] = 'slim TPs to 5 per card'
 
-    newEtaHists = []
-    newPhiHists = []
-    newPtHists = []
-    newPtAdjHists = []
-    for fname in singleElectronFiles :
-        f = ROOT.TFile( fname, 'r' )
-        for hName in ['analyzer/dyncrystalEG_deta','analyzer/dyncrystalEG_dphi','analyzer/1d_reco_gen_pt','analyzer/1d_reco_gen_pt_adj'] :
-            h = f.Get( hName )
-            h.SetTitle( singleElectronFiles[fname] )
-            h.SetDirectory(0)
-            if hName == 'analyzer/dyncrystalEG_deta' : newEtaHists.append( h )
-            if hName == 'analyzer/dyncrystalEG_dphi' : newPhiHists.append( h )
-            if hName == 'analyzer/1d_reco_gen_pt' : newPtHists.append( h )
-            if hName == 'analyzer/1d_reco_gen_pt_adj' : newPtAdjHists.append( h )
-    c.SetName('dyncrystalEG_NEW_COMP_deltaEta')
-    drawDRHists(newEtaHists, c, 0., False)
-    c.SetName('dyncrystalEG_NEW_COMP_deltaPhi')
-    drawDRHists(newPhiHists, c, 0., False)
-    c.SetName('dyncrystalEG_NEW_COMP_deltaPt')
-    drawDRHists(newPtHists, c, 0., False)
-    c.SetName('dyncrystalEG_NEW_COMP_deltaPtAdj')
-    drawDRHists(newPtAdjHists, c, 0., False)
+    #newEtaHists = []
+    #newPhiHists = []
+    #newPtHists = []
+    #newPtAdjHists = []
+    #for fname in singleElectronFiles :
+    #    f = ROOT.TFile( fname, 'r' )
+    #    for hName in ['analyzer/dyncrystalEG_deta','analyzer/dyncrystalEG_dphi','analyzer/1d_reco_gen_pt','analyzer/1d_reco_gen_pt_adj'] :
+    #        h = f.Get( hName )
+    #        h.SetTitle( singleElectronFiles[fname] )
+    #        h.SetDirectory(0)
+    #        if hName == 'analyzer/dyncrystalEG_deta' : newEtaHists.append( h )
+    #        if hName == 'analyzer/dyncrystalEG_dphi' : newPhiHists.append( h )
+    #        if hName == 'analyzer/1d_reco_gen_pt' : newPtHists.append( h )
+    #        if hName == 'analyzer/1d_reco_gen_pt_adj' : newPtAdjHists.append( h )
+    #c.SetName('dyncrystalEG_NEW_COMP_deltaEta')
+    #drawDRHists(newEtaHists, c, 0., False)
+    #c.SetName('dyncrystalEG_NEW_COMP_deltaPhi')
+    #drawDRHists(newPhiHists, c, 0., False)
+    #c.SetName('dyncrystalEG_NEW_COMP_deltaPt')
+    #drawDRHists(newPtHists, c, 0., False)
+    #c.SetName('dyncrystalEG_NEW_COMP_deltaPtAdj')
+    #drawDRHists(newPtAdjHists, c, 0., False)
 
 
     doPhotonComp = False

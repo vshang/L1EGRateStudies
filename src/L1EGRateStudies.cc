@@ -129,6 +129,9 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       void integrateDown(TH1F *);
       void fill_tree(const l1slhc::L1EGCrystalCluster& cluster);
       bool cluster_passes_base_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
+      bool cluster_passes_stage2_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
+      bool cluster_passes_95_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
+      bool cluster_passes_90_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
       bool cluster_passes_track_cuts(const l1slhc::L1EGCrystalCluster& cluster, float trackDeltaR) const;
       bool cluster_passes_photon_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
       bool checkTowerExists(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps) const;
@@ -195,6 +198,12 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       TH1F * efficiency_denominator_reco_hist;
 
       TH1F * dyncrystal_efficiency_hist;
+      TH1F * dyncrystal_efficiency_hist_stage2;
+      TH1F * dyncrystal_efficiency_hist_95;
+      TH1F * dyncrystal_efficiency_hist_90;
+      TH1F * dyncrystal_efficiency_hist_stage2_reco10;
+      TH1F * dyncrystal_efficiency_hist_95_reco10;
+      TH1F * dyncrystal_efficiency_hist_90_reco10;
       TH1F * dyncrystal_efficiency_track_hist;
       TH1F * dyncrystal_efficiency_phoWindow_hist;
       std::map<double, TH1F *> dyncrystal_efficiency_reco_hists; // Turn-on thresholds
@@ -213,6 +222,9 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       TH1F * dyncrystal_track_rate_hist;
       TH1F * dyncrystal_phoWindow_rate_hist;
       TH1F * dyncrystal_rate_adj_hist;
+      TH1F * dyncrystal_rate_adj_hist_stage2;
+      TH1F * dyncrystal_rate_adj_hist_95;
+      TH1F * dyncrystal_rate_adj_hist_90;
       TH1F * dyncrystal_track_rate_adj_hist;
       TH1F * dyncrystal_phoWindow_rate_adj_hist;
       TH2F * dyncrystal_2DdeltaR_hist;
@@ -450,6 +462,12 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       //offlineRecoClusterInputTag = iConfig.getParameter<edm::InputTag>("OfflineRecoClustersInputTag");
 
       dyncrystal_efficiency_hist = fs->make<TH1F>("dyncrystalEG_efficiency_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
+      dyncrystal_efficiency_hist_stage2 = fs->make<TH1F>("dyncrystalEG_efficiency_pt_stage2", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
+      dyncrystal_efficiency_hist_95 = fs->make<TH1F>("dyncrystalEG_efficiency_pt_95", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
+      dyncrystal_efficiency_hist_90 = fs->make<TH1F>("dyncrystalEG_efficiency_pt_90", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
+      dyncrystal_efficiency_hist_stage2_reco10 = fs->make<TH1F>("dyncrystalEG_efficiency_pt_stage2_reco10", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
+      dyncrystal_efficiency_hist_95_reco10 = fs->make<TH1F>("dyncrystalEG_efficiency_pt_95_reco10", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
+      dyncrystal_efficiency_hist_90_reco10 = fs->make<TH1F>("dyncrystalEG_efficiency_pt_90_reco10", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dyncrystal_efficiency_track_hist = fs->make<TH1F>("dyncrystalEG_efficiency_track_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dyncrystal_efficiency_phoWindow_hist = fs->make<TH1F>("dyncrystalEG_efficiency_phoWindow_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dyncrystal_efficiency_bremcut_hist = fs->make<TH1F>("dyncrystalEG_efficiency_bremcut_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
@@ -532,6 +550,9 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       dyncrystal_track_rate_hist = fs->make<TH1F>("dyncrystalEG_track_rate" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
       dyncrystal_phoWindow_rate_hist = fs->make<TH1F>("dyncrystalEG_phoWindow_rate" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
       dyncrystal_rate_adj_hist = fs->make<TH1F>("dyncrystalEG_adj_rate" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
+      dyncrystal_rate_adj_hist_stage2 = fs->make<TH1F>("dyncrystalEG_adj_rate_stage2" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
+      dyncrystal_rate_adj_hist_95 = fs->make<TH1F>("dyncrystalEG_adj_rate_95" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
+      dyncrystal_rate_adj_hist_90 = fs->make<TH1F>("dyncrystalEG_adj_rate_90" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
       dyncrystal_track_rate_adj_hist = fs->make<TH1F>("dyncrystalEG_track_adj_rate" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
       dyncrystal_phoWindow_rate_adj_hist = fs->make<TH1F>("dyncrystalEG_phoWindow_adj_rate" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
       stage2_rate_hist = fs->make<TH1F>("stage2EG_rate" , "Stage-2 Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
@@ -990,6 +1011,64 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          {
             std::cerr << "Found a cluster but it wasn't the best so I lost efficiency!" << std::endl;
          }
+
+         // Adding the new non-overlapping WPs for efficiency and rate
+         double compThreshold = 10.0;
+         // Stage-2 efficiency match
+         for(const auto& cluster : crystalClusters)
+         {
+            if ( reco::deltaR(cluster, trueElectron) < genMatchDeltaRcut
+                 && fabs(cluster.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
+            {
+               if ( cluster.eta() != bestCluster.eta() || cluster.phi() != bestCluster.phi() ) // why don't I have a comparison op
+                  continue;
+
+               if ( cluster_passes_stage2_cuts(cluster) )
+               {
+                  dyncrystal_efficiency_hist_stage2->Fill(trueElectron.pt());
+                  if ( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) > compThreshold)
+                     dyncrystal_efficiency_hist_stage2_reco10->Fill(trueElectron.pt());
+                  break;
+               }
+            } // end passes Pt and dR match
+         }
+         // 95% efficiency plateau
+         for(const auto& cluster : crystalClusters)
+         {
+            if ( reco::deltaR(cluster, trueElectron) < genMatchDeltaRcut
+                 && fabs(cluster.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
+            {
+               if ( cluster.eta() != bestCluster.eta() || cluster.phi() != bestCluster.phi() ) // why don't I have a comparison op
+                  continue;
+
+               if ( cluster_passes_95_cuts(cluster) )
+               {
+                  dyncrystal_efficiency_hist_95->Fill(trueElectron.pt());
+                  if ( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) > compThreshold)
+                     dyncrystal_efficiency_hist_95_reco10->Fill(trueElectron.pt());
+                  break;
+               }
+            } // end passes Pt and dR match
+         }
+         // 90% efficiency plateau
+         for(const auto& cluster : crystalClusters)
+         {
+            if ( reco::deltaR(cluster, trueElectron) < genMatchDeltaRcut
+                 && fabs(cluster.pt()-trueElectron.pt())/trueElectron.pt() < genMatchRelPtcut )
+            {
+               if ( cluster.eta() != bestCluster.eta() || cluster.phi() != bestCluster.phi() ) // why don't I have a comparison op
+                  continue;
+
+               if ( cluster_passes_90_cuts(cluster) )
+               {
+                  dyncrystal_efficiency_hist_90->Fill(trueElectron.pt());
+                  if ( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) > compThreshold)
+                     dyncrystal_efficiency_hist_90_reco10->Fill(trueElectron.pt());
+                  break;
+               }
+            } // end passes Pt and dR match
+         }
+
       }
 
       for(const auto& EGCandidate : stage2EGs)
@@ -1076,6 +1155,9 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       bool filledTrackMatch = false;
       bool filledPhotonTag = false;
       bool filledLeadCand = false;
+      bool filledStage2Eff = false;
+      bool filled95Eff = false;
+      bool filled90Eff = false;
       for(const auto& cluster : crystalClusters)
       {
          if ( !useEndcap && fabs(cluster.eta()) >= 1.479 ) continue;
@@ -1113,6 +1195,27 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                filledPhotonTag = true;
                dyncrystal_phoWindow_rate_hist->Fill(cluster.pt());
                dyncrystal_phoWindow_rate_adj_hist->Fill( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) );
+            }
+         }
+         if ( cluster_passes_stage2_cuts(cluster) )
+         {
+            if (!filledStage2Eff) {
+               filledStage2Eff = true;
+               dyncrystal_rate_adj_hist_stage2->Fill( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) );
+            }
+         }
+         if ( cluster_passes_95_cuts(cluster) )
+         {
+            if (!filled95Eff) {
+               filled95Eff = true;
+               dyncrystal_rate_adj_hist_95->Fill( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) );
+            }
+         }
+         if ( cluster_passes_90_cuts(cluster) )
+         {
+            if (!filled90Eff) {
+               filled90Eff = true;
+               dyncrystal_rate_adj_hist_90->Fill( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) );
             }
          }
       }
@@ -1199,6 +1302,9 @@ L1EGRateStudies::endJob()
       integrateDown(dyncrystal_track_rate_hist);
       integrateDown(dyncrystal_phoWindow_rate_hist);
       integrateDown(dyncrystal_rate_adj_hist);
+      integrateDown(dyncrystal_rate_adj_hist_stage2);
+      integrateDown(dyncrystal_rate_adj_hist_95);
+      integrateDown(dyncrystal_rate_adj_hist_90);
       integrateDown(dyncrystal_track_rate_adj_hist);
       integrateDown(dyncrystal_phoWindow_rate_adj_hist);
       integrateDown(stage2_rate_hist);
@@ -1347,6 +1453,84 @@ L1EGRateStudies::cluster_passes_base_cuts(const l1slhc::L1EGCrystalCluster& clus
    return false;
 }
 
+bool
+L1EGRateStudies::cluster_passes_stage2_cuts(const l1slhc::L1EGCrystalCluster& cluster) const {
+   if ( fabs(cluster.eta()) < 1.479 )
+   {
+      float cluster_pt = cluster.pt();
+      float clusterE2x5 = cluster.GetExperimentalParam("E2x5");
+      float clusterE5x5 = cluster.GetExperimentalParam("E5x5");
+      float cluster_iso = cluster.isolation();
+      float cluster_hovere = cluster.hovere();
+      bool passIso = false;
+      bool passShowerShape = false;
+      bool passHoverE = false;
+
+      // Stage-2 Matching
+      
+      if ( ( 0.94 + 0.04 * TMath::Exp( -0.02 * cluster_pt ) < (clusterE2x5 / clusterE5x5)) ) {
+	     passShowerShape = true; }
+      if ( ( 0.22 + 1.4 * TMath::Exp( -0.08 * cluster_pt ) > cluster_iso ) ) {
+	     passIso = true; }
+      if ( ( 0.27 + 2.7 * TMath::Exp( -0.07 * cluster_pt ) > cluster_hovere ) ) {
+	     passHoverE = true; }
+
+      if ( passShowerShape && passIso && passHoverE ) {
+	      return true; }
+   }
+   return false;
+}
+
+bool
+L1EGRateStudies::cluster_passes_95_cuts(const l1slhc::L1EGCrystalCluster& cluster) const {
+   if ( fabs(cluster.eta()) < 1.479 )
+   {
+      float cluster_pt = cluster.pt();
+      float clusterE2x5 = cluster.GetExperimentalParam("E2x5");
+      float clusterE5x5 = cluster.GetExperimentalParam("E5x5");
+      float cluster_iso = cluster.isolation();
+      bool passIso = false;
+      bool passShowerShape = false;
+
+      // 95% plateau
+      if ( ( 0.95 + 0.03 * TMath::Exp( -0.05 * cluster_pt ) < (clusterE2x5 / clusterE5x5)) ) {
+	     passShowerShape = true; }
+      if ( ( 0.085 + 1.9 * TMath::Exp( -0.05 * cluster_pt ) > cluster_iso ) ) {
+	     passIso = true; }
+
+      if ( passShowerShape && passIso ) {
+	      return true; }
+
+   }
+   return false;
+}
+
+bool
+L1EGRateStudies::cluster_passes_90_cuts(const l1slhc::L1EGCrystalCluster& cluster) const {
+   if ( fabs(cluster.eta()) < 1.479 )
+   {
+      float cluster_pt = cluster.pt();
+      float clusterE2x5 = cluster.GetExperimentalParam("E2x5");
+      float clusterE5x5 = cluster.GetExperimentalParam("E5x5");
+      float cluster_iso = cluster.isolation();
+      float cluster_hovere = cluster.hovere();
+      bool passIso = false;
+      bool passShowerShape = false;
+      bool passHoverE = false;
+
+      // 90% plateau
+      if ( ( 0.95 + 0.043 * TMath::Exp( -0.055 * cluster_pt ) < (clusterE2x5 / clusterE5x5)) ) {
+	     passShowerShape = true; }
+      if ( ( 0.067 + 1.6 * TMath::Exp( -0.055 * cluster_pt ) > cluster_iso ) ) {
+	     passIso = true; }
+      if ( ( 0.26 + 4.4 * TMath::Exp( -0.089 * cluster_pt ) > cluster_hovere ) ) {
+	     passHoverE = true; }
+
+      if ( passShowerShape && passIso && passHoverE ) {
+	      return true; }
+   }
+   return false;
+}
 
 bool
 L1EGRateStudies::cluster_passes_track_cuts(const l1slhc::L1EGCrystalCluster& cluster, float trackDeltaR) const {
