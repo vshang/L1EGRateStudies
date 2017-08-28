@@ -996,6 +996,7 @@ if __name__ == '__main__' :
     doRates = True
     if doRates :
         xrange = [0., 60.]
+        xrange10 = [10., 60.]
         hists['Stage-2 L1EG'].SetName('Phase-1 L1EG (Tower)')
         hists['Stage-2 L1EG'].SetTitle('Phase-1 L1EG (Tower)')
         hists['L1EGamma Crystal PtAdj'].SetName('Phase-2 L1EG (Crystal)')
@@ -1036,6 +1037,9 @@ if __name__ == '__main__' :
         c.SetName('dyncrystalEG_rate_adj')
         toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], ]
         drawRates( toDraw, c, 40000., xrange)
+        c.SetName('dyncrystalEG_rate_adj_10')
+        toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], ]
+        drawRates( toDraw, c, 40000., xrange10)
 
         ## Photon
         #c.SetName('dyncrystalEG_rate_photon')
@@ -1052,6 +1056,9 @@ if __name__ == '__main__' :
         c.SetName('dyncrystalEG_rate_track_adj')
         toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj']]
         drawRates( toDraw, c, 40000., xrange)
+        c.SetName('dyncrystalEG_rate_track_adj_10')
+        toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj']]
+        drawRates( toDraw, c, 40000., xrange10)
 
         # All 
         #c.SetName('dyncrystalEG_rate_all')
@@ -1069,10 +1076,8 @@ if __name__ == '__main__' :
         #toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Stage-2'], hists['L1EGamma Crystal 95'], hists['L1EGamma Crystal 90'], ]
         toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Stage-2'], hists['L1EGamma Crystal 90'], ]
         drawRates( toDraw, c, 40000., xrange)
-        xrange = [10., 60.]
         c.SetName('dyncrystalEG_rate_newWPs_pt10min_adj')
-        drawRates( toDraw, c, 40000., xrange)
-        xrange = [0., 60.]
+        drawRates( toDraw, c, 40000., xrange10)
 
         ## Stage-2 rate solo
         #c.SetName('stage2_rate')
@@ -1109,6 +1114,7 @@ if __name__ == '__main__' :
         phoEffPt.SetTitle('Phase-2 L1EG (Crystal) Photon')
 
         xrange = [0., 100.]
+        xrange10 = [10., 100.]
         effHists['Stage2EtaHist'].SetName('Phase-1 L1EG (Tower)')
         effHists['Stage2EtaHist'].SetTitle('Phase-1 L1EG (Tower)')
         effHists['Stage2PtHist'].SetName('Phase-1 L1EG (Tower)')
@@ -1149,34 +1155,30 @@ if __name__ == '__main__' :
         c.SetTitle("EG Efficiencies")
         drawEfficiency([effHists['Stage2EtaHist'], effHists['newAlgEtaHist']], c, 1.3, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
         c.SetName("dyncrystalEG_efficiency_eta_track")
-        c.SetTitle("EG Efficiencies")
         drawEfficiency([effHists['Stage2EtaHist'], effHists['newAlgEtaHist'], effHists['newAlgTrkEtaHist']], c, 1.3, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
         c.SetName("dyncrystalEG_efficiency_eta_all")
-        c.SetTitle("EG Efficiencies")
         drawEfficiency([effHists['Stage2EtaHist'], effHists['newAlgEtaHist'], effHists['newAlgTrkEtaHist'], effHists['newAlgPhotonEtaHist']], c, 1.3, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
         # Combo of singleE and singleGamma
         c.SetName("dyncrystalEG_efficiency_eta_combo")
-        c.SetTitle("EG Efficiencies")
         drawEfficiency([effHists['Stage2EtaHist'], effHists['newAlgEtaHist'], effHists['newAlgTrkEtaHist'], phoEffEta], c, 1.3, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
         #c.SetName("dyncrystalEG_efficiency_eta_combo_calo_only")
         #c.SetTitle("EG Efficiencies")
         #drawEfficiency([effHists['Stage2EtaHist'], effHists['newAlgEtaHist'], phoEffEta], c, 1.3, "Gen #eta", [-3.,3.] , False, [-2.5, 2.5])
 
         #c.SetName("dyncrystalEG_efficiency_pt_all")
-        #c.SetTitle("")
         #drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgTrkPtHist'], effHists['newAlgPhotonPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
         c.SetName("dyncrystalEG_efficiency_pt")
-        c.SetTitle("")
         drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
         c.SetName("dyncrystalEG_efficiency_pt_track")
-        c.SetTitle("")
         drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgTrkPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
+        c.SetName("dyncrystalEG_efficiency_pt_10")
+        drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange10, True, [0.9, 2., 1., 0.])
+        c.SetName("dyncrystalEG_efficiency_pt_track_10")
+        drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgTrkPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange10, True, [0.9, 2., 1., 0.])
         #c.SetName("dyncrystalEG_efficiency_pt_photon")
-        #c.SetTitle("")
         #drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgPhotonPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
         # Combo of singleE and singleGamma
         c.SetName("dyncrystalEG_efficiency_pt_combo")
-        c.SetTitle("")
         drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgTrkPtHist'], phoEffPt], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
         #c.SetName("dyncrystalEG_efficiency_pt_combo_calo_only")
         #c.SetTitle("")
@@ -1187,10 +1189,8 @@ if __name__ == '__main__' :
         c.SetTitle("")
         #drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgPtHistStage2'], effHists['newAlgPtHist95'], effHists['newAlgPtHist90']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
         drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgPtHistStage2'], effHists['newAlgPtHist90']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
-        xrange = [10., 100.]
         c.SetName("dyncrystalEG_efficiency_newWPs_pt10min_pt")
-        drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgPtHistStage2'], effHists['newAlgPtHist90']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
-        xrange = [0., 100.]
+        drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgPtHistStage2'], effHists['newAlgPtHist90']], c, 1.3, "Gen P_{T} (GeV)", xrange10, True, [0.9, 2., 1., 0.])
         c.SetName("dyncrystalEG_efficiency_newWPs_threshold10_pt")
         drawEfficiency([effHists['Stage2PtHistReco10'], effHists['newAlgPtHistReco10'], effHists['newAlgPtHistStage2Reco10'], effHists['newAlgPtHist90Reco10']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
 
