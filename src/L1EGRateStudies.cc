@@ -287,6 +287,8 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          bool  passedTrack = false;
          bool electronWP98 = false;
          bool photonWP80 = false;
+         bool electronWP90 = false;
+         bool stage2matchEff = false;
          float e1x1;
          float e2x2;
          float e2x5;
@@ -572,7 +574,9 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("event", &treeinfo.event);
    crystal_tree->Branch("passedBase", &treeinfo.passedBase);
    crystal_tree->Branch("electronWP98", &treeinfo.electronWP98);
+   crystal_tree->Branch("electronWP90", &treeinfo.electronWP90);
    crystal_tree->Branch("photonWP80", &treeinfo.photonWP80);
+   crystal_tree->Branch("stage2matchEff", &treeinfo.stage2matchEff);
    crystal_tree->Branch("passedPhoton", &treeinfo.passedPhoton);
    crystal_tree->Branch("passedTrack", &treeinfo.passedTrack);
    crystal_tree->Branch("pt", &treeinfo.crystal_pt, "1:2:3:4:5:6");
@@ -1392,6 +1396,8 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
    treeinfo.bremStrength = cluster.bremStrength();
    treeinfo.electronWP98 = cluster.electronWP98();
    treeinfo.photonWP80 = cluster.photonWP80();
+   treeinfo.electronWP90 = cluster.electronWP90();
+   treeinfo.stage2matchEff = cluster.stage2effMatch();
    treeinfo.passedBase = cluster_passes_base_cuts(cluster);
    treeinfo.passedPhoton = (cluster_passes_photon_cuts(cluster) && cluster_passes_base_cuts(cluster));
    treeinfo.e1x1 = cluster.GetExperimentalParam("E1x1");
