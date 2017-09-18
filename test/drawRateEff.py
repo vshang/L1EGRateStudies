@@ -163,6 +163,7 @@ def drawEfficiency( hists, c, ymax, xTitle, xrange = [0., 0.], fit = False, fitH
         #hist.Scale( 1./hist.GetEntries() )
         graph = ROOT.TGraphAsymmErrors( hist )
         graph.SetLineColor( colors[i] )
+        graph.SetLineWidth( 2 )
         graph.SetMarkerColor( colors[i] )
         graph.SetMarkerStyle( marker_styles[i] )
         graph.SetMarkerSize( 0.8 )
@@ -1270,22 +1271,28 @@ if __name__ == '__main__' :
         effGenMatch_0p3 = fTrkMatch.Get('analyzer/divide_gen_pt_trk_match_0p3_by_gen_pt')
         effGenMatch_0p3.SetTitle('L1Track Match to Gen Elec, #delta R < 0.3')
         effMatch_0p3 = fTrkMatch.Get('analyzer/divide_dyncrystalEG_efficiency_track_gen_match_pt_0p3_by_gen_pt_trk_match_0p3')
-        effMatch_0p3.SetTitle('L1EG Algo Basic Cuts + Trk Match (denom #delta R < 0.3')
+        effMatch_0p3.SetTitle('L1EG Algo Basic Cuts + Trk Match (denom #delta R < 0.3)')
         effGenMatch_0p1 = fTrkMatch.Get('analyzer/divide_gen_pt_trk_match_0p1_by_gen_pt')
         effGenMatch_0p1.SetTitle('L1Track Match to Gen Elec, #delta R < 0.1')
         effMatch_0p1 = fTrkMatch.Get('analyzer/divide_dyncrystalEG_efficiency_track_gen_match_pt_0p1_by_gen_pt_trk_match_0p1')
-        effMatch_0p1.SetTitle('L1EG Algo Basic Cuts + Trk Match (denom #delta R < 0.1')
+        effMatch_0p1.SetTitle('L1EG Algo Basic Cuts + Trk Match (denom #delta R < 0.1)')
         effGenMatch_0p05 = fTrkMatch.Get('analyzer/divide_gen_pt_trk_match_0p05_by_gen_pt')
         effGenMatch_0p05.SetTitle('L1Track Match to Gen Elec, #delta R < 0.05')
         effMatch_0p05 = fTrkMatch.Get('analyzer/divide_dyncrystalEG_efficiency_track_gen_match_pt_0p05_by_gen_pt_trk_match_0p05')
-        effMatch_0p05.SetTitle('L1EG Algo Basic Cuts + Trk Match (denom #delta R < 0.05')
+        effMatch_0p05.SetTitle('L1EG Algo Basic Cuts + Trk Match (denom #delta R < 0.05)')
+
         c.SetName("gen_to_l1Track_match_eff")
         toPlot = [effGenMatch_0p3, effGenMatch_0p1, effGenMatch_0p05]
-        print toPlot
         drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, False, possiblePts[pt])
+        c.SetName("gen_to_l1Track_match_eff_with_L1EG")
+        toPlot = [effGenMatch_0p3, effGenMatch_0p1, effGenMatch_0p05, effHists['newAlgTrkPtHist'], ]
+        drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, False, possiblePts[pt])
+
         c.SetName("gen_to_l1Track_match_and_reco_eff")
         toPlot = [effMatch_0p3, effMatch_0p1, effMatch_0p05]
-        print toPlot
+        drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, False, possiblePts[pt])
+        c.SetName("gen_to_l1Track_match_and_reco_eff_with_L1EG")
+        toPlot = [effMatch_0p3, effMatch_0p1, effMatch_0p05, effHists['newAlgPtHist'], ]
         drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, False, possiblePts[pt])
 
 
