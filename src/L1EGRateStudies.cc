@@ -1458,12 +1458,10 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
    treeinfo.stage2matchEff = cluster.stage2effMatch();
    treeinfo.passedBase = cluster_passes_base_cuts(cluster);
    treeinfo.passedPhoton = (cluster_passes_photon_cuts(cluster) && cluster_passes_base_cuts(cluster));
-   treeinfo.e1x1 = cluster.GetExperimentalParam("E1x1");
    treeinfo.e2x2 = cluster.e2x2();
    treeinfo.e2x5 = cluster.e2x5();
    treeinfo.e3x5 = cluster.e3x5();
    treeinfo.e5x5 = cluster.e5x5();
-   treeinfo.eCross = cluster.GetExperimentalParam("ECross");
    treeinfo.uslPt = cluster.GetExperimentalParam("upperSideLobePt");
    treeinfo.lslPt = cluster.GetExperimentalParam("lowerSideLobePt");
    treeinfo.phiStripContiguous0 = cluster.GetExperimentalParam("phiStripContiguous0");
