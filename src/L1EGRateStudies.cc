@@ -137,6 +137,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       bool checkTowerExists(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps) const;
       //void checkRecHitsFlags(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps, const EcalRecHitCollection &ecalRecHits) const;
       void doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm::Handle<L1TkTrackCollectionType> l1trackHandle);
+      size_t getBestTrack(double dR_cut, const reco::Candidate::PolarLorentzVector &p4, edm::Handle<L1TkTrackCollectionType> l1trackHandle);
       
       // ----------member data ---------------------------
       bool doEfficiencyCalc;
@@ -194,6 +195,9 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       int nEtaVarBins = 16;
 
       TH1F * efficiency_denominator_hist;
+      TH1F * efficiency_denominator_trk_gen_hist_0p3;
+      TH1F * efficiency_denominator_trk_gen_hist_0p1;
+      TH1F * efficiency_denominator_trk_gen_hist_0p05;
       TH1F * efficiency_denominator_eta_hist;
       TH1F * efficiency_denominator_reco_hist;
 
@@ -205,6 +209,9 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       TH1F * dyncrystal_efficiency_hist_95_reco10;
       TH1F * dyncrystal_efficiency_hist_90_reco10;
       TH1F * dyncrystal_efficiency_track_hist;
+      TH1F * dyncrystal_efficiency_track_gen_match_hist_0p3;
+      TH1F * dyncrystal_efficiency_track_gen_match_hist_0p1;
+      TH1F * dyncrystal_efficiency_track_gen_match_hist_0p05;
       TH1F * dyncrystal_efficiency_phoWindow_hist;
       std::map<double, TH1F *> dyncrystal_efficiency_reco_hists; // Turn-on thresholds
       std::map<double, TH1F *> dyncrystal_efficiency_reco_adj_hists; // Turn-on thresholds
@@ -298,6 +305,9 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float deltaR = 0.;
          float deltaPhi = 0.;
          float deltaEta = 0.;
+         float gen_trk_deltaR_0p3 = 999.;
+         float gen_trk_deltaR_0p1 = 999.;
+         float gen_trk_deltaR_0p05 = 999.;
          float gen_pt = 0.;
          float gen_z = 999.;
          float gen_eta = 0.;
@@ -471,6 +481,9 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       dyncrystal_efficiency_hist_95_reco10 = fs->make<TH1F>("dyncrystalEG_efficiency_pt_95_reco10", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dyncrystal_efficiency_hist_90_reco10 = fs->make<TH1F>("dyncrystalEG_efficiency_pt_90_reco10", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dyncrystal_efficiency_track_hist = fs->make<TH1F>("dyncrystalEG_efficiency_track_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
+      dyncrystal_efficiency_track_gen_match_hist_0p3 = fs->make<TH1F>("dyncrystalEG_efficiency_track_gen_match_pt_0p3", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
+      dyncrystal_efficiency_track_gen_match_hist_0p1 = fs->make<TH1F>("dyncrystalEG_efficiency_track_gen_match_pt_0p1", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
+      dyncrystal_efficiency_track_gen_match_hist_0p05 = fs->make<TH1F>("dyncrystalEG_efficiency_track_gen_match_pt_0p05", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dyncrystal_efficiency_phoWindow_hist = fs->make<TH1F>("dyncrystalEG_efficiency_phoWindow_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dyncrystal_efficiency_bremcut_hist = fs->make<TH1F>("dyncrystalEG_efficiency_bremcut_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dyncrystal_efficiency_eta_hist = fs->make<TH1F>("dyncrystalEG_efficiency_eta", "Dynamic Crystal Trigger;Gen. #eta;Efficiency", nEtaVarBins, etaEffBinning);
@@ -543,6 +556,9 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       brem_dphi_hist = fs->make<TH2F>("brem_dphi_hist" , "Brem. strength vs. d#phi;Brem. Strength;d#phi;Counts", 40, 0., 2., 40, -0.05, 0.05); 
 
       efficiency_denominator_hist = fs->make<TH1F>("gen_pt", "Gen. pt;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
+      efficiency_denominator_trk_gen_hist_0p3 = fs->make<TH1F>("gen_pt_trk_match_0p3", "Gen. pt;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
+      efficiency_denominator_trk_gen_hist_0p1 = fs->make<TH1F>("gen_pt_trk_match_0p1", "Gen. pt;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
+      efficiency_denominator_trk_gen_hist_0p05 = fs->make<TH1F>("gen_pt_trk_match_0p05", "Gen. pt;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
       efficiency_denominator_reco_hist = fs->make<TH1F>("reco_pt", "Offline reco. pt;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
       efficiency_denominator_eta_hist = fs->make<TH1F>("gen_eta", "Gen. #eta;Gen. #eta; Counts", nEtaVarBins, etaEffBinning);
    }
@@ -599,6 +615,9 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("deltaR", &treeinfo.deltaR);
    crystal_tree->Branch("deltaPhi", &treeinfo.deltaPhi);
    crystal_tree->Branch("deltaEta", &treeinfo.deltaEta);
+   crystal_tree->Branch("gen_trk_deltaR_0p3", &treeinfo.gen_trk_deltaR_0p3);
+   crystal_tree->Branch("gen_trk_deltaR_0p1", &treeinfo.gen_trk_deltaR_0p1);
+   crystal_tree->Branch("gen_trk_deltaR_0p05", &treeinfo.gen_trk_deltaR_0p05);
    crystal_tree->Branch("gen_pt", &treeinfo.gen_pt);
    crystal_tree->Branch("gen_z", &treeinfo.gen_z);
    crystal_tree->Branch("gen_eta", &treeinfo.gen_eta);
@@ -899,6 +918,38 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       if (trueElectron.pt()>20 && trueElectron.pt()<100)
          efficiency_denominator_eta_hist->Fill(trueElectron.eta());
 
+      // Only fill if gen is matched to a track
+      size_t best_trk_index_0p3 = getBestTrack( 0.3, trueElectron, l1trackHandle);
+      size_t best_trk_index_0p1 = getBestTrack( 0.1, trueElectron, l1trackHandle);
+      size_t best_trk_index_0p05 = getBestTrack( 0.05, trueElectron, l1trackHandle);
+      double genTrkDeltaR_0p3 = 999;
+      double genTrkDeltaR_0p1 = 999;
+      double genTrkDeltaR_0p05 = 999;
+      // Check there was a returned track
+      // Get the track associated with the index
+      // 9999 is the defaul index, if it is still 9999, no track was matched
+      // deltaR 0p3
+      if (best_trk_index_0p3 != 9999) {
+        efficiency_denominator_trk_gen_hist_0p3->Fill(trueElectron.pt());
+        edm::Ptr<TTTrack<Ref_Phase2TrackerDigi_>> trk_ptr(l1trackHandle, best_trk_index_0p3);
+        genTrkDeltaR_0p3 = L1TkElectronTrackMatchAlgo::deltaR(L1TkElectronTrackMatchAlgo::calorimeterPosition(trueElectron.phi(), trueElectron.eta(), trueElectron.energy()), trk_ptr);
+      }
+      treeinfo.gen_trk_deltaR_0p3 = genTrkDeltaR_0p3;
+      // deltaR 0.1
+      if (best_trk_index_0p1 != 9999) {
+        efficiency_denominator_trk_gen_hist_0p1->Fill(trueElectron.pt());
+        edm::Ptr<TTTrack<Ref_Phase2TrackerDigi_>> trk_ptr(l1trackHandle, best_trk_index_0p1);
+        genTrkDeltaR_0p1 = L1TkElectronTrackMatchAlgo::deltaR(L1TkElectronTrackMatchAlgo::calorimeterPosition(trueElectron.phi(), trueElectron.eta(), trueElectron.energy()), trk_ptr);
+      }
+      treeinfo.gen_trk_deltaR_0p1 = genTrkDeltaR_0p1;
+      // deltaR 0.05
+      if (best_trk_index_0p05 != 9999) {
+        efficiency_denominator_trk_gen_hist_0p05->Fill(trueElectron.pt());
+        edm::Ptr<TTTrack<Ref_Phase2TrackerDigi_>> trk_ptr(l1trackHandle, best_trk_index_0p05);
+        genTrkDeltaR_0p05 = L1TkElectronTrackMatchAlgo::deltaR(L1TkElectronTrackMatchAlgo::calorimeterPosition(trueElectron.phi(), trueElectron.eta(), trueElectron.energy()), trk_ptr);
+      }
+      treeinfo.gen_trk_deltaR_0p05 = genTrkDeltaR_0p05;
+
       treeinfo.gen_pt = genParticles[0].pt();
       treeinfo.gen_z = genParticles[0].vz();
       treeinfo.gen_eta = genParticles[0].eta();
@@ -958,6 +1009,13 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                      dyncrystal_efficiency_track_hist->Fill(trueElectron.pt());
                      if (trueElectron.pt()>20 && trueElectron.pt()<100)
                         dyncrystal_efficiency_track_eta_hist->Fill(trueElectron.eta());
+                     // Fill this if there was a match with the L1Tracks to gen particle
+                     if (best_trk_index_0p3 != 9999)
+                        dyncrystal_efficiency_track_gen_match_hist_0p3->Fill(trueElectron.pt());
+                     if (best_trk_index_0p1 != 9999)
+                        dyncrystal_efficiency_track_gen_match_hist_0p1->Fill(trueElectron.pt());
+                     if (best_trk_index_0p05 != 9999)
+                        dyncrystal_efficiency_track_gen_match_hist_0p05->Fill(trueElectron.pt());
                   }
 
                   if ( cluster_passes_photon_cuts(cluster) ) {
@@ -1686,7 +1744,7 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
 
         // L1 Tracks are considered mis-measured if pt > 50
         // Therefore pt -> 50 if pt > 50
-        // Only consider tracks if chi2 > 100
+        // Only consider tracks if chi2 < 100
         //double dr = .1;
         double dr = L1TkElectronTrackMatchAlgo::deltaR(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), ptr);
         if (pt > 50.) pt = 50;
@@ -1999,6 +2057,50 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
      if ( debug ) std::cout << "Track dr: " << min_track_dr << ", chi2: " << treeinfo.trackChi2 << ", dp: " << (treeinfo.trackMomentum-cluster.energy())/cluster.energy() << std::endl;
   }
 }
+
+size_t
+L1EGRateStudies::getBestTrack(double dR_cut, const reco::Candidate::PolarLorentzVector &p4, edm::Handle<L1TkTrackCollectionType> l1trackHandle)
+{
+  // track matching stuff
+  // match to the highest pt track < 0.3
+  // if no track within dR < 0.3, return null track
+  size_t matched_track_index = 9999;
+  if ( l1trackHandle.isValid() )
+  {
+     double max_track_pt = 0.;
+     edm::Ptr<TTTrack<Ref_Phase2TrackerDigi_>> matched_track;
+     for(size_t track_index=0; track_index<l1trackHandle->size(); ++track_index)
+     {
+        edm::Ptr<TTTrack<Ref_Phase2TrackerDigi_>> ptr(l1trackHandle, track_index);
+        double pt = ptr->getMomentum().perp();
+
+        // Don't consider tracks with pt < 2 for studies, might be increased to 3 later
+        if (pt < 2.) continue;
+
+        // Record the highest pt track per event
+        // And, highest pt passing chi2 cut
+        // to see if brem is an issues for mis-matched tracks
+        double chi2 = ptr->getChi2();
+        
+        // L1 Tracks are considered mis-measured if pt > 50
+        // Therefore pt -> 50 if pt > 50
+        // Only consider tracks if chi2 < 100
+        //double dr = .1;
+        double dr = L1TkElectronTrackMatchAlgo::deltaR(L1TkElectronTrackMatchAlgo::calorimeterPosition(p4.phi(), p4.eta(), p4.energy()), ptr);
+        if (pt > 50.) pt = 50;
+        // If dR < 0.3, choose highest pt track
+        if ( dr < dR_cut && pt > max_track_pt && chi2 < 100. )
+        {
+           max_track_pt = pt;
+           matched_track = ptr;
+           matched_track_index = track_index;
+        }
+     } // end track loop
+  } // end isValid
+
+  return matched_track_index;
+}
+
 
 
 //define this as a plug-in

@@ -6,7 +6,7 @@ import CMS_lumi, tdrstyle
 from collections import OrderedDict
 
 version = '20170820_flatIsoExt_all'
-universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"/"
+universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"_trkMtchCheck/"
 
 #version = 'v9'
 singleE = 'r2_phase2_singleElectron_%s.root' % version
@@ -197,7 +197,10 @@ def drawEfficiency( hists, c, ymax, xTitle, xrange = [0., 0.], fit = False, fitH
           graph.GetFunction("shape").SetLineColor(graph.GetLineColor())
           graph.GetFunction("shape").SetLineWidth(graph.GetLineWidth()*2)
  
-    leg = setLegStyle(0.48,0.77,0.94,0.94)
+    if "gen_to_l1Track_match" in c.GetName() :
+        leg = setLegStyle(0.25,0.77,0.94,0.94)
+    else :
+        leg = setLegStyle(0.48,0.77,0.94,0.94)
     for graph in graphs :
         leg.AddEntry(graph, graph.GetTitle(),"lpe")
     leg.Draw("same")
@@ -1260,6 +1263,30 @@ if __name__ == '__main__' :
                         c.SetName("dyncrystalEG_threshold"+pt+"_efficiency_gen_pt_ptAdj")
                         #drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, True, possiblePts[pt])
                         drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, False, possiblePts[pt])
+
+
+        fTrkMatch = ROOT.TFile('r2_phase2_singleElectron_20170820_flatIsoExt_all3.root','r')
+        print "FILE NAME:",fTrkMatch
+        effGenMatch_0p3 = fTrkMatch.Get('analyzer/divide_gen_pt_trk_match_0p3_by_gen_pt')
+        effGenMatch_0p3.SetTitle('L1Track Match to Gen Elec, #delta R < 0.3')
+        effMatch_0p3 = fTrkMatch.Get('analyzer/divide_dyncrystalEG_efficiency_track_gen_match_pt_0p3_by_gen_pt_trk_match_0p3')
+        effMatch_0p3.SetTitle('L1EG Algo Basic Cuts + Trk Match (denom #delta R < 0.3')
+        effGenMatch_0p1 = fTrkMatch.Get('analyzer/divide_gen_pt_trk_match_0p1_by_gen_pt')
+        effGenMatch_0p1.SetTitle('L1Track Match to Gen Elec, #delta R < 0.1')
+        effMatch_0p1 = fTrkMatch.Get('analyzer/divide_dyncrystalEG_efficiency_track_gen_match_pt_0p1_by_gen_pt_trk_match_0p1')
+        effMatch_0p1.SetTitle('L1EG Algo Basic Cuts + Trk Match (denom #delta R < 0.1')
+        effGenMatch_0p05 = fTrkMatch.Get('analyzer/divide_gen_pt_trk_match_0p05_by_gen_pt')
+        effGenMatch_0p05.SetTitle('L1Track Match to Gen Elec, #delta R < 0.05')
+        effMatch_0p05 = fTrkMatch.Get('analyzer/divide_dyncrystalEG_efficiency_track_gen_match_pt_0p05_by_gen_pt_trk_match_0p05')
+        effMatch_0p05.SetTitle('L1EG Algo Basic Cuts + Trk Match (denom #delta R < 0.05')
+        c.SetName("gen_to_l1Track_match_eff")
+        toPlot = [effGenMatch_0p3, effGenMatch_0p1, effGenMatch_0p05]
+        print toPlot
+        drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, False, possiblePts[pt])
+        c.SetName("gen_to_l1Track_match_and_reco_eff")
+        toPlot = [effMatch_0p3, effMatch_0p1, effMatch_0p05]
+        print toPlot
+        drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, False, possiblePts[pt])
 
 
     ''' POSITION RECONSTRUCTION '''

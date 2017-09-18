@@ -3,24 +3,19 @@ import trigHelpers
 
 version = 'v9'
 
+def makeEffGraph( numerator, denom ) :
+    print "    Dividing " + numerator.GetName() + " by " + denom.GetName()
+    graph = ROOT.TGraphAsymmErrors(numerator, denom)
+    graph.GetXaxis().SetTitle(numerator.GetXaxis().GetTitle())
+    graph.GetYaxis().SetTitle("Efficiency")
+    graph.Write()
+
 def normalizeHists() :
-    #eff = ROOT.TFile("r2_phase2_singleElectron_%s.root" % version, "UPDATE")
-    #pho = ROOT.TFile("r2_phase2_singlePhoton_%s.root" % version, "UPDATE")
-    #piZero = ROOT.TFile("r2_phase2_singlePiZero_%s.root" % version, "UPDATE")
-    #rates = ROOT.TFile("r2_phase2_minBias_%s.root" % version, "UPDATE")
-    effFiles = []
-        'r2_phase2_singleElectron_top20.root',
-        'r2_phase2_singleElectron_20170717noSkimRecoPerCard36v2.root',
-        'r2_phase2_singleElectron_20170716top05.root',
-        'r2_phase2_singleElectron_20170716top10.root',
-        'r2_phase2_singleElectron_20170716top20.root',
-        'r2_phase2_singleElectron_20170612v1.root',]
+    effFiles = [
+        'r2_phase2_singleElectron_20170820_flatIsoExt_all3.root',
+        ]
     rateFiles = [
-        'r2_phase2_minBias_20170716top10.root',
-        'r2_phase2_minBias_20170716top05.root',
-        'r2_phase2_minBias_20170716top20.root',
-        'r2_phase2_minBias_20170717noSkimRecoPerCard36v2.root',
-        'r2_phase2_minBias_20170612v1.root']
+        ]
 
     # We need to renormalize everything since these files were parallel processed
 
@@ -41,10 +36,6 @@ def normalizeHists() :
             file.cd("analyzer") 
             effPtHists = trigHelpers.loadObjectsMatchingPattern( file, "analyzer", effHistKeys, "*_efficiency*pt" )
             for hist in effPtHists :
-                #if "reco_" not in hist.GetName() :
-                #    denom = effPtDenom.Clone()
-                #if "reco_" in hist.GetName() :
-                #    denom = effRecoPtDenom.Clone()
                 denom = effPtDenom.Clone()
                 print "    Dividing " + hist.GetName() + " by " + denom.GetName()
                 graph = ROOT.TGraphAsymmErrors(hist, denom)
@@ -63,9 +54,30 @@ def normalizeHists() :
                 graph.GetYaxis().SetTitle("Efficiency")
                 graph.Write()
 
+            # Track matched test
+            effPtTrkMtchDenom_0p3 = file.Get("analyzer/gen_pt_trk_match_0p3")
+            effPtTrkMtchDenom_0p1 = file.Get("analyzer/gen_pt_trk_match_0p1")
+            effPtTrkMtchDenom_0p05 = file.Get("analyzer/gen_pt_trk_match_0p05")
+            trk_0p3 = file.Get("analyzer/dyncrystalEG_efficiency_track_gen_match_pt_0p3")
+            trk_0p1 = file.Get("analyzer/dyncrystalEG_efficiency_track_gen_match_pt_0p1")
+            trk_0p05 = file.Get("analyzer/dyncrystalEG_efficiency_track_gen_match_pt_0p05")
+            if effPtTrkMtchDenom_0p3 != None :
+                pairs = [[effPtTrkMtchDenom_0p3, trk_0p3], [effPtTrkMtchDenom_0p1, trk_0p1], [effPtTrkMtchDenom_0p05, trk_0p05]]
+                for pair in pairs :
+                    denom = pair[0].Clone()
+                    numerator = pair[1].Clone()
+                    # Efficiency with gen track match as baseline
+                    makeEffGraph( numerator, denom )
+                    # Initial track to gen matching eff
+                    denom = effPtDenom.Clone()
+                    numerator = pair[0].Clone()
+                    makeEffGraph( numerator, denom )
+
+
+
+            
+
             dir_ = file.Get("analyzer")
-            #dir_.Delete("gen_pt*")
-            #dir_.Delete("gen_eta*")
             file.Write("", ROOT.TObject.kOverwrite)
         file.Close()
 
@@ -85,7 +97,6 @@ def normalizeHists() :
                 for hist in rateHists :
                     hist.Sumw2()
                     hist.Scale(30000./nEvents)
-                #dir_.Delete("eventCount*")
                 file.Write("", ROOT.TObject.kOverwrite)
             file.Close()
 
