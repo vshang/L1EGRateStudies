@@ -6,6 +6,7 @@ ROOT.gROOT.SetBatch(True)
 gStyle.SetOptStat(0)
 
 def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, points, linear=False, doFit=True, includeLine=False, invert=False) :
+    doLog = False
     title1 = "L1EGamma Crystal (Electrons)"
     title2 = "L1EGamma Crystal (Photons)"
     title3 = "L1EGamma Crystal (Fake)"
@@ -16,7 +17,8 @@ def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, poi
     h1.GetXaxis().SetTitle( xaxis )
     h1.GetYaxis().SetTitle( yaxis )
     h1.Draw("colz")
-    ROOT.gPad.SetLogz()
+    if doLog :
+        ROOT.gPad.SetLogz()
     xVals1 = array('f', [])
     yVals1 = array('f', [])
     for point in points :
@@ -100,7 +102,8 @@ def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, poi
     h2.GetXaxis().SetTitle( xaxis )
     h2.GetYaxis().SetTitle( yaxis )
     h2.Draw("colz")
-    ROOT.gPad.SetLogz()
+    if doLog :
+        ROOT.gPad.SetLogz()
     if includeLine : 
         g1.Draw('SAME')
     if doFit :
@@ -113,7 +116,8 @@ def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, poi
     h3.GetXaxis().SetTitle( xaxis )
     h3.GetYaxis().SetTitle( yaxis )
     h3.Draw("colz")
-    ROOT.gPad.SetLogz()
+    if doLog :
+        ROOT.gPad.SetLogz()
     #if c.GetTitle() == 'clusterPtVE2x2OverE2x5' :
     #    ROOT.gPad.SetLogz()
     if includeLine : 
@@ -128,8 +132,8 @@ def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, poi
     # plot web
     plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date
     c.Print(plotDir+"/"+c.GetTitle()+".png")
-    #c.Print(plotDir+"/"+c.GetTitle()+".C")
-    #c.Print(plotDir+"/"+c.GetTitle()+".pdf")
+    c.Print(plotDir+"/"+c.GetTitle()+".C")
+    c.Print(plotDir+"/"+c.GetTitle()+".pdf")
 
     del h1, h2, h3, g1
 
@@ -199,8 +203,8 @@ def drawPointsHists(h1, h2, title1, title2, xaxis, yaxis, new=False) :
     # plot web
     plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date
     c2.Print(plotDir+"/"+c.GetTitle()+".png")
-    #c2.Print(plotDir+"/"+c.GetTitle()+".C")
-    #c2.Print(plotDir+"/"+c.GetTitle()+".pdf")
+    c2.Print(plotDir+"/"+c.GetTitle()+".C")
+    c2.Print(plotDir+"/"+c.GetTitle()+".pdf")
 
     cx = ROOT.TCanvas('cx','cx',600,600)
     cx.SetGridx()
@@ -232,8 +236,8 @@ def drawPointsHists(h1, h2, title1, title2, xaxis, yaxis, new=False) :
     # plot web
     plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date
     cx.Print(plotDir+"/"+c.GetTitle()+"_fits.png")
-    #cx.Print(plotDir+"/"+c.GetTitle()+"_fits.C")
-    #cx.Print(plotDir+"/"+c.GetTitle()+"_fits.pdf")
+    cx.Print(plotDir+"/"+c.GetTitle()+"_fits.C")
+    cx.Print(plotDir+"/"+c.GetTitle()+"_fits.pdf")
 
     del c2, h1, h2, g1, g2, cx
 
@@ -299,7 +303,7 @@ if __name__ == '__main__' :
 
     date = '20170824cutStudy' # original stage-2 match with H/E
     date = '20170824cutStudy2' # working towrads 95%
-    date = '20170824cutStudy4' # working towrads 90%
+    date = '20170906cutStudyMakePlots' # working towrads 90%
     #date = '20170824cutStudy3' # stage-2 only Iso and SS
 
     rateFile = ROOT.TFile( minBias, 'r' )
@@ -700,7 +704,7 @@ if __name__ == '__main__' :
     xinfo = [25, 0., 100.]
     yinfo = [100, 0., 5.]
     c.SetTitle("clusterPtVHoverE")
-###    drawPoints(c, crystal_tree, var, cut_ss_cIso10, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True)
+    drawPoints(c, crystal_tree, var, cut_ss_cIso10, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True)
     c.SetTitle("clusterPtVHoverE_fitLine")
     drawPoints(c, crystal_tree, var, cut_ss_cIso13, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, True)
 #def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, points, linear=False, doFit=True, includeLine=False, invert=False) :
