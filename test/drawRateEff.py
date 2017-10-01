@@ -5,8 +5,9 @@ from ROOT import gStyle, gPad
 import CMS_lumi, tdrstyle
 from collections import OrderedDict
 
+version = '20170928_l1TrkMatch'
+universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"/"
 version = '20170820_flatIsoExt_all'
-universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"_trkMtchCheck/"
 
 #version = 'v9'
 singleE = 'r2_phase2_singleElectron_%s.root' % version
@@ -1041,9 +1042,9 @@ if __name__ == '__main__' :
         c.SetName('dyncrystalEG_rate_adj')
         toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], ]
         drawRates( toDraw, c, 40000., xrange)
-        c.SetName('dyncrystalEG_rate_adj_10')
-        toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], ]
-        drawRates( toDraw, c, 40000., xrange10)
+        #c.SetName('dyncrystalEG_rate_adj_10')
+        #toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], ]
+        #drawRates( toDraw, c, 40000., xrange10)
 
         ## Photon
         #c.SetName('dyncrystalEG_rate_photon')
@@ -1060,9 +1061,20 @@ if __name__ == '__main__' :
         c.SetName('dyncrystalEG_rate_track_adj')
         toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj']]
         drawRates( toDraw, c, 40000., xrange)
-        c.SetName('dyncrystalEG_rate_track_adj_10')
-        toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj']]
-        drawRates( toDraw, c, 40000., xrange10)
+        c.SetName('dyncrystalEG_rate_track_adj_l1EGTrkMod_all')
+        fRateL1EGMod = ROOT.TFile('r2_phase2_minBias_20170820_flatIsoExt_all4.root','r')
+        l1TrkMatchRate = fRateL1EGMod.Get('analyzer/dyncrystalEG_adj_rate_trackl1match')
+        l1TrkMatchRate.SetTitle('L1EG Trk Match WP (loose Iso and SS)')
+        l1TrkMatchRateOnly = fRateL1EGMod.Get('analyzer/dyncrystalEG_adj_rate_trackl1matchOnly')
+        l1TrkMatchRateOnly.SetTitle('L1EG Trk Match WP (No Iso nor SS)')
+        toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj'], l1TrkMatchRate, l1TrkMatchRateOnly]
+        drawRates( toDraw, c, 40000., xrange)
+        c.SetName('dyncrystalEG_rate_track_adj_l1EGTrkMod')
+        toDraw = [ hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj'], l1TrkMatchRate, l1TrkMatchRateOnly]
+        drawRates( toDraw, c, 40000., xrange)
+        #c.SetName('dyncrystalEG_rate_track_adj_10')
+        #toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj']]
+        #drawRates( toDraw, c, 40000., xrange10)
 
         # All 
         #c.SetName('dyncrystalEG_rate_all')
@@ -1080,8 +1092,8 @@ if __name__ == '__main__' :
         #toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Stage-2'], hists['L1EGamma Crystal 95'], hists['L1EGamma Crystal 90'], ]
         toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Stage-2'], hists['L1EGamma Crystal 90'], ]
         drawRates( toDraw, c, 40000., xrange)
-        c.SetName('dyncrystalEG_rate_newWPs_pt10min_adj')
-        drawRates( toDraw, c, 40000., xrange10)
+        #c.SetName('dyncrystalEG_rate_newWPs_pt10min_adj')
+        #drawRates( toDraw, c, 40000., xrange10)
 
         ## Stage-2 rate solo
         #c.SetName('stage2_rate')
@@ -1175,10 +1187,10 @@ if __name__ == '__main__' :
         drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
         c.SetName("dyncrystalEG_efficiency_pt_track")
         drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgTrkPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
-        c.SetName("dyncrystalEG_efficiency_pt_10")
-        drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange10, True, [0.9, 2., 1., 0.])
-        c.SetName("dyncrystalEG_efficiency_pt_track_10")
-        drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgTrkPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange10, True, [0.9, 2., 1., 0.])
+        #c.SetName("dyncrystalEG_efficiency_pt_10")
+        #drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange10, True, [0.9, 2., 1., 0.])
+        #c.SetName("dyncrystalEG_efficiency_pt_track_10")
+        #drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgTrkPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange10, True, [0.9, 2., 1., 0.])
         #c.SetName("dyncrystalEG_efficiency_pt_photon")
         #drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgPhotonPtHist']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
         # Combo of singleE and singleGamma
@@ -1193,8 +1205,8 @@ if __name__ == '__main__' :
         c.SetTitle("")
         #drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgPtHistStage2'], effHists['newAlgPtHist95'], effHists['newAlgPtHist90']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
         drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgPtHistStage2'], effHists['newAlgPtHist90']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
-        c.SetName("dyncrystalEG_efficiency_newWPs_pt10min_pt")
-        drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgPtHistStage2'], effHists['newAlgPtHist90']], c, 1.3, "Gen P_{T} (GeV)", xrange10, True, [0.9, 2., 1., 0.])
+        #c.SetName("dyncrystalEG_efficiency_newWPs_pt10min_pt")
+        #drawEfficiency([effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgPtHistStage2'], effHists['newAlgPtHist90']], c, 1.3, "Gen P_{T} (GeV)", xrange10, True, [0.9, 2., 1., 0.])
         c.SetName("dyncrystalEG_efficiency_newWPs_threshold10_pt")
         drawEfficiency([effHists['Stage2PtHistReco10'], effHists['newAlgPtHistReco10'], effHists['newAlgPtHistStage2Reco10'], effHists['newAlgPtHist90Reco10']], c, 1.3, "Gen P_{T} (GeV)", xrange, True, [0.9, 2., 1., 0.])
 
@@ -1266,7 +1278,7 @@ if __name__ == '__main__' :
                         drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, False, possiblePts[pt])
 
 
-        fTrkMatch = ROOT.TFile('r2_phase2_singleElectron_20170820_flatIsoExt_all3.root','r')
+        fTrkMatch = ROOT.TFile('r2_phase2_singleElectron_20170820_flatIsoExt_all4.root','r')
         print "FILE NAME:",fTrkMatch
         effGenMatch_0p3 = fTrkMatch.Get('analyzer/divide_gen_pt_trk_match_0p3_by_gen_pt')
         effGenMatch_0p3.SetTitle('L1Track Match to Gen Elec, #delta R < 0.3')
@@ -1280,12 +1292,28 @@ if __name__ == '__main__' :
         effGenMatch_0p05.SetTitle('L1Track Match to Gen Elec, #delta R < 0.05')
         effMatch_0p05 = fTrkMatch.Get('analyzer/divide_dyncrystalEG_efficiency_track_gen_match_pt_0p05_by_gen_pt_trk_match_0p05')
         effMatch_0p05.SetTitle('L1EG Algo Basic Cuts + Trk Match (denom #delta R < 0.05)')
+        l1TrkMatch = fTrkMatch.Get('analyzer/divide_dyncrystalEG_efficiency_trackl1match_pt_by_gen_pt')
+        l1TrkMatch.SetTitle('L1EG Trk Match WP (Loose Iso and SS)')
+        l1TrkMatchOnly = fTrkMatch.Get('analyzer/divide_dyncrystalEG_efficiency_trackl1matchOnly_pt_by_gen_pt')
+        l1TrkMatchOnly.SetTitle('L1EG Trk Match WP (No Iso nor SS)')
 
         c.SetName("gen_to_l1Track_match_eff")
         toPlot = [effGenMatch_0p3, effGenMatch_0p1, effGenMatch_0p05]
         drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, False, possiblePts[pt])
         c.SetName("gen_to_l1Track_match_eff_with_L1EG")
         toPlot = [effGenMatch_0p3, effGenMatch_0p1, effGenMatch_0p05, effHists['newAlgTrkPtHist'], ]
+        drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, False, possiblePts[pt])
+        c.SetName("gen_to_l1Track_match_eff_with_L1EGMod")
+        toPlot = [effGenMatch_0p05, effHists['newAlgTrkPtHist'], l1TrkMatch, l1TrkMatchOnly]
+        drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, False, possiblePts[pt])
+        c.SetName("gen_to_l1Track_match_eff_with_L1EGModOnly")
+        toPlot = [effGenMatch_0p05, l1TrkMatch, l1TrkMatchOnly ]
+        drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, False, possiblePts[pt])
+        c.SetName("gen_to_l1Track_match_eff_baseline")
+        toPlot = [effGenMatch_0p05, effHists['newAlgTrkPtHist'] ]
+        drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, False, possiblePts[pt])
+        c.SetName("gen_to_l1Track_match_eff_with_L1EGMod_all")
+        toPlot = [effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgTrkPtHist'], l1TrkMatch, l1TrkMatchOnly]
         drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, False, possiblePts[pt])
 
         c.SetName("gen_to_l1Track_match_and_reco_eff")

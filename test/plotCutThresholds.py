@@ -7,6 +7,7 @@ gStyle.SetOptStat(0)
 
 def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, points, linear=False, doFit=True, includeLine=False, invert=False) :
     doLog = False
+    doLog = True
     title1 = "L1EGamma Crystal (Electrons)"
     title2 = "L1EGamma Crystal (Photons)"
     title3 = "L1EGamma Crystal (Fake)"
@@ -66,12 +67,12 @@ def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, poi
                 f2.SetParameter( 0, f1.GetParameter( 0 ) )
                 f2.SetParameter( 1, f1.GetParameter( 1 ) )
                 f2.SetParameter( 2, f1.GetParameter( 2 ) )
-            f3 = ROOT.TF1( 'f3', '([0] + [1]*x)', 80, 100 )
-            #f3.SetParameter( 0, 0.1471537 ) # 85 GeV swap
-            f3.SetParameter( 0, 0.1962996 ) # 80 GeV swap
-            f3.SetParameter( 1, 0.0 )
-            f3.SetLineWidth( 4 )
-            f3.Draw('SAME')
+            #f3 = ROOT.TF1( 'f3', '([0] + [1]*x)', 80, 100 )
+            ##f3.SetParameter( 0, 0.1471537 ) # 85 GeV swap
+            #f3.SetParameter( 0, 0.1962996 ) # 80 GeV swap
+            #f3.SetParameter( 1, 0.0 )
+            #f3.SetLineWidth( 4 )
+            #f3.Draw('SAME')
         elif "clusterPtVE2x2OverE2x5" == c.GetTitle() :
             f2 = ROOT.TF1( 'f2', '([0] + [1]*x)', xinfo[1], xinfo[2])
             #f2.SetParameter( 0, 0.95 )
@@ -108,8 +109,8 @@ def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, poi
         g1.Draw('SAME')
     if doFit :
         f2.Draw('SAME')
-        if "clusterPtVClusterIso" == c.GetTitle() :
-            f3.Draw('SAME')
+        #if "clusterPtVClusterIso" == c.GetTitle() :
+        #    f3.Draw('SAME')
     c.cd(3)
     h3 = ROOT.TH2F("h3", title3, xinfo[0], xinfo[1], xinfo[2], yinfo[0], yinfo[1], yinfo[2])
     tree3.Draw( var + " >> h3", cut )
@@ -124,8 +125,8 @@ def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, poi
         g1.Draw('SAME')
     if doFit :
         f2.Draw('SAME')
-        if "clusterPtVClusterIso" == c.GetTitle() :
-            f3.Draw('SAME')
+        #if "clusterPtVClusterIso" == c.GetTitle() :
+        #    f3.Draw('SAME')
 
     # plot local
     #plotDir = 'plotCuts'
@@ -305,6 +306,7 @@ if __name__ == '__main__' :
     date = '20170824cutStudy2' # working towrads 95%
     date = '20170906cutStudyMakePlots' # working towrads 90%
     #date = '20170824cutStudy3' # stage-2 only Iso and SS
+    date = '20170928L1TrkMatchWP'
 
     rateFile = ROOT.TFile( minBias, 'r' )
     effFile = ROOT.TFile( singleE, 'r' )
@@ -408,27 +410,44 @@ if __name__ == '__main__' :
     cut_ss_cIso9 = showerShapes9+" && "+Isolation9
     cut_ss_cIso9_pt10 = cut_ss_cIso9+" && cluster_pt>10"
 
+    doStage2Match = False
+    do95plateau = False
+    do90plateau = False
+    doL1TkMatch = True
+
+
     # Stage-2 eff match
-    showerShapes10 = '(0.942086 + 0.0397516*TMath::Exp(-0.0211009*cluster_pt)<(e2x5/e5x5))' 
-    Isolation10 = '(0.215925 + 1.44605*TMath::Exp(-0.0833746*cluster_pt)>(cluster_iso))' 
-    hovere10 = '(0.244437 + 1.48595*TMath::Exp(-0.0508982*cluster_pt)>(cluster_hovere))' 
-    cut_ss_cIso10 = showerShapes10+" && "+Isolation10
+    if doStage2Match :
+        showerShapes9 = '(0.942086 + 0.0397516*TMath::Exp(-0.0211009*cluster_pt)<(e2x5/e5x5))' 
+        Isolation9 = '(0.215925 + 1.44605*TMath::Exp(-0.0833746*cluster_pt)>(cluster_iso))' 
+        hovere9 = '(0.244437 + 1.48595*TMath::Exp(-0.0508982*cluster_pt)>(cluster_hovere))' 
+        cut_ss_cIso9 = showerShapes9+" && "+Isolation9
+        # Stage-2 eff match Iso and SS ONLY
+        #showerShapes9 = '(0.939666 + 0.0445646*TMath::Exp(-0.0180939*cluster_pt)<(e2x5/e5x5))' 
+        #Isolation9 = '( + *TMath::Exp(-*cluster_pt)>(cluster_iso))' 
+        #cut_ss_cIso9 = showerShapes9+" && "+Isolation9
 
     # 95% plateau
-    showerShapes11 = '(0.95246 + 0.0302887*TMath::Exp(-0.0535882*cluster_pt)<(e2x5/e5x5))' 
-    Isolation11 = '(0.0845426 + 1.90511*TMath::Exp(-0.0471028*cluster_pt)>(cluster_iso))' 
-    cut_ss_cIso11 = showerShapes11+" && "+Isolation11
+    if do95plateau :
+        showerShapes9 = '(0.95246 + 0.0302887*TMath::Exp(-0.0535882*cluster_pt)<(e2x5/e5x5))' 
+        Isolation9 = '(0.0845426 + 1.90511*TMath::Exp(-0.0471028*cluster_pt)>(cluster_iso))' 
+        cut_ss_cIso9 = showerShapes9+" && "+Isolation9
 
     # 90% plateau
-    showerShapes13 = '(0.953798 + 0.0428328*TMath::Exp(-0.0549179*cluster_pt)<(e2x5/e5x5))' 
-    Isolation13 = '(0.0667439 + 1.62958*TMath::Exp(-0.0546521*cluster_pt)>(cluster_iso))' 
-    hovere13 = '(0.256551 + 4.37785*TMath::Exp(-0.0887665*cluster_pt)>(cluster_hovere))' 
-    cut_ss_cIso13 = showerShapes13+" && "+Isolation13
+    if do90plateau :
+        showerShapes9 = '(0.953798 + 0.0428328*TMath::Exp(-0.0549179*cluster_pt)<(e2x5/e5x5))' 
+        Isolation9 = '(0.0667439 + 1.62958*TMath::Exp(-0.0546521*cluster_pt)>(cluster_iso))' 
+        hovere9 = '(0.256551 + 4.37785*TMath::Exp(-0.0887665*cluster_pt)>(cluster_hovere))' 
+        cut_ss_cIso9 = showerShapes9+" && "+Isolation9
 
-    # Stage-2 eff match Iso and SS ONLY
-    #showerShapes12 = '(0.939666 + 0.0445646*TMath::Exp(-0.0180939*cluster_pt)<(e2x5/e5x5))' 
-    #Isolation12 = '( + *TMath::Exp(-*cluster_pt)>(cluster_iso))' 
-    #cut_ss_cIso12 = showerShapes12+" && "+Isolation12
+    # L1Tk Match to L1EG as baseline
+    if doL1TkMatch :
+        cut_none = "(trackDeltaR<0.05)"
+        showerShapes9 = cut_none+'*(0.944058 + -0.647818*TMath::Exp(-0.402032*cluster_pt)<(e2x5/e5x5))' 
+        Isolation9 = '(0.381358 + 1.92205*TMath::Exp(-0.0500605*cluster_pt)>(cluster_iso))' 
+        cut_ss_cIso9 = showerShapes9+" && "+Isolation9
+
+
 
     points = [ # pt, percentile # Used for cut11
         #[ 2.5,    ],
@@ -499,19 +518,42 @@ if __name__ == '__main__' :
     #    [ 90, .98 ],
     #    ]
     # for 90% plateau
-    points = [ # 95% target
-        #[ 15,   .97 ],
-        #[ 17.5, .97 ],
-        [ 22.5, .975 ],
-        [ 27.5, .975 ],
-        [ 32.5, .97 ],
-        [ 37.5, .97 ],
-        [ 42.5, .97 ],
-        [ 50, .97 ],
-        [ 60, .97 ],
-        [ 70, .97 ],
-        [ 80, .97 ],
-        [ 90, .97 ],
+    #points = [ # 95% target
+    #    #[ 15,   .97 ],
+    #    #[ 17.5, .97 ],
+    #    [ 22.5, .975 ],
+    #    [ 27.5, .975 ],
+    #    [ 32.5, .97 ],
+    #    [ 37.5, .97 ],
+    #    [ 42.5, .97 ],
+    #    [ 50, .97 ],
+    #    [ 60, .97 ],
+    #    [ 70, .97 ],
+    #    [ 80, .97 ],
+    #    [ 90, .97 ],
+    #    ]
+    # For L1TkMatch WP
+    points = [ # pt, percentile # Used for cut11
+        #[ 2.5,    ],
+        [ 7.5,  .98 ],
+        [ 10,   .98 ],
+        [ 12.5, .98 ],
+        [ 15,   .98 ],
+        [ 17.5, .99 ],
+        [ 20.0, .99 ],
+        [ 22.5, .99 ],
+        [ 25.0, .995 ],
+        [ 27.5, .995 ],
+        [ 32.5, .995 ],
+        [ 35.0, .995 ],
+        [ 37.5, .995 ],
+        [ 42.5, .995 ],
+        [ 50, .995 ],
+        [ 60, .995 ],
+        [ 70, .995 ],
+        [ 80, .995 ],
+        [ 90, .995 ],
+        [ 97, .995 ],
         ]
 
 
@@ -523,7 +565,7 @@ if __name__ == '__main__' :
     #yinfo = [100, -1.05, -0.7]
     yinfo = [100, 0.7, 1.05]
     c.SetTitle("clusterPtVE2x5OverE5x5")
-###    drawPoints(c, crystal_tree, var, cut_none, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, False, True)
+    drawPoints(c, crystal_tree, var, cut_none, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, False, True)
     c.SetTitle("clusterPtVE2x5OverE5x5_fitLine")
     drawPoints(c, crystal_tree, var, cut_none, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, True, True) # Draw fit line
 
@@ -580,20 +622,42 @@ if __name__ == '__main__' :
     #    [ 80, .98 ],
     #    [ 90, .98 ],
     #    ]
-    points = [ # 90% target
-        [ 10,   .94],
-        [ 15,   .94 ],
-        [ 17.5, .94 ],
-        [ 22.5, .94 ],
-        [ 27.5, .94 ],
-        [ 32.5, .94 ],
-        [ 37.5, .94 ],
-        [ 42.5, .94 ],
-        [ 50, .94 ],
-        [ 60, .94 ],
-        [ 70, .94 ],
-        [ 80, .94 ],
-        [ 90, .94 ],
+    #points = [ # 90% target
+    #    [ 10,   .94],
+    #    [ 15,   .94 ],
+    #    [ 17.5, .94 ],
+    #    [ 22.5, .94 ],
+    #    [ 27.5, .94 ],
+    #    [ 32.5, .94 ],
+    #    [ 37.5, .94 ],
+    #    [ 42.5, .94 ],
+    #    [ 50, .94 ],
+    #    [ 60, .94 ],
+    #    [ 70, .94 ],
+    #    [ 80, .94 ],
+    #    [ 90, .94 ],
+    #    ]
+    # For L1TkMatch WP
+    points = [ # pt, percentile # Used for cut11
+        #[ 2.5,    ],
+        [ 7.5,  .99 ],
+        [ 10,   .99 ],
+        [ 12.5, .99 ],
+        [ 15,   .99 ],
+        [ 17.5, .99 ],
+        [ 20.0, .99 ],
+        [ 22.5, .99 ],
+        [ 25.0, .995 ],
+        [ 27.5, .995 ],
+        [ 32.5, .995 ],
+        [ 35.0, .995 ],
+        [ 37.5, .995 ],
+        [ 42.5, .995 ],
+        [ 50, .997 ],
+        [ 60, .997 ],
+        [ 70, .999 ],
+        [ 80, .999 ],
+        [ 90, .999 ],
         ]
 
     var = "cluster_iso:cluster_pt"
@@ -603,9 +667,9 @@ if __name__ == '__main__' :
     yinfo = [100, 0., 5.]
     c.SetTitle("clusterPtVClusterIso")
     isoLinear = False
-###    drawPoints(c, crystal_tree, var, showerShapes10, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, isoLinear, True, False)
+    drawPoints(c, crystal_tree, var, showerShapes9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, isoLinear, True, False)
     c.SetTitle("clusterPtVClusterIso_fitLine")
-    drawPoints(c, crystal_tree, var, showerShapes13, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, isoLinear, True, True) # Draw fit line
+    drawPoints(c, crystal_tree, var, showerShapes9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, isoLinear, True, True) # Draw fit line
 
     #points = [ # pt, percentile # Used for cut11
     #    [  5,   .85 ],
@@ -680,34 +744,34 @@ if __name__ == '__main__' :
     #    [ 80, .99 ],
     #    [ 90, .99 ],
     #    ]
-
-    points = [ # pt, percentile # Used for cut11
-        [ 12.5, .99 ],
-        [ 15,   .99 ],
-        [ 17.5, .98 ],
-        [ 22.5, .98 ],
-        [ 27.5, .97 ],
-        [ 32.5, .97 ],
-        [ 37.5, .97 ],
-        [ 42.5, .97 ],
-        [ 50, .97 ],
-        [ 60, .98 ],
-        [ 70, .99 ],
-        [ 80, .99 ],
-        [ 90, .99 ],
-        ]
-
-    # Check H/E
-    var = "cluster_hovere:cluster_pt"
-    xaxis = "Cluster P_{T} (GeV)"
-    yaxis = "H/E"
-    xinfo = [25, 0., 100.]
-    yinfo = [100, 0., 5.]
-    c.SetTitle("clusterPtVHoverE")
-    drawPoints(c, crystal_tree, var, cut_ss_cIso10, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True)
-    c.SetTitle("clusterPtVHoverE_fitLine")
-    drawPoints(c, crystal_tree, var, cut_ss_cIso13, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, True)
-#def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, points, linear=False, doFit=True, includeLine=False, invert=False) :
+#
+#    points = [ # pt, percentile # Used for cut11
+#        [ 12.5, .99 ],
+#        [ 15,   .99 ],
+#        [ 17.5, .98 ],
+#        [ 22.5, .98 ],
+#        [ 27.5, .97 ],
+#        [ 32.5, .97 ],
+#        [ 37.5, .97 ],
+#        [ 42.5, .97 ],
+#        [ 50, .97 ],
+#        [ 60, .98 ],
+#        [ 70, .99 ],
+#        [ 80, .99 ],
+#        [ 90, .99 ],
+#        ]
+#
+#    # Check H/E
+#    var = "cluster_hovere:cluster_pt"
+#    xaxis = "Cluster P_{T} (GeV)"
+#    yaxis = "H/E"
+#    xinfo = [25, 0., 100.]
+#    yinfo = [100, 0., 5.]
+#    c.SetTitle("clusterPtVHoverE")
+#    drawPoints(c, crystal_tree, var, cut_ss_cIso9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True)
+#    c.SetTitle("clusterPtVHoverE_fitLine")
+#    drawPoints(c, crystal_tree, var, cut_ss_cIso9, crystal_treePho, rate_tree, xaxis, xinfo, yaxis, yinfo, points, False, True, True)
+##def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, points, linear=False, doFit=True, includeLine=False, invert=False) :
 
 #
 #    points = [
