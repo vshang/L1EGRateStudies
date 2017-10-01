@@ -27,7 +27,7 @@ git fetch truggles
 git cms-merge-topic -u truggles:phase2-l1eg-920
 
 pushd L1Trigger/
-git clone -b 920_L1EGCrystals https://github.com/truggles/L1EGRateStudies.git L1EGRateStudies
+git clone -b 920_L1EGCrystals git@github.com:truggles/L1EGRateStudies.git L1EGRateStudies
 popd
 
 scramv1 b -j 8
