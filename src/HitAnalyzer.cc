@@ -37,6 +37,7 @@
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "TH1.h"
 #include "TTree.h"
+#include "TMath.h"
 
 // All for Calo geometry for getting energy/pt/eta/phi per crystal
 #include "FastSimulation/CaloGeometryTools/interface/CaloGeometryHelper.h"
@@ -87,6 +88,7 @@ class HitAnalyzer : public edm::EDAnalyzer {
       virtual void beginJob() override;
       virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
       virtual void endJob() override;
+      size_t getRegionOf24(double eta, double phi);
 
       //virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
       //virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
@@ -112,6 +114,8 @@ class HitAnalyzer : public edm::EDAnalyzer {
       const HcalTopology * hcTopology_;
 
 
+      TH1D *NEvents;
+
       TH1D *ecal_totalHits;
       TH1D *ecal_totalNonZeroHits;
       TH1D *ecal_totalGtr500MeVHits;
@@ -125,6 +129,11 @@ class HitAnalyzer : public edm::EDAnalyzer {
       TH1D *hcal_TP_or_recHit_energy;
       TH1D *hcal_TP_or_recHit_eta;
       TH1D *hcal_TP_or_recHit_phi;
+
+      TH1D *Region;
+      TH1D *TotalEcalTPs;
+      TH1D *EcalTPsPerRegion;
+      std::vector<size_t> ecalTPsPerRegion; // position in vector is region, 0-23
 
       TTree * hit_tree;
       struct {
@@ -184,6 +193,7 @@ HitAnalyzer::HitAnalyzer(const edm::ParameterSet& iConfig) :
    //now do what ever initialization is needed
 
    edm::Service<TFileService> fs;
+   NEvents = fs->make<TH1D>("NEvents" , "NEvents" , 1 , 0 , 1 );
    ecal_totalHits = fs->make<TH1D>("ecal totalHits" , "ecal totalHits" , 200 , 0 , 20000 );
    ecal_totalNonZeroHits = fs->make<TH1D>("ecal totalNonZeroHits" , "ecal totalNonZeroHits" , 500 , 0 , 2500 );
    ecal_totalGtr500MeVHits = fs->make<TH1D>("ecal totalGtr500MeVHits" , "ecal totalGtr500MeVHits" , 500 , 0 , 500 );
@@ -197,6 +207,10 @@ HitAnalyzer::HitAnalyzer(const edm::ParameterSet& iConfig) :
    hcal_TP_or_recHit_energy = fs->make<TH1D>("hcal TP_or_recHit_energy" , "hcal TP_or_recHit_energy" , 200 , 0 , 50 );
    hcal_TP_or_recHit_eta = fs->make<TH1D>("hcal TP_or_recHit_eta" , "hcal TP_or_recHit_eta" , 40 , -2 , 2 );
    hcal_TP_or_recHit_phi = fs->make<TH1D>("hcal TP_or_recHit_phi" , "hcal TP_or_recHit_phi" , 70 , -3.5 , 3.5 );
+
+   Region = fs->make<TH1D>("Region" , "Region" , 30 , 0 , 30 );
+   TotalEcalTPs = fs->make<TH1D>("TotalEcalTPs" , "TotalEcalTPs" , 200 , 0 , 1000 );
+   EcalTPsPerRegion = fs->make<TH1D>("EcalTPsPerRegion" , "EcalTPsPerRegion" , 100 , 0 , 100 );
 
    // Make TTree too
    hit_tree = fs->make<TTree>("hit_tree","hit_tree");
@@ -280,6 +294,13 @@ HitAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    treeinfo.genParticle_eta.clear();
    treeinfo.genParticle_phi.clear();
    treeinfo.genParticle_pdgId.clear();
+
+   NEvents->Fill( 0 );
+   ecalTPsPerRegion.clear();
+   for (size_t i = 0; i < 24; ++i) {
+      ecalTPsPerRegion.push_back( 0 );
+   }
+   size_t region;
 
    treeinfo.run = iEvent.eventAuxiliary().run();
    treeinfo.lumi = iEvent.eventAuxiliary().luminosityBlock();
@@ -399,6 +420,10 @@ HitAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
             ecal_TP_or_recHit_eta->Fill( eta );
             ecal_TP_or_recHit_phi->Fill( phi );
 
+            region = getRegionOf24( eta, phi );
+            Region->Fill( region );
+            ecalTPsPerRegion[region] = ecalTPsPerRegion[region]+1;
+
             // Fill Tree
             id = hit.id();
             iEta = id.ieta();
@@ -417,6 +442,8 @@ HitAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
             //}
          }
       } // ECAL TPs finished
+      TotalEcalTPs->Fill( e_totGtr500MeVTP );
+      for (size_t i = 0; i < ecalTPsPerRegion.size(); ++i) EcalTPsPerRegion->Fill( ecalTPsPerRegion[i] );
 
       // Retrive HCAL hits 
       edm::Handle< edm::SortedCollection<HcalTriggerPrimitiveDigi> > hbhecoll;
@@ -589,6 +616,35 @@ HitAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   edm::ParameterSetDescription desc;
   desc.setUnknown();
   descriptions.addDefault(desc);
+}
+
+
+// ------------ method to return which hardware card the L1EG object is associate to x / 24 cards ------
+size_t
+HitAnalyzer::getRegionOf24(double eta, double phi)
+{
+
+  double pi = TMath::Pi();
+  double phiDeg = phi * 180. / pi;
+  double absPhiDeg = fabs(phiDeg);
+  size_t returnVal = 0;
+
+  // Increment for eta side, Neg is cards 0-11, Pos = 12-23
+  if (eta >= 0.0) returnVal += 12;
+  // Increment for phi + / -
+  if (phiDeg >= 0.0) returnVal += 6;
+  // return with val associated with exact phi location
+  if (absPhiDeg >= 0 && absPhiDeg < 30) return 0+returnVal;
+  if (absPhiDeg >= 30 && absPhiDeg < 60) return 1+returnVal;
+  if (absPhiDeg >= 60 && absPhiDeg < 90) return 2+returnVal;
+  if (absPhiDeg >= 90 && absPhiDeg < 120) return 3+returnVal;
+  if (absPhiDeg >= 30 && absPhiDeg < 150) return 4+returnVal;
+  if (absPhiDeg >= 30 && absPhiDeg <= 180) return 5+returnVal;
+
+  std::cout << "This is bad, shouldn't be here" << std::endl;
+
+  return 29;
+
 }
 
 //define this as a plug-in

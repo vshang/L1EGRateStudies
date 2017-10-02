@@ -1,14 +1,14 @@
 #!/bin/bash
 
-DATE=20170508v3
+DATE=20171020tpCheck
 
 # Different options
 doHitAnalyzer=true
 #doHitAnalyzer=false
 doRates=true
-#doRates=false
+doRates=false
 doEfficiencies=true
-#doEfficiencies=false
+doEfficiencies=false
 
 
 # Signals for Efficiencies and Std Algo Studies
@@ -18,10 +18,10 @@ doPiZero=true
 doPion=true
 doTau=true
 doElectron=false
-#doPhoton=false
-#doPiZero=false
-#doPion=false
-#doTau=false
+doPhoton=false
+doPiZero=false
+doPion=false
+doTau=false
 
 # Hit Analyzer
 if $doHitAnalyzer; then
@@ -30,6 +30,16 @@ if $doHitAnalyzer; then
         --input-files-per-job=30 \
         --input-file-list=submitFileLists/singleElectronFilesPU200.txt \
         phaseII_singleElectron_${DATE} $CMSSW_BASE condor_hitAnalyzer.py
+    farmoutAnalysisJobs \
+        --output-dir=. \
+        --input-files-per-job=30 \
+        --input-file-list=submitFileLists/TTbarPU200.txt \
+        phaseII_TTbar_${DATE} $CMSSW_BASE condor_hitAnalyzer.py
+    farmoutAnalysisJobs \
+        --output-dir=. \
+        --input-files-per-job=30 \
+        --input-file-list=submitFileLists/singleNeutrinoFilesPU200.txt \
+        phaseII_minBias_${DATE} $CMSSW_BASE condor_hitAnalyzer_noGen.py
 fi
 
 # Rates
