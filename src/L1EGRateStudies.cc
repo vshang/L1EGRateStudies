@@ -134,6 +134,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       bool cluster_passes_95_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
       bool cluster_passes_90_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
       bool cluster_passes_track_cuts(const l1slhc::L1EGCrystalCluster& cluster, float trackDeltaR) const;
+      bool cluster_passes_track_variable_cuts(const l1slhc::L1EGCrystalCluster& cluster, float trackDeltaR, float deltaRMax ) const;
       bool cluster_passes_photon_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
       bool checkTowerExists(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps) const;
       //void checkRecHitsFlags(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps, const EcalRecHitCollection &ecalRecHits) const;
@@ -150,6 +151,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       
       double genMatchDeltaRcut;
       double genMatchRelPtcut;
+      double trackDeltaRMax;
       
       int eventCount;
 
@@ -431,6 +433,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    isPhoton(iConfig.getUntrackedParameter<bool>("isPhoton", false)),
    genMatchDeltaRcut(iConfig.getUntrackedParameter<double>("genMatchDeltaRcut", 0.1)),
    genMatchRelPtcut(iConfig.getUntrackedParameter<double>("genMatchRelPtcut", 0.5)),
+   trackDeltaRMax(iConfig.getUntrackedParameter<double>("trackDeltaRMax", 0.05)),
    crystalClustersToken_(consumes<l1slhc::L1EGCrystalClusterCollection>(iConfig.getParameter<edm::InputTag>("L1CrystalClustersInputTag"))),
    genCollectionToken_(consumes<reco::GenParticleCollection>(iConfig.getParameter<edm::InputTag>("genParticles"))),
    L1TrackInputToken_(consumes<L1TkTrackCollectionType>(iConfig.getParameter<edm::InputTag>("L1TrackInputTag"))),
@@ -1144,7 +1147,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                if ( cluster.eta() != bestCluster.eta() || cluster.phi() != bestCluster.phi() ) // why don't I have a comparison op
                   continue;
 
-               if ( cluster_passes_l1tkMatch_cuts(cluster) && cluster_passes_track_cuts(cluster, treeinfo.trackDeltaR) )
+               if ( cluster_passes_l1tkMatch_cuts(cluster) && cluster_passes_track_variable_cuts(cluster, treeinfo.trackDeltaR, trackDeltaRMax ) )
                {
                   dyncrystal_efficiency_trackl1match_hist->Fill(trueElectron.pt());
                   break;
@@ -1319,7 +1322,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                dyncrystal_rate_adj_hist_90->Fill( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) );
             }
          }
-         if ( cluster_passes_l1tkMatch_cuts(cluster) && cluster_passes_track_cuts(cluster, treeinfo.trackDeltaR) )
+         if ( cluster_passes_l1tkMatch_cuts(cluster) && cluster_passes_track_variable_cuts(cluster, treeinfo.trackDeltaR, trackDeltaRMax) )
          {
             if (!filledL1TrkMatch) {
                filledL1TrkMatch = true;
@@ -1669,6 +1672,20 @@ L1EGRateStudies::cluster_passes_90_cuts(const l1slhc::L1EGCrystalCluster& cluste
 
       if ( passShowerShape && passIso && passHoverE ) {
 	      return true; }
+   }
+   return false;
+}
+
+bool
+L1EGRateStudies::cluster_passes_track_variable_cuts(const l1slhc::L1EGCrystalCluster& cluster, float trackDeltaR, float deltaRMax) const {
+   // return true;
+   
+   // Add track cut
+   if ( fabs(cluster.eta()) < 1.479 )
+   {
+      //std::cout << "Starting passing check" << std::endl;
+      if ( trackDeltaR < deltaRMax ) {
+         return true; }
    }
    return false;
 }
