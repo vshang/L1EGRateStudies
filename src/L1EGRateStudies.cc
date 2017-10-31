@@ -205,6 +205,8 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       TH1F * efficiency_denominator_reco_hist;
 
       TH1F * dyncrystal_efficiency_hist;
+      TH1F * dyncrystal_efficiency_hist_open;
+      TH1F * dyncrystal_efficiency_hist_loose;
       TH1F * dyncrystal_efficiency_hist_stage2;
       TH1F * dyncrystal_efficiency_hist_95;
       TH1F * dyncrystal_efficiency_hist_90;
@@ -302,6 +304,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          bool electronWP98 = false;
          bool photonWP80 = false;
          bool electronWP90 = false;
+         bool looseL1TkMatchWP = false;
          bool stage2matchEff = false;
          float e2x2;
          float e2x5;
@@ -480,6 +483,8 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       //offlineRecoClusterInputTag = iConfig.getParameter<edm::InputTag>("OfflineRecoClustersInputTag");
 
       dyncrystal_efficiency_hist = fs->make<TH1F>("dyncrystalEG_efficiency_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
+      dyncrystal_efficiency_hist_open = fs->make<TH1F>("dyncrystalEG_efficiency_open_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
+      dyncrystal_efficiency_hist_loose = fs->make<TH1F>("dyncrystalEG_efficiency_loose_pt", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dyncrystal_efficiency_hist_stage2 = fs->make<TH1F>("dyncrystalEG_efficiency_pt_stage2", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dyncrystal_efficiency_hist_95 = fs->make<TH1F>("dyncrystalEG_efficiency_pt_95", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
       dyncrystal_efficiency_hist_90 = fs->make<TH1F>("dyncrystalEG_efficiency_pt_90", "Dynamic Crystal Trigger;Gen. pT (GeV);Efficiency", nHistBins, histLow, histHigh);
@@ -601,6 +606,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("passedBase", &treeinfo.passedBase);
    crystal_tree->Branch("electronWP98", &treeinfo.electronWP98);
    crystal_tree->Branch("electronWP90", &treeinfo.electronWP90);
+   crystal_tree->Branch("looseL1TkMatchWP", &treeinfo.looseL1TkMatchWP);
    crystal_tree->Branch("photonWP80", &treeinfo.photonWP80);
    crystal_tree->Branch("stage2matchEff", &treeinfo.stage2matchEff);
    crystal_tree->Branch("passedPhoton", &treeinfo.passedPhoton);
@@ -987,6 +993,8 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          auto bestCluster = *std::min_element(begin(crystalClusters), end(crystalClusters), [trueElectron](const l1slhc::L1EGCrystalCluster& a, const l1slhc::L1EGCrystalCluster& b){return reco::deltaR(a, trueElectron) < reco::deltaR(b, trueElectron);});
          bool clusterFound = false;
          bool bestClusterUsed = false;
+         bool openEffFilled = false;
+         bool looseEffFilled = false;
          for(const auto& cluster : crystalClusters)
          {
             clusterCount++;
@@ -1006,6 +1014,16 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                
                fill_tree(cluster);
                //checkRecHitsFlags(cluster, triggerPrimitives, ecalRecHits);
+
+               // Open selection essentially getting L1EG Reco eff
+               if (!openEffFilled) {
+                  openEffFilled = true;
+                  dyncrystal_efficiency_hist_open->Fill(trueElectron.pt());
+               }
+               if (!looseEffFilled && cluster_passes_l1tkMatch_cuts(cluster) ) {
+                  looseEffFilled = true;
+                  dyncrystal_efficiency_hist_loose->Fill(trueElectron.pt());
+               }
 
                if ( cluster_passes_base_cuts(cluster) )
                {
@@ -1513,6 +1531,7 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
    treeinfo.electronWP98 = cluster.electronWP98();
    treeinfo.photonWP80 = cluster.photonWP80();
    treeinfo.electronWP90 = cluster.electronWP90();
+   treeinfo.looseL1TkMatchWP = cluster.looseL1TkMatchWP();
    treeinfo.stage2matchEff = cluster.stage2effMatch();
    treeinfo.passedBase = cluster_passes_base_cuts(cluster);
    treeinfo.passedPhoton = (cluster_passes_photon_cuts(cluster) && cluster_passes_base_cuts(cluster));
