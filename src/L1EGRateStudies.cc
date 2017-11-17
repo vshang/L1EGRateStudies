@@ -93,6 +93,8 @@
 // ECAL TPs
 #include "SimCalorimetry/EcalEBTrigPrimProducers/plugins/EcalEBTrigPrimProducer.h"
 #include "DataFormats/EcalDigi/interface/EcalEBTriggerPrimitiveDigi.h"
+// slimmed Electrons
+#include "DataFormats/PatCandidates/interface/Electron.h"
 
 // Stage2
 #include "DataFormats/L1Trigger/interface/BXVector.h"
@@ -178,6 +180,8 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       edm::EDGetTokenT<L1TkTrackCollectionType> L1TrackInputToken_;
       edm::EDGetTokenT<L1TkPrimaryVertexCollection> L1TrackPVToken_;
 
+      edm::EDGetTokenT<std::vector<pat::Electron>> offlineRecoClusterToken_;
+      edm::Handle<std::vector<pat::Electron>> offlineRecoClustersHandle;
       //edm::EDGetTokenT<reco::SuperClusterCollection> offlineRecoClusterToken_;
       //edm::Handle<reco::SuperClusterCollection> offlineRecoClustersHandle;
 
@@ -409,8 +413,12 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       TH2F * reco_gen_pt_adj_hist;
       TH2F * reco_gen_pt_adj_hist2;
       TH2F * reco_gen_pt_adj_hist3;
+      TH1F * l1eg_gen_pt_1dHist;
+      TH1F * l1eg_gen_pt_adj_1dHist;
       TH1F * reco_gen_pt_1dHist;
-      TH1F * reco_gen_pt_adj_1dHist;
+      TH1F * recoSC_gen_pt_1dHist;
+      TH1F * l1eg_reco_pt_1dHist;
+      TH1F * l1eg_recoSC_pt_1dHist;
 
       // dphi vs. brem
       TH2F * brem_dphi_hist;
@@ -441,11 +449,11 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    genCollectionToken_(consumes<reco::GenParticleCollection>(iConfig.getParameter<edm::InputTag>("genParticles"))),
    L1TrackInputToken_(consumes<L1TkTrackCollectionType>(iConfig.getParameter<edm::InputTag>("L1TrackInputTag"))),
    L1TrackPVToken_(consumes<L1TkPrimaryVertexCollection>(iConfig.getParameter<edm::InputTag>("L1TrackPrimaryVertexTag"))),
+   offlineRecoClusterToken_(consumes<std::vector<pat::Electron>>(iConfig.getParameter<edm::InputTag>("OfflineRecoClustersInputTag"))),
    stage2egToken1_(consumes<BXVector<l1t::EGamma>>(iConfig.getParameter<edm::InputTag>("Stage2EG1Tag"))),
    //ecalTPEBToken_(consumes<EcalEBTrigPrimDigiCollection>(iConfig.getParameter<edm::InputTag>("ecalTPEB"))),
    //ecalRecHitEBToken_(consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("ecalRecHitEB"))),
    //ecalRecHitEEToken_(consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("ecalRecHitEE"))),
-   //offlineRecoClusterToken_(consumes<reco::SuperClusterCollection>(iConfig.getParameter<edm::InputTag>("OfflineRecoClustersInputTag"))),
    nHistBins(iConfig.getUntrackedParameter<int>("histogramBinCount", 10)),
    nHistEtaBins(iConfig.getUntrackedParameter<int>("histogramEtaBinCount", 20)),
    histLow(iConfig.getUntrackedParameter<double>("histogramRangeLow", 0.)),
@@ -564,8 +572,11 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       reco_gen_pt_adj_hist = fs->make<TH2F>("reco_gen_pt_adj" , "EG relative momentum error;Gen. pT (GeV);(reco-gen)/gen;Counts", 100, 0., 100., 100, -0.5, 0.5); 
       reco_gen_pt_adj_hist2 = fs->make<TH2F>("reco_gen_pt_adj2" , "EG relative momentum error;Reco pT (GeV);(reco-gen)/gen;Counts", 100, 0., 100., 100, -0.5, 0.5); 
       reco_gen_pt_adj_hist3 = fs->make<TH2F>("reco_gen_pt_adj3" , "EG relative momentum error;Reco pT (GeV);gen/reco;Counts", 100, 0., 100., 100, 0.0, 2.0); 
+      l1eg_gen_pt_1dHist = fs->make<TH1F>("1d_l1eg_gen_pt" , "EG relative momentum error;(l1eg-gen)/gen;Counts", 100, -1., 1.); 
+      l1eg_gen_pt_adj_1dHist = fs->make<TH1F>("1d_l1eg_gen_pt_adj" , "EG relative momentum error;(l1eg-gen)/gen;Counts", 100, -1., 1.); 
       reco_gen_pt_1dHist = fs->make<TH1F>("1d_reco_gen_pt" , "EG relative momentum error;(reco-gen)/gen;Counts", 100, -1., 1.); 
-      reco_gen_pt_adj_1dHist = fs->make<TH1F>("1d_reco_gen_pt_adj" , "EG relative momentum error;(reco-gen)/gen;Counts", 100, -1., 1.); 
+      l1eg_reco_pt_1dHist = fs->make<TH1F>("1d_l1eg_reco_pt" , "EG relative momentum error;(l1eg-reco)/reco;Counts", 100, -1., 1.); 
+      l1eg_recoSC_pt_1dHist = fs->make<TH1F>("1d_l1eg_recoSC_pt" , "EG relative momentum error;(l1eg-recoSC)/recoSC;Counts", 100, -1., 1.); 
       brem_dphi_hist = fs->make<TH2F>("brem_dphi_hist" , "Brem. strength vs. d#phi;Brem. Strength;d#phi;Counts", 40, 0., 2., 40, -0.05, 0.05); 
 
       efficiency_denominator_hist = fs->make<TH1F>("gen_pt", "Gen. pt;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
@@ -767,6 +778,9 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    //reco::GenParticleCollection genParticles;
    iEvent.getByToken(genCollectionToken_,genParticleHandle);
    genParticles = *genParticleHandle.product();
+   std::sort(begin(genParticles), end(genParticles), [](reco::GenParticle& a, reco::GenParticle& b){return a.pt() > b.pt();});
+   if (abs(genParticles[0].pdgId()) != 11) return;
+
 
    // L1 Tracks
    edm::Handle<L1TkTrackCollectionType> l1trackHandle;
@@ -840,42 +854,48 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       float reco_electron_phi = -99.;
       
       // Get offline cluster info
-//      iEvent.getByToken(offlineRecoClusterToken_, offlineRecoClustersHandle);
-//      reco::SuperClusterCollection offlineRecoClusters = *offlineRecoClustersHandle.product();
-//
-//      // Find the cluster corresponding to generated electron
+      iEvent.getByToken(offlineRecoClusterToken_, offlineRecoClustersHandle);
+      std::vector<pat::Electron> offlineRecoClusters = *offlineRecoClustersHandle.product();
+
+      std::cout << "Gen pT: " << genParticles[0].pt() << std::endl;
+
+      // Find the cluster corresponding to generated electron
+      double trueElectron_SC_pt = -99;
       bool offlineRecoFound = false;
-//      for(auto& cluster : offlineRecoClusters)
-//      {
-//         reco::Candidate::PolarLorentzVector p4;
-//         p4.SetPt(cluster.energy()*sin(cluster.position().theta()));
-//         p4.SetEta(cluster.position().eta());
-//         p4.SetPhi(cluster.position().phi());
-//         p4.SetM(0.);
-//         if ( reco::deltaR(p4, genParticles[0].polarP4()) < 0.1
-//             && fabs(p4.pt() - genParticles[0].pt()) < genMatchRelPtcut*genParticles[0].pt() )
-//         {
-//            if ( useOfflineClusters )
-//               trueElectron = p4;
-//            reco_electron_pt = p4.pt();
-//            reco_electron_eta = p4.eta();
-//            reco_electron_phi = p4.phi();
-//            offlineRecoFound = true;
-//            if (debug) std::cout << "Gen.-matched pBarrelCorSuperCluster: pt " 
-//                     << cluster.energy()/std::cosh(cluster.position().eta()) 
-//                     << " eta " << cluster.position().eta() 
-//                     << " phi " << cluster.position().phi() << std::endl;
-//            if (debug) std::cout << "Cluster pt - Gen pt / Gen pt = " << (reco_electron_pt-genParticles[0].pt())/genParticles[0].pt() << std::endl;
-//            break;
-//         }
-//      }
-//      if ( useOfflineClusters && !offlineRecoFound )
-//      {
-//         // if we can't offline reconstruct the generated electron, 
-//         // it might as well have not existed.
-//         eventCount--;
-//         return;
-//      }
+      for(auto& cluster : offlineRecoClusters)
+      {
+         reco::Candidate::PolarLorentzVector p4;
+         p4.SetPt(cluster.pt());
+         p4.SetEta(cluster.eta());
+         p4.SetPhi(cluster.phi());
+         p4.SetM(0.);
+         if ( reco::deltaR(p4, genParticles[0].polarP4()) < 0.1
+             && fabs(p4.pt() - genParticles[0].pt()) < genMatchRelPtcut*genParticles[0].pt() )
+         {
+            if ( useOfflineClusters )
+               trueElectron = p4;
+            reco_electron_pt = p4.pt();
+            reco_electron_eta = p4.eta();
+            reco_electron_phi = p4.phi();
+            offlineRecoFound = true;
+            if (debug) std::cout << "Gen.-matched pBarrelCorSuperCluster: pt " 
+                     << cluster.energy()/std::cosh(cluster.eta()) 
+                     << " eta " << cluster.eta() 
+                     << " phi " << cluster.phi() << std::endl;
+            if (debug) std::cout << "Cluster pt - Gen pt / Gen pt = " << (reco_electron_pt-genParticles[0].pt())/genParticles[0].pt() << std::endl;
+            if (debug) std::cout << "Reco Electron pt: " << reco_electron_pt << std::endl;
+            if (debug) std::cout << "Gen Electron pt: " << genParticles[0].pt() << std::endl;
+            trueElectron_SC_pt = cluster.superCluster()->rawEnergy()*sin(trueElectron.theta());
+            break;
+         }
+      }
+      if ( useOfflineClusters && !offlineRecoFound )
+      {
+         // if we can't offline reconstruct the generated electron, 
+         // it might as well have not existed.
+         eventCount--;
+         return;
+      }
 
       if ( !useOfflineClusters )
       {
@@ -1088,8 +1108,11 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                   reco_gen_pt_adj_hist->Fill( trueElectron.pt(), ( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) - trueElectron.pt())/trueElectron.pt() );
                   reco_gen_pt_adj_hist2->Fill( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ), ( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) - trueElectron.pt())/trueElectron.pt() );
                   reco_gen_pt_adj_hist3->Fill( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ), trueElectron.pt() / ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) );
-                  reco_gen_pt_1dHist->Fill( (cluster.pt() - trueElectron.pt())/trueElectron.pt() );
-                  reco_gen_pt_adj_1dHist->Fill( ( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) - trueElectron.pt())/trueElectron.pt() );
+                  l1eg_reco_pt_1dHist->Fill( (cluster.pt() - trueElectron.pt())/trueElectron.pt() );
+                  l1eg_recoSC_pt_1dHist->Fill( (cluster.pt() - trueElectron_SC_pt)/trueElectron_SC_pt );
+                  l1eg_gen_pt_1dHist->Fill( (cluster.pt() - genParticles[0].pt())/genParticles[0].pt() );
+                  reco_gen_pt_1dHist->Fill( (reco_electron_pt - genParticles[0].pt())/genParticles[0].pt() );
+                  l1eg_gen_pt_adj_1dHist->Fill( ( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) - trueElectron.pt())/trueElectron.pt() );
                   brem_dphi_hist->Fill( cluster.bremStrength(), reco::deltaPhi(cluster, trueElectron) );
                   break;
                }
@@ -1848,7 +1871,7 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
           max_track_pt_all_tracksEta = ptr->getMomentum().eta();
           max_track_pt_all_tracksPhi = ptr->getMomentum().phi();
           max_track_pt_all_tracksChi2 = chi2;}
-        if (pt > max_track_pt_all_chi2_cut && chi2 < 100) {
+        if (pt > max_track_pt_all_chi2_cut ) { // && chi2 < 100) {
           max_track_pt_all_chi2_cut = pt;
           max_track_pt_all_chi2_cutEta = ptr->getMomentum().eta();
           max_track_pt_all_chi2_cutPhi = ptr->getMomentum().phi();
@@ -1860,9 +1883,9 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
         // Only consider tracks if chi2 < 100
         //double dr = .1;
         double dr = L1TkElectronTrackMatchAlgo::deltaR(L1TkElectronTrackMatchAlgo::calorimeterPosition(cluster.phi(), cluster.eta(), cluster.energy()), ptr);
-        if (pt > 50.) pt = 50;
+        //if (pt > 50.) pt = 50;
         // Choose closest track until dR < 0.3
-        if ( dr < min_track_dr && min_track_dr > 0.3 && chi2 < 100. )
+        if ( dr < min_track_dr && min_track_dr > 0.3 ) // && chi2 < 100. )
         {
            min_track_dr = dr;
            max_track_pt = pt;
@@ -1871,7 +1894,7 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
            matched_z = ptr->getPOCA().z();
         }
         // If dR < 0.3, choose highest pt track
-        else if ( dr < 0.3 && pt > max_track_pt && chi2 < 100. )
+        else if ( dr < 0.3 && pt > max_track_pt ) // && chi2 < 100. )
         {
            min_track_dr = dr;
            max_track_pt = pt;
@@ -1905,10 +1928,10 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
         if (foundMatchedTrack) {
            dr_2 = reco::deltaR(ptr->getMomentum(), matched_track->getMomentum());}
         double chi2 = ptr->getChi2();
-        if (pt > 50.) pt = 50;
+        //if (pt > 50.) pt = 50;
         double this_z = ptr->getPOCA().z();
         double deltaZ = abs(matched_z - this_z);
-        if ( dr_2 < 0.2 && dr_2 > 0.03 && pt > 2. && chi2 < 100 && deltaZ < 0.6 )
+        if ( dr_2 < 0.2 && dr_2 > 0.03 && pt > 2. && deltaZ < 0.6 ) // chi2 < 100 && deltaZ < 0.6 )
         {
           isoConeTrackCount++;
           isoConePtSum += pt;
@@ -2200,9 +2223,9 @@ L1EGRateStudies::getBestTrack(double dR_cut, const reco::Candidate::PolarLorentz
         // Only consider tracks if chi2 < 100
         //double dr = .1;
         double dr = L1TkElectronTrackMatchAlgo::deltaR(L1TkElectronTrackMatchAlgo::calorimeterPosition(p4.phi(), p4.eta(), p4.energy()), ptr);
-        if (pt > 50.) pt = 50;
+        //if (pt > 50.) pt = 50;
         // If dR < 0.3, choose highest pt track
-        if ( dr < dR_cut && pt > max_track_pt && chi2 < 100. )
+        if ( dr < dR_cut && pt > max_track_pt ) // && chi2 < 100. )
         {
            max_track_pt = pt;
            matched_track = ptr;
