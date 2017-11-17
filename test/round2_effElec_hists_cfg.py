@@ -14,12 +14,10 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 #process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 
 # Documentation: _v9 = Whole Detector, singleElectron_20170612v1
-name = 'singleElectron_20170612v1'
-#name = 'singleElectron_20170716top20'
-#name = 'singleElectron_20170716top10'
-#name = 'singleElectron_20170716top05'
-#name = 'singleElectron_20170717noSkimRecoPerCard36v2'
-name = 'singleElectron_20170820_flatIsoExt'
+#name = 'singleElectron_20170820_flatIsoExt'
+#name = 'ttbar_20170929v1'
+name = 'singleElectron_20171030v1'
+#name = 'ttbar_20171030v1'
 
 
 process.source = cms.Source("PoolSource",
@@ -80,6 +78,7 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    histogramEtaBinCount = cms.untracked.int32(20),
    genMatchDeltaRcut = cms.untracked.double(0.25),
    genMatchRelPtcut = cms.untracked.double(0.5),
+   trackDeltaRMax = cms.untracked.double(0.05),
    debug = cms.untracked.bool(False)
    #debug = cms.untracked.bool(True)
 )
@@ -87,7 +86,7 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
 process.panalyzer = cms.Path(process.TPAnalyzer+process.analyzer)
 
 process.TFileService = cms.Service("TFileService", 
-   fileName = cms.string("r2_phase2_"+name+"_all2.root"), 
+   fileName = cms.string("r2_phase2_"+name+"_noChi2.root"), 
    closeFileFast = cms.untracked.bool(True)
 )
 

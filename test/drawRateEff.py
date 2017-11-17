@@ -5,9 +5,10 @@ from ROOT import gStyle, gPad
 import CMS_lumi, tdrstyle
 from collections import OrderedDict
 
-version = '20170928_l1TrkMatch'
+version = '20170820_flatIsoExt_noChi2'
 universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"/"
-version = '20170820_flatIsoExt_all'
+version = '20170820_flatIsoExt_all' # old default
+version = '20170820_flatIsoExt_noChi2' # No chi2 requirement
 
 #version = 'v9'
 singleE = 'r2_phase2_singleElectron_%s.root' % version
@@ -107,16 +108,33 @@ def drawRates( hists, c, ymax, xrange = [0., 0.] ) :
     c.cd()
     colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray]
     marker_styles = [20, 24, 25, 26, 32, 35]
+    if 'MANY' in c.GetName() :
+        colors = [i for i in range(3, 35)]
+        marker_styles = [i for i in range( 20, 45)]
     c.Clear()
     mg = ROOT.TMultiGraph("mg", c.GetTitle())
     
     graphs = []
     for i, hist in enumerate(hists) :
         graph = ROOT.TGraphErrors( hist )
-        graph.SetLineColor( colors[i] )
-        graph.SetMarkerColor( colors[i] )
         graph.SetMarkerStyle( marker_styles[i] )
         graph.SetMarkerSize( 0.8 )
+        graph.SetLineWidth( 2 )
+        if 'MANY' in c.GetName() and graph.GetTitle() == 'Phase-2 L1EG (Crystal)' :
+            graph.SetLineWidth( 3 )
+            graph.SetLineColor( ROOT.kBlack )
+            graph.SetMarkerColor( ROOT.kBlack )
+        elif 'MANY' in c.GetName() and graph.GetTitle() == 'Phase-2 L1EG (Crystal + Trk) Electron' :
+            graph.SetLineWidth( 3 )
+            graph.SetLineColor( ROOT.kRed )
+            graph.SetMarkerColor( ROOT.kRed )
+        elif 'MANY' in c.GetName() and graph.GetTitle() == 'Phase-1 L1EG (Tower)' :
+            graph.SetLineWidth( 3 )
+            graph.SetLineColor( ROOT.kOrange+4 )
+            graph.SetMarkerColor( ROOT.kOrange+4 )
+        else :
+            graph.SetLineColor( colors[i] )
+            graph.SetMarkerColor( colors[i] )
         mg.Add( graph )
         graphs.append( graph )
     
@@ -155,19 +173,30 @@ def drawEfficiency( hists, c, ymax, xTitle, xrange = [0., 0.], fit = False, fitH
     c.cd()
     colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray]
     marker_styles = [20, 24, 25, 26, 32]
+    if 'MANY' in c.GetName() :
+        colors = [i for i in range(3, 25)]
+        marker_styles = [i for i in range( 20, 45)]
     lines = [ROOT.kSolid, ROOT.kDashed, ROOT.kDotted]
     c.Clear()
     mg = ROOT.TMultiGraph("mg", c.GetTitle())
     
     graphs = []
     for i, hist in enumerate(hists) :
-        #hist.Scale( 1./hist.GetEntries() )
         graph = ROOT.TGraphAsymmErrors( hist )
         graph.SetLineColor( colors[i] )
         graph.SetLineWidth( 2 )
         graph.SetMarkerColor( colors[i] )
         graph.SetMarkerStyle( marker_styles[i] )
         graph.SetMarkerSize( 0.8 )
+        if 'MANY' in c.GetName() and graph.GetTitle() == 'Phase-2 L1EG (Crystal)' :
+            graph.SetLineColor( ROOT.kBlack )
+            graph.SetMarkerColor( ROOT.kBlack )
+        if 'MANY' in c.GetName() and graph.GetTitle() == 'Phase-2 L1EG (Crystal + Trk) Electron' :
+            graph.SetLineColor( ROOT.kRed )
+            graph.SetMarkerColor( ROOT.kRed )
+        if 'MANY' in c.GetName() and graph.GetTitle() == 'Phase-1 L1EG (Tower)' :
+            graph.SetLineColor( ROOT.kOrange+4 )
+            graph.SetMarkerColor( ROOT.kOrange+4 )
         mg.Add( graph )
         graphs.append( graph )
     
@@ -1061,17 +1090,58 @@ if __name__ == '__main__' :
         c.SetName('dyncrystalEG_rate_track_adj')
         toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj']]
         drawRates( toDraw, c, 40000., xrange)
-        c.SetName('dyncrystalEG_rate_track_adj_l1EGTrkMod_all')
-        fRateL1EGMod = ROOT.TFile('r2_phase2_minBias_20170820_flatIsoExt_all4.root','r')
+        #fRateL1EGMod = ROOT.TFile('r2_phase2_minBias_20170820_flatIsoExt_all4.root','r')
+        fRateL1EGMod = rateFile
         l1TrkMatchRate = fRateL1EGMod.Get('analyzer/dyncrystalEG_adj_rate_trackl1match')
-        l1TrkMatchRate.SetTitle('L1EG Trk Match WP (loose Iso and SS)')
+        l1TrkMatchRate.SetTitle('Phase-2 L1EG (Loose Crystal + Trk) Electron')
         l1TrkMatchRateOnly = fRateL1EGMod.Get('analyzer/dyncrystalEG_adj_rate_trackl1matchOnly')
         l1TrkMatchRateOnly.SetTitle('L1EG Trk Match WP (No Iso nor SS)')
+
+        c.SetName('dyncrystalEG_rate_track_adj_l1EGTrkMod_all')
         toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj'], l1TrkMatchRate, l1TrkMatchRateOnly]
         drawRates( toDraw, c, 40000., xrange)
+
+        c.SetName('dyncrystalEG_rate_track_adj_all_TrackMatchWPs')
+        toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj'], l1TrkMatchRate]
+        drawRates( toDraw, c, 40000., xrange)
+
         c.SetName('dyncrystalEG_rate_track_adj_l1EGTrkMod')
         toDraw = [ hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj'], l1TrkMatchRate, l1TrkMatchRateOnly]
         drawRates( toDraw, c, 40000., xrange)
+
+        dR_rate_hists = []
+        dR_rate_hists2 = []
+        dR_rate_hists3 = []
+        dR_rate_hists3.append(hists['Stage-2 L1EG'])
+        dR_rate_hists3.append(hists['L1EGamma Crystal PtAdj'])
+        dR_rate_hists3.append(hists['L1EGamma Crystal Track PtAdj'])
+        cnt = 0
+        #for dR in ['0p01','0p05','0p10','0p15','0p20','0p25','0p30','0p40','0p50','0p60','0p70','0p80','0p90','1p00'] :
+        for dR in ['0p01','0p05','0p10','0p20','0p30','0p40','0p60','0p80','1p00'] :
+            fRateL1EGMod = ROOT.TFile('/data/truggles/phase2_20171010_deltaRTest/r2_phase2_minBias_20170820_flatIsoExt_Oct10_'+dR+'.root','r')
+            l1TrkMatchRate = fRateL1EGMod.Get('analyzer/dyncrystalEG_adj_rate_trackl1match')
+            l1TrkMatchRate.SetTitle('L1EG Trk Match WP, #DeltaR<'+dR+', (loose Iso and SS)')
+            l1TrkMatchRate.SetDirectory(0)
+            dR_rate_hists.append( l1TrkMatchRate )
+            if cnt < 4 :
+                dR_rate_hists2.append( l1TrkMatchRate )
+            if dR == '0p05' :
+                dR_rate_hists3.append( l1TrkMatchRate )
+            cnt += 1
+        dR_rate_hists.append(hists['L1EGamma Crystal PtAdj'])
+        dR_rate_hists2.append(hists['L1EGamma Crystal PtAdj'])
+        dR_rate_hists.append(hists['L1EGamma Crystal Track PtAdj'])
+        dR_rate_hists2.append(hists['L1EGamma Crystal Track PtAdj'])
+        dR_rate_hists.append(hists['Stage-2 L1EG'])
+        dR_rate_hists2.append(hists['Stage-2 L1EG'])
+        c.SetName('dyncrystalEG_rate_track_adj_l1EGTrkModMANY')
+        drawRates( dR_rate_hists, c, 40000., xrange)
+        c.SetName('dyncrystalEG_rate_track_adj_l1EGTrkModMANY2')
+        drawRates( dR_rate_hists2, c, 40000., xrange)
+        c.SetName('dyncrystalEG_rate_track_adj_l1EG_good')
+        drawRates( dR_rate_hists3, c, 40000., xrange)
+
+
         #c.SetName('dyncrystalEG_rate_track_adj_10')
         #toDraw = [ hists['Stage-2 L1EG'], hists['L1EGamma Crystal PtAdj'], hists['L1EGamma Crystal Track PtAdj']]
         #drawRates( toDraw, c, 40000., xrange10)
@@ -1278,7 +1348,8 @@ if __name__ == '__main__' :
                         drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, False, possiblePts[pt])
 
 
-        fTrkMatch = ROOT.TFile('r2_phase2_singleElectron_20170820_flatIsoExt_all4.root','r')
+        #fTrkMatch = ROOT.TFile('r2_phase2_singleElectron_20170820_flatIsoExt_all4.root','r')
+        fTrkMatch = ROOT.TFile('r2_phase2_singleElectron_20170820_flatIsoExt_noChi2.root','r')
         print "FILE NAME:",fTrkMatch
         effGenMatch_0p3 = fTrkMatch.Get('analyzer/divide_gen_pt_trk_match_0p3_by_gen_pt')
         effGenMatch_0p3.SetTitle('L1Track Match to Gen Elec, #delta R < 0.3')
@@ -1293,7 +1364,7 @@ if __name__ == '__main__' :
         effMatch_0p05 = fTrkMatch.Get('analyzer/divide_dyncrystalEG_efficiency_track_gen_match_pt_0p05_by_gen_pt_trk_match_0p05')
         effMatch_0p05.SetTitle('L1EG Algo Basic Cuts + Trk Match (denom #delta R < 0.05)')
         l1TrkMatch = fTrkMatch.Get('analyzer/divide_dyncrystalEG_efficiency_trackl1match_pt_by_gen_pt')
-        l1TrkMatch.SetTitle('L1EG Trk Match WP (Loose Iso and SS)')
+        l1TrkMatch.SetTitle('Phase-2 L1EG (Loose Crystal + Trk) Electron')
         l1TrkMatchOnly = fTrkMatch.Get('analyzer/divide_dyncrystalEG_efficiency_trackl1matchOnly_pt_by_gen_pt')
         l1TrkMatchOnly.SetTitle('L1EG Trk Match WP (No Iso nor SS)')
 
@@ -1315,6 +1386,9 @@ if __name__ == '__main__' :
         c.SetName("gen_to_l1Track_match_eff_with_L1EGMod_all")
         toPlot = [effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgTrkPtHist'], l1TrkMatch, l1TrkMatchOnly]
         drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, False, possiblePts[pt])
+        c.SetName("gen_to_l1Track_match_eff_with_L1EGMod_good")
+        toPlot = [effHists['Stage2PtHist'], effHists['newAlgPtHist'], effHists['newAlgTrkPtHist'], l1TrkMatch]
+        drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, False, possiblePts[pt])
 
         c.SetName("gen_to_l1Track_match_and_reco_eff")
         toPlot = [effMatch_0p3, effMatch_0p1, effMatch_0p05]
@@ -1323,6 +1397,42 @@ if __name__ == '__main__' :
         toPlot = [effMatch_0p3, effMatch_0p1, effMatch_0p05, effHists['newAlgPtHist'], ]
         drawEfficiency( toPlot, c, 1.3, "Gen P_{T} (GeV)", xrange, False, possiblePts[pt])
 
+        dR_eff_hists = []
+        dR_eff_hists2 = []
+        cnt = 0
+        #for dR in ['0p01','0p05','0p10','0p15','0p20','0p25','0p30','0p40','0p50','0p60','0p70','0p80','0p90','1p00'] :
+        for dR in ['0p01','0p05','0p10','0p20','0p30','0p40','0p60','0p80','1p00'] :
+            fEffL1EGMod = ROOT.TFile('/data/truggles/phase2_20171010_deltaRTest/r2_phase2_singleElectron_20170820_flatIsoExt_Oct10_'+dR+'.root','r')
+            l1TrkMatch = fEffL1EGMod.Get('analyzer/divide_dyncrystalEG_efficiency_trackl1match_pt_by_gen_pt')
+            l1TrkMatch.SetTitle('L1EG Trk Match WP, #DeltaR<'+dR+', (Loose Iso and SS)')
+            #l1TrkMatch.SetDirectory(0)
+            dR_eff_hists.append( l1TrkMatch )
+            if cnt < 4 :
+                dR_eff_hists2.append( l1TrkMatch )
+            cnt += 1
+        dR_eff_hists.append( effHists['newAlgPtHist'])
+        dR_eff_hists2.append( effHists['newAlgPtHist'])
+        dR_eff_hists.append( effHists['newAlgTrkPtHist'])
+        dR_eff_hists2.append( effHists['newAlgTrkPtHist'])
+        dR_eff_hists.append(effHists['Stage2PtHist'] )
+        dR_eff_hists2.append( effHists['Stage2PtHist'])
+        c.SetName("gen_to_l1Track_match_and_reco_eff_L1EG_MANY")
+        drawEfficiency( dR_eff_hists, c, 1.3, "Gen P_{T} (GeV)", xrange, False )
+        c.SetName("gen_to_l1Track_match_and_reco_eff_L1EG_MANY2")
+        drawEfficiency( dR_eff_hists2, c, 1.3, "Gen P_{T} (GeV)", xrange, False )
+
+        #fL1EGOpen = ROOT.TFile('/data/truggles/phase2_20171010_deltaRTest/r2_phase2_singleElectron_20170820_flatIsoExt_Oct17_open.root','r')
+        fL1EGOpen = ROOT.TFile('r2_phase2_singleElectron_20170820_flatIsoExt_noChi2.root','r')
+        l1EGRecoEff = fL1EGOpen.Get('analyzer/divide_dyncrystalEG_efficiency_open_pt_by_gen_pt')
+        l1EGRecoEff.SetTitle('L1EG Reco Efficiency')
+        l1EGLooseEff = fL1EGOpen.Get('analyzer/divide_dyncrystalEG_efficiency_loose_pt_by_gen_pt')
+        l1EGLooseEff.SetTitle('L1EG Loose Iso + SS')
+        c.SetName("gen_to_l1Track_match_l1EG_RECO_Eff")
+        drawEfficiency( [effHists['newAlgPtHist'], dR_eff_hists[-3], l1EGRecoEff, l1EGLooseEff], c, 1.3, "Gen P_{T} (GeV)", xrange, False )
+        c.SetName("gen_to_l1Track_match_l1EG_RECO_Eff2")
+        drawEfficiency( [effHists['newAlgPtHist'], l1EGLooseEff, l1EGRecoEff], c, 1.3, "Gen P_{T} (GeV)", xrange, False )
+        c.SetName("gen_to_l1Track_match_l1EG_RECO_Eff3")
+        drawEfficiency( [effHists['newAlgPtHist'], l1EGLooseEff, l1EGRecoEff, l1TrkMatchOnly], c, 1.3, "Gen P_{T} (GeV)", xrange, False )
 
     ''' POSITION RECONSTRUCTION '''
     # Delta R Stuff

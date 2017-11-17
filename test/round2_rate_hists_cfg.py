@@ -15,12 +15,9 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 
 # Documentation: _v9 (minBias_20170612v1) = Defaul full detector method
-name = 'minBias_20170612v1'
-#name = 'minBias_20170716top20'
-#name = 'minBias_20170716top10'
-#name = 'minBias_20170716top05'
-#name = 'minBias_20170717noSkimRecoPerCard36v2'
-name = 'minBias_20170820_flatIsoExt'
+#name = 'minBias_20170820_flatIsoExt'
+name = 'minBias_20171030v1'
+
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
         #'file:l1egCrystalTest.root',
@@ -77,6 +74,7 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
    histogramRangeLow = cms.untracked.double(0),
    histogramRangeHigh = cms.untracked.double(100),
    histogramEtaBinCount = cms.untracked.int32(20),
+   trackDeltaRMax = cms.untracked.double(0.05),
    debug = cms.untracked.bool(False)
    #debug = cms.untracked.bool(True)
 )
@@ -84,7 +82,7 @@ process.analyzer = cms.EDAnalyzer('L1EGRateStudies',
 process.panalyzer = cms.Path(process.TPAnalyzer+process.analyzer)
 
 process.TFileService = cms.Service("TFileService", 
-   fileName = cms.string("r2_phase2_"+name+"_all.root"), 
+   fileName = cms.string("r2_phase2_"+name+"_noChi2.root"), 
    closeFileFast = cms.untracked.bool(True)
 )
 
