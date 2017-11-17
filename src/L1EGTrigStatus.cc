@@ -92,6 +92,9 @@ class L1EGPreclusterAnalysis : public edm::EDAnalyzer {
       TH1D *TotalL1EG_withCuts;
       TH1D *L1EGPerRegion_withCuts;
       std::vector<size_t> l1egPerRegion_withCuts; // position in vector is region, 0-23
+      TH1D *TotalL1EG_withLooseCuts;
+      TH1D *L1EGPerRegion_withLooseCuts;
+      std::vector<size_t> l1egPerRegion_withLooseCuts; // position in vector is region, 0-23
 };
 
 //
@@ -127,6 +130,8 @@ L1EGPreclusterAnalysis::L1EGPreclusterAnalysis(const edm::ParameterSet& iConfig)
    L1EGPerRegion = fs->make<TH1D>("L1EGPerRegion" , "L1EGPerRegion" , 30 , 0 , 30 );
    TotalL1EG_withCuts = fs->make<TH1D>("TotalL1EG_withCuts" , "TotalL1EG_withCuts" , 60 , 0 , 60 );
    L1EGPerRegion_withCuts = fs->make<TH1D>("L1EGPerRegion_withCuts" , "L1EGPerRegion_withCuts" , 30 , 0 , 30 );
+   TotalL1EG_withLooseCuts = fs->make<TH1D>("TotalL1EG_withLooseCuts" , "TotalL1EG_withLooseCuts" , 80 , 0 , 80 );
+   L1EGPerRegion_withLooseCuts = fs->make<TH1D>("L1EGPerRegion_withLooseCuts" , "L1EGPerRegion_withLooseCuts" , 30 , 0 , 30 );
 
 }
 
@@ -156,11 +161,14 @@ L1EGPreclusterAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
    NEvents->Fill( 0 );
    l1egPerRegion.clear();
    l1egPerRegion_withCuts.clear();
+   l1egPerRegion_withLooseCuts.clear();
    for (size_t i = 0; i < 24; ++i) {
       l1egPerRegion.push_back( 0 );
       l1egPerRegion_withCuts.push_back( 0 );
+      l1egPerRegion_withLooseCuts.push_back( 0 );
    }
    size_t region;
+   int nClustersWithLooseCuts = 0;
    for(const auto& cluster : crystalClusters)
    {
       L1EG_pt->Fill( cluster.pt() );
@@ -170,9 +178,15 @@ L1EGPreclusterAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup&
       region = getRegionOf24( cluster.eta(), cluster.phi() );
       Region->Fill( region );
       l1egPerRegion[region] = l1egPerRegion[region]+1;
+      if (cluster.looseL1TkMatchWP()) {
+         ++nClustersWithLooseCuts;
+         l1egPerRegion_withLooseCuts[region] = l1egPerRegion_withLooseCuts[region]+1;
+      }
    }
    TotalL1EG->Fill( crystalClusters.size() );
    for (size_t i = 0; i < l1egPerRegion.size(); ++i) L1EGPerRegion->Fill( l1egPerRegion[i] );
+   TotalL1EG_withLooseCuts->Fill( nClustersWithLooseCuts );
+   for (size_t i = 0; i < l1egPerRegion_withLooseCuts.size(); ++i) L1EGPerRegion_withLooseCuts->Fill( l1egPerRegion_withLooseCuts[i] );
 
    iEvent.getByToken(crystalClustersWithCutsToken_,crystalClustersWithCutsHandle);
    crystalClustersWithCuts = (*crystalClustersWithCutsHandle.product());
