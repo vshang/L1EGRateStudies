@@ -779,7 +779,27 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    iEvent.getByToken(genCollectionToken_,genParticleHandle);
    genParticles = *genParticleHandle.product();
    std::sort(begin(genParticles), end(genParticles), [](reco::GenParticle& a, reco::GenParticle& b){return a.pt() > b.pt();});
-   if (abs(genParticles[0].pdgId()) != 11) return;
+   //if (abs(genParticles[0].pdgId()) != 11) return;
+   reco::GenParticle& firstGen = genParticles[0];
+   reco::GenParticle& bestGen = genParticles[0];
+   int cnt = 0;
+   for (reco::GenParticle& genP : genParticles ) {
+      //std::cout << cnt << " Gen pT: " << genParticles[0].pt() << std::endl;
+      if (genP.isPromptFinalState()) {
+         //std::cout << cnt << " Gen pT PROMPT: " << genParticles[0].pt() << std::endl;
+         bestGen = genP;
+         break;
+      }
+      ++cnt;
+   }
+
+   if ( fabs(bestGen.pdgId()) != 11) {
+        std::cout << "Event without electron as best gen.  Gen pdgId was: " << bestGen.pdgId() <<std::endl;
+        return;
+   }
+
+   if (firstGen.pt() != bestGen.pt()) std::cout << "   ---   Found better genP [0] = " << firstGen.pt() << " vs. best = " << bestGen.pt() << "\n" << std::endl;
+
 
 
    // L1 Tracks
@@ -854,41 +874,39 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       float reco_electron_phi = -99.;
       
       // Get offline cluster info
-      iEvent.getByToken(offlineRecoClusterToken_, offlineRecoClustersHandle);
-      std::vector<pat::Electron> offlineRecoClusters = *offlineRecoClustersHandle.product();
-
-      std::cout << "Gen pT: " << genParticles[0].pt() << std::endl;
+      //iEvent.getByToken(offlineRecoClusterToken_, offlineRecoClustersHandle);
+      //std::vector<pat::Electron> offlineRecoClusters = *offlineRecoClustersHandle.product();
 
       // Find the cluster corresponding to generated electron
       double trueElectron_SC_pt = -99;
       bool offlineRecoFound = false;
-      for(auto& cluster : offlineRecoClusters)
-      {
-         reco::Candidate::PolarLorentzVector p4;
-         p4.SetPt(cluster.pt());
-         p4.SetEta(cluster.eta());
-         p4.SetPhi(cluster.phi());
-         p4.SetM(0.);
-         if ( reco::deltaR(p4, genParticles[0].polarP4()) < 0.1
-             && fabs(p4.pt() - genParticles[0].pt()) < genMatchRelPtcut*genParticles[0].pt() )
-         {
-            if ( useOfflineClusters )
-               trueElectron = p4;
-            reco_electron_pt = p4.pt();
-            reco_electron_eta = p4.eta();
-            reco_electron_phi = p4.phi();
-            offlineRecoFound = true;
-            if (debug) std::cout << "Gen.-matched pBarrelCorSuperCluster: pt " 
-                     << cluster.energy()/std::cosh(cluster.eta()) 
-                     << " eta " << cluster.eta() 
-                     << " phi " << cluster.phi() << std::endl;
-            if (debug) std::cout << "Cluster pt - Gen pt / Gen pt = " << (reco_electron_pt-genParticles[0].pt())/genParticles[0].pt() << std::endl;
-            if (debug) std::cout << "Reco Electron pt: " << reco_electron_pt << std::endl;
-            if (debug) std::cout << "Gen Electron pt: " << genParticles[0].pt() << std::endl;
-            trueElectron_SC_pt = cluster.superCluster()->rawEnergy()*sin(trueElectron.theta());
-            break;
-         }
-      }
+      //for(auto& cluster : offlineRecoClusters)
+      //{
+      //   reco::Candidate::PolarLorentzVector p4;
+      //   p4.SetPt(cluster.pt());
+      //   p4.SetEta(cluster.eta());
+      //   p4.SetPhi(cluster.phi());
+      //   p4.SetM(0.);
+      //   if ( reco::deltaR(p4, bestGen.polarP4()) < 0.1
+      //       && fabs(p4.pt() - bestGen.pt()) < genMatchRelPtcut*bestGen.pt() )
+      //   {
+      //      if ( useOfflineClusters )
+      //         trueElectron = p4;
+      //      reco_electron_pt = p4.pt();
+      //      reco_electron_eta = p4.eta();
+      //      reco_electron_phi = p4.phi();
+      //      offlineRecoFound = true;
+      //      if (debug) std::cout << "Gen.-matched pBarrelCorSuperCluster: pt " 
+      //               << cluster.energy()/std::cosh(cluster.eta()) 
+      //               << " eta " << cluster.eta() 
+      //               << " phi " << cluster.phi() << std::endl;
+      //      if (debug) std::cout << "Cluster pt - Gen pt / Gen pt = " << (reco_electron_pt-bestGen.pt())/bestGen.pt() << std::endl;
+      //      if (debug) std::cout << "Reco Electron pt: " << reco_electron_pt << std::endl;
+      //      if (debug) std::cout << "Gen Electron pt: " << bestGen.pt() << std::endl;
+      //      trueElectron_SC_pt = cluster.superCluster()->rawEnergy()*sin(trueElectron.theta());
+      //      break;
+      //   }
+      //}
       if ( useOfflineClusters && !offlineRecoFound )
       {
          // if we can't offline reconstruct the generated electron, 
@@ -900,15 +918,15 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       if ( !useOfflineClusters )
       {
          // Get the particle position upon entering ECal
-         RawParticle particle(genParticles[0].p4());
-         particle.setVertex(genParticles[0].vertex().x(), genParticles[0].vertex().y(), genParticles[0].vertex().z(), 0.);
-         //particle.setID(genParticles[0].pdgId());
+         RawParticle particle(bestGen.p4());
+         particle.setVertex(bestGen.vertex().x(), bestGen.vertex().y(), bestGen.vertex().z(), 0.);
+         //particle.setID(bestGen.pdgId());
          // Skip setID requires some external libraries working well that
          // define HepPDT::ParticleID
          // in the end, setID sets the mass and charge of our particle.
          // Try doing this by hand for the moment
          particle.setMass(.511);
-         int pdgId = genParticles[0].pdgId();
+         int pdgId = bestGen.pdgId();
          if (pdgId > 0) {
             particle.setCharge( -1.0 ); }
          if (pdgId < 0) {
@@ -925,14 +943,14 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             trueElectron = reco::Candidate::PolarLorentzVector(prop.E()*sin(prop.vertex().theta()), prop.vertex().eta(), prop.vertex().phi(), 0.);
             if ( debug ) std::cout << "Propogated genParticle to ECal, position: " << prop.vertex() << " momentum = " << prop.momentum() << std::endl;
             if ( debug ) std::cout << "                       starting position: " << start.vertex() << " momentum = " << start.momentum() << std::endl;
-            if ( debug ) std::cout << "                    genParticle position: " << genParticles[0].vertex() << " momentum = " << genParticles[0].p4() << std::endl;
-            if ( debug ) std::cout << "       old pt = " << genParticles[0].pt() << ", new pt = " << trueElectron.pt() << std::endl;
+            if ( debug ) std::cout << "                    genParticle position: " << bestGen.vertex() << " momentum = " << bestGen.p4() << std::endl;
+            if ( debug ) std::cout << "       old pt = " << bestGen.pt() << ", new pt = " << trueElectron.pt() << std::endl;
          }
          else
          {
             // something failed?
             if ( debug ) std::cout << "Taking defaul, non-propagated gen object" << std::endl;
-            trueElectron = genParticles[0].polarP4();
+            trueElectron = bestGen.polarP4();
          }
       }
 
@@ -984,13 +1002,13 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       }
       treeinfo.gen_trk_deltaR_0p05 = genTrkDeltaR_0p05;
 
-      treeinfo.gen_pt = genParticles[0].pt();
-      treeinfo.gen_z = genParticles[0].vz();
-      treeinfo.gen_eta = genParticles[0].eta();
-      treeinfo.gen_phi = genParticles[0].phi();
-      treeinfo.gen_energy = genParticles[0].energy();
-      treeinfo.gen_charge = genParticles[0].charge();
-      treeinfo.E_gen = genParticles[0].pt()*cosh(genParticles[0].eta());
+      treeinfo.gen_pt = bestGen.pt();
+      treeinfo.gen_z = bestGen.vz();
+      treeinfo.gen_eta = bestGen.eta();
+      treeinfo.gen_phi = bestGen.phi();
+      treeinfo.gen_energy = bestGen.energy();
+      treeinfo.gen_charge = bestGen.charge();
+      treeinfo.E_gen = bestGen.pt()*cosh(bestGen.eta());
       treeinfo.denom_pt = trueElectron.pt();
       if ( fabs(trueElectron.eta()) > 1.479 )
          treeinfo.endcap = true;
@@ -1007,7 +1025,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       {
          treeinfo.reco_pt = 0.;
       }
-      //std::cout << "   ---!!!--- L1EG Size: " << crystalClusters.size() << std::endl;
+      std::cout << "   ---!!!--- L1EG Size: " << crystalClusters.size() << std::endl;
       if ( crystalClusters.size() > 0 )
       {
          auto bestCluster = *std::min_element(begin(crystalClusters), end(crystalClusters), [trueElectron](const l1slhc::L1EGCrystalCluster& a, const l1slhc::L1EGCrystalCluster& b){return reco::deltaR(a, trueElectron) < reco::deltaR(b, trueElectron);});
@@ -1110,8 +1128,8 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                   reco_gen_pt_adj_hist3->Fill( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ), trueElectron.pt() / ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) );
                   l1eg_reco_pt_1dHist->Fill( (cluster.pt() - trueElectron.pt())/trueElectron.pt() );
                   l1eg_recoSC_pt_1dHist->Fill( (cluster.pt() - trueElectron_SC_pt)/trueElectron_SC_pt );
-                  l1eg_gen_pt_1dHist->Fill( (cluster.pt() - genParticles[0].pt())/genParticles[0].pt() );
-                  reco_gen_pt_1dHist->Fill( (reco_electron_pt - genParticles[0].pt())/genParticles[0].pt() );
+                  l1eg_gen_pt_1dHist->Fill( (cluster.pt() - bestGen.pt())/bestGen.pt() );
+                  reco_gen_pt_1dHist->Fill( (reco_electron_pt - bestGen.pt())/bestGen.pt() );
                   l1eg_gen_pt_adj_1dHist->Fill( ( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) - trueElectron.pt())/trueElectron.pt() );
                   brem_dphi_hist->Fill( cluster.bremStrength(), reco::deltaPhi(cluster, trueElectron) );
                   break;
@@ -1927,7 +1945,7 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
         double dr_2 = 99.;
         if (foundMatchedTrack) {
            dr_2 = reco::deltaR(ptr->getMomentum(), matched_track->getMomentum());}
-        double chi2 = ptr->getChi2();
+        //double chi2 = ptr->getChi2();
         //if (pt > 50.) pt = 50;
         double this_z = ptr->getPOCA().z();
         double deltaZ = abs(matched_z - this_z);
@@ -2216,7 +2234,7 @@ L1EGRateStudies::getBestTrack(double dR_cut, const reco::Candidate::PolarLorentz
         // Record the highest pt track per event
         // And, highest pt passing chi2 cut
         // to see if brem is an issues for mis-matched tracks
-        double chi2 = ptr->getChi2();
+        //double chi2 = ptr->getChi2();
         
         // L1 Tracks are considered mis-measured if pt > 50
         // Therefore pt -> 50 if pt > 50
