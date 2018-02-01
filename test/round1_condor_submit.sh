@@ -14,9 +14,9 @@ doTau=true
 doHZZ=true
 doTTbar=true
 
-#doMinBias=false
+doMinBias=false
 #doElectron=false
-#doPhoton=false
+doPhoton=false
 doPiZero=false
 doPion=false
 doTau=false
@@ -25,6 +25,8 @@ doTTbar=false
 
 resubmitFailedJobs=true
 resubmitFailedJobs=false
+
+DATE=20180120minEt375MeVv1
 
 if $doMinBias; then
     farmoutAnalysisJobs \

@@ -52,7 +52,10 @@ process.EcalTPSorterProducer = cms.EDProducer("EcalTPSorterProducer",
 
 process.L1EGammaCrystalsProducer = cms.EDProducer("L1EGCrystalClusterProducer",
    EtminForStore = cms.double(0.),
+   #EcalTpEtMin = cms.untracked.double(0.125), # 500 MeV default per each Ecal TP
    #EcalTpEtMin = cms.untracked.double(0.25), # 500 MeV default per each Ecal TP
+   EcalTpEtMin = cms.untracked.double(0.375), # 500 MeV default per each Ecal TP
+   #EcalTpEtMin = cms.untracked.double(0.5), # 500 MeV default per each Ecal TP
    debug = cms.untracked.bool(False),
    useRecHits = cms.bool(False),
    ecalTPEB = cms.InputTag("simEcalEBTriggerPrimitiveDigis","","HLT"), # Whole Detector Method

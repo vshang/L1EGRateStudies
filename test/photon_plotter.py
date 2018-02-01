@@ -42,6 +42,10 @@ def getPtRes( name, cut = '' ) :
     iDir = '/afs/cern.ch/work/t/truggles/TrackTrigger/CMSSW_9_2_0/src/L1Trigger/L1EGRateStudies/test/'
     fNameBase = 'r2_phase2_singleElectron_20180120'
     f = ROOT.TFile( iDir+fNameBase+name+'.root', 'r' )
+    #fNameBase = 'newPhotonRes_PU200_'
+    #iDir = ''
+    #f = ROOT.TFile( iDir+fNameBase+name+'.root', 'r' )
+    #f = ROOT.TFile( 'dyToLL_PU200_932.root', 'r' )
     print f
     t = f.Get('analyzer/crystal_tree')
     h = ROOT.TH1D( name, name, 100, -.3, .1 )
@@ -51,7 +55,7 @@ def getPtRes( name, cut = '' ) :
     return h
 
 def plotRes( c, hists, name ) :
-    universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/photonPtRes3/"
+    universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/photonPtRes6/"
     c.Clear()
     #if 'Zero' in name :
     #    #ROOT.gPad.SetLeftMargin( ROOT.gPad.GetLeftMargin() * 1.25 )
@@ -59,7 +63,8 @@ def plotRes( c, hists, name ) :
     #ROOT.gPad.SetLeftMargin( ROOT.gPad.GetLeftMargin() * 1.3 )
     ROOT.gPad.SetLeftMargin( .13 )
     cnt = 0
-    colors = [ROOT.kRed, ROOT.kBlue, ROOT.kMagenta, ROOT.kBlack, ROOT.kGreen+1]
+    colors = [ROOT.kRed, ROOT.kBlue, ROOT.kMagenta, ROOT.kBlack, ROOT.kGreen+1,
+                2,3,4,5,6]
 
     
     maxi = 0.
@@ -91,6 +96,7 @@ def plotRes( c, hists, name ) :
     hists[0].SetTitle( 'Electron L1EG p_{T} Resolution' )
     c.Update()
     c.SaveAs( universalSaveDir+'ptRes_'+name+'.png' )
+    c.SaveAs( universalSaveDir+'ptRes_'+name+'.pdf' )
 
 
 
@@ -110,18 +116,18 @@ puZeroHists = []
 for et in etMap.keys() :
 
     #puZeroHists.append( getPtRes( 'PUZero_'+et ) )
-    #pu200Hists.append( getPtRes( 'PU200_'+et ) )
+    pu200Hists.append( getPtRes( et ) )
 
     pu200Hists.append( getPtRes( et ) )
-    pu200HistsCut.append( getPtRes( et, 'cluster_pt > 30 && cluster_pt < 40' ) )
-    pu200HistsCutEta.append( getPtRes( et, 'cluster_pt > 30 && cluster_pt < 40 && abs( eta ) < 1.4' ) )
-    pu200HistsCutEtaGtr1p4.append( getPtRes( et, 'cluster_pt > 30 && cluster_pt < 40 && abs( eta ) > 1.4' ) )
-    pu200HistsCutEtaIn.append( getPtRes( et, 'cluster_pt > 30 && cluster_pt < 40 && abs( eta ) < 1' ) )
-    pu200HistsCutEtaOut.append( getPtRes( et, 'cluster_pt > 30 && cluster_pt < 40 && abs( eta ) > 1' ) )
+    pu200HistsCut.append( getPtRes( et, 'gen_pt > 30 && gen_pt < 40' ) )
+    pu200HistsCutEta.append( getPtRes( et, 'gen_pt > 30 && gen_pt < 40 && abs( eta ) < 1.4' ) )
+    pu200HistsCutEtaGtr1p4.append( getPtRes( et, 'gen_pt > 30 && gen_pt < 40 && abs( eta ) > 1.4' ) )
+    pu200HistsCutEtaIn.append( getPtRes( et, 'gen_pt > 30 && gen_pt < 40 && abs( eta ) < 1' ) )
+    pu200HistsCutEtaOut.append( getPtRes( et, 'gen_pt > 30 && gen_pt < 40 && abs( eta ) > 1' ) )
 
 
 #plotRes( c, puZeroHists, 'PUZero' )
-#plotRes( c, pu200Hists, 'PU200' )
+plotRes( c, pu200Hists, 'PU200' )
 
 #plotRes( c, pu200Hists, 'PU200_Electron' )
 plotRes( c, pu200HistsCut, 'PU200_Electron_pt30-40' )
