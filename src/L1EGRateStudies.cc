@@ -58,10 +58,8 @@
 #include "FastSimulation/BaseParticlePropagator/interface/BaseParticlePropagator.h"
 //#include "FastSimulation/Particle/interface/ParticleTable.h"
 
-//#include "SimDataFormats/SLHC/interface/StackedTrackerTypes.h"
 //#include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
 //#include "DataFormats/L1TrackTrigger/interface/TTPixelTrack.h"
-//#include "DataFormats/L1TrackTrigger/interface/L1TkPrimaryVertex.h"
 //#include "L1Trigger/L1EGRateStudies/interface/L1TkElectronTrackMatchAlgo.h"
 #include "L1Trigger/L1CaloTrigger/interface/L1TkElectronTrackMatchAlgo.h"
 
@@ -178,7 +176,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       //edm::EDGetTokenT<EcalRecHitCollection> ecalRecHitEEToken_;
 
       edm::EDGetTokenT<L1TkTrackCollectionType> L1TrackInputToken_;
-      edm::EDGetTokenT<L1TkPrimaryVertexCollection> L1TrackPVToken_;
+      edm::EDGetTokenT<l1t::L1TkPrimaryVertexCollection> L1TrackPVToken_;
 
       edm::EDGetTokenT<std::vector<pat::Electron>> offlineRecoClusterToken_;
       edm::Handle<std::vector<pat::Electron>> offlineRecoClustersHandle;
@@ -448,7 +446,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystalClustersToken_(consumes<l1slhc::L1EGCrystalClusterCollection>(iConfig.getParameter<edm::InputTag>("L1CrystalClustersInputTag"))),
    genCollectionToken_(consumes<reco::GenParticleCollection>(iConfig.getParameter<edm::InputTag>("genParticles"))),
    L1TrackInputToken_(consumes<L1TkTrackCollectionType>(iConfig.getParameter<edm::InputTag>("L1TrackInputTag"))),
-   L1TrackPVToken_(consumes<L1TkPrimaryVertexCollection>(iConfig.getParameter<edm::InputTag>("L1TrackPrimaryVertexTag"))),
+   L1TrackPVToken_(consumes<l1t::L1TkPrimaryVertexCollection>(iConfig.getParameter<edm::InputTag>("L1TrackPrimaryVertexTag"))),
    offlineRecoClusterToken_(consumes<std::vector<pat::Electron>>(iConfig.getParameter<edm::InputTag>("OfflineRecoClustersInputTag"))),
    stage2egToken1_(consumes<BXVector<l1t::EGamma>>(iConfig.getParameter<edm::InputTag>("Stage2EG1Tag"))),
    //ecalTPEBToken_(consumes<EcalEBTrigPrimDigiCollection>(iConfig.getParameter<edm::InputTag>("ecalTPEB"))),
@@ -807,13 +805,13 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    iEvent.getByToken(L1TrackInputToken_, l1trackHandle);
 
    // L1 Track PV
-   edm::Handle<L1TkPrimaryVertexCollection> l1PrimaryVertexHandle;
+   edm::Handle<l1t::L1TkPrimaryVertexCollection> l1PrimaryVertexHandle;
    iEvent.getByToken(L1TrackPVToken_, l1PrimaryVertexHandle);
 
    if (doTracking) {
       if ( l1PrimaryVertexHandle.isValid() )
       {
-         L1TkPrimaryVertexCollection vertices = *l1PrimaryVertexHandle.product();
+         l1t::L1TkPrimaryVertexCollection vertices = *l1PrimaryVertexHandle.product();
          double vertexEnergy = vertices[0].getSum();
          double z = vertices[0].getZvertex();
          treeinfo.zVertex = z;
