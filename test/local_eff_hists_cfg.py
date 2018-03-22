@@ -11,12 +11,27 @@ process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
 )
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        #'file:root://cms-xrd-global.cern.ch//store/mc/PhaseIISpring17D/SingleE_FlatPt-8to100/GEN-SIM-DIGI-RAW/PU200_90X_upgrade2023_realistic_v9-v1/120000/002A4121-132C-E711-87AD-008CFAFBF618.root',
-        'file:root://cms-xrd-global.cern.ch//store/mc/PhaseIITDRFall17DR/GJet_Pt-40toInf_DoubleEMEnriched_MGG-80toInf_TuneCUETP8M1_14TeV_Pythia8/GEN-SIM-RECO/PU200_93X_upgrade2023_realistic_v2-v1/00002/16DB8E1E-42B8-E711-B1DC-0CC47A4C8E38.root',
+        'file:root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValSingleElectronPt35/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/F0504528-722C-E811-A511-0025905A60D6.root',
+        'file:root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValSingleElectronPt35/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/38E32914-722C-E811-8D64-0CC47A4C8F18.root', 
+        'file:root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValSingleElectronPt35/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/3AFA4EEF-712C-E811-8AE1-0CC47A4D76CC.root',
+        'file:root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValSingleElectronPt35/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/42502593-712C-E811-BEC3-0025905B857E.root',
+        'file:root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValSingleElectronPt35/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/4C6A8923-722C-E811-9D9A-0025905A60BE.root',
+        'file:root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValSingleElectronPt35/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/5C82CF28-722C-E811-BDF8-0025905B85AA.root',
+        'file:root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValSingleElectronPt35/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/A8E59B25-722C-E811-A3F8-0CC47A4D76CC.root',
+        'file:root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValSingleElectronPt35/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/D0CF141D-722C-E811-A692-0CC47A7C3572.root',
+    ),
+    inputCommands = cms.untracked.vstring(
+        "keep *",
+        "drop l1tEMTFHit2016Extras_simEmtfDigis_CSC_HLT",
+        "drop l1tEMTFHit2016Extras_simEmtfDigis_RPC_HLT",
+        "drop l1tEMTFHit2016s_simEmtfDigis__HLT",
+        "drop l1tEMTFTrack2016Extras_simEmtfDigis__HLT",
+        "drop l1tEMTFTrack2016s_simEmtfDigis__HLT",
+        "drop l1tHGCalTowerMapBXVector_hgcalTriggerPrimitiveDigiProducer_towerMap_HLT",
     )
 )
 
@@ -56,7 +71,7 @@ process.L1EGammaCrystalsProducer = cms.EDProducer("L1EGCrystalClusterProducer",
    EcalTpEtMin = cms.untracked.double(0.0001),
    debug = cms.untracked.bool(False),
    #debug = cms.untracked.bool(True),
-   useRecHits = cms.bool(True),
+   useRecHits = cms.untracked.bool(False),
    #ecalTPEB = cms.InputTag("EcalEBTrigPrimProducer","","L1AlgoTest"),
    ecalTPEB = cms.InputTag("simEcalEBTriggerPrimitiveDigis","","HLT"),
    ecalRecHitEB = cms.InputTag("ecalRecHit","EcalRecHitsEB","RECO"),
