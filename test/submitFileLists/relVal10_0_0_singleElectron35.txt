@@ -1,0 +1,9 @@
+root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValSingleElectronPt35/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/060BA396-712C-E811-8C0B-0025905A60B4.root
+root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValSingleElectronPt35/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/38E32914-722C-E811-8D64-0CC47A4C8F18.root
+root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValSingleElectronPt35/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/3AFA4EEF-712C-E811-8AE1-0CC47A4D76CC.root
+root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValSingleElectronPt35/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/42502593-712C-E811-BEC3-0025905B857E.root
+root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValSingleElectronPt35/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/4C6A8923-722C-E811-9D9A-0025905A60BE.root
+root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValSingleElectronPt35/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/5C82CF28-722C-E811-BDF8-0025905B85AA.root
+root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValSingleElectronPt35/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/A8E59B25-722C-E811-A3F8-0CC47A4D76CC.root
+root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValSingleElectronPt35/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/D0CF141D-722C-E811-A692-0CC47A7C3572.root
+root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValSingleElectronPt35/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/F0504528-722C-E811-A511-0025905A60D6.root

@@ -1,0 +1,11 @@
+root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValNuGun/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/00E7C119-7C2C-E811-B9A9-0CC47A78A42E.root
+root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValNuGun/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/0491E86D-7B2C-E811-9DC8-0CC47A4D7644.root
+root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValNuGun/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/080D6520-7C2C-E811-B1A1-0CC47A7C353E.root
+root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValNuGun/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/42D13213-7C2C-E811-9FB7-0CC47A4C8EE8.root
+root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValNuGun/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/7243CC56-7A2C-E811-BB5D-0CC47A4D7644.root
+root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValNuGun/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/8026E46A-7B2C-E811-8255-0CC47A4C8F18.root
+root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValNuGun/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/8A1DBB14-7C2C-E811-9C14-0CC47A7C34C4.root
+root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValNuGun/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/9C1825F2-7C2C-E811-9578-0CC47A4D7658.root
+root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValNuGun/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/9C550456-7A2C-E811-BD15-0CC47A4D7600.root
+root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValNuGun/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/C2AA4A15-7C2C-E811-9952-0CC47A7C345C.root
+root://cms-xrd-global.cern.ch//store/relval/CMSSW_9_3_7/RelValNuGun/GEN-SIM-DIGI-RAW/93X_upgrade2023_realistic_v5_2023D17noPU-v2/10000/FC772213-7C2C-E811-8EA5-0CC47A4C8EE8.root
