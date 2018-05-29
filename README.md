@@ -13,24 +13,24 @@ Checkout instructions:
 There are some auto-generated python file which is created in the "wrong" area and needs to be copied to run this code on Condor.
 
 ```bash
-cmsrel CMSSW_10_0_0
-cd CMSSW_10_0_0/src
+cmsrel CMSSW_10_1_0_pre3
+cd CMSSW_10_1_0_pre3/src
 cmsenv
 git cms-init
 git remote add cms-l1t-offline git@github.com:cms-l1t-offline/cmssw.git
-git fetch cms-l1t-offline phase2-l1t-integration-CMSSW_10_0_0
-git cms-merge-topic -u cms-l1t-offline:l1t-phase2-v2.4
+git fetch cms-l1t-offline phase2-l1t-integration-CMSSW_10_1_0_pre3
+git cms-merge-topic -u cms-l1t-offline:l1t-phase2-v2.13
 #
 # Tracklet Tracks
 #
-git remote add skinnari git@github.com:rekovic/cmssw.git
-git fetch skinnari
-git cms-merge-topic -u skinnari:Tracklet_10X_10-0-1
+git remote add rekovic git@github.com:rekovic/cmssw.git
+git fetch rekovic Tracklet-10_1_0_pre3
+git cms-merge-topic -u rekovic:Tracklet-10_1_0_pre3-from-skinnari
 
 git cms-addpkg L1Trigger/L1TCommon
 
 pushd L1Trigger/
-git clone -b 10_0_0_L1EGCrystals git@github.com:truggles/L1EGRateStudies.git L1EGRateStudies
+git clone -b 10_1_0_pre3 git@github.com:truggles/L1EGRateStudies.git L1EGRateStudies
 popd
 
 scramv1 b -j 8
@@ -39,7 +39,7 @@ scramv1 b -j 8
 
 Phase-II studies checkout info and links to RelVal samples:
 ```
-https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideL1TPhase2Instructions#CMSSW_10_0_0
+https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideL1TPhase2Instructions#Phase_2_L1T_Development_and_MC_R
 ```
 
 
