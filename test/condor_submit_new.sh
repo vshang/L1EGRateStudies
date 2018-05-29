@@ -1,14 +1,14 @@
 #!/bin/bash
 
-DATE=20171020tpCheck
+DATE=20180528_v8
 
 # Different options
 doHitAnalyzer=true
-#doHitAnalyzer=false
+doHitAnalyzer=false
 doRates=true
-doRates=false
+#doRates=false
 doEfficiencies=true
-doEfficiencies=false
+#doEfficiencies=false
 
 
 # Signals for Efficiencies and Std Algo Studies
@@ -17,7 +17,7 @@ doPhoton=true
 doPiZero=true
 doPion=true
 doTau=true
-doElectron=false
+#doElectron=false
 doPhoton=false
 doPiZero=false
 doPion=false
@@ -47,7 +47,7 @@ if $doRates; then
     farmoutAnalysisJobs \
         --output-dir=. \
         --input-files-per-job=50 \
-        --input-file-list=submitFileLists/singleNeutrinoFilesPU200.txt \
+        --input-file-list=submitFileLists/singleNeutrino_pu200.txt \
         phaseII_minBias_${DATE} $CMSSW_BASE condor_rate.py
 fi
 
@@ -57,8 +57,8 @@ if $doEfficiencies; then
     if $doElectron; then
         farmoutAnalysisJobs \
             --output-dir=. \
-            --input-files-per-job=30 \
-            --input-file-list=submitFileLists/singleElectronFilesPU200.txt \
+            --input-files-per-job=25 \
+            --input-file-list=submitFileLists/singleE_pu200.txt \
             phaseII_singleElectron_${DATE} $CMSSW_BASE condor_efficiency.py
     fi
 
