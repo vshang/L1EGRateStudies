@@ -128,14 +128,15 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       // -- user functions
       void integrateDown(TH1F *);
       void fill_tree(const l1slhc::L1EGCrystalCluster& cluster);
-      bool cluster_passes_base_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
-      bool cluster_passes_l1tkMatch_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
-      bool cluster_passes_stage2_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
-      bool cluster_passes_95_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
-      bool cluster_passes_90_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
+      // Don't use these, they require uncorrected pT and H/E
+      //bool cluster_passes_base_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
+      //bool cluster_passes_l1tkMatch_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
+      //bool cluster_passes_stage2_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
+      //bool cluster_passes_95_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
+      //bool cluster_passes_90_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
       bool cluster_passes_track_cuts(const l1slhc::L1EGCrystalCluster& cluster, float trackDeltaR) const;
       bool cluster_passes_track_variable_cuts(const l1slhc::L1EGCrystalCluster& cluster, float trackDeltaR, float deltaRMax ) const;
-      bool cluster_passes_photon_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
+      //bool cluster_passes_photon_cuts(const l1slhc::L1EGCrystalCluster& cluster) const;
       bool checkTowerExists(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps) const;
       //void checkRecHitsFlags(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps, const EcalRecHitCollection &ecalRecHits) const;
       void doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm::Handle<L1TkTrackCollectionType> l1trackHandle);
@@ -241,7 +242,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       TH1F * dyncrystal_trackl1matchOnly_rate_hist;
       TH1F * dyncrystal_rate_adj_hist;
       TH1F * dyncrystal_rate_adj_hist_stage2;
-      TH1F * dyncrystal_rate_adj_hist_95;
+      //TH1F * dyncrystal_rate_adj_hist_95;
       TH1F * dyncrystal_rate_adj_hist_90;
       TH1F * dyncrystal_track_rate_adj_hist;
       TH1F * dyncrystal_phoWindow_rate_adj_hist;
@@ -294,15 +295,16 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float cluster_pt;
          float cluster_pt_adj;
          float cluster_ptPUCorr;
+         float cluster_preCalibratedPt;
          float cluster_energy;
          float eta;
          float phi;
          float hovere;
          float iso;
          float bremStrength;
-         bool  passedBase = false;
-         bool  passedPhoton = false;
-         bool  passedTrack = false;
+         bool passedBase = false;
+         bool passedPhoton = false;
+         bool passedTrack = false;
          bool electronWP98 = false;
          bool photonWP80 = false;
          bool electronWP90 = false;
@@ -591,7 +593,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       dyncrystal_phoWindow_rate_hist = fs->make<TH1F>("dyncrystalEG_phoWindow_rate" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
       dyncrystal_rate_adj_hist = fs->make<TH1F>("dyncrystalEG_adj_rate" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
       dyncrystal_rate_adj_hist_stage2 = fs->make<TH1F>("dyncrystalEG_adj_rate_stage2" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
-      dyncrystal_rate_adj_hist_95 = fs->make<TH1F>("dyncrystalEG_adj_rate_95" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
+      //dyncrystal_rate_adj_hist_95 = fs->make<TH1F>("dyncrystalEG_adj_rate_95" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
       dyncrystal_rate_adj_hist_90 = fs->make<TH1F>("dyncrystalEG_adj_rate_90" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
       dyncrystal_trackl1match_rate_hist = fs->make<TH1F>("dyncrystalEG_adj_rate_trackl1match" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
       dyncrystal_trackl1matchOnly_rate_hist = fs->make<TH1F>("dyncrystalEG_adj_rate_trackl1matchOnly" , "Dynamic Crystal Trigger;ET Threshold (GeV);Rate (kHz)", nHistBins, histLow, histHigh);
@@ -625,6 +627,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("cluster_pt", &treeinfo.cluster_pt);
    crystal_tree->Branch("cluster_pt_adj", &treeinfo.cluster_pt_adj);
    crystal_tree->Branch("cluster_ptPUCorr", &treeinfo.cluster_ptPUCorr);
+   crystal_tree->Branch("cluster_preCalibratedPt", &treeinfo.cluster_preCalibratedPt);
    crystal_tree->Branch("cluster_energy", &treeinfo.cluster_energy);
    crystal_tree->Branch("eta", &treeinfo.eta);
    crystal_tree->Branch("phi", &treeinfo.phi);
@@ -791,10 +794,10 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       ++cnt;
    }
 
-   if ( fabs(bestGen.pdgId()) != 11) {
-        std::cout << "Event without electron as best gen.  Gen pdgId was: " << bestGen.pdgId() <<std::endl;
-        return;
-   }
+   //if ( fabs(bestGen.pdgId()) != 11) {
+   //     std::cout << "Event without electron as best gen.  Gen pdgId was: " << bestGen.pdgId() <<std::endl;
+   //     return;
+   //}
 
    if (firstGen.pt() != bestGen.pt()) std::cout << "   ---   Found better genP [0] = " << firstGen.pt() << " vs. best = " << bestGen.pt() << "\n" << std::endl;
 
@@ -1056,12 +1059,12 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                   openEffFilled = true;
                   dyncrystal_efficiency_hist_open->Fill(trueElectron.pt());
                }
-               if (!looseEffFilled && cluster_passes_l1tkMatch_cuts(cluster) ) {
+               if (!looseEffFilled && cluster.looseL1TkMatchWP() ) {
                   looseEffFilled = true;
                   dyncrystal_efficiency_hist_loose->Fill(trueElectron.pt());
                }
 
-               if ( cluster_passes_base_cuts(cluster) )
+               if ( cluster.standaloneWP() )
                {
                   dyncrystal_efficiency_hist->Fill(trueElectron.pt());
                   if (trueElectron.pt()>20 && trueElectron.pt()<100)
@@ -1080,7 +1083,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                         dyncrystal_efficiency_track_gen_match_hist_0p05->Fill(trueElectron.pt());
                   }
 
-                  if ( cluster_passes_photon_cuts(cluster) ) {
+                  if ( cluster.photonWP80() ) {
                      dyncrystal_efficiency_phoWindow_hist->Fill(trueElectron.pt());
                      if (trueElectron.pt()>20 && trueElectron.pt()<100)
                         dyncrystal_efficiency_phoWindow_eta_hist->Fill(trueElectron.eta());
@@ -1098,7 +1101,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                   for(auto& pair : dyncrystal_efficiency_reco_adj_hists)
                   {
                      // (threshold, histogram)
-                     if ( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) > pair.first)
+                     if ( cluster.pt() > pair.first)
                         pair.second->Fill(trueElectron.pt());
                   }
                   for(auto& pair : dyncrystal_efficiency_gen_hists)
@@ -1121,14 +1124,14 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                   reco_gen_pt_hist->Fill( trueElectron.pt(), (cluster.pt() - trueElectron.pt())/trueElectron.pt() );
                   reco_gen_pt_hist2->Fill( cluster.pt(), (cluster.pt() - trueElectron.pt())/trueElectron.pt() );
                   reco_gen_pt_hist3->Fill( cluster.pt(), trueElectron.pt()/cluster.pt() );
-                  reco_gen_pt_adj_hist->Fill( trueElectron.pt(), ( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) - trueElectron.pt())/trueElectron.pt() );
-                  reco_gen_pt_adj_hist2->Fill( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ), ( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) - trueElectron.pt())/trueElectron.pt() );
-                  reco_gen_pt_adj_hist3->Fill( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ), trueElectron.pt() / ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) );
+                  reco_gen_pt_adj_hist->Fill( trueElectron.pt(), ( cluster.pt() - trueElectron.pt())/trueElectron.pt() );
+                  reco_gen_pt_adj_hist2->Fill( cluster.pt(), (cluster.pt() - trueElectron.pt())/trueElectron.pt() );
+                  reco_gen_pt_adj_hist3->Fill( cluster.pt(), trueElectron.pt() / cluster.pt() );
                   l1eg_reco_pt_1dHist->Fill( (cluster.pt() - trueElectron.pt())/trueElectron.pt() );
                   l1eg_recoSC_pt_1dHist->Fill( (cluster.pt() - trueElectron_SC_pt)/trueElectron_SC_pt );
                   l1eg_gen_pt_1dHist->Fill( (cluster.pt() - bestGen.pt())/bestGen.pt() );
                   reco_gen_pt_1dHist->Fill( (reco_electron_pt - bestGen.pt())/bestGen.pt() );
-                  l1eg_gen_pt_adj_1dHist->Fill( ( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) - trueElectron.pt())/trueElectron.pt() );
+                  l1eg_gen_pt_adj_1dHist->Fill( (cluster.pt() - trueElectron.pt())/trueElectron.pt() );
                   brem_dphi_hist->Fill( cluster.bremStrength(), reco::deltaPhi(cluster, trueElectron) );
                   break;
                }
@@ -1150,10 +1153,10 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                if ( cluster.eta() != bestCluster.eta() || cluster.phi() != bestCluster.phi() ) // why don't I have a comparison op
                   continue;
 
-               if ( cluster_passes_stage2_cuts(cluster) )
+               if ( cluster.stage2effMatch() )
                {
                   dyncrystal_efficiency_hist_stage2->Fill(trueElectron.pt());
-                  if ( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) > compThreshold)
+                  if ( ( cluster.pt() ) > compThreshold)
                      dyncrystal_efficiency_hist_stage2_reco10->Fill(trueElectron.pt());
                   break;
                }
@@ -1168,13 +1171,13 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                if ( cluster.eta() != bestCluster.eta() || cluster.phi() != bestCluster.phi() ) // why don't I have a comparison op
                   continue;
 
-               if ( cluster_passes_95_cuts(cluster) )
-               {
-                  dyncrystal_efficiency_hist_95->Fill(trueElectron.pt());
-                  if ( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) > compThreshold)
-                     dyncrystal_efficiency_hist_95_reco10->Fill(trueElectron.pt());
-                  break;
-               }
+               //if ( cluster_passes_95_cuts(cluster) )
+               //{
+               //   dyncrystal_efficiency_hist_95->Fill(trueElectron.pt());
+               //   if ( cluster.pt() > compThreshold)
+               //      dyncrystal_efficiency_hist_95_reco10->Fill(trueElectron.pt());
+               //   break;
+               //}
             } // end passes Pt and dR match
          }
          // 90% efficiency plateau
@@ -1186,10 +1189,10 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                if ( cluster.eta() != bestCluster.eta() || cluster.phi() != bestCluster.phi() ) // why don't I have a comparison op
                   continue;
 
-               if ( cluster_passes_90_cuts(cluster) )
+               if ( cluster.electronWP90() )
                {
                   dyncrystal_efficiency_hist_90->Fill(trueElectron.pt());
-                  if ( ( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) ) > compThreshold)
+                  if ( cluster.pt() > compThreshold)
                      dyncrystal_efficiency_hist_90_reco10->Fill(trueElectron.pt());
                   break;
                }
@@ -1204,7 +1207,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                if ( cluster.eta() != bestCluster.eta() || cluster.phi() != bestCluster.phi() ) // why don't I have a comparison op
                   continue;
 
-               if ( cluster_passes_l1tkMatch_cuts(cluster) && cluster_passes_track_variable_cuts(cluster, treeinfo.trackDeltaR, trackDeltaRMax ) )
+               if ( cluster.looseL1TkMatchWP() && cluster_passes_track_variable_cuts(cluster, treeinfo.trackDeltaR, trackDeltaRMax ) )
                {
                   dyncrystal_efficiency_trackl1match_hist->Fill(trueElectron.pt());
                   break;
@@ -1315,7 +1318,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       bool filledPhotonTag = false;
       bool filledLeadCand = false;
       bool filledStage2Eff = false;
-      bool filled95Eff = false;
+      //bool filled95Eff = false;
       bool filled90Eff = false;
       bool filledL1TrkMatch = false;
       bool filledL1TrkMatchOnly = false;
@@ -1337,60 +1340,60 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             //checkRecHitsFlags(cluster, triggerPrimitives, ecalRecHits);
          }
 
-         if ( cluster_passes_base_cuts(cluster) )
+         if ( cluster.standaloneWP() )
          {
 
             if (!filledBasicCuts) {
                filledBasicCuts = true;
                dyncrystal_rate_hist->Fill(cluster.pt());
-               dyncrystal_rate_adj_hist->Fill( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) );
+               dyncrystal_rate_adj_hist->Fill( cluster.pt());
             }
 
             if ( cluster_passes_track_cuts(cluster, treeinfo.trackDeltaR) && (!filledTrackMatch) ) {
                filledTrackMatch = true;
                dyncrystal_track_rate_hist->Fill(cluster.pt());
-               dyncrystal_track_rate_adj_hist->Fill( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) );
+               dyncrystal_track_rate_adj_hist->Fill(cluster.pt());
             }
 
-            if ( cluster_passes_photon_cuts(cluster) && (!filledPhotonTag) ) {
+            if ( cluster.photonWP80() && (!filledPhotonTag) ) {
                filledPhotonTag = true;
                dyncrystal_phoWindow_rate_hist->Fill(cluster.pt());
-               dyncrystal_phoWindow_rate_adj_hist->Fill( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) );
+               dyncrystal_phoWindow_rate_adj_hist->Fill(cluster.pt());
             }
          }
-         if ( cluster_passes_stage2_cuts(cluster) )
+         if ( cluster.stage2effMatch() )
          {
             if (!filledStage2Eff) {
                filledStage2Eff = true;
-               dyncrystal_rate_adj_hist_stage2->Fill( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) );
+               dyncrystal_rate_adj_hist_stage2->Fill(cluster.pt());
             }
          }
-         if ( cluster_passes_95_cuts(cluster) )
-         {
-            if (!filled95Eff) {
-               filled95Eff = true;
-               dyncrystal_rate_adj_hist_95->Fill( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) );
-            }
-         }
-         if ( cluster_passes_90_cuts(cluster) )
+         //if ( cluster_passes_95_cuts(cluster) )
+         //{
+         //   if (!filled95Eff) {
+         //      filled95Eff = true;
+         //      dyncrystal_rate_adj_hist_95->Fill(cluster.pt());
+         //   }
+         //}
+         if ( cluster.electronWP90() )
          {
             if (!filled90Eff) {
                filled90Eff = true;
-               dyncrystal_rate_adj_hist_90->Fill( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) );
+               dyncrystal_rate_adj_hist_90->Fill(cluster.pt());
             }
          }
-         if ( cluster_passes_l1tkMatch_cuts(cluster) && cluster_passes_track_variable_cuts(cluster, treeinfo.trackDeltaR, trackDeltaRMax) )
+         if ( cluster.looseL1TkMatchWP() && cluster_passes_track_variable_cuts(cluster, treeinfo.trackDeltaR, trackDeltaRMax) )
          {
             if (!filledL1TrkMatch) {
                filledL1TrkMatch = true;
-               dyncrystal_trackl1match_rate_hist->Fill( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) );
+               dyncrystal_trackl1match_rate_hist->Fill(cluster.pt());
             }
          }
          if ( cluster_passes_track_cuts(cluster, treeinfo.trackDeltaR) )
          {
             if (!filledL1TrkMatchOnly) {
                filledL1TrkMatchOnly = true;
-               dyncrystal_trackl1matchOnly_rate_hist->Fill( cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ) );
+               dyncrystal_trackl1matchOnly_rate_hist->Fill(cluster.pt());
             }
          }
       }
@@ -1478,7 +1481,7 @@ L1EGRateStudies::endJob()
       integrateDown(dyncrystal_phoWindow_rate_hist);
       integrateDown(dyncrystal_rate_adj_hist);
       integrateDown(dyncrystal_rate_adj_hist_stage2);
-      integrateDown(dyncrystal_rate_adj_hist_95);
+      //integrateDown(dyncrystal_rate_adj_hist_95);
       integrateDown(dyncrystal_rate_adj_hist_90);
       integrateDown(dyncrystal_trackl1match_rate_hist);
       integrateDown(dyncrystal_trackl1matchOnly_rate_hist);
@@ -1554,9 +1557,12 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
    {
       treeinfo.crystal_pt[i] = cluster.GetCrystalPt(i);
    }
+   // As of 28 May 2018 cluster_pt is post-calibration
    treeinfo.cluster_pt = cluster.pt(); // Brem corrected
-   treeinfo.cluster_pt_adj = cluster.pt() * ( ptAdjustFunc.Eval( cluster.pt() ) ); // Brem corrected
+   treeinfo.cluster_pt_adj = cluster.GetExperimentalParam("preCalibratedPt") * 
+        ( ptAdjustFunc.Eval( cluster.GetExperimentalParam("preCalibratedPt") ) ); // Brem corrected
    treeinfo.cluster_ptPUCorr = cluster.PUcorrPt(); // Brem & PU corrected
+   treeinfo.cluster_preCalibratedPt = cluster.GetExperimentalParam("preCalibratedPt");
    treeinfo.corePt = cluster.GetExperimentalParam("uncorrectedPt"); // 3x5 Pt
    treeinfo.E_core = cluster.GetExperimentalParam("uncorrectedE"); // 3x5 Energy
    //treeinfo.ecalPUtoPt = cluster.GetExperimentalParam("ecalPUEnergyToPt");
@@ -1572,8 +1578,8 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
    treeinfo.electronWP90 = cluster.electronWP90();
    treeinfo.looseL1TkMatchWP = cluster.looseL1TkMatchWP();
    treeinfo.stage2matchEff = cluster.stage2effMatch();
-   treeinfo.passedBase = cluster_passes_base_cuts(cluster);
-   treeinfo.passedPhoton = (cluster_passes_photon_cuts(cluster) && cluster_passes_base_cuts(cluster));
+   treeinfo.passedBase = cluster.standaloneWP();
+   treeinfo.passedPhoton = cluster.photonWP80();
    treeinfo.e2x2 = cluster.e2x2();
    treeinfo.e2x5 = cluster.e2x5();
    treeinfo.e3x5 = cluster.e3x5();
@@ -1588,151 +1594,151 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
    crystal_tree->Fill();
 }
 
-bool
-L1EGRateStudies::cluster_passes_base_cuts(const l1slhc::L1EGCrystalCluster& cluster) const {
-   // return true;
-   
-   // Currently this producer is optimized based on cluster isolation and shower shape
-   // the previous H/E cut has been removed for the moment.
-   // The following cut is based off of what was shown in the Phase-2 meeting
-   // 23 May 2017.  Only the barrel is considered.
-   if ( fabs(cluster.eta()) < 1.479 )
-   {
-      //std::cout << "Starting passing check" << std::endl;
-      float cluster_pt = cluster.pt();
-      float clusterE2x5 = cluster.GetExperimentalParam("E2x5");
-      float clusterE5x5 = cluster.GetExperimentalParam("E5x5");
-      float cluster_iso = cluster.isolation();
-      bool passIso = false;
-      bool passShowerShape = false;
-      
-      // 250 MeV option
-      //if ( ( 0.94 + 0.11 * TMath::Exp( -0.11 * cluster_pt ) < (clusterE2x5 / clusterE5x5)) ) {
-	  //passShowerShape = true; }
-      //if ( (( -0.27 + 1.5 * TMath::Exp( -0.013 * cluster_pt )) > cluster_iso ) ) {
-      //    passIso = true; }
-      //if ( passShowerShape && passIso ) {
-      //    //std::cout << " --- Passed!" << std::endl;
-	  //    return true; }
-
-	  // 500 MeV
-      if ( ( 0.94 + 0.052 * TMath::Exp( -0.044 * cluster_pt ) < (clusterE2x5 / clusterE5x5)) ) {
-	  passShowerShape = true; }
-      if ( cluster_pt < 80 ) {
-         if ( ( 0.85 + -0.0080 * cluster_pt ) > cluster_iso ) passIso = true;
-      }
-      if ( cluster_pt >= 80 ) { // do flat line extension of isolation cut
-         if ( 0.21 > cluster_iso ) passIso = true;
-      }
-      if ( passShowerShape && passIso ) {
-          //std::cout << " --- Passed!" << std::endl;
-	      return true; }
-   }
-   return false;
-}
-
-bool
-L1EGRateStudies::cluster_passes_stage2_cuts(const l1slhc::L1EGCrystalCluster& cluster) const {
-   if ( fabs(cluster.eta()) < 1.479 )
-   {
-      float cluster_pt = cluster.pt();
-      float clusterE2x5 = cluster.GetExperimentalParam("E2x5");
-      float clusterE5x5 = cluster.GetExperimentalParam("E5x5");
-      float cluster_iso = cluster.isolation();
-      float cluster_hovere = cluster.hovere();
-      bool passIso = false;
-      bool passShowerShape = false;
-      bool passHoverE = false;
-
-      // Stage-2 Matching
-      
-      if ( ( 0.94 + 0.04 * TMath::Exp( -0.02 * cluster_pt ) < (clusterE2x5 / clusterE5x5)) ) {
-	     passShowerShape = true; }
-      if ( ( 0.22 + 1.4 * TMath::Exp( -0.08 * cluster_pt ) > cluster_iso ) ) {
-	     passIso = true; }
-      if ( ( 0.27 + 2.7 * TMath::Exp( -0.07 * cluster_pt ) > cluster_hovere ) ) {
-	     passHoverE = true; }
-
-      if ( passShowerShape && passIso && passHoverE ) {
-	      return true; }
-   }
-   return false;
-}
-
-bool
-L1EGRateStudies::cluster_passes_l1tkMatch_cuts(const l1slhc::L1EGCrystalCluster& cluster) const {
-   if ( fabs(cluster.eta()) < 1.479 )
-   {
-      float cluster_pt = cluster.pt();
-      float clusterE2x5 = cluster.GetExperimentalParam("E2x5");
-      float clusterE5x5 = cluster.GetExperimentalParam("E5x5");
-      float cluster_iso = cluster.isolation();
-      bool passIso = false;
-      bool passShowerShape = false;
-
-      // 95% plateau
-      if ( ( 0.944 + -0.65 * TMath::Exp( -0.4 * cluster_pt ) < (clusterE2x5 / clusterE5x5)) ) {
-	     passShowerShape = true; }
-      if ( ( 0.38 + 1.9 * TMath::Exp( -0.05 * cluster_pt ) > cluster_iso ) ) {
-	     passIso = true; }
-
-      if ( passShowerShape && passIso ) {
-	      return true; }
-
-   }
-   return false;
-}
-
-bool
-L1EGRateStudies::cluster_passes_95_cuts(const l1slhc::L1EGCrystalCluster& cluster) const {
-   if ( fabs(cluster.eta()) < 1.479 )
-   {
-      float cluster_pt = cluster.pt();
-      float clusterE2x5 = cluster.GetExperimentalParam("E2x5");
-      float clusterE5x5 = cluster.GetExperimentalParam("E5x5");
-      float cluster_iso = cluster.isolation();
-      bool passIso = false;
-      bool passShowerShape = false;
-
-      // 95% plateau
-      if ( ( 0.95 + 0.03 * TMath::Exp( -0.05 * cluster_pt ) < (clusterE2x5 / clusterE5x5)) ) {
-	     passShowerShape = true; }
-      if ( ( 0.085 + 1.9 * TMath::Exp( -0.05 * cluster_pt ) > cluster_iso ) ) {
-	     passIso = true; }
-
-      if ( passShowerShape && passIso ) {
-	      return true; }
-
-   }
-   return false;
-}
-
-bool
-L1EGRateStudies::cluster_passes_90_cuts(const l1slhc::L1EGCrystalCluster& cluster) const {
-   if ( fabs(cluster.eta()) < 1.479 )
-   {
-      float cluster_pt = cluster.pt();
-      float clusterE2x5 = cluster.GetExperimentalParam("E2x5");
-      float clusterE5x5 = cluster.GetExperimentalParam("E5x5");
-      float cluster_iso = cluster.isolation();
-      float cluster_hovere = cluster.hovere();
-      bool passIso = false;
-      bool passShowerShape = false;
-      bool passHoverE = false;
-
-      // 90% plateau
-      if ( ( 0.95 + 0.043 * TMath::Exp( -0.055 * cluster_pt ) < (clusterE2x5 / clusterE5x5)) ) {
-	     passShowerShape = true; }
-      if ( ( 0.067 + 1.6 * TMath::Exp( -0.055 * cluster_pt ) > cluster_iso ) ) {
-	     passIso = true; }
-      if ( ( 0.26 + 4.4 * TMath::Exp( -0.089 * cluster_pt ) > cluster_hovere ) ) {
-	     passHoverE = true; }
-
-      if ( passShowerShape && passIso && passHoverE ) {
-	      return true; }
-   }
-   return false;
-}
+//bool
+//L1EGRateStudies::cluster_passes_base_cuts(const l1slhc::L1EGCrystalCluster& cluster) const {
+//   // return true;
+//   
+//   // Currently this producer is optimized based on cluster isolation and shower shape
+//   // the previous H/E cut has been removed for the moment.
+//   // The following cut is based off of what was shown in the Phase-2 meeting
+//   // 23 May 2017.  Only the barrel is considered.
+//   if ( fabs(cluster.eta()) < 1.479 )
+//   {
+//      //std::cout << "Starting passing check" << std::endl;
+//      float cluster_pt = cluster.pt();
+//      float clusterE2x5 = cluster.GetExperimentalParam("E2x5");
+//      float clusterE5x5 = cluster.GetExperimentalParam("E5x5");
+//      float cluster_iso = cluster.isolation();
+//      bool passIso = false;
+//      bool passShowerShape = false;
+//      
+//      // 250 MeV option
+//      //if ( ( 0.94 + 0.11 * TMath::Exp( -0.11 * cluster_pt ) < (clusterE2x5 / clusterE5x5)) ) {
+//	  //passShowerShape = true; }
+//      //if ( (( -0.27 + 1.5 * TMath::Exp( -0.013 * cluster_pt )) > cluster_iso ) ) {
+//      //    passIso = true; }
+//      //if ( passShowerShape && passIso ) {
+//      //    //std::cout << " --- Passed!" << std::endl;
+//	  //    return true; }
+//
+//	  // 500 MeV
+//      if ( ( 0.94 + 0.052 * TMath::Exp( -0.044 * cluster_pt ) < (clusterE2x5 / clusterE5x5)) ) {
+//	  passShowerShape = true; }
+//      if ( cluster_pt < 80 ) {
+//         if ( ( 0.85 + -0.0080 * cluster_pt ) > cluster_iso ) passIso = true;
+//      }
+//      if ( cluster_pt >= 80 ) { // do flat line extension of isolation cut
+//         if ( 0.21 > cluster_iso ) passIso = true;
+//      }
+//      if ( passShowerShape && passIso ) {
+//          //std::cout << " --- Passed!" << std::endl;
+//	      return true; }
+//   }
+//   return false;
+//}
+//
+//bool
+//L1EGRateStudies::cluster_passes_stage2_cuts(const l1slhc::L1EGCrystalCluster& cluster) const {
+//   if ( fabs(cluster.eta()) < 1.479 )
+//   {
+//      float cluster_pt = cluster.pt();
+//      float clusterE2x5 = cluster.GetExperimentalParam("E2x5");
+//      float clusterE5x5 = cluster.GetExperimentalParam("E5x5");
+//      float cluster_iso = cluster.isolation();
+//      float cluster_hovere = cluster.hovere();
+//      bool passIso = false;
+//      bool passShowerShape = false;
+//      bool passHoverE = false;
+//
+//      // Stage-2 Matching
+//      
+//      if ( ( 0.94 + 0.04 * TMath::Exp( -0.02 * cluster_pt ) < (clusterE2x5 / clusterE5x5)) ) {
+//	     passShowerShape = true; }
+//      if ( ( 0.22 + 1.4 * TMath::Exp( -0.08 * cluster_pt ) > cluster_iso ) ) {
+//	     passIso = true; }
+//      if ( ( 0.27 + 2.7 * TMath::Exp( -0.07 * cluster_pt ) > cluster_hovere ) ) {
+//	     passHoverE = true; }
+//
+//      if ( passShowerShape && passIso && passHoverE ) {
+//	      return true; }
+//   }
+//   return false;
+//}
+//
+//bool
+//L1EGRateStudies::cluster_passes_l1tkMatch_cuts(const l1slhc::L1EGCrystalCluster& cluster) const {
+//   if ( fabs(cluster.eta()) < 1.479 )
+//   {
+//      float cluster_pt = cluster.pt();
+//      float clusterE2x5 = cluster.GetExperimentalParam("E2x5");
+//      float clusterE5x5 = cluster.GetExperimentalParam("E5x5");
+//      float cluster_iso = cluster.isolation();
+//      bool passIso = false;
+//      bool passShowerShape = false;
+//
+//      // 95% plateau
+//      if ( ( 0.944 + -0.65 * TMath::Exp( -0.4 * cluster_pt ) < (clusterE2x5 / clusterE5x5)) ) {
+//	     passShowerShape = true; }
+//      if ( ( 0.38 + 1.9 * TMath::Exp( -0.05 * cluster_pt ) > cluster_iso ) ) {
+//	     passIso = true; }
+//
+//      if ( passShowerShape && passIso ) {
+//	      return true; }
+//
+//   }
+//   return false;
+//}
+//
+//bool
+//L1EGRateStudies::cluster_passes_95_cuts(const l1slhc::L1EGCrystalCluster& cluster) const {
+//   if ( fabs(cluster.eta()) < 1.479 )
+//   {
+//      float cluster_pt = cluster.pt();
+//      float clusterE2x5 = cluster.GetExperimentalParam("E2x5");
+//      float clusterE5x5 = cluster.GetExperimentalParam("E5x5");
+//      float cluster_iso = cluster.isolation();
+//      bool passIso = false;
+//      bool passShowerShape = false;
+//
+//      // 95% plateau
+//      if ( ( 0.95 + 0.03 * TMath::Exp( -0.05 * cluster_pt ) < (clusterE2x5 / clusterE5x5)) ) {
+//	     passShowerShape = true; }
+//      if ( ( 0.085 + 1.9 * TMath::Exp( -0.05 * cluster_pt ) > cluster_iso ) ) {
+//	     passIso = true; }
+//
+//      if ( passShowerShape && passIso ) {
+//	      return true; }
+//
+//   }
+//   return false;
+//}
+//
+//bool
+//L1EGRateStudies::cluster_passes_90_cuts(const l1slhc::L1EGCrystalCluster& cluster) const {
+//   if ( fabs(cluster.eta()) < 1.479 )
+//   {
+//      float cluster_pt = cluster.pt();
+//      float clusterE2x5 = cluster.GetExperimentalParam("E2x5");
+//      float clusterE5x5 = cluster.GetExperimentalParam("E5x5");
+//      float cluster_iso = cluster.isolation();
+//      float cluster_hovere = cluster.hovere();
+//      bool passIso = false;
+//      bool passShowerShape = false;
+//      bool passHoverE = false;
+//
+//      // 90% plateau
+//      if ( ( 0.95 + 0.043 * TMath::Exp( -0.055 * cluster_pt ) < (clusterE2x5 / clusterE5x5)) ) {
+//	     passShowerShape = true; }
+//      if ( ( 0.067 + 1.6 * TMath::Exp( -0.055 * cluster_pt ) > cluster_iso ) ) {
+//	     passIso = true; }
+//      if ( ( 0.26 + 4.4 * TMath::Exp( -0.089 * cluster_pt ) > cluster_hovere ) ) {
+//	     passHoverE = true; }
+//
+//      if ( passShowerShape && passIso && passHoverE ) {
+//	      return true; }
+//   }
+//   return false;
+//}
 
 bool
 L1EGRateStudies::cluster_passes_track_variable_cuts(const l1slhc::L1EGCrystalCluster& cluster, float trackDeltaR, float deltaRMax) const {
@@ -1762,20 +1768,20 @@ L1EGRateStudies::cluster_passes_track_cuts(const l1slhc::L1EGCrystalCluster& clu
    return false;
 }
 
-bool
-L1EGRateStudies::cluster_passes_photon_cuts(const l1slhc::L1EGCrystalCluster& cluster) const {
-   // return true;
-   
-   // Add track cut
-   if ( fabs(cluster.eta()) < 1.479 )
-   {
-      float clusterE2x2 = cluster.GetExperimentalParam("E2x2");
-      float clusterE2x5 = cluster.GetExperimentalParam("E2x5");
-      if ( clusterE2x2/clusterE2x5 > 0.96 - 0.0003 * cluster.pt() ) {
-         return true; }
-   }
-   return false;
-}
+//bool
+//L1EGRateStudies::cluster_passes_photon_cuts(const l1slhc::L1EGCrystalCluster& cluster) const {
+//   // return true;
+//   
+//   // Add track cut
+//   if ( fabs(cluster.eta()) < 1.479 )
+//   {
+//      float clusterE2x2 = cluster.GetExperimentalParam("E2x2");
+//      float clusterE2x5 = cluster.GetExperimentalParam("E2x5");
+//      if ( clusterE2x2/clusterE2x5 > 0.96 - 0.0003 * cluster.pt() ) {
+//         return true; }
+//   }
+//   return false;
+//}
 
 bool
 L1EGRateStudies::checkTowerExists(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps) const {
@@ -1795,7 +1801,7 @@ L1EGRateStudies::checkTowerExists(const l1slhc::L1EGCrystalCluster &cluster, con
 
 //void
 //L1EGRateStudies::checkRecHitsFlags(const l1slhc::L1EGCrystalCluster &cluster, const EcalTrigPrimDigiCollection &tps, const EcalRecHitCollection &ecalRecHits) const {
-//   if ( cluster_passes_base_cuts(cluster) )
+//   if ( cluster.standaloneWP() )
 //   {
 //      if ( debug ) std::cout << "Event (pt = " << cluster.pt() << ") passed cuts, ";
 //      if ( debug && checkTowerExists(cluster, tps) )
@@ -2165,7 +2171,7 @@ L1EGRateStudies::doTrackMatching(const l1slhc::L1EGCrystalCluster& cluster, edm:
      treeinfo.trackHighestPtCutChi2Chi2 = max_track_pt_all_chi2_cutChi2;
      treeinfo.trackIsoConeTrackCount = isoConeTrackCount;
      treeinfo.trackIsoConePtSum = isoConePtSum;
-     treeinfo.passedTrack = (cluster_passes_track_cuts(cluster, min_track_dr) && cluster_passes_base_cuts(cluster));
+     //treeinfo.passedTrack = (cluster_passes_track_cuts(cluster, min_track_dr) && cluster.standaloneWP());
      //treeinfo.trackPUTrackPtGlobalDiffZ = PUTrackPtGlobalDiffZ;
      //treeinfo.trackPUTrackPtGlobalDiffZandPt = PUTrackPtGlobalDiffZandPt;
      //treeinfo.trackPUTrackPtGlobalSameZ = PUTrackPtGlobalSameZ;
