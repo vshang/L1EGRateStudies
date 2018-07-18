@@ -19,6 +19,11 @@ process.source = cms.Source("PoolSource",
                     "drop l1tEMTFHitExtras_simEmtfDigis_CSC_HLT",
                     "drop l1tEMTFHitExtras_simEmtfDigis_RPC_HLT",
                     "drop l1tEMTFTrackExtras_simEmtfDigis__HLT",
+                    "drop l1tEMTFHit2016Extras_simEmtfDigis_CSC_HLT",
+                    "drop l1tEMTFHit2016Extras_simEmtfDigis_RPC_HLT",
+                    "drop l1tEMTFHit2016s_simEmtfDigis__HLT",
+                    "drop l1tEMTFTrack2016Extras_simEmtfDigis__HLT",
+                    "drop l1tEMTFTrack2016s_simEmtfDigis__HLT",
    )
 )
 
@@ -27,7 +32,8 @@ process.source = cms.Source("PoolSource",
 # ---- Global Tag :
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '100X_upgrade2023_realistic_v1', '')
+#process.GlobalTag = GlobalTag(process.GlobalTag, '100X_upgrade2023_realistic_v1', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, '93X_upgrade2023_realistic_v5', '')
 
 # Choose a 2030 geometry!
 process.load('Configuration.Geometry.GeometryExtended2023D17Reco_cff')
