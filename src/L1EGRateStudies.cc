@@ -158,7 +158,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
 
       // Fit function to scale L1EG Crystal Pt to Stage-2
       //TF1 ptAdjustFunc = TF1("ptAdjustFunc", "(([0] + [1]*TMath::Exp(-[2]*x))*(1./([3] + [4]*TMath::Exp(-[5]*x))))");
-      TF1 ptAdjustFuncPhaseII = TF1("ptAdjustFunc", "[0] + [1]*TMath::Exp(-[2]*x)");
+      TF1 ptAdjustFuncPhaseII = TF1("ptAdjustFunc", "([0] + [1]*TMath::Exp(-[2]*x)) * ([3] + [4]*TMath::Exp(-[5]*x))");
       TF1 ptAdjustFuncStage2 = TF1("ptAdjustFunc2", "[0] + [1]*TMath::Exp(-[2]*x)");
 
       //std::vector<edm::InputTag> L1EGammaInputTags;
@@ -272,6 +272,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       TH2F * stage2_reco_gen_pt_hist3;
       TH2F * stage2_reco_gen_pt_hist4;
       TH1F * stage2_reco_gen_pt_1dHist;
+      TH1F * stage2_reco_gen_pt_1dHist_calib;
 
       //std::map<std::string, TH1F *> EGalg_efficiency_hists;
       //std::map<std::string, std::map<double, TH1F *>> EGalg_efficiency_reco_hists;
@@ -300,6 +301,8 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          float cluster_pt;
          float cluster_pt_adj;
          float cluster_ptPUCorr;
+         float stage2_pt;
+         float stage2_pt_calib;
          float cluster_preCalibratedPt;
          float cluster_energy;
          float eta;
@@ -424,7 +427,7 @@ class L1EGRateStudies : public edm::EDAnalyzer {
       TH1F * reco_gen_pt_1dHist;
       TH1F * recoSC_gen_pt_1dHist;
       TH1F * l1eg_reco_pt_1dHist;
-      TH1F * l1eg_recoSC_pt_1dHist;
+      //TH1F * l1eg_recoSC_pt_1dHist;
 
       // dphi vs. brem
       TH2F * brem_dphi_hist;
@@ -481,6 +484,9 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    ptAdjustFuncPhaseII.SetParameter( 0, 1.06 );
    ptAdjustFuncPhaseII.SetParameter( 1, 0.273 );
    ptAdjustFuncPhaseII.SetParameter( 2, 0.0411 );
+   ptAdjustFuncPhaseII.SetParameter( 3, 1.00 );
+   ptAdjustFuncPhaseII.SetParameter( 4, 0.567 );
+   ptAdjustFuncPhaseII.SetParameter( 5, 0.288 );
    ptAdjustFuncStage2.SetParameter( 0, 0.968 );
    ptAdjustFuncStage2.SetParameter( 1, -0.312 );
    ptAdjustFuncStage2.SetParameter( 2, 0.0729 );
@@ -560,6 +566,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       stage2_reco_gen_pt_hist3 = fs->make<TH2F>("stage2_reco_gen_pt3", "Stage-2;Reco pT (GeV);gen/reco;Counts", 100, 0., 100., 100, 0.0, 2.0); 
       stage2_reco_gen_pt_hist4 = fs->make<TH2F>("stage2_reco_gen_pt4", "Stage-2;Calibrated Reco pT (GeV);gen/calib. reco;Counts", 100, 0., 100., 100, 0.0, 2.0); 
       stage2_reco_gen_pt_1dHist = fs->make<TH1F>("stage2_1d_reco_gen_pt", "Stage-2;(reco-gen)/gen;Counts", 100, -1., 1.); 
+      stage2_reco_gen_pt_1dHist_calib = fs->make<TH1F>("stage2_1d_reco_gen_pt_calib", "Stage-2;(reco calib.-gen)/gen;Counts", 100, -1., 1.); 
 
       //for(auto& inputTag : L1EGammaInputTags)
       //{
@@ -591,7 +598,7 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
       l1eg_gen_pt_adj_1dHist = fs->make<TH1F>("1d_l1eg_gen_pt_adj" , "EG relative momentum error;(l1eg-gen)/gen;Counts", 100, -1., 1.); 
       reco_gen_pt_1dHist = fs->make<TH1F>("1d_reco_gen_pt" , "EG relative momentum error;(reco-gen)/gen;Counts", 100, -1., 1.); 
       l1eg_reco_pt_1dHist = fs->make<TH1F>("1d_l1eg_reco_pt" , "EG relative momentum error;(l1eg-reco)/reco;Counts", 100, -1., 1.); 
-      l1eg_recoSC_pt_1dHist = fs->make<TH1F>("1d_l1eg_recoSC_pt" , "EG relative momentum error;(l1eg-recoSC)/recoSC;Counts", 100, -1., 1.); 
+      //l1eg_recoSC_pt_1dHist = fs->make<TH1F>("1d_l1eg_recoSC_pt" , "EG relative momentum error;(l1eg-recoSC)/recoSC;Counts", 100, -1., 1.); 
       brem_dphi_hist = fs->make<TH2F>("brem_dphi_hist" , "Brem. strength vs. d#phi;Brem. Strength;d#phi;Counts", 40, 0., 2., 40, -0.05, 0.05); 
 
       efficiency_denominator_hist = fs->make<TH1F>("gen_pt", "Gen. pt;Gen. pT (GeV); Counts", nHistBins, histLow, histHigh);
@@ -645,6 +652,8 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("cluster_ptPUCorr", &treeinfo.cluster_ptPUCorr);
    crystal_tree->Branch("cluster_preCalibratedPt", &treeinfo.cluster_preCalibratedPt);
    crystal_tree->Branch("cluster_energy", &treeinfo.cluster_energy);
+   crystal_tree->Branch("stage2_pt", &treeinfo.stage2_pt);
+   crystal_tree->Branch("stage2_pt_calib", &treeinfo.stage2_pt_calib);
    crystal_tree->Branch("eta", &treeinfo.eta);
    crystal_tree->Branch("phi", &treeinfo.phi);
    crystal_tree->Branch("cluster_hovere", &treeinfo.hovere);
@@ -895,7 +904,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       //std::vector<pat::Electron> offlineRecoClusters = *offlineRecoClustersHandle.product();
 
       // Find the cluster corresponding to generated electron
-      double trueElectron_SC_pt = -99;
+      //double trueElectron_SC_pt = -99;
       bool offlineRecoFound = false;
       //for(auto& cluster : offlineRecoClusters)
       //{
@@ -1145,7 +1154,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                   reco_gen_pt_adj_hist2->Fill( cluster.pt(), (cluster.pt() - trueElectron.pt())/trueElectron.pt() );
                   reco_gen_pt_adj_hist3->Fill( cluster.pt(), trueElectron.pt() / cluster.pt() );
                   l1eg_reco_pt_1dHist->Fill( (cluster.pt() - trueElectron.pt())/trueElectron.pt() );
-                  l1eg_recoSC_pt_1dHist->Fill( (cluster.pt() - trueElectron_SC_pt)/trueElectron_SC_pt );
+                  //l1eg_recoSC_pt_1dHist->Fill( (cluster.pt() - trueElectron_SC_pt)/trueElectron_SC_pt );
                   l1eg_gen_pt_1dHist->Fill( (cluster.pt() - bestGen.pt())/bestGen.pt() );
                   reco_gen_pt_1dHist->Fill( (reco_electron_pt - bestGen.pt())/bestGen.pt() );
                   l1eg_gen_pt_adj_1dHist->Fill( (cluster.pt() - trueElectron.pt())/trueElectron.pt() );
@@ -1292,7 +1301,13 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             stage2_reco_gen_pt_hist3->Fill( EGCandidate.pt(), trueElectron.pt()/EGCandidate.pt() );
             stage2_reco_gen_pt_hist4->Fill( (EGCandidate.pt() * ptAdjustFuncStage2.Eval( EGCandidate.pt() ) ), trueElectron.pt()/(EGCandidate.pt() * ptAdjustFuncStage2.Eval( EGCandidate.pt() ) ) );
             stage2_reco_gen_pt_1dHist->Fill( (EGCandidate.pt() - trueElectron.pt())/trueElectron.pt() );
+            stage2_reco_gen_pt_1dHist_calib->Fill( ( (EGCandidate.pt() * ptAdjustFuncStage2.Eval( EGCandidate.pt() ) ) - trueElectron.pt())/trueElectron.pt() );
             stage2_2DdeltaR_hist->Fill(trueElectron.eta()-EGCandidate.eta(), reco::deltaPhi(EGCandidate, trueElectron));
+
+
+            // Also fill 2 vars in TTree
+            treeinfo.stage2_pt = EGCandidate.pt();
+            treeinfo.stage2_pt_calib = EGCandidate.pt() * ptAdjustFuncStage2.Eval( EGCandidate.pt() );
             break;
          }
       }
