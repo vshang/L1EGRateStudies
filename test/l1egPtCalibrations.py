@@ -128,10 +128,6 @@ def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, poi
         #if "clusterPtVClusterIso" == c.GetTitle() :
         #    f3.Draw('SAME')
 
-    # plot local
-    #plotDir = 'plotCuts'
-    # plot web
-    plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date
     c.Print(plotDir+"/"+c.GetTitle()+".png")
     c.Print(plotDir+"/"+c.GetTitle()+".C")
     c.Print(plotDir+"/"+c.GetTitle()+".pdf")
@@ -152,7 +148,9 @@ def drawPointsHists(h1, h2, title1, title2, xaxis, yaxis, new=False) :
     yVals1 = array('f', [])
 
     points = []
-    for i in range(10, 95) : points.append( i )
+    min_ = 10
+    if c.GetTitle() == "genPtVPtResFit_s2Cor" : min_ = 5 
+    for i in range(min_, 95) : points.append( i )
     for point in points :
         # if empty column, don't appent to points
         avg = getAverage( h1, point )
@@ -199,10 +197,6 @@ def drawPointsHists(h1, h2, title1, title2, xaxis, yaxis, new=False) :
     fit2 = g2.Fit('f2', 'R S')
 
     # Just to show the resulting fit
-    # plot local
-    #plotDir = 'plotCuts'
-    # plot web
-    plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date
     c2.Print(plotDir+"/"+c.GetTitle()+".png")
     c2.Print(plotDir+"/"+c.GetTitle()+".C")
     c2.Print(plotDir+"/"+c.GetTitle()+".pdf")
@@ -232,10 +226,6 @@ def drawPointsHists(h1, h2, title1, title2, xaxis, yaxis, new=False) :
         fitVal.DrawLatexNDC(.45, .80-(i*.1), "Fit Param: %i = %f" % (i, f3.GetParameter( i ) ) )
 
     # Just to show the resulting fit
-    # plot local
-    #plotDir = 'plotCuts'
-    # plot web
-    plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date
     cx.Print(plotDir+"/"+c.GetTitle()+"_fits.png")
     cx.Print(plotDir+"/"+c.GetTitle()+"_fits.C")
     cx.Print(plotDir+"/"+c.GetTitle()+"_fits.pdf")
@@ -296,9 +286,13 @@ def getAverage( h, xVal ) :
 
 if __name__ == '__main__' :
 
+    import os
     singleE = 'singleE_july20v2.root'
+    singleE = 'aug11_singleE_v4.root'
 
-    date = '20180720_calibCheckV2'
+    date = '20180811_calibCheckV4'
+    plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date+''
+    if not os.path.exists( plotDir ) : os.makedirs( plotDir )
 
     effFile = ROOT.TFile( singleE, 'r' )
 
@@ -346,6 +340,15 @@ if __name__ == '__main__' :
     title2 = "Stage-2"
     c.SetTitle("genPtVPtResFit4")
     drawPointsHists(l1Crystal2DPtResHist4, stage22DPtResHist3, title1, title2, xaxis, yaxis, True)
+
+    l1Crystal2DPtResHist3 = effFile.Get("analyzer/reco_gen_pt3")
+    stage22DPtResHist3 = effFile.Get("analyzer/stage2_reco_gen_pt4")
+    xaxis = "Reco P_{T} (GeV)"
+    yaxis = "Relative Error in P_{T} gen/reco"
+    title1 = "L1EG Crystal Algo"
+    title2 = "Stage-2"
+    c.SetTitle("genPtVPtResFit_s2Cor")
+    drawPointsHists(l1Crystal2DPtResHist3, stage22DPtResHist3, title1, title2, xaxis, yaxis, True)
 
     #l1Crystal2DPtAdjResHist = effFile.Get("analyzer/reco_gen_pt_adj")
     #yaxis = "Relative Error in P_{T} (reco-gen)/gen"
