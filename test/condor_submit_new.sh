@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DATE=20180813_v1
+DATE=20180813_v3
 
 # Different options
 doHitAnalyzer=true
@@ -84,6 +84,12 @@ if $doEfficiencies; then
             --input-files-per-job=5 \
             --input-file-list=submitFileLists/singlePion_93X_pu200.txt \
             phaseII_singlePion_${DATE} $CMSSW_BASE condor_efficiency.py
+
+        farmoutAnalysisJobs \
+            --output-dir=. \
+            --input-files-per-job=5 \
+            --input-file-list=submitFileLists/singlePion_93X_pu0.txt \
+            phaseII_singlePion_noPU_${DATE} $CMSSW_BASE condor_efficiency.py
     fi
 
     if $doTau; then
