@@ -1,12 +1,12 @@
 #!/bin/bash
 
-DATE=20180528_v8
+DATE=20180813_v1
 
 # Different options
 doHitAnalyzer=true
 doHitAnalyzer=false
 doRates=true
-#doRates=false
+doRates=false
 doEfficiencies=true
 #doEfficiencies=false
 
@@ -20,7 +20,7 @@ doTau=true
 #doElectron=false
 doPhoton=false
 doPiZero=false
-doPion=false
+#doPion=false
 doTau=false
 
 # Hit Analyzer
@@ -57,8 +57,8 @@ if $doEfficiencies; then
     if $doElectron; then
         farmoutAnalysisJobs \
             --output-dir=. \
-            --input-files-per-job=25 \
-            --input-file-list=submitFileLists/singleE_pu200.txt \
+            --input-files-per-job=5 \
+            --input-file-list=submitFileLists/singleE_93X_pu200.txt \
             phaseII_singleElectron_${DATE} $CMSSW_BASE condor_efficiency.py
     fi
 
@@ -81,8 +81,8 @@ if $doEfficiencies; then
     if $doPion; then
         farmoutAnalysisJobs \
             --output-dir=. \
-            --input-files-per-job=30 \
-            --input-file-list=submitFileLists/singlePionFilesPU200.txt \
+            --input-files-per-job=5 \
+            --input-file-list=submitFileLists/singlePion_93X_pu200.txt \
             phaseII_singlePion_${DATE} $CMSSW_BASE condor_efficiency.py
     fi
 

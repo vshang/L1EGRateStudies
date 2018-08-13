@@ -296,6 +296,20 @@ class L1EGRateStudies : public edm::EDAnalyzer {
          double run;
          double lumi;
          double event;
+         float hcal_dR0p05;
+         float hcal_dR0p1;
+         float hcal_dR0p15;
+         float hcal_dR0p2;
+         float hcal_dR0p3;
+         float hcal_dR0p4;
+         float hcal_dR0p5;
+         float hcal_dR0p05_nTowers;
+         float hcal_dR0p1_nTowers;
+         float hcal_dR0p15_nTowers;
+         float hcal_dR0p2_nTowers;
+         float hcal_dR0p3_nTowers;
+         float hcal_dR0p4_nTowers;
+         float hcal_dR0p5_nTowers;
          std::array<float, 6> crystal_pt;
          int   crystalCount;
          float cluster_pt;
@@ -637,6 +651,20 @@ L1EGRateStudies::L1EGRateStudies(const edm::ParameterSet& iConfig) :
    crystal_tree->Branch("run", &treeinfo.run);
    crystal_tree->Branch("lumi", &treeinfo.lumi);
    crystal_tree->Branch("event", &treeinfo.event);
+   crystal_tree->Branch("hcal_dR0p05", &treeinfo.hcal_dR0p05);
+   crystal_tree->Branch("hcal_dR0p1", &treeinfo.hcal_dR0p1);
+   crystal_tree->Branch("hcal_dR0p15", &treeinfo.hcal_dR0p15);
+   crystal_tree->Branch("hcal_dR0p2", &treeinfo.hcal_dR0p2);
+   crystal_tree->Branch("hcal_dR0p3", &treeinfo.hcal_dR0p3);
+   crystal_tree->Branch("hcal_dR0p4", &treeinfo.hcal_dR0p4);
+   crystal_tree->Branch("hcal_dR0p5", &treeinfo.hcal_dR0p5);
+   crystal_tree->Branch("hcal_dR0p05_nTowers", &treeinfo.hcal_dR0p05_nTowers);
+   crystal_tree->Branch("hcal_dR0p1_nTowers", &treeinfo.hcal_dR0p1_nTowers);
+   crystal_tree->Branch("hcal_dR0p15_nTowers", &treeinfo.hcal_dR0p15_nTowers);
+   crystal_tree->Branch("hcal_dR0p2_nTowers", &treeinfo.hcal_dR0p2_nTowers);
+   crystal_tree->Branch("hcal_dR0p3_nTowers", &treeinfo.hcal_dR0p3_nTowers);
+   crystal_tree->Branch("hcal_dR0p4_nTowers", &treeinfo.hcal_dR0p4_nTowers);
+   crystal_tree->Branch("hcal_dR0p5_nTowers", &treeinfo.hcal_dR0p5_nTowers);
    crystal_tree->Branch("passedBase", &treeinfo.passedBase);
    crystal_tree->Branch("electronWP98", &treeinfo.electronWP98);
    crystal_tree->Branch("electronWP90", &treeinfo.electronWP90);
@@ -814,6 +842,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       if (genP.isPromptFinalState()) {
          //std::cout << cnt << " Gen pT PROMPT: " << genParticles[0].pt() << std::endl;
          bestGen = genP;
+         //std::cout << cnt << " Gen pT PROMPT: " << bestGen.pt() << "   pdg Id " << bestGen.pdgId() << "   Charge: " << bestGen.charge() << std::endl;
          break;
       }
       ++cnt;
@@ -951,12 +980,22 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          // define HepPDT::ParticleID
          // in the end, setID sets the mass and charge of our particle.
          // Try doing this by hand for the moment
-         particle.setMass(.511);
+
+         // Electrons... mainly
+         particle.setMass(.511); // MeV
          int pdgId = bestGen.pdgId();
          if (pdgId > 0) {
             particle.setCharge( -1.0 ); }
          if (pdgId < 0) {
             particle.setCharge( 1.0 ); }
+
+         // Charged pions
+         if (pdgId == -211 || pdgId == 211) {
+               particle.setCharge( bestGen.charge() );
+               particle.setMass(139.6); // MeV
+         }
+
+         // Photon
          if (isPhoton) {
             particle.setMass(0.0);
             particle.setCharge( 0.0 );
@@ -1051,7 +1090,7 @@ L1EGRateStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       {
          treeinfo.reco_pt = 0.;
       }
-      std::cout << "   ---!!!--- L1EG Size: " << crystalClusters.size() << std::endl;
+      //std::cout << "   ---!!!--- L1EG Size: " << crystalClusters.size() << std::endl;
       if ( crystalClusters.size() > 0 )
       {
          auto bestCluster = *std::min_element(begin(crystalClusters), end(crystalClusters), [trueElectron](const l1slhc::L1EGCrystalCluster& a, const l1slhc::L1EGCrystalCluster& b){return reco::deltaR(a, trueElectron) < reco::deltaR(b, trueElectron);});
@@ -1628,6 +1667,20 @@ L1EGRateStudies::fill_tree(const l1slhc::L1EGCrystalCluster& cluster) {
    treeinfo.stage2matchEff = cluster.stage2effMatch();
    treeinfo.passedBase = cluster.standaloneWP();
    treeinfo.passedPhoton = cluster.photonWP80();
+   treeinfo.hcal_dR0p05 = cluster.GetExperimentalParam("hcal_dR0p05");
+   treeinfo.hcal_dR0p1 = cluster.GetExperimentalParam("hcal_dR0p1");
+   treeinfo.hcal_dR0p15 = cluster.GetExperimentalParam("hcal_dR0p15");
+   treeinfo.hcal_dR0p2 = cluster.GetExperimentalParam("hcal_dR0p2");
+   treeinfo.hcal_dR0p3 = cluster.GetExperimentalParam("hcal_dR0p3");
+   treeinfo.hcal_dR0p4 = cluster.GetExperimentalParam("hcal_dR0p4");
+   treeinfo.hcal_dR0p5 = cluster.GetExperimentalParam("hcal_dR0p5");
+   treeinfo.hcal_dR0p05_nTowers = cluster.GetExperimentalParam("hcal_dR0p05_nTowers");
+   treeinfo.hcal_dR0p1_nTowers = cluster.GetExperimentalParam("hcal_dR0p1_nTowers");
+   treeinfo.hcal_dR0p15_nTowers = cluster.GetExperimentalParam("hcal_dR0p15_nTowers");
+   treeinfo.hcal_dR0p2_nTowers = cluster.GetExperimentalParam("hcal_dR0p2_nTowers");
+   treeinfo.hcal_dR0p3_nTowers = cluster.GetExperimentalParam("hcal_dR0p3_nTowers");
+   treeinfo.hcal_dR0p4_nTowers = cluster.GetExperimentalParam("hcal_dR0p4_nTowers");
+   treeinfo.hcal_dR0p5_nTowers = cluster.GetExperimentalParam("hcal_dR0p5_nTowers");
    treeinfo.e2x2 = cluster.e2x2();
    treeinfo.e2x5 = cluster.e2x5();
    treeinfo.e3x5 = cluster.e3x5();
