@@ -19,4 +19,5 @@
 <use name="DataFormats/L1TrackTrigger"/>
 <use name="L1Trigger/TrackTrigger"/>
 <use name="SimTracker/TrackTriggerAssociation"/>
+<use name="DataFormats/JetReco"/>
 <flags EDM_PLUGIN="1"/>
