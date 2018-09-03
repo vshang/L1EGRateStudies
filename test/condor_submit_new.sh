@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DATE=20180813_v3
+DATE=20180903_v3
 
 # Different options
 doHitAnalyzer=true
@@ -8,7 +8,9 @@ doHitAnalyzer=false
 doRates=true
 doRates=false
 doEfficiencies=true
-#doEfficiencies=false
+doEfficiencies=false
+doJets=true
+#doJets=false
 
 
 # Signals for Efficiencies and Std Algo Studies
@@ -17,11 +19,25 @@ doPhoton=true
 doPiZero=true
 doPion=true
 doTau=true
-#doElectron=false
+doElectron=false
 doPhoton=false
 doPiZero=false
-#doPion=false
+doPion=false
 doTau=false
+
+# Jet/Tau Analyzer
+if $doJets; then
+    farmoutAnalysisJobs \
+        --output-dir=. \
+        --input-files-per-job=1 \
+        --input-file-list=submitFileLists/qcd_93X_pu0.txt \
+        phaseII_qcd_${DATE} $CMSSW_BASE condor_jets.py
+    farmoutAnalysisJobs \
+        --output-dir=. \
+        --input-files-per-job=1 \
+        --input-file-list=submitFileLists/qcd_93X_pu0.txt \
+        phaseII_ggH_HTT_${DATE} $CMSSW_BASE condor_jets.py
+fi
 
 # Hit Analyzer
 if $doHitAnalyzer; then

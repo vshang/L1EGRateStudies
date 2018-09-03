@@ -59,7 +59,8 @@
 
 // Stage2
 #include "DataFormats/L1Trigger/interface/BXVector.h"
-#include "DataFormats/L1Trigger/interface/EGamma.h"
+#include "DataFormats/L1Trigger/interface/Jet.h"
+#include "DataFormats/L1Trigger/interface/Tau.h"
 #include "DataFormats/L1Trigger/interface/L1Candidate.h"
 
 
@@ -67,8 +68,10 @@
 // class declaration
 //
 class L1CaloJetStudies : public edm::EDAnalyzer {
-    typedef BXVector<l1t::EGamma> EGammaBxCollection;
-    typedef std::vector<l1t::EGamma> EGammaCollection;
+    typedef BXVector<l1t::Jet> JetBxCollection;
+    typedef std::vector<l1t::Jet> JetCollection;
+    typedef BXVector<l1t::Tau> TauBxCollection;
+    typedef std::vector<l1t::Tau> TauCollection;
 
     public:
         explicit L1CaloJetStudies(const edm::ParameterSet&);
@@ -109,7 +112,10 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
         edm::Handle<std::vector<reco::GenJet>> genJetsHandle;
 
         // Stage2 Digis
-        //edm::EDGetTokenT<BXVector<l1t::EGamma> > stage2egToken1_;
+        edm::EDGetTokenT<BXVector<l1t::Jet> > stage2JetToken_;
+        edm::Handle<BXVector<l1t::Jet>> stage2JetHandle;
+        edm::EDGetTokenT<BXVector<l1t::Tau> > stage2TauToken_;
+        edm::Handle<BXVector<l1t::Tau>> stage2TauHandle;
                 
         // Crystal pt stuff
         TTree * tree;
@@ -182,8 +188,9 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     genMatchDeltaRcut(iConfig.getUntrackedParameter<double>("genMatchDeltaRcut", 0.3)),
     genMatchRelPtcut(iConfig.getUntrackedParameter<double>("genMatchRelPtcut", 0.5)),
     caloJetsToken_(consumes<l1slhc::L1CaloJetsCollection>(iConfig.getParameter<edm::InputTag>("L1CaloJetsInputTag"))),
-    genJetsToken_(consumes<std::vector<reco::GenJet>>(iConfig.getParameter<edm::InputTag>("genJets")))
-    //stage2egToken1_(consumes<BXVector<l1t::EGamma>>(iConfig.getParameter<edm::InputTag>("Stage2EG1Tag")))
+    genJetsToken_(consumes<std::vector<reco::GenJet>>(iConfig.getParameter<edm::InputTag>("genJets"))),
+    stage2JetToken_(consumes<BXVector<l1t::Jet>>(iConfig.getParameter<edm::InputTag>("Stage2JetTag"))),
+    stage2TauToken_(consumes<BXVector<l1t::Tau>>(iConfig.getParameter<edm::InputTag>("Stage2TauTag")))
 {
 
     edm::Service<TFileService> fs;
@@ -284,7 +291,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         // Skip high eta, keep things hear boundary for future study
         if ( fabs(genJet.eta())  > 2.0) continue;
         ++cnt;
-        std::cout << cnt << " Gen pT: " << genJet.pt() << std::endl;
+        //std::cout << cnt << " Gen pT: " << genJet.pt() << std::endl;
 
         //if ( fabs(genJet.pdgId()) != 11) {
         //      std::cout << "Event without electron as best gen.  Gen pdgId was: " << genJet.pdgId() <<std::endl;
@@ -295,20 +302,98 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         reco::Candidate::PolarLorentzVector genJetP4(genJet.pt(), genJet.eta(), genJet.phi(), genJet.mass() );
     
     
-        //// Stage-2
-        //edm::Handle<BXVector<l1t::EGamma>> stage2eg1Handle;
-        //iEvent.getByToken(stage2egToken1_, stage2eg1Handle);
-        //EGammaBxCollection stage2BXEGs;
-        //EGammaCollection stage2EGs;
-        //if ( stage2eg1Handle.isValid() )
-        //{
-        //    stage2BXEGs = *stage2eg1Handle.product();
-        //    for(auto& eg : stage2BXEGs) {
-        //        stage2EGs.push_back( eg );
-        //    } 
-        //    std::sort(begin(stage2EGs), end(stage2EGs), [](l1t::EGamma& a, l1t::EGamma& b){return a.pt() > b.pt();});
-        //}
-        //else std::cout << "No valid stage2 EGs (2)" << std::endl;
+        // Stage-2 Jets
+        iEvent.getByToken(stage2JetToken_, stage2JetHandle);
+        JetBxCollection stage2JetCollection;
+        JetCollection stage2Jets;
+        bool jet_matched = false;
+        if ( stage2JetHandle.isValid() )
+        {
+
+            // Make stage2 sortable
+            stage2JetCollection = *stage2JetHandle.product();
+            for (auto& s2_jet : stage2JetCollection)
+            {
+                stage2Jets.push_back( s2_jet );
+            }
+
+            // Sort
+            std::sort(begin(stage2Jets), end(stage2Jets), [](l1t::Jet& a, l1t::Jet& b){return a.pt() > b.pt();});
+
+            // Find stage2 within dR 0.3, beginning with higest pt cand
+            for (auto& s2_jet : stage2Jets)
+            {
+                if ( reco::deltaR( s2_jet.p4(), genJetP4 ) < 0.3 )
+                {
+                    treeinfo.stage2jet_pt = s2_jet.pt();
+                    treeinfo.stage2jet_eta = s2_jet.eta();
+                    treeinfo.stage2jet_phi = s2_jet.phi();
+                    treeinfo.stage2jet_energy = s2_jet.energy();
+                    treeinfo.stage2jet_mass = s2_jet.mass();
+                    treeinfo.stage2jet_charge = s2_jet.charge();
+                    jet_matched = true;
+                    break;
+                }
+            }
+
+        }
+        if (!jet_matched) // No Stage-2 Jets
+        {
+            treeinfo.stage2jet_pt = -9.;
+            treeinfo.stage2jet_eta = -9.;
+            treeinfo.stage2jet_phi = -9.;
+            treeinfo.stage2jet_energy = -9.;
+            treeinfo.stage2jet_mass = -9.;
+            treeinfo.stage2jet_charge = -9.;
+        } 
+    
+    
+    
+    
+        // Stage-2 Taus 
+        iEvent.getByToken(stage2TauToken_, stage2TauHandle);
+        TauBxCollection stage2TauCollection;
+        TauCollection stage2Taus;
+        bool tau_matched = false;
+        if ( stage2TauHandle.isValid() )
+        {
+
+            // Make stage2 sortable
+            stage2TauCollection = *stage2TauHandle.product();
+            for (auto& s2_tau : stage2TauCollection)
+            {
+                stage2Taus.push_back( s2_tau );
+            }
+
+            // Sort
+            std::sort(begin(stage2Taus), end(stage2Taus), [](l1t::Tau& a, l1t::Tau& b){return a.pt() > b.pt();});
+
+            // Find stage2 within dR 0.3, beginning with higest pt cand
+            for (auto& s2_tau : stage2Taus)
+            {
+                if ( reco::deltaR( s2_tau.p4(), genJetP4 ) < 0.3 )
+                {
+                    treeinfo.stage2tau_pt = s2_tau.pt();
+                    treeinfo.stage2tau_eta = s2_tau.eta();
+                    treeinfo.stage2tau_phi = s2_tau.phi();
+                    treeinfo.stage2tau_energy = s2_tau.energy();
+                    treeinfo.stage2tau_mass = s2_tau.mass();
+                    treeinfo.stage2tau_charge = s2_tau.charge();
+                    tau_matched = true;
+                    break;
+                }
+            }
+
+        }
+        if (!tau_matched) // No Stage-2 Taus
+        {
+            treeinfo.stage2tau_pt = -9.;
+            treeinfo.stage2tau_eta = -9.;
+            treeinfo.stage2tau_phi = -9.;
+            treeinfo.stage2tau_energy = -9.;
+            treeinfo.stage2tau_mass = -9.;
+            treeinfo.stage2tau_charge = -9.;
+        } 
     
     
         // FIXME Not sure how this will work with caloJets
@@ -491,31 +576,31 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
 
 void
 L1CaloJetStudies::fill_tree_null() {
-    // Fill with -1 with no CaloJet fround
-    treeinfo.ecal_pt = -1;
-    treeinfo.ecal_eta = -1;
-    treeinfo.ecal_phi = -1;
-    treeinfo.ecal_mass = -1;
-    treeinfo.ecal_energy = -1;
-    treeinfo.hcal_pt = -1;
-    treeinfo.hcal_eta = -1;
-    treeinfo.hcal_phi = -1;
-    treeinfo.hcal_mass = -1;
-    treeinfo.hcal_energy = -1;
-    treeinfo.jet_pt = -1;
-    treeinfo.jet_eta = -1;
-    treeinfo.jet_phi = -1;
-    treeinfo.jet_mass = -1;
-    treeinfo.jet_energy = -1;
-    treeinfo.hovere = -1;
-    treeinfo.hcal_dR0p05 = -1;
-    treeinfo.hcal_dR0p075 = -1;
-    treeinfo.hcal_dR0p1 = -1;
-    treeinfo.hcal_dR0p125 = -1;
-    treeinfo.hcal_dR0p15 = -1;
-    treeinfo.hcal_dR0p2 = -1;
-    treeinfo.hcal_dR0p3 = -1;
-    treeinfo.hcal_dR0p4 = -1;
+    // Fill with -9 with no CaloJet fround
+    treeinfo.ecal_pt = -9;
+    treeinfo.ecal_eta = -9;
+    treeinfo.ecal_phi = -9;
+    treeinfo.ecal_mass = -9;
+    treeinfo.ecal_energy = -9;
+    treeinfo.hcal_pt = -9;
+    treeinfo.hcal_eta = -9;
+    treeinfo.hcal_phi = -9;
+    treeinfo.hcal_mass = -9;
+    treeinfo.hcal_energy = -9;
+    treeinfo.jet_pt = -9;
+    treeinfo.jet_eta = -9;
+    treeinfo.jet_phi = -9;
+    treeinfo.jet_mass = -9;
+    treeinfo.jet_energy = -9;
+    treeinfo.hovere = -9;
+    treeinfo.hcal_dR0p05 = -9;
+    treeinfo.hcal_dR0p075 = -9;
+    treeinfo.hcal_dR0p1 = -9;
+    treeinfo.hcal_dR0p125 = -9;
+    treeinfo.hcal_dR0p15 = -9;
+    treeinfo.hcal_dR0p2 = -9;
+    treeinfo.hcal_dR0p3 = -9;
+    treeinfo.hcal_dR0p4 = -9;
     tree->Fill();
 }
 
