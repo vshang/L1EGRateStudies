@@ -104,9 +104,9 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
         //reco::GenParticleCollection genParticles;
         //edm::Handle<reco::GenParticleCollection> genParticleHandle;
 
-        edm::EDGetTokenT<reco::GenJet> genJetsToken_;
-        reco::GenJet genJets;
-        edm::Handle<reco::GenJet> genJetsHandle;
+        edm::EDGetTokenT<std::vector<reco::GenJet>> genJetsToken_;
+        std::vector<reco::GenJet> genJets;
+        edm::Handle<std::vector<reco::GenJet>> genJetsHandle;
 
         // Stage2 Digis
         //edm::EDGetTokenT<BXVector<l1t::EGamma> > stage2egToken1_;
@@ -141,7 +141,6 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
             float hcal_dR0p2;
             float hcal_dR0p3;
             float hcal_dR0p4;
-            float hcal_dR0p5;
             float deltaR;
             float deltaPhi;
             float deltaEta;
@@ -151,6 +150,18 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
             float gen_energy;
             float gen_mass;
             float gen_charge;
+            float stage2jet_pt;
+            float stage2jet_eta;
+            float stage2jet_phi;
+            float stage2jet_energy;
+            float stage2jet_mass;
+            float stage2jet_charge;
+            float stage2tau_pt;
+            float stage2tau_eta;
+            float stage2tau_phi;
+            float stage2tau_energy;
+            float stage2tau_mass;
+            float stage2tau_charge;
         } treeinfo;
 
 };
@@ -171,7 +182,7 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     genMatchDeltaRcut(iConfig.getUntrackedParameter<double>("genMatchDeltaRcut", 0.3)),
     genMatchRelPtcut(iConfig.getUntrackedParameter<double>("genMatchRelPtcut", 0.5)),
     caloJetsToken_(consumes<l1slhc::L1CaloJetsCollection>(iConfig.getParameter<edm::InputTag>("L1CaloJetsInputTag"))),
-    genJetsToken_(consumes<reco::GenJet>(iConfig.getParameter<edm::InputTag>("genJets")))
+    genJetsToken_(consumes<std::vector<reco::GenJet>>(iConfig.getParameter<edm::InputTag>("genJets")))
     //stage2egToken1_(consumes<BXVector<l1t::EGamma>>(iConfig.getParameter<edm::InputTag>("Stage2EG1Tag")))
 {
 
@@ -181,22 +192,22 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("run", &treeinfo.run);
     tree->Branch("lumi", &treeinfo.lumi);
     tree->Branch("event", &treeinfo.event);
-    tree->Branch("ecal_pt", treeinfo.ecal_pt);
-    tree->Branch("ecal_eta", treeinfo.ecal_eta);
-    tree->Branch("ecal_phi", treeinfo.ecal_phi);
-    tree->Branch("ecal_mass", treeinfo.ecal_mass);
-    tree->Branch("ecal_energy", treeinfo.ecal_energy);
-    tree->Branch("hcal_pt", treeinfo.hcal_pt);
-    tree->Branch("hcal_eta", treeinfo.hcal_eta);
-    tree->Branch("hcal_phi", treeinfo.hcal_phi);
-    tree->Branch("hcal_mass", treeinfo.hcal_mass);
-    tree->Branch("hcal_energy", treeinfo.hcal_energy);
-    tree->Branch("jet_pt", treeinfo.jet_pt);
-    tree->Branch("jet_eta", treeinfo.jet_eta);
-    tree->Branch("jet_phi", treeinfo.jet_phi);
-    tree->Branch("jet_mass", treeinfo.jet_mass);
-    tree->Branch("jet_energy", treeinfo.jet_energy);
-    tree->Branch("hovere", treeinfo.hovere);
+    tree->Branch("ecal_pt", &treeinfo.ecal_pt);
+    tree->Branch("ecal_eta", &treeinfo.ecal_eta);
+    tree->Branch("ecal_phi", &treeinfo.ecal_phi);
+    tree->Branch("ecal_mass", &treeinfo.ecal_mass);
+    tree->Branch("ecal_energy", &treeinfo.ecal_energy);
+    tree->Branch("hcal_pt", &treeinfo.hcal_pt);
+    tree->Branch("hcal_eta", &treeinfo.hcal_eta);
+    tree->Branch("hcal_phi", &treeinfo.hcal_phi);
+    tree->Branch("hcal_mass", &treeinfo.hcal_mass);
+    tree->Branch("hcal_energy", &treeinfo.hcal_energy);
+    tree->Branch("jet_pt", &treeinfo.jet_pt);
+    tree->Branch("jet_eta", &treeinfo.jet_eta);
+    tree->Branch("jet_phi", &treeinfo.jet_phi);
+    tree->Branch("jet_mass", &treeinfo.jet_mass);
+    tree->Branch("jet_energy", &treeinfo.jet_energy);
+    tree->Branch("hovere", &treeinfo.hovere);
     tree->Branch("hcal_dR0p05", &treeinfo.hcal_dR0p05);
     tree->Branch("hcal_dR0p075", &treeinfo.hcal_dR0p075);
     tree->Branch("hcal_dR0p1", &treeinfo.hcal_dR0p1);
@@ -205,7 +216,6 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("hcal_dR0p2", &treeinfo.hcal_dR0p2);
     tree->Branch("hcal_dR0p3", &treeinfo.hcal_dR0p3);
     tree->Branch("hcal_dR0p4", &treeinfo.hcal_dR0p4);
-    tree->Branch("hcal_dR0p5", &treeinfo.hcal_dR0p5);
     tree->Branch("deltaR", &treeinfo.deltaR);
     tree->Branch("deltaPhi", &treeinfo.deltaPhi);
     tree->Branch("deltaEta", &treeinfo.deltaEta);
@@ -215,6 +225,18 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("gen_energy", &treeinfo.gen_energy);
     tree->Branch("gen_mass", &treeinfo.gen_mass);
     tree->Branch("gen_charge", &treeinfo.gen_charge);
+    tree->Branch("stage2jet_pt", &treeinfo.stage2jet_pt);
+    tree->Branch("stage2jet_eta", &treeinfo.stage2jet_eta);
+    tree->Branch("stage2jet_phi", &treeinfo.stage2jet_phi);
+    tree->Branch("stage2jet_energy", &treeinfo.stage2jet_energy);
+    tree->Branch("stage2jet_mass", &treeinfo.stage2jet_mass);
+    tree->Branch("stage2jet_charge", &treeinfo.stage2jet_charge);
+    tree->Branch("stage2tau_pt", &treeinfo.stage2tau_pt);
+    tree->Branch("stage2tau_eta", &treeinfo.stage2tau_eta);
+    tree->Branch("stage2tau_phi", &treeinfo.stage2tau_phi);
+    tree->Branch("stage2tau_energy", &treeinfo.stage2tau_energy);
+    tree->Branch("stage2tau_mass", &treeinfo.stage2tau_mass);
+    tree->Branch("stage2tau_charge", &treeinfo.stage2tau_charge);
 }
 
 
@@ -245,6 +267,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     // Get Phase-II CaloJet collection
     iEvent.getByToken(caloJetsToken_,caloJetsHandle);
     caloJets = (*caloJetsHandle.product());
+    std::cout << " -- Input L1CaloTaus: " << caloJets.size() << std::endl;
 
     // Sort caloJets so we can always pick highest pt caloJet matching cuts
     std::sort(begin(caloJets), end(caloJets), [](const l1slhc::L1CaloJet& a, const l1slhc::L1CaloJet& b){return a.pt() > b.pt();});
@@ -453,6 +476,7 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
     treeinfo.jet_phi = caloJet.GetExperimentalParam("jet_phi");
     treeinfo.jet_mass = caloJet.GetExperimentalParam("jet_mass");
     treeinfo.jet_energy = caloJet.GetExperimentalParam("jet_energy");
+    treeinfo.hovere = caloJet.hovere();
     treeinfo.hcal_dR0p05 = caloJet.GetExperimentalParam("hcal_dR0p05");
     treeinfo.hcal_dR0p075 = caloJet.GetExperimentalParam("hcal_dR0p075");
     treeinfo.hcal_dR0p1 = caloJet.GetExperimentalParam("hcal_dR0p1");
@@ -461,7 +485,6 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
     treeinfo.hcal_dR0p2 = caloJet.GetExperimentalParam("hcal_dR0p2");
     treeinfo.hcal_dR0p3 = caloJet.GetExperimentalParam("hcal_dR0p3");
     treeinfo.hcal_dR0p4 = caloJet.GetExperimentalParam("hcal_dR0p4");
-    treeinfo.hcal_dR0p5 = caloJet.GetExperimentalParam("hcal_dR0p5");
     tree->Fill();
 }
 
@@ -484,6 +507,7 @@ L1CaloJetStudies::fill_tree_null() {
     treeinfo.jet_phi = -1;
     treeinfo.jet_mass = -1;
     treeinfo.jet_energy = -1;
+    treeinfo.hovere = -1;
     treeinfo.hcal_dR0p05 = -1;
     treeinfo.hcal_dR0p075 = -1;
     treeinfo.hcal_dR0p1 = -1;
@@ -492,7 +516,6 @@ L1CaloJetStudies::fill_tree_null() {
     treeinfo.hcal_dR0p2 = -1;
     treeinfo.hcal_dR0p3 = -1;
     treeinfo.hcal_dR0p4 = -1;
-    treeinfo.hcal_dR0p5 = -1;
     tree->Fill();
 }
 
