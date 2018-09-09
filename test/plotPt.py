@@ -5,17 +5,18 @@ from ROOT import gStyle, gPad
 import CMS_lumi, tdrstyle
 from collections import OrderedDict
 
-singleE = 'singleElectron_93X_09July2018.root'
-minBias = 'minBias_93X_09July2018.root'
-singlePho = 'singlePhoton_93X_09July2018.root'
-version = '93X_pTRez'
+qcd = 'qcd2.root'
+ggH = 'ggH2.root'
+version = '93X_ResolutionsV3'
+#qcd = 'qcd1.root'
+#ggH = 'ggH1.root'
+#version = '93X_ResolutionsV2'
 
-base = '/data/truggles/phaseII_20180709_pTResolution/'
+base = '/data/truggles/phaseII_20180909_jets/'
 universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"/"
 
-rateFile = ROOT.TFile( base+minBias, 'r' )
-effFile = ROOT.TFile( base+singleE, 'r' )
-effPhoFile = ROOT.TFile( base+singlePho, 'r' )
+qcdFile = ROOT.TFile( base+qcd, 'r' )
+ggHHTTFile = ROOT.TFile( base+ggH, 'r' )
 
 def loadHists( file_, histMap = {}, eff=False ) :
     hists = {}
@@ -472,7 +473,7 @@ def drawDRHists(hists, c, ymax, doFit = False ) :
         #cmsString = drawCMSString("CMS Simulation, <PU>=200 bx=25, Min-Bias")
                 
     c.Print(universalSaveDir+c.GetName()+".png")
-    c.Print(universalSaveDir+c.GetName()+".pdf")
+    #c.Print(universalSaveDir+c.GetName()+".pdf")
     #c.Print(universalSaveDir+c.GetName()+".C")
 
     # Don't produce CDFs at the moment
@@ -567,9 +568,8 @@ if __name__ == '__main__' :
 
     
     
-    crystal_tree_elec = effFile.Get("analyzer/crystal_tree")
-    crystal_tree_pho = effPhoFile.Get("analyzer/crystal_tree")
-    rate_tree = rateFile.Get("analyzer/crystal_tree")
+    tree_qcd = qcdFile.Get("analyzer/tree")
+    tree_ggH = ggHHTTFile.Get("analyzer/tree")
     tdrstyle.setTDRStyle()
     gStyle.SetOptStat(0)
 
@@ -577,58 +577,41 @@ if __name__ == '__main__' :
     c = ROOT.TCanvas('c', 'c', 1200, 1000)
     ROOT.gPad.SetRightMargin( ROOT.gPad.GetRightMargin() * 2.5 )
     c.SetTitle('')
-    #c.SetGridx(1)
-    #c.SetGridy(1)
+    c.SetGridx(1)
+    c.SetGridy(1)
     #gStyle.SetGridStyle(2)
     #gStyle.SetGridColor(ROOT.kGray+1)
     
 
     min_ = 0.
-    max_ = 1.2
+    max_ = 3.
     tmpAry=[120,min_,max_]
     varList = [
-        'pt_e2x2/gen_pt',
-        'pt_e2x5/gen_pt',
-        'pt_e3x3/gen_pt',
-        'pt_e3x5/gen_pt',
-        'pt_e5x5/gen_pt',
+        'jet_pt/genJet_pt',
+        'ecal_pt/genJet_pt',
+        'hcal_pt/genJet_pt',
+        'stage2jet_pt/genJet_pt',
+        'genJet_eta',
+        #'stage2tau_pt/genJet_pt',
+
+        #'genTau_pt/genJet_pt',
+
+        #'jet_pt/genTau_pt',
+        #'ecal_pt/genTau_pt',
+        #'hcal_pt/genTau_pt',
+        #'stage2jet_pt/genTau_pt',
+        #'stage2tau_pt/genTau_pt',
     ]
     cnt = [0]
-    #for var in varList :
-    #    cut_none = ''
-    #    h1 = simple1D( 'Photon', crystal_tree_pho, cnt, var, tmpAry, cut_none )
-    #    h2 = simple1D( 'Electron', crystal_tree_elec, cnt, var, tmpAry, cut_none )
-    #    c.SetName("ptResolutionGenDiff"+var.replace('/','_'))
-    #    drawDRHists([h1,h2], c, 0. )
-    clust_pt_gtr_20 = "cluster_pt > 20"
-    clust_pt_gtr_20 = "gen_pt > 20"
+    baseline_cuts = "(genJet_pt > 40 || genTau_pt > 40) && (genJet_pt < 500 && genTau_pt < 500)"
+    baseline_cuts = "(genJet_pt > 40 && abs(genJet_eta) < 1.1)"
     for var in varList :
-        h1 = simple1D( 'Photon', crystal_tree_pho, cnt, var, tmpAry, clust_pt_gtr_20 )
-        h2 = simple1D( 'Electron', crystal_tree_elec, cnt, var, tmpAry, clust_pt_gtr_20 )
-        c.SetName("ptResolutionGenDiffPtGtr20"+var.replace('/','_'))
-        drawDRHists([h1,h2], c, 0., True )
+        h1 = simple1D( 'QCD Jets', tree_qcd, cnt, var, tmpAry, baseline_cuts )
+        h2 = simple1D( 'ggH HTT Jets', tree_ggH, cnt, var, tmpAry, baseline_cuts )
+        c.SetName("ptResolutionGenPtGtr20_"+var.replace('/','_'))
+        #drawDRHists([h1,h2], c, 0., True ) # doFit
+        drawDRHists([h1,h2], c, 0., False ) # no Fit
 
 
-    #varList = [
-    #    'pt_e2x2/pt_e5x5',
-    #    'pt_e2x5/pt_e5x5',
-    #    'pt_e3x3/pt_e5x5',
-    #    'pt_e3x5/pt_e5x5',
-    #]
-    #cnt = [0]
-    #for var in varList :
-    #    cut_none = ''
-    #    h1 = simple1D( 'Photon', crystal_tree_pho, cnt, var, tmpAry, cut_none )
-    #    h2 = simple1D( 'Electron', crystal_tree_elec, cnt, var, tmpAry, cut_none )
-    #    h3 = simple1D( 'Min-Bias', rate_tree, cnt, var, tmpAry, cut_none )
-    #    c.SetName("ptResolutionDiff"+var.replace('/','_'))
-    #    drawDRHists([h1,h2,h3], c, 0. )
-    #clust_pt_gtr_20 = "cluster_pt > 20"
-    #for var in varList :
-    #    h1 = simple1D( 'Photon', crystal_tree_pho, cnt, var, tmpAry, clust_pt_gtr_20 )
-    #    h2 = simple1D( 'Electron', crystal_tree_elec, cnt, var, tmpAry, clust_pt_gtr_20 )
-    #    h3 = simple1D( 'Min-Bias', rate_tree, cnt, var, tmpAry, clust_pt_gtr_20 )
-    #    c.SetName("ptResolutionDiffPtGtr20"+var.replace('/','_'))
-    #    drawDRHists([h1,h2,h3], c, 0. )
 
 
