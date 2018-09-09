@@ -45,6 +45,55 @@ process.load('Configuration.StandardSequences.MagneticField_cff')
 #process.load("CalibCalorimetry.CaloTPG.CaloTPGTranscoder_cfi")
 
 
+
+# --------------------------------------------------------------------------------------------
+#
+# ----   Produce Gen Taus
+
+process.tauGenJets = cms.EDProducer(
+    "TauGenJetProducer",
+    GenParticles =  cms.InputTag('genParticles'),
+    includeNeutrinos = cms.bool( False ),
+    verbose = cms.untracked.bool( False )
+    )
+
+
+
+process.tauGenJetsSelectorAllHadrons = cms.EDFilter("TauGenJetDecayModeSelector",
+     src = cms.InputTag("tauGenJets"),
+     select = cms.vstring('oneProng0Pi0', 
+                          'oneProng1Pi0', 
+                          'oneProng2Pi0', 
+                          'oneProngOther',
+                          'threeProng0Pi0', 
+                          'threeProng1Pi0', 
+                          'threeProngOther', 
+                          'rare'),
+     filter = cms.bool(False)
+)
+
+
+
+process.tauGenJetsSelectorElectrons = cms.EDFilter("TauGenJetDecayModeSelector",
+     src = cms.InputTag("tauGenJets"),
+     select = cms.vstring('electron'), 
+     filter = cms.bool(False)
+)
+
+
+
+process.tauGenJetsSelectorMuons = cms.EDFilter("TauGenJetDecayModeSelector",
+     src = cms.InputTag("tauGenJets"),
+     select = cms.vstring('muon'), 
+     filter = cms.bool(False)
+)
+
+
+
+
+
+
+
 # --------------------------------------------------------------------------------------------
 #
 # ----    Produce the ECAL TPs
@@ -88,15 +137,20 @@ process.L1EGammaCrystalsProducer = cms.EDProducer("L1EGCrystalClusterProducer",
 # ----    Produce the L1CaloTaus with the L1EG clusters as ECAL seeds
 
 process.L1CaloTauProducer = cms.EDProducer("L1CaloTauProducer",
-    EtminForStore = cms.double(0.),
-    EcalTpEtMin = cms.untracked.double(0.5), # 500 MeV default per each Ecal TP
     EtMinForSeedHit = cms.untracked.double(1.0), # 1 GeV decault for seed hit
     debug = cms.untracked.bool(False),
     hcalTP = cms.InputTag("simHcalTriggerPrimitiveDigis","","HLT"),
-    L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer", "L1EGammaCollectionBXVWithCuts", "L1AlgoTest")
+    L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer", "L1EGXtalClusterNoCuts", "L1AlgoTest")
 )
 
-process.pL1Objs = cms.Path( process.L1EGammaCrystalsProducer * process.L1CaloTauProducer )
+process.pL1Objs = cms.Path( 
+    process.tauGenJets *
+    process.tauGenJetsSelectorAllHadrons *
+    process.tauGenJetsSelectorElectrons *
+    process.tauGenJetsSelectorMuons *
+    process.L1EGammaCrystalsProducer *
+    process.L1CaloTauProducer
+)
 
 
 
@@ -105,13 +159,14 @@ process.pL1Objs = cms.Path( process.L1EGammaCrystalsProducer * process.L1CaloTau
 # Analyzer starts here
 
 process.analyzer = cms.EDAnalyzer('L1CaloJetStudies',
-   L1CaloJetsInputTag = cms.InputTag("L1CaloTauProducer","L1CaloTausNoCuts"),
-   genJets = cms.InputTag("ak4GenJetsNoNu", "", "HLT"),
-   genMatchDeltaRcut = cms.untracked.double(0.25),
-   genMatchRelPtcut = cms.untracked.double(0.5),
-   debug = cms.untracked.bool(False),
-   Stage2JetTag = cms.InputTag("simCaloStage2Digis", "MP", "HLT"),
-   Stage2TauTag = cms.InputTag("simCaloStage2Digis", "MP", "HLT")
+    L1CaloJetsInputTag = cms.InputTag("L1CaloTauProducer","L1CaloTausNoCuts"),
+    genJets = cms.InputTag("ak4GenJetsNoNu", "", "HLT"),
+    genHadronicTauSrc = cms.InputTag("tauGenJetsSelectorAllHadrons"),
+    genMatchDeltaRcut = cms.untracked.double(0.25),
+    genMatchRelPtcut = cms.untracked.double(0.5),
+    debug = cms.untracked.bool(False),
+    Stage2JetTag = cms.InputTag("simCaloStage2Digis", "MP", "HLT"),
+    Stage2TauTag = cms.InputTag("simCaloStage2Digis", "MP", "HLT")
 )
 
 process.panalyzer = cms.Path(process.analyzer)
