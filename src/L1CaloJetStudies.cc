@@ -175,6 +175,8 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
             float ecal_dR0p5;
             float ecal_dR0p1_leading;
             float ecal_nL1EGs;
+            float ecal_nL1EGs_standalone;
+            float ecal_nL1EGs_trkMatch;
             float deltaR_ecal_vs_jet;
             float deltaR_hcal_vs_jet;
             float deltaR_hcal_vs_hcal_seed;
@@ -203,12 +205,21 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
             float stage2jet_energy;
             float stage2jet_mass;
             float stage2jet_charge;
+            float stage2jet_puEt;
+            float stage2jet_deltaRGen;
             float stage2tau_pt;
             float stage2tau_eta;
             float stage2tau_phi;
             float stage2tau_energy;
             float stage2tau_mass;
             float stage2tau_charge;
+            float stage2tau_hasEM;
+            float stage2tau_isMerged;
+            float stage2tau_isoEt;
+            float stage2tau_nTT;
+            float stage2tau_rawEt;
+            float stage2tau_isoBit;
+            float stage2tau_deltaRGen;
         } treeinfo;
 
 };
@@ -289,6 +300,8 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("ecal_dR0p5", &treeinfo.ecal_dR0p5);
     tree->Branch("ecal_dR0p1_leading", &treeinfo.ecal_dR0p1_leading);
     tree->Branch("ecal_nL1EGs", &treeinfo.ecal_nL1EGs);
+    tree->Branch("ecal_nL1EGs_standalone", &treeinfo.ecal_nL1EGs_standalone);
+    tree->Branch("ecal_nL1EGs_trkMatch", &treeinfo.ecal_nL1EGs_trkMatch);
     tree->Branch("deltaR_ecal_vs_jet", &treeinfo.deltaR_ecal_vs_jet);
     tree->Branch("deltaR_hcal_vs_jet", &treeinfo.deltaR_hcal_vs_jet);
     tree->Branch("deltaR_hcal_vs_hcal_seed", &treeinfo.deltaR_hcal_vs_hcal_seed);
@@ -319,12 +332,21 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("stage2jet_energy", &treeinfo.stage2jet_energy);
     tree->Branch("stage2jet_mass", &treeinfo.stage2jet_mass);
     tree->Branch("stage2jet_charge", &treeinfo.stage2jet_charge);
+    tree->Branch("stage2jet_puEt", &treeinfo.stage2jet_puEt);
+    tree->Branch("stage2jet_deltaRGen", &treeinfo.stage2jet_deltaRGen);
     tree->Branch("stage2tau_pt", &treeinfo.stage2tau_pt);
     tree->Branch("stage2tau_eta", &treeinfo.stage2tau_eta);
     tree->Branch("stage2tau_phi", &treeinfo.stage2tau_phi);
     tree->Branch("stage2tau_energy", &treeinfo.stage2tau_energy);
     tree->Branch("stage2tau_mass", &treeinfo.stage2tau_mass);
     tree->Branch("stage2tau_charge", &treeinfo.stage2tau_charge);
+    tree->Branch("stage2tau_hasEM", &treeinfo.stage2tau_hasEM);
+    tree->Branch("stage2tau_isMerged", &treeinfo.stage2tau_isMerged);
+    tree->Branch("stage2tau_isoEt", &treeinfo.stage2tau_isoEt);
+    tree->Branch("stage2tau_nTT", &treeinfo.stage2tau_nTT);
+    tree->Branch("stage2tau_rawEt", &treeinfo.stage2tau_rawEt);
+    tree->Branch("stage2tau_isoBit", &treeinfo.stage2tau_isoBit);
+    tree->Branch("stage2tau_deltaRGen", &treeinfo.stage2tau_deltaRGen);
 }
 
 
@@ -404,7 +426,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
             // Find stage2 within dR 0.3, beginning with higest pt cand
             for (auto& s2_jet : stage2Jets)
             {
-                if ( reco::deltaR( s2_jet.p4(), genJetP4 ) < 0.3 )
+                if ( reco::deltaR( s2_jet.p4(), genJetP4 ) < genMatchDeltaRcut )
                 {
                     treeinfo.stage2jet_pt = s2_jet.pt();
                     treeinfo.stage2jet_eta = s2_jet.eta();
@@ -412,6 +434,8 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
                     treeinfo.stage2jet_energy = s2_jet.energy();
                     treeinfo.stage2jet_mass = s2_jet.mass();
                     treeinfo.stage2jet_charge = s2_jet.charge();
+                    treeinfo.stage2jet_puEt = s2_jet.puEt();
+                    treeinfo.stage2jet_deltaRGen = reco::deltaR( s2_jet.p4(), genJetP4 );
                     jet_matched = true;
                     break;
                 }
@@ -426,6 +450,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
             treeinfo.stage2jet_energy = -9.;
             treeinfo.stage2jet_mass = -9.;
             treeinfo.stage2jet_charge = -9.;
+            treeinfo.stage2jet_deltaRGen = -9.;
         } 
     
     
@@ -452,7 +477,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
             // Find stage2 within dR 0.3, beginning with higest pt cand
             for (auto& s2_tau : stage2Taus)
             {
-                if ( reco::deltaR( s2_tau.p4(), genJetP4 ) < 0.3 )
+                if ( reco::deltaR( s2_tau.p4(), genJetP4 ) < genMatchDeltaRcut )
                 {
                     treeinfo.stage2tau_pt = s2_tau.pt();
                     treeinfo.stage2tau_eta = s2_tau.eta();
@@ -460,6 +485,13 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
                     treeinfo.stage2tau_energy = s2_tau.energy();
                     treeinfo.stage2tau_mass = s2_tau.mass();
                     treeinfo.stage2tau_charge = s2_tau.charge();
+                    treeinfo.stage2tau_hasEM = s2_tau.hasEM();
+                    treeinfo.stage2tau_isMerged = s2_tau.isMerged();
+                    treeinfo.stage2tau_isoEt = s2_tau.isoEt();
+                    treeinfo.stage2tau_nTT = s2_tau.nTT();
+                    treeinfo.stage2tau_rawEt = s2_tau.rawEt();
+                    treeinfo.stage2tau_isoBit = s2_tau.hwIso();
+                    treeinfo.stage2tau_deltaRGen = reco::deltaR( s2_tau.p4(), genJetP4 );
                     tau_matched = true;
                     break;
                 }
@@ -474,6 +506,13 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
             treeinfo.stage2tau_energy = -9.;
             treeinfo.stage2tau_mass = -9.;
             treeinfo.stage2tau_charge = -9.;
+            treeinfo.stage2tau_hasEM = -9.;
+            treeinfo.stage2tau_isMerged = -9.;
+            treeinfo.stage2tau_isoEt = -9.;
+            treeinfo.stage2tau_nTT = -9.;
+            treeinfo.stage2tau_rawEt = -9.;
+            treeinfo.stage2tau_isoBit = -9.;
+            treeinfo.stage2tau_deltaRGen = -9.;
         } 
     
     
@@ -580,6 +619,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     
     
         //std::cout << "    ---!!!--- L1EG Size: " << caloJets.size() << std::endl;
+        bool found_caloJet = false;
         if ( caloJets.size() > 0 )
         {
             for(const auto& caloJet : caloJets)
@@ -594,9 +634,13 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
                     treeinfo.deltaEta = genJetP4.eta()-caloJet.eta();
                     
                     fill_tree(caloJet);
+                    found_caloJet = true;
+                    break;
     
                 } // end passes Pt and dR match
             } // end Calo Jets loop
+            // if not calo_jets were reconstructed to match the gen obj
+            if (!found_caloJet) fill_tree_null();
         } // have CaloJets
         else // no CaloJets
         {
@@ -725,6 +769,8 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
     treeinfo.ecal_dR0p5 = caloJet.GetExperimentalParam("ecal_dR0p5");
     treeinfo.ecal_dR0p1_leading = caloJet.GetExperimentalParam("ecal_dR0p1_leading");
     treeinfo.ecal_nL1EGs = caloJet.GetExperimentalParam("ecal_nL1EGs");
+    treeinfo.ecal_nL1EGs_standalone = caloJet.GetExperimentalParam("ecal_nL1EGs_standalone");
+    treeinfo.ecal_nL1EGs_trkMatch = caloJet.GetExperimentalParam("ecal_nL1EGs_trkMatch");
     treeinfo.deltaR_ecal_vs_jet = caloJet.GetExperimentalParam("deltaR_ecal_vs_jet");
     treeinfo.deltaR_hcal_vs_jet = caloJet.GetExperimentalParam("deltaR_hcal_vs_jet");
     treeinfo.deltaR_hcal_vs_hcal_seed = caloJet.GetExperimentalParam("deltaR_hcal_vs_hcal_seed");
@@ -787,6 +833,8 @@ L1CaloJetStudies::fill_tree_null() {
     treeinfo.ecal_dR0p5 = -9;
     treeinfo.ecal_dR0p1_leading = -9;
     treeinfo.ecal_nL1EGs = -9;
+    treeinfo.ecal_nL1EGs_standalone = -9;
+    treeinfo.ecal_nL1EGs_trkMatch = -9;
     treeinfo.deltaR_ecal_vs_jet = -9;
     treeinfo.deltaR_hcal_vs_jet = -9;
     treeinfo.deltaR_hcal_vs_hcal_seed = -9;
