@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DATE=20180911_v2
+DATE=20180912_v2
 
 # Different options
 doHitAnalyzer=true
@@ -30,16 +30,19 @@ if $doJets; then
     farmoutAnalysisJobs \
         --output-dir=. \
         --input-files-per-job=1 \
+        --vsize-limit=6000 \
         --input-file-list=submitFileLists/qcd_93X_pu0.txt \
         phaseII_qcd_${DATE} $CMSSW_BASE condor_jets.py
-    farmoutAnalysisJobs \
-        --output-dir=. \
-        --input-files-per-job=3 \
-        --input-file-list=submitFileLists/qcd_93X_pu200.txt \
-        phaseII_qcd200_${DATE} $CMSSW_BASE condor_jets.py
+    #farmoutAnalysisJobs \
+    #    --output-dir=. \
+    #    --input-files-per-job=3 \
+    #    --vsize-limit=6000 \
+    #    --input-file-list=submitFileLists/qcd_93X_pu200.txt \
+    #    phaseII_qcd200_${DATE} $CMSSW_BASE condor_jets.py
     #farmoutAnalysisJobs \
     #    --output-dir=. \
     #    --input-files-per-job=1 \
+    #    --vsize-limit=6000 \
     #    --input-file-list=submitFileLists/ggH_HtoTauTau_93X_pu0.txt \
     #    phaseII_ggH_HTT_${DATE} $CMSSW_BASE condor_jets.py
 fi
