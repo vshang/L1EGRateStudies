@@ -147,12 +147,10 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
             float hcal_dR2T;
             float hcal_dR3T;
             float hcal_dR4T;
-            float hcal_dR5T;
             float hcal_2x2_1;
             float hcal_2x2_2;
             float hcal_2x2_3;
             float hcal_2x2_4;
-            float hcal_jet_pt;
             float hcal_seed_pt;
             float hcal_seed_iEta;
             float hcal_seed_iPhi;
@@ -172,7 +170,6 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
             float ecal_dR0p2;
             float ecal_dR0p3;
             float ecal_dR0p4;
-            float ecal_dR0p5;
             float ecal_dR0p1_leading;
             float ecal_nL1EGs;
             float ecal_nL1EGs_standalone;
@@ -272,12 +269,10 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("hcal_dR2T", &treeinfo.hcal_dR2T);
     tree->Branch("hcal_dR3T", &treeinfo.hcal_dR3T);
     tree->Branch("hcal_dR4T", &treeinfo.hcal_dR4T);
-    tree->Branch("hcal_dR5T", &treeinfo.hcal_dR5T);
     tree->Branch("hcal_2x2_1", &treeinfo.hcal_2x2_1);
     tree->Branch("hcal_2x2_2", &treeinfo.hcal_2x2_2);
     tree->Branch("hcal_2x2_3", &treeinfo.hcal_2x2_3);
     tree->Branch("hcal_2x2_4", &treeinfo.hcal_2x2_4);
-    tree->Branch("hcal_jet_pt", &treeinfo.hcal_jet_pt);
     tree->Branch("hcal_seed_pt", &treeinfo.hcal_seed_pt);
     tree->Branch("hcal_seed_iEta", &treeinfo.hcal_seed_iEta);
     tree->Branch("hcal_seed_iPhi", &treeinfo.hcal_seed_iPhi);
@@ -297,7 +292,6 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("ecal_dR0p2", &treeinfo.ecal_dR0p2);
     tree->Branch("ecal_dR0p3", &treeinfo.ecal_dR0p3);
     tree->Branch("ecal_dR0p4", &treeinfo.ecal_dR0p4);
-    tree->Branch("ecal_dR0p5", &treeinfo.ecal_dR0p5);
     tree->Branch("ecal_dR0p1_leading", &treeinfo.ecal_dR0p1_leading);
     tree->Branch("ecal_nL1EGs", &treeinfo.ecal_nL1EGs);
     tree->Branch("ecal_nL1EGs_standalone", &treeinfo.ecal_nL1EGs_standalone);
@@ -737,7 +731,6 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
     treeinfo.jet_mass = caloJet.GetExperimentalParam("jet_mass");
     treeinfo.jet_energy = caloJet.GetExperimentalParam("jet_energy");
     treeinfo.hovere = caloJet.hovere();
-    treeinfo.hcal_jet_pt = caloJet.GetExperimentalParam("hcal_jet_pt");
     treeinfo.hcal_seed_pt = caloJet.GetExperimentalParam("hcal_seed_pt");
     treeinfo.hcal_seed_iEta = caloJet.GetExperimentalParam("hcal_seed_iEta");
     treeinfo.hcal_seed_iPhi = caloJet.GetExperimentalParam("hcal_seed_iPhi");
@@ -749,7 +742,6 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
     treeinfo.hcal_dR2T = caloJet.GetExperimentalParam("hcal_dR2T");
     treeinfo.hcal_dR3T = caloJet.GetExperimentalParam("hcal_dR3T");
     treeinfo.hcal_dR4T = caloJet.GetExperimentalParam("hcal_dR4T");
-    treeinfo.hcal_dR5T = caloJet.GetExperimentalParam("hcal_dR5T");
     treeinfo.hcal_2x2_1 = caloJet.GetExperimentalParam("hcal_2x2_1");
     treeinfo.hcal_2x2_2 = caloJet.GetExperimentalParam("hcal_2x2_2");
     treeinfo.hcal_2x2_3 = caloJet.GetExperimentalParam("hcal_2x2_3");
@@ -766,7 +758,6 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
     treeinfo.ecal_dR0p2 = caloJet.GetExperimentalParam("ecal_dR0p2");
     treeinfo.ecal_dR0p3 = caloJet.GetExperimentalParam("ecal_dR0p3");
     treeinfo.ecal_dR0p4 = caloJet.GetExperimentalParam("ecal_dR0p4");
-    treeinfo.ecal_dR0p5 = caloJet.GetExperimentalParam("ecal_dR0p5");
     treeinfo.ecal_dR0p1_leading = caloJet.GetExperimentalParam("ecal_dR0p1_leading");
     treeinfo.ecal_nL1EGs = caloJet.GetExperimentalParam("ecal_nL1EGs");
     treeinfo.ecal_nL1EGs_standalone = caloJet.GetExperimentalParam("ecal_nL1EGs_standalone");
@@ -801,7 +792,6 @@ L1CaloJetStudies::fill_tree_null() {
     treeinfo.jet_mass = -9;
     treeinfo.jet_energy = -9;
     treeinfo.hovere = -9;
-    treeinfo.hcal_jet_pt = -9;
     treeinfo.hcal_seed_pt = -9;
     treeinfo.hcal_seed_iEta = -9;
     treeinfo.hcal_seed_iPhi = -9;
@@ -813,7 +803,6 @@ L1CaloJetStudies::fill_tree_null() {
     treeinfo.hcal_dR2T = -9;
     treeinfo.hcal_dR3T = -9;
     treeinfo.hcal_dR4T = -9;
-    treeinfo.hcal_dR5T = -9;
     treeinfo.hcal_2x2_1 = -9;
     treeinfo.hcal_2x2_2 = -9;
     treeinfo.hcal_2x2_3 = -9;
@@ -830,7 +819,6 @@ L1CaloJetStudies::fill_tree_null() {
     treeinfo.ecal_dR0p2 = -9;
     treeinfo.ecal_dR0p3 = -9;
     treeinfo.ecal_dR0p4 = -9;
-    treeinfo.ecal_dR0p5 = -9;
     treeinfo.ecal_dR0p1_leading = -9;
     treeinfo.ecal_nL1EGs = -9;
     treeinfo.ecal_nL1EGs_standalone = -9;
