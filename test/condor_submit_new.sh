@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DATE=20180923_v1
+DATE=20180923_v5
 
 # Different options
 doHitAnalyzer=true
@@ -25,6 +25,7 @@ doPiZero=false
 doPion=false
 doTau=false
 
+#        --resubmit-failed-jobs \
 # Jet/Tau Analyzer
 if $doJets; then
     farmoutAnalysisJobs \

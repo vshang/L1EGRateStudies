@@ -1,8 +1,8 @@
 import FWCore.ParameterSet.Config as cms
 
-process = cms.Process("L1AlgoTest")
+from Configuration.StandardSequences.Eras import eras
 
-#from CalibCalorimetry.CaloTPG.CaloTPGTranscoder_cfi import *
+process = cms.Process("L1AlgoTest",eras.Phase2_trigger)
 
 process.load('Configuration.StandardSequences.Services_cff')
 process.load("FWCore.MessageService.MessageLogger_cfi")
@@ -42,7 +42,9 @@ process.GlobalTag = GlobalTag(process.GlobalTag, '93X_upgrade2023_realistic_v5',
 process.load('Configuration.Geometry.GeometryExtended2023D17Reco_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 
-#process.load("CalibCalorimetry.CaloTPG.CaloTPGTranscoder_cfi")
+# Add HCAL Transcoder
+process.load('SimCalorimetry.HcalTrigPrimProducers.hcaltpdigi_cff')
+process.load('CalibCalorimetry.CaloTPG.CaloTPGTranscoder_cfi')
 
 
 
@@ -55,7 +57,7 @@ process.tauGenJets = cms.EDProducer(
     GenParticles =  cms.InputTag('genParticles'),
     includeNeutrinos = cms.bool( False ),
     verbose = cms.untracked.bool( False )
-    )
+)
 
 
 
@@ -90,47 +92,6 @@ process.tauGenJetsSelectorMuons = cms.EDFilter("TauGenJetDecayModeSelector",
 
 
 
-
-
-
-
-# --------------------------------------------------------------------------------------------
-#
-# ----    Produce the ECAL TPs
-#
-#process.EcalEBTrigPrimProducer = cms.EDProducer("EcalEBTrigPrimProducer",
-#    BarrelOnly = cms.bool(True),
-#    barrelEcalDigis = cms.InputTag("simEcalDigis","ebDigis"),
-#    binOfMaximum = cms.int32(6), ## optional from release 200 on, from 1-10
-#    TcpOutput = cms.bool(False),
-#    Debug = cms.bool(False),
-#    Famos = cms.bool(False),
-#    nOfSamples = cms.int32(1)
-#)
-#
-#process.pNancy = cms.Path( process.EcalEBTrigPrimProducer )
-
-
-
-## --------------------------------------------------------------------------------------------
-##
-## ----    Produce the L1EGCrystal clusters (code of Sasha Savin)
-#
-#process.L1EGammaCrystalsProducer = cms.EDProducer("L1EGCrystalClusterProducer",
-#   EtminForStore = cms.double(0.),
-#   EcalTpEtMin = cms.untracked.double(0.5), # 500 MeV default per each Ecal TP
-#   EtMinForSeedHit = cms.untracked.double(1.0), # 1 GeV decault for seed hit
-#   debug = cms.untracked.bool(False),
-#   useRecHits = cms.untracked.bool(False),
-#   doBremClustering = cms.untracked.bool(True), # Should always be True when using for E/Gamma
-#   ecalTPEB = cms.InputTag("simEcalEBTriggerPrimitiveDigis","","HLT"),
-#   ecalRecHitEB = cms.InputTag("ecalRecHit","EcalRecHitsEB","RECO"),
-#   hcalRecHit = cms.InputTag("hbhereco"),
-#   hcalTP = cms.InputTag("simHcalTriggerPrimitiveDigis","","HLT"),
-#   useTowerMap = cms.untracked.bool(False)
-#)
-
-
 # --------------------------------------------------------------------------------------------
 #
 # ----    Produce the L1EGCrystal clusters using Emulator
@@ -156,7 +117,6 @@ process.pL1Objs = cms.Path(
     process.tauGenJetsSelectorElectrons *
     process.tauGenJetsSelectorMuons *
     process.L1EGammaClusterEmuProducer *
-    #process.L1EGammaCrystalsProducer *
     process.L1CaloTauProducer
 )
 

@@ -307,13 +307,14 @@ if __name__ == '__main__' :
 
     #base = '/data/truggles/p2/20180911_jets_v2/'
     #base2 = '/data/truggles/p2/20180913_jets/'
-    base = '/data/truggles/phaseII_qcd_20180923_v1-condor_jets/'
+    base = '/data/truggles/phaseII_qcd_20180923_v5-condor_jets/'
     #jetsF0 = 'qcd_pu0.root'
     #jetsF0 = 'qcd_LOW_L1EG.root'
     #jetsF200 = 'qcd_pu200.root'
     jetsF0 = 'qcd.root'
 
-    date = '20180923_calibCheckV1'
+    date = '20180923_calibCheckV5'
+    date = '20180923_calibCheckV6'
     plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date+''
     if not os.path.exists( plotDir ) : os.makedirs( plotDir )
 
@@ -345,9 +346,9 @@ if __name__ == '__main__' :
     c.SetTitle("genJetPt_qcd_stage-2_PU0")
     drawPointsHists(h1, h2, title1, title2, xaxis, yaxis)
 
-    cut = "abs(genJet_eta)<1.1 && ecal_L1EG_jet_pt > 0"
-    #cut = "abs(genJet_eta)<1.1"
-    to_plot = '(ecal_L1EG_jet_pt)/genJet_pt:genJet_pt'
+    #cut = "abs(genJet_eta)<1.1 && ecal_L1EG_jet_pt > 0"
+    cut = "abs(genJet_eta)<1.1"
+    to_plot = '(ecal_L1EG_jet_pt + ecal_pt)/genJet_pt:genJet_pt'
     h1 = getTH2( tree, 'qcd', to_plot, cut, x_and_y_bins )
     cut = "abs(genJet_eta)<1.1"
     to_plot = '(hcal_pt)/genJet_pt:genJet_pt'
@@ -360,31 +361,31 @@ if __name__ == '__main__' :
     drawPointsHists(h1, h2, title1, title2, xaxis, yaxis)
 
 
-    ### PU 0, No ECAL Energy ###
-    cut = "abs(genJet_eta)<1.1 && ecal_pt == 0"
-    to_plot = '(jet_pt)/genJet_pt:genJet_pt'
-    h1 = getTH2( tree, 'qcd', to_plot, cut, x_and_y_bins )
-    to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
-    h2 = getTH2( tree, 'stage-2', to_plot, cut, x_and_y_bins )
-    xaxis = "Gen Jet P_{T} (GeV)"
-    yaxis = "Relative Error in P_{T} reco/gen"
-    title1 = "Phase-2 Jets"
-    title2 = "Stage-2 Jets"
-    c.SetTitle("genJetPt_qcd_stage-2_PU0_EcalZero")
-    drawPointsHists(h1, h2, title1, title2, xaxis, yaxis)
+    #### PU 0, No ECAL Energy ###
+    #cut = "abs(genJet_eta)<1.1 && ecal_pt == 0"
+    #to_plot = '(jet_pt)/genJet_pt:genJet_pt'
+    #h1 = getTH2( tree, 'qcd', to_plot, cut, x_and_y_bins )
+    #to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
+    #h2 = getTH2( tree, 'stage-2', to_plot, cut, x_and_y_bins )
+    #xaxis = "Gen Jet P_{T} (GeV)"
+    #yaxis = "Relative Error in P_{T} reco/gen"
+    #title1 = "Phase-2 Jets"
+    #title2 = "Stage-2 Jets"
+    #c.SetTitle("genJetPt_qcd_stage-2_PU0_EcalZero")
+    #drawPointsHists(h1, h2, title1, title2, xaxis, yaxis)
 
-    cut = "abs(genJet_eta)<1.1"
-    to_plot = '(ecal_L1EG_jet_pt)/genJet_pt:genJet_pt'
-    h1 = getTH2( tree, 'qcd', to_plot, cut, x_and_y_bins )
-    cut = "abs(genJet_eta)<1.1 && ecal_L1EG_jet_pt > 0"
-    to_plot = '(ecal_L1EG_jet_pt)/genJet_pt:genJet_pt'
-    h2 = getTH2( tree, 'stage-2', to_plot, cut, x_and_y_bins )
-    xaxis = "Gen Jet P_{T} (GeV)"
-    yaxis = "Relative Error in P_{T} reco/gen"
-    title1 = "ECAL Reco p_{T} All"
-    title2 = "ECAL Reco p_{T} ECAL Energy > 0"
-    c.SetTitle("genJetPt_Ecal_comp_PU0")
-    drawPointsHists(h1, h2, title1, title2, xaxis, yaxis)
+    #cut = "abs(genJet_eta)<1.1"
+    #to_plot = '(ecal_L1EG_jet_pt)/genJet_pt:genJet_pt'
+    #h1 = getTH2( tree, 'qcd', to_plot, cut, x_and_y_bins )
+    #cut = "abs(genJet_eta)<1.1 && ecal_L1EG_jet_pt > 0"
+    #to_plot = '(ecal_L1EG_jet_pt)/genJet_pt:genJet_pt'
+    #h2 = getTH2( tree, 'stage-2', to_plot, cut, x_and_y_bins )
+    #xaxis = "Gen Jet P_{T} (GeV)"
+    #yaxis = "Relative Error in P_{T} reco/gen"
+    #title1 = "ECAL Reco p_{T} All"
+    #title2 = "ECAL Reco p_{T} ECAL Energy > 0"
+    #c.SetTitle("genJetPt_Ecal_comp_PU0")
+    #drawPointsHists(h1, h2, title1, title2, xaxis, yaxis)
 
 
     #### PU 200 ###

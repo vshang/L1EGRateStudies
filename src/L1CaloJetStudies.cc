@@ -180,6 +180,7 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
             float ecal_nL1EGs_trkMatch;
             float deltaR_ecal_vs_jet;
             float deltaR_hcal_vs_jet;
+            float deltaR_L1EGjet_vs_jet;
             float deltaR_hcal_vs_hcal_seed;
             float deltaR_ecal_vs_hcal;
             float deltaR_ecal_vs_hcal_seed;
@@ -306,6 +307,7 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("ecal_nL1EGs_trkMatch", &treeinfo.ecal_nL1EGs_trkMatch);
     tree->Branch("deltaR_ecal_vs_jet", &treeinfo.deltaR_ecal_vs_jet);
     tree->Branch("deltaR_hcal_vs_jet", &treeinfo.deltaR_hcal_vs_jet);
+    tree->Branch("deltaR_L1EGjet_vs_jet", &treeinfo.deltaR_L1EGjet_vs_jet);
     tree->Branch("deltaR_hcal_vs_hcal_seed", &treeinfo.deltaR_hcal_vs_hcal_seed);
     tree->Branch("deltaR_ecal_vs_hcal", &treeinfo.deltaR_ecal_vs_hcal);
     tree->Branch("deltaR_ecal_vs_hcal_seed", &treeinfo.deltaR_ecal_vs_hcal_seed);
@@ -775,6 +777,7 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
     treeinfo.ecal_nL1EGs_trkMatch = caloJet.GetExperimentalParam("ecal_nL1EGs_trkMatch");
     treeinfo.deltaR_ecal_vs_jet = caloJet.GetExperimentalParam("deltaR_ecal_vs_jet");
     treeinfo.deltaR_hcal_vs_jet = caloJet.GetExperimentalParam("deltaR_hcal_vs_jet");
+    treeinfo.deltaR_L1EGjet_vs_jet = caloJet.GetExperimentalParam("deltaR_L1EGjet_vs_jet");
     //treeinfo.deltaR_hcal_vs_hcal_seed = caloJet.GetExperimentalParam("deltaR_hcal_vs_hcal_seed");
     treeinfo.deltaR_ecal_vs_hcal = caloJet.GetExperimentalParam("deltaR_ecal_vs_hcal");
     treeinfo.deltaR_ecal_vs_hcal_seed = caloJet.GetExperimentalParam("deltaR_ecal_vs_hcal_seed");
@@ -839,6 +842,7 @@ L1CaloJetStudies::fill_tree_null() {
     treeinfo.ecal_nL1EGs_trkMatch = -9;
     treeinfo.deltaR_ecal_vs_jet = -9;
     treeinfo.deltaR_hcal_vs_jet = -9;
+    treeinfo.deltaR_L1EGjet_vs_jet = -9;
     treeinfo.deltaR_hcal_vs_hcal_seed = -9;
     treeinfo.deltaR_ecal_vs_hcal = -9;
     treeinfo.deltaR_ecal_vs_hcal_seed = -9;
