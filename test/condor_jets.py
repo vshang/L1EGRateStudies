@@ -112,24 +112,30 @@ process.tauGenJetsSelectorMuons = cms.EDFilter("TauGenJetDecayModeSelector",
 
 
 
+## --------------------------------------------------------------------------------------------
+##
+## ----    Produce the L1EGCrystal clusters (code of Sasha Savin)
+#
+#process.L1EGammaCrystalsProducer = cms.EDProducer("L1EGCrystalClusterProducer",
+#   EtminForStore = cms.double(0.),
+#   EcalTpEtMin = cms.untracked.double(0.5), # 500 MeV default per each Ecal TP
+#   EtMinForSeedHit = cms.untracked.double(1.0), # 1 GeV decault for seed hit
+#   debug = cms.untracked.bool(False),
+#   useRecHits = cms.untracked.bool(False),
+#   doBremClustering = cms.untracked.bool(True), # Should always be True when using for E/Gamma
+#   ecalTPEB = cms.InputTag("simEcalEBTriggerPrimitiveDigis","","HLT"),
+#   ecalRecHitEB = cms.InputTag("ecalRecHit","EcalRecHitsEB","RECO"),
+#   hcalRecHit = cms.InputTag("hbhereco"),
+#   hcalTP = cms.InputTag("simHcalTriggerPrimitiveDigis","","HLT"),
+#   useTowerMap = cms.untracked.bool(False)
+#)
+
+
 # --------------------------------------------------------------------------------------------
 #
-# ----    Produce the L1EGCrystal clusters (code of Sasha Savin)
+# ----    Produce the L1EGCrystal clusters using Emulator
 
-process.L1EGammaCrystalsProducer = cms.EDProducer("L1EGCrystalClusterProducer",
-   EtminForStore = cms.double(0.),
-   EcalTpEtMin = cms.untracked.double(0.5), # 500 MeV default per each Ecal TP
-   EtMinForSeedHit = cms.untracked.double(1.0), # 1 GeV decault for seed hit
-   debug = cms.untracked.bool(False),
-   useRecHits = cms.untracked.bool(False),
-   doBremClustering = cms.untracked.bool(True), # Should always be True when using for E/Gamma
-   ecalTPEB = cms.InputTag("simEcalEBTriggerPrimitiveDigis","","HLT"),
-   ecalRecHitEB = cms.InputTag("ecalRecHit","EcalRecHitsEB","RECO"),
-   hcalRecHit = cms.InputTag("hbhereco"),
-   hcalTP = cms.InputTag("simHcalTriggerPrimitiveDigis","","HLT"),
-   useTowerMap = cms.untracked.bool(False)
-)
-
+process.load('L1Trigger.L1CaloTrigger.L1EGammaCrystalsEmulatorProducer_cfi')
 
 
 # --------------------------------------------------------------------------------------------
@@ -140,7 +146,8 @@ process.L1CaloTauProducer = cms.EDProducer("L1CaloTauProducer",
     EtMinForSeedHit = cms.untracked.double(1.0), # 1 GeV decault for seed hit
     debug = cms.untracked.bool(False),
     hcalTP = cms.InputTag("simHcalTriggerPrimitiveDigis","","HLT"),
-    L1CrystalClustersInputTag = cms.InputTag("L1EGammaCrystalsProducer", "L1EGXtalClusterNoCuts", "L1AlgoTest")
+    l1CaloTowers = cms.InputTag("L1EGammaClusterEmuProducer","L1CaloTowerCollection","L1AlgoTest"),
+    L1CrystalClustersInputTag = cms.InputTag("L1EGammaClusterEmuProducer", "L1EGXtalClusterEmulator", "L1AlgoTest")
 )
 
 process.pL1Objs = cms.Path( 
@@ -148,7 +155,8 @@ process.pL1Objs = cms.Path(
     process.tauGenJetsSelectorAllHadrons *
     process.tauGenJetsSelectorElectrons *
     process.tauGenJetsSelectorMuons *
-    process.L1EGammaCrystalsProducer *
+    process.L1EGammaClusterEmuProducer *
+    #process.L1EGammaCrystalsProducer *
     process.L1CaloTauProducer
 )
 

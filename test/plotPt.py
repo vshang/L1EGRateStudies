@@ -5,18 +5,20 @@ from ROOT import gStyle, gPad
 import CMS_lumi, tdrstyle
 from collections import OrderedDict
 
-qcd = 'qcd2.root'
-ggH = 'ggH2.root'
-version = '93X_ResolutionsV3'
+qcd = 'qcd_pu0.root'
+qcd200 = 'qcd_pu200.root'
+ggH = 'ggH.root'
+version = '20180911_jets_v2'
 #qcd = 'qcd1.root'
 #ggH = 'ggH1.root'
 #version = '93X_ResolutionsV2'
 
-base = '/data/truggles/phaseII_20180909_jets/'
+base = '/data/truggles/p2/20180911_jets_v2/'
 universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"/"
 
-qcdFile = ROOT.TFile( base+qcd, 'r' )
-ggHHTTFile = ROOT.TFile( base+ggH, 'r' )
+qcd0File = ROOT.TFile( base+qcd, 'r' )
+qcd200File = ROOT.TFile( base+qcd200, 'r' )
+#ggHHTTFile = ROOT.TFile( base+ggH, 'r' )
 
 def loadHists( file_, histMap = {}, eff=False ) :
     hists = {}
@@ -429,6 +431,11 @@ def drawDRHists(hists, c, ymax, doFit = False ) :
         hs.Add(hist, "ex0 hist")
 
     c.Clear()
+    #if c.GetName() == 'ecal_dimensions_check' :
+    #    c.SetLogy()
+    #else :
+    #    c.SetLogy(0)
+
     if c.GetLogy() == 0 : # linear
         hs.SetMinimum(0.)
     if ymax == 0. :
@@ -437,6 +444,11 @@ def drawDRHists(hists, c, ymax, doFit = False ) :
         hs.SetMaximum( maxi * 1.3 )
     elif ymax != 0. :
         hs.SetMaximum(ymax)
+    if 'dimensions_check' in c.GetName() :
+        hs.SetMaximum( maxi * 1.1 )
+    #if 'ecal_dimensions_check' in c.GetName() :
+    #    hs.SetMaximum( maxi * 50 )
+
     #hs.SetMinimum(0.0001)
  
     hs.Draw("nostack")
@@ -452,7 +464,8 @@ def drawDRHists(hists, c, ymax, doFit = False ) :
     #fit.Draw("lsame")
  
     #leg = setLegStyle(0.53,0.78,0.95,0.92)
-    leg = setLegStyle(0.5,0.7,0.9,0.9)
+    #leg = setLegStyle(0.5,0.7,0.9,0.9)
+    leg = setLegStyle(0.5,0.5,0.9,0.9)
     for hist in hists :
         leg.AddEntry(hist, hist.GetTitle(),"elp")
     leg.Draw("same")
@@ -473,8 +486,8 @@ def drawDRHists(hists, c, ymax, doFit = False ) :
         #cmsString = drawCMSString("CMS Simulation, <PU>=200 bx=25, Min-Bias")
                 
     c.Print(universalSaveDir+c.GetName()+".png")
-    #c.Print(universalSaveDir+c.GetName()+".pdf")
-    #c.Print(universalSaveDir+c.GetName()+".C")
+    c.Print(universalSaveDir+c.GetName()+".pdf")
+    c.Print(universalSaveDir+c.GetName()+".C")
 
     # Don't produce CDFs at the moment
     #del markers
@@ -549,6 +562,7 @@ def drawDRHists(hists, c, ymax, doFit = False ) :
 def simple1D( name, tree, iii, var, info, cut="" ) :
     h = ROOT.TH1F("%i" % iii[0], name+' '+var+';'+var, info[0], info[1], info[2])
     tree.Draw( var + " >> %i" % iii[0], cut )
+    h.SetDirectory(0)
     iii[0] += 1
     return h
     
@@ -568,8 +582,9 @@ if __name__ == '__main__' :
 
     
     
-    tree_qcd = qcdFile.Get("analyzer/tree")
-    tree_ggH = ggHHTTFile.Get("analyzer/tree")
+    tree_qcd0 = qcd0File.Get("analyzer/tree")
+    tree_qcd200 = qcd200File.Get("analyzer/tree")
+    #tree_ggH = ggHHTTFile.Get("analyzer/tree")
     tdrstyle.setTDRStyle()
     gStyle.SetOptStat(0)
 
@@ -584,14 +599,25 @@ if __name__ == '__main__' :
     
 
     min_ = 0.
-    max_ = 3.
+    max_ = 3.0
+    #max_ = 1.5
     tmpAry=[120,min_,max_]
     varList = [
         'jet_pt/genJet_pt',
+        'jet_energy/genJet_energy',
         'ecal_pt/genJet_pt',
         'hcal_pt/genJet_pt',
         'stage2jet_pt/genJet_pt',
-        'genJet_eta',
+        'stage2jet_deltaRGen',
+        'deltaR_gen',
+
+        #'hcal_dR3T/genJet_energy',
+        #'hcal_dR4T/genJet_energy',
+        #'hcal_dR5T/genJet_energy',
+        #'ecal_dR0p3/genJet_energy',
+        #'ecal_dR0p4/genJet_energy',
+        #'ecal_dR0p5/genJet_energy',
+
         #'stage2tau_pt/genJet_pt',
 
         #'genTau_pt/genJet_pt',
@@ -605,12 +631,95 @@ if __name__ == '__main__' :
     cnt = [0]
     baseline_cuts = "(genJet_pt > 40 || genTau_pt > 40) && (genJet_pt < 500 && genTau_pt < 500)"
     baseline_cuts = "(genJet_pt > 40 && abs(genJet_eta) < 1.1)"
-    for var in varList :
-        h1 = simple1D( 'QCD Jets', tree_qcd, cnt, var, tmpAry, baseline_cuts )
-        h2 = simple1D( 'ggH HTT Jets', tree_ggH, cnt, var, tmpAry, baseline_cuts )
-        c.SetName("ptResolutionGenPtGtr20_"+var.replace('/','_'))
-        #drawDRHists([h1,h2], c, 0., True ) # doFit
-        drawDRHists([h1,h2], c, 0., False ) # no Fit
+    #for var in varList :
+    #    h1 = simple1D( 'QCD Jets PU0', tree_qcd0, cnt, var, tmpAry, baseline_cuts )
+    #    h2 = simple1D( 'QCD Jets PU200', tree_qcd200, cnt, var, tmpAry, baseline_cuts )
+    #    c.SetName("ptResolutionGenPtGtr20_"+var.replace('/','_'))
+    #    #drawDRHists([h1,h2], c, 0., True ) # doFit
+    #    drawDRHists([h1,h2], c, 0., False ) # no Fit
+
+
+    max_ = 1.5
+    tmpAry=[50,min_,max_]
+    hists0 = []
+    hists200 = []
+    dr_map = {
+        'seed_energy' : 'HCAL Seed',
+        'dR1T' : '3x3 TT',
+        'dR2T' : '5x5 TT',
+        'dR3T' : '7x7 TT',
+        'dR4T' : '9x9 TT',
+        'dR5T' : '11x11 TT'
+    }
+    #for dr in ['seed_energy', 'dR1T', 'dR2T', 'dR3T', 'dR4T', 'dR5T'] :
+    #    hists0.append( simple1D( 'QCD Jets '+dr, tree_qcd0, cnt, '(hcal_'+dr+')/genJet_energy', tmpAry, baseline_cuts ) )
+    #    hists0[-1].SetTitle('QCD Jets '+dr_map[dr])
+    #    hists0[-1].GetXaxis().SetTitle('HCAL Energy / Gen Energy')
+    #c.SetName("hcal_dimensions_check")
+    #drawDRHists(hists0, c, 0., False ) # no Fit
+    #hists0 = []
+    #max_ = 1.
+    #tmpAry=[25,min_,max_]
+    ##for dr in ['leading_energy', 'dR0p1', 'dR0p2', 'dR0p3', 'dR0p4', 'dR0p5'] :
+    #for dr in ['dR0p05', 'dR0p1', 'dR0p2', 'dR0p3', 'dR0p4', 'dR0p5'] :
+    #    hists0.append( simple1D( 'QCD Jet '+dr, tree_qcd0, cnt, '(ecal_'+dr+')/genJet_energy', tmpAry, baseline_cuts ) )
+    #    hists0[-1].SetTitle('QCD Jets '+dr)
+    #    hists0[-1].GetXaxis().SetTitle('ECAL Energy / Gen Energy')
+    #c.SetName("ecal_dimensions_check")
+    #drawDRHists(hists0, c, 0., False ) # no Fit
+
+
+    hists = []
+    max_ = 0.5
+    tmpAry=[50,min_,max_]
+    dr_map = {
+        'deltaR_gen' : 'Phase-2 Jets',
+        'stage2jet_deltaRGen' : 'Stage-2 Jets',
+        'stage2tau_deltaRGen' : 'Stage-2 Taus'
+    }
+    #for dr in ['leading_energy', 'dR0p1', 'dR0p2', 'dR0p3', 'dR0p4', 'dR0p5'] :
+    #for dr in ['deltaR_gen', 'stage2jet_deltaRGen', 'stage2tau_deltaRGen'] :
+    for dr in ['deltaR_gen', 'stage2jet_deltaRGen'] :
+        hists.append( simple1D( 'QCD Jet '+dr, tree_qcd0, cnt, dr, tmpAry, baseline_cuts ) )
+        hists[-1].SetTitle(dr_map[dr]+' PU 0')
+        hists[-1].GetXaxis().SetTitle('#Delta R(L1 Obj, Gen)')
+        hists.append( simple1D( 'QCD Jet '+dr, tree_qcd200, cnt, dr, tmpAry, baseline_cuts ) )
+        hists[-1].SetTitle(dr_map[dr]+' PU 200')
+        hists[-1].GetXaxis().SetTitle('#Delta R(L1 Obj, Gen)')
+    c.SetName("dr_dimensions_check")
+    drawDRHists(hists, c, 0., False ) # no Fit
+
+
+
+    hists = []
+    max_ = 3.0
+    min_ = 0.
+    tmpAry=[50,min_,max_]
+    dr_map = {
+        'jet_pt/genJet_pt' : 'Phase-2 Jets',
+        'stage2jet_pt/genJet_pt' : 'Stage-2 Jets',
+        'stage2tau_pt/genJet_pt' : 'Stage-2 Taus'
+    }
+    #for dr in ['leading_energy', 'dR0p1', 'dR0p2', 'dR0p3', 'dR0p4', 'dR0p5'] :
+    #for dr in ['deltaR_gen', 'stage2jet_deltaRGen', 'stage2tau_deltaRGen'] :
+    for dr in ['jet_pt/genJet_pt', 'stage2jet_pt/genJet_pt'] :
+        hists.append( simple1D( 'QCD Jet '+dr, tree_qcd0, cnt, dr, tmpAry, baseline_cuts ) )
+        hists[-1].SetTitle(dr_map[dr]+' PU 0')
+        hists[-1].GetXaxis().SetTitle('Reco p_{T} / Gen p_{T}')
+        hists.append( simple1D( 'QCD Jet '+dr, tree_qcd200, cnt, dr, tmpAry, baseline_cuts ) )
+        hists[-1].SetTitle(dr_map[dr]+' PU 200')
+        hists[-1].GetXaxis().SetTitle('Reco p_{T} / Gen p_{T}')
+    c.SetName("dPt_res_check")
+    drawDRHists(hists, c, 0., False ) # no Fit
+
+
+        #'jet_pt/genTau_pt',
+        #'ecal_pt/genTau_pt',
+        #'hcal_pt/genTau_pt',
+        #'stage2jet_pt/genTau_pt',
+
+
+
 
 
 

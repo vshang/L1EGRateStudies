@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DATE=20180912_v2
+DATE=20180923_v1
 
 # Different options
 doHitAnalyzer=true
@@ -29,7 +29,7 @@ doTau=false
 if $doJets; then
     farmoutAnalysisJobs \
         --output-dir=. \
-        --input-files-per-job=1 \
+        --input-files-per-job=2 \
         --vsize-limit=6000 \
         --input-file-list=submitFileLists/qcd_93X_pu0.txt \
         phaseII_qcd_${DATE} $CMSSW_BASE condor_jets.py
