@@ -120,6 +120,14 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
         edm::Handle<BXVector<l1t::Jet>> stage2JetHandle;
         edm::EDGetTokenT<BXVector<l1t::Tau> > stage2TauToken_;
         edm::Handle<BXVector<l1t::Tau>> stage2TauHandle;
+
+        // Efficiency hists
+        TH1F * eff_denom_pt;
+        TH1F * eff_num_pt;
+        TH1F * eff_num_stage2jet_pt;
+        TH1F * eff_denom_eta;
+        TH1F * eff_num_eta;
+        TH1F * eff_num_stage2jet_eta;
                 
         // Crystal pt stuff
         TTree * tree;
@@ -250,6 +258,13 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
 
     edm::Service<TFileService> fs;
 
+    eff_denom_pt = fs->make<TH1F>("eff_denom_pt", "Gen. pt;Gen. pT (GeV); Counts", 30, 0, 300);
+    eff_num_pt = fs->make<TH1F>("eff_num_pt", "Gen. pt;Gen. pT (GeV); Counts", 30, 0, 300);
+    eff_num_stage2jet_pt = fs->make<TH1F>("eff_num_stage2jet_pt", "Gen. pt;Gen. pT (GeV); Counts", 30, 0, 300);
+    eff_denom_eta = fs->make<TH1F>("eff_denom_eta", "Gen. eta;Gen. pT (GeV); Counts", 40, -2.0, 2.0);
+    eff_num_eta = fs->make<TH1F>("eff_num_eta", "Gen. eta;Gen. pT (GeV); Counts", 40, -2.0, 2.0);
+    eff_num_stage2jet_eta = fs->make<TH1F>("eff_num_stage2jet_eta", "Gen. eta;Gen. pT (GeV); Counts", 40, -2.0, 2.0);
+
     tree = fs->make<TTree>("tree", "CaloJet values");
     tree->Branch("run", &treeinfo.run);
     tree->Branch("lumi", &treeinfo.lumi);
@@ -378,23 +393,69 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     treeinfo.event = iEvent.eventAuxiliary().event();
 
 
+    // Get all collections for later in GenJet loop
     // Get Phase-II CaloJet collection
     iEvent.getByToken(caloJetsToken_,caloJetsHandle);
     caloJets = (*caloJetsHandle.product());
+    iEvent.getByToken(stage2JetToken_, stage2JetHandle);
+    JetBxCollection stage2JetCollection;
+    stage2JetCollection = *stage2JetHandle.product();
+    iEvent.getByToken(stage2TauToken_, stage2TauHandle);
+    TauBxCollection stage2TauCollection;
+    stage2TauCollection = *stage2TauHandle.product();
+    iEvent.getByToken(genHadronicTausToken_, genHTaus);
+    GenJetCollection genHTauCollection = *genHTaus.product();
+
+    // Sort collections once
+    // Stage-2 Jets
+    JetCollection stage2Jets;
+    if ( stage2JetHandle.isValid() )
+    {
+        // Make stage2 sortable
+        for (auto& s2_jet : stage2JetCollection)
+        {
+            stage2Jets.push_back( s2_jet );
+        }
+        std::sort(begin(stage2Jets), end(stage2Jets), [](l1t::Jet& a, l1t::Jet& b){return a.pt() > b.pt();});
+    }
+
+    // Stage-2 Taus 
+    TauCollection stage2Taus;
+    if ( stage2TauHandle.isValid() )
+    {
+        // Make stage2 sortable
+        for (auto& s2_tau : stage2TauCollection)
+        {
+            stage2Taus.push_back( s2_tau );
+        }
+        std::sort(begin(stage2Taus), end(stage2Taus), [](l1t::Tau& a, l1t::Tau& b){return a.pt() > b.pt();});
+    }
+
+    // Gen Tau_h
+    if ( genHTaus.isValid() )
+    {
+        std::sort(begin(genHTauCollection), end(genHTauCollection), [](reco::GenJet& a, reco::GenJet& b){return a.pt() > b.pt();});
+    }
+
+
     std::cout << " -- Input L1CaloTaus: " << caloJets.size() << std::endl;
 
     // Sort caloJets so we can always pick highest pt caloJet matching cuts
     std::sort(begin(caloJets), end(caloJets), [](const l1slhc::L1CaloJet& a, const l1slhc::L1CaloJet& b){return a.pt() > b.pt();});
         
-
     // Loop over all gen jets with pt > 10 GeV and match them to Phase-II CaloJets
     // Generator info (truth)
     iEvent.getByToken(genJetsToken_,genJetsHandle);
     genJets = *genJetsHandle.product();
+
+    // Sort gen jets
+    std::sort(begin(genJets), end(genJets), [](const reco::GenJet& a, const reco::GenJet& b){return a.pt() > b.pt();});
+
     int cnt = 0;
-    for (auto& genJet : genJets ) {
+    for (auto& genJet : genJets ) 
+    {
         // Skip lowest pT Jets
-        if (genJet.pt() < 10) continue;
+        if (genJet.pt() < 10) break;  // no need for continue as we sorted by pT so we're done
         // Skip high eta, keep things hear boundary for future study
         if ( fabs(genJet.eta())  > 2.0) continue;
         ++cnt;
@@ -405,27 +466,18 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         //      return;
         //}
     
+        // Fill basic denominator efficiencies
+        eff_denom_pt->Fill(genJet.pt());
+        eff_denom_eta->Fill(genJet.eta());
     
         reco::Candidate::PolarLorentzVector genJetP4(genJet.pt(), genJet.eta(), genJet.phi(), genJet.mass() );
     
     
         // Stage-2 Jets
-        iEvent.getByToken(stage2JetToken_, stage2JetHandle);
-        JetBxCollection stage2JetCollection;
-        JetCollection stage2Jets;
         bool jet_matched = false;
         if ( stage2JetHandle.isValid() )
         {
 
-            // Make stage2 sortable
-            stage2JetCollection = *stage2JetHandle.product();
-            for (auto& s2_jet : stage2JetCollection)
-            {
-                stage2Jets.push_back( s2_jet );
-            }
-
-            // Sort
-            std::sort(begin(stage2Jets), end(stage2Jets), [](l1t::Jet& a, l1t::Jet& b){return a.pt() > b.pt();});
 
             // Find stage2 within dR 0.3, beginning with higest pt cand
             for (auto& s2_jet : stage2Jets)
@@ -440,6 +492,11 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
                     treeinfo.stage2jet_charge = s2_jet.charge();
                     treeinfo.stage2jet_puEt = s2_jet.puEt();
                     treeinfo.stage2jet_deltaRGen = reco::deltaR( s2_jet.p4(), genJetP4 );
+
+                    // Fill basic numerator efficiencies
+                    eff_num_stage2jet_pt->Fill(genJet.pt());
+                    eff_num_stage2jet_eta->Fill(genJet.eta());
+
                     jet_matched = true;
                     break;
                 }
@@ -461,22 +518,10 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     
     
         // Stage-2 Taus 
-        iEvent.getByToken(stage2TauToken_, stage2TauHandle);
-        TauBxCollection stage2TauCollection;
-        TauCollection stage2Taus;
         bool tau_matched = false;
         if ( stage2TauHandle.isValid() )
         {
 
-            // Make stage2 sortable
-            stage2TauCollection = *stage2TauHandle.product();
-            for (auto& s2_tau : stage2TauCollection)
-            {
-                stage2Taus.push_back( s2_tau );
-            }
-
-            // Sort
-            std::sort(begin(stage2Taus), end(stage2Taus), [](l1t::Tau& a, l1t::Tau& b){return a.pt() > b.pt();});
 
             // Find stage2 within dR 0.3, beginning with higest pt cand
             for (auto& s2_tau : stage2Taus)
@@ -579,17 +624,9 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
 
         // Gen Hadronic Taus
-        iEvent.getByToken(genHadronicTausToken_, genHTaus);
-        GenJetCollection genHTauCollection;
         bool gen_tau_matched = false;
         if ( genHTaus.isValid() )
         {
-
-            // Make stage2 sortable
-            genHTauCollection = *genHTaus.product();
-
-            // Sort
-            std::sort(begin(genHTauCollection), end(genHTauCollection), [](reco::GenJet& a, reco::GenJet& b){return a.pt() > b.pt();});
 
             // Find stage2 within dR 0.3, beginning with higest pt cand
             for (auto& gen_tau : genHTauCollection)
@@ -638,6 +675,11 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
                     treeinfo.deltaEta = genJetP4.eta()-caloJet.eta();
                     
                     fill_tree(caloJet);
+
+                    // Fill basic numerator efficiencies
+                    eff_num_pt->Fill(genJet.pt());
+                    eff_num_eta->Fill(genJet.eta());
+    
                     found_caloJet = true;
                     break;
     
