@@ -8,13 +8,14 @@ from collections import OrderedDict
 qcd = 'qcd_pu0.root'
 qcd200 = 'qcd_pu200.root'
 ggH = 'ggH.root'
-version = '20180911_jets_v2'
+version = '20180927_jets_v1'
 #qcd = 'qcd1.root'
 #ggH = 'ggH1.root'
 #version = '93X_ResolutionsV2'
 
-base = '/data/truggles/p2/20180911_jets_v2/'
+base = '/data/truggles/p2/20180927_QCD_diff_jet_shapes/'
 universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"/"
+version = '20180911_jets_v2'
 
 qcd0File = ROOT.TFile( base+qcd, 'r' )
 qcd200File = ROOT.TFile( base+qcd200, 'r' )
@@ -415,18 +416,23 @@ def draw2DdeltaRHist(hist, c) :
 
 def drawDRHists(hists, c, ymax, doFit = False ) :
     c.cd()
-    colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray+2]
+    colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen-2, ROOT.kOrange, ROOT.kGray+2]
     marker_styles = [20, 24, 25, 26, 32, 35]
     hs = ROOT.THStack("hs", c.GetTitle())
     maxi = 0.
     for i, hist in enumerate(hists) :
+        # FIXME
+        j = i
+        if i > (len(hists)/2-1) : j = i - 4
         hist.Sumw2()
         hist.Scale(1./hist.Integral())
-        hist.SetLineColor(colors[i])
-        hist.SetLineWidth(2)
-        hist.SetMarkerColor(colors[i])
-        hist.SetMarkerStyle(marker_styles[i])
-        hist.SetMarkerSize(0.8)
+        hist.SetLineColor(colors[j])
+        hist.SetLineWidth(4)
+        if i > (len(hists)/2-1) : hist.SetLineStyle( 2 )
+        hist.SetMarkerColor(colors[j])
+        hist.SetMarkerStyle(marker_styles[j])
+        #hist.SetMarkerSize(0.8)
+        hist.SetMarkerSize(0.)
         if hist.GetMaximum() > maxi : maxi = hist.GetMaximum()
         hs.Add(hist, "ex0 hist")
 
@@ -439,7 +445,8 @@ def drawDRHists(hists, c, ymax, doFit = False ) :
     if c.GetLogy() == 0 : # linear
         hs.SetMinimum(0.)
     if ymax == 0. :
-        hs.SetMaximum( maxi * 1.8 )
+        #hs.SetMaximum( maxi * 1.8 )
+        hs.SetMaximum( maxi * 1.5 )
     elif ymax == -1 :
         hs.SetMaximum( maxi * 1.3 )
     elif ymax != 0. :
@@ -679,15 +686,15 @@ if __name__ == '__main__' :
     }
     #for dr in ['leading_energy', 'dR0p1', 'dR0p2', 'dR0p3', 'dR0p4', 'dR0p5'] :
     #for dr in ['deltaR_gen', 'stage2jet_deltaRGen', 'stage2tau_deltaRGen'] :
-    for dr in ['deltaR_gen', 'stage2jet_deltaRGen'] :
-        hists.append( simple1D( 'QCD Jet '+dr, tree_qcd0, cnt, dr, tmpAry, baseline_cuts ) )
-        hists[-1].SetTitle(dr_map[dr]+' PU 0')
-        hists[-1].GetXaxis().SetTitle('#Delta R(L1 Obj, Gen)')
-        hists.append( simple1D( 'QCD Jet '+dr, tree_qcd200, cnt, dr, tmpAry, baseline_cuts ) )
-        hists[-1].SetTitle(dr_map[dr]+' PU 200')
-        hists[-1].GetXaxis().SetTitle('#Delta R(L1 Obj, Gen)')
-    c.SetName("dr_dimensions_check")
-    drawDRHists(hists, c, 0., False ) # no Fit
+    #for dr in ['deltaR_gen', 'stage2jet_deltaRGen'] :
+    #    hists.append( simple1D( 'QCD Jet '+dr, tree_qcd0, cnt, dr, tmpAry, baseline_cuts ) )
+    #    hists[-1].SetTitle(dr_map[dr]+' PU 0')
+    #    hists[-1].GetXaxis().SetTitle('#Delta R(L1 Obj, Gen)')
+    #    hists.append( simple1D( 'QCD Jet '+dr, tree_qcd200, cnt, dr, tmpAry, baseline_cuts ) )
+    #    hists[-1].SetTitle(dr_map[dr]+' PU 200')
+    #    hists[-1].GetXaxis().SetTitle('#Delta R(L1 Obj, Gen)')
+    #c.SetName("dr_dimensions_check")
+    #drawDRHists(hists, c, 0., False ) # no Fit
 
 
 
@@ -702,15 +709,15 @@ if __name__ == '__main__' :
     }
     #for dr in ['leading_energy', 'dR0p1', 'dR0p2', 'dR0p3', 'dR0p4', 'dR0p5'] :
     #for dr in ['deltaR_gen', 'stage2jet_deltaRGen', 'stage2tau_deltaRGen'] :
-    for dr in ['jet_pt/genJet_pt', 'stage2jet_pt/genJet_pt'] :
-        hists.append( simple1D( 'QCD Jet '+dr, tree_qcd0, cnt, dr, tmpAry, baseline_cuts ) )
-        hists[-1].SetTitle(dr_map[dr]+' PU 0')
-        hists[-1].GetXaxis().SetTitle('Reco p_{T} / Gen p_{T}')
-        hists.append( simple1D( 'QCD Jet '+dr, tree_qcd200, cnt, dr, tmpAry, baseline_cuts ) )
-        hists[-1].SetTitle(dr_map[dr]+' PU 200')
-        hists[-1].GetXaxis().SetTitle('Reco p_{T} / Gen p_{T}')
-    c.SetName("dPt_res_check")
-    drawDRHists(hists, c, 0., False ) # no Fit
+    #for dr in ['jet_pt/genJet_pt', 'stage2jet_pt/genJet_pt'] :
+    #    hists.append( simple1D( 'QCD Jet '+dr, tree_qcd0, cnt, dr, tmpAry, baseline_cuts ) )
+    #    hists[-1].SetTitle(dr_map[dr]+' PU 0')
+    #    hists[-1].GetXaxis().SetTitle('Reco p_{T} / Gen p_{T}')
+    #    hists.append( simple1D( 'QCD Jet '+dr, tree_qcd200, cnt, dr, tmpAry, baseline_cuts ) )
+    #    hists[-1].SetTitle(dr_map[dr]+' PU 200')
+    #    hists[-1].GetXaxis().SetTitle('Reco p_{T} / Gen p_{T}')
+    #c.SetName("dPt_res_check")
+    #drawDRHists(hists, c, 0., False ) # no Fit
 
 
         #'jet_pt/genTau_pt',
@@ -718,6 +725,38 @@ if __name__ == '__main__' :
         #'hcal_pt/genTau_pt',
         #'stage2jet_pt/genTau_pt',
 
+    #trees = OrderedDict()
+    max_ = 3.0
+    min_ = 0.
+    tmpAry=[50,min_,max_]
+    baseline_cuts = "(genJet_pt > 40 && abs(genJet_eta) < 1.1)"
+    hists = []
+    histsPU0 = []
+    histsPU200 = []
+    to_plot = 'jet_pt/genJet_pt'
+    for pu in ['qcd', 'qcd200'] :
+        for shape in ['7x7', 'circT', 'circL', '9x9'] :
+        #for shape in ['7x7', 'circL', 'circT'] :
+            f = ROOT.TFile( base+pu+'_20180927_'+shape+'.root', 'r' )
+            tree = f.Get('analyzer/tree')
+            hists.append( simple1D( pu+'_'+shape, tree, cnt, to_plot, tmpAry, baseline_cuts ) )
+            hists[-1].GetXaxis().SetTitle('Reco Jet p_{T} / Gen Jet p_{T}')
+            if pu == 'qcd' :
+                histsPU0.append( simple1D( pu+'_'+shape, tree, cnt, to_plot, tmpAry, baseline_cuts ) )
+                histsPU0[-1].GetXaxis().SetTitle('Reco Jet p_{T} / Gen Jet p_{T}')
+            if pu == 'qcd200' :
+                histsPU200.append( simple1D( pu+'_'+shape, tree, cnt, to_plot, tmpAry, baseline_cuts ) )
+                histsPU200[-1].GetXaxis().SetTitle('Reco Jet p_{T} / Gen Jet p_{T}')
+            #hists[-1].SetTitle()
+    c.SetName("shapes_and_PU_comparison")
+    drawDRHists(hists, c, 0., False ) # no Fit
+    c.SetName("shapes_PU_200_comparison")
+
+    drawDRHists(histsPU200, c, 0., False ) # no Fit
+
+    c.SetName("shapes_PU_zero_comparison")
+    drawDRHists(histsPU0, c, 0., False ) # no Fit
+    
 
 
 
