@@ -7,7 +7,7 @@ gStyle.SetOptStat(0)
 
 
 def getTH2( tree, name, to_plot, cut, x_and_y_bins ) :
-    print cut
+    #print cut
     h1 = ROOT.TH2F(name+'_h', name+'_h', x_and_y_bins[0], x_and_y_bins[1], x_and_y_bins[2], x_and_y_bins[3], x_and_y_bins[4], x_and_y_bins[5])
     tree.Draw( to_plot + ' >> ' + name+'_h', cut )
     h1.SetDirectory(0)
@@ -144,6 +144,118 @@ def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, poi
     del h1, h2, h3, g1
 
 
+def drawPointsHists3(h1, h2, h3, title1, title2, title3, xaxis, yaxis, areaNorm=False) :
+    doFit = False
+    c2 = ROOT.TCanvas('c2', 'c2', 1600, 600)
+    c2.Divide(3)
+    c2.cd(1)
+    ROOT.gPad.SetRightMargin( ROOT.gPad.GetRightMargin() * 1.4 )
+    h1.GetXaxis().SetTitle( xaxis )
+    h1.GetYaxis().SetTitle( yaxis )
+    h1.SetTitle( title1 )
+    if areaNorm :
+        h1.Scale( 1. / h1.Integral() )
+        max_ = h1.GetMaximum() * 1.3
+        h1.SetMaximum( max_ )
+    h1.Draw("colz")
+    ROOT.gPad.SetGrid()
+    xVals1 = array('f', [])
+    yVals1 = array('f', [])
+
+    points = []
+    min_ = 10
+    for i in range(min_, 300) : points.append( i )
+    for point in points :
+        # if empty column, don't appent to points
+        avg = getAverage( h1, point )
+        if avg == -999 : continue
+        xVals1.append( point )
+        yVals1.append( avg )
+    #print xVals1
+    #print yVals1
+    g1 = ROOT.TGraph(len(xVals1), xVals1, yVals1)
+    g1.SetLineWidth(2)
+    g1.Draw('SAME')
+    if doFit :
+        mini = points[0]
+        maxi = points[-1]
+        f1 = ROOT.TF1( 'f1', '([0] + [1]*TMath::Exp(-[2]*x))', mini, maxi)
+        f1.SetParName( 0, "y rise" )
+        f1.SetParName( 1, "scale" )
+        f1.SetParName( 2, "decay" )
+        f1.SetParameter( 0, .5 )
+        f1.SetParameter( 1, 2.5 )
+        f1.SetParameter( 2, .15 )
+        fit1 = g1.Fit('f1', 'R S')
+    
+    c2.cd(2)
+    ROOT.gPad.SetRightMargin( ROOT.gPad.GetRightMargin() * 1.4 )
+    h2.SetTitle( title2 )
+    if areaNorm :
+        h2.Scale( 1. / h2.Integral() )
+        h2.SetMaximum( max_ )
+    h2.Draw("colz")
+    ROOT.gPad.SetGrid()
+    h2.GetXaxis().SetTitle( xaxis )
+    h2.GetYaxis().SetTitle( yaxis )
+    xVals2 = array('f', [])
+    yVals2 = array('f', [])
+    for point in points :
+        xVals2.append( point )
+        yVals2.append( getAverage( h2, point ) )
+    #print xVals2
+    #print yVals2
+    g2 = ROOT.TGraph(len(xVals2), xVals2, yVals2)
+    g2.SetLineWidth(2)
+    g2.Draw('SAME')
+    if doFit :
+        f2 = ROOT.TF1( 'f2', '([0] + [1]*TMath::Exp(-[2]*x))', mini, maxi)
+        f2.SetParName( 0, "y rise" )
+        f2.SetParName( 1, "scale" )
+        f2.SetParName( 2, "decay" )
+        f2.SetParameter( 0, .5 )
+        f2.SetParameter( 1, 2.5 )
+        f2.SetParameter( 2, .15 )
+        fit2 = g2.Fit('f2', 'R S')
+
+    
+    c2.cd(3)
+    ROOT.gPad.SetRightMargin( ROOT.gPad.GetRightMargin() * 1.4 )
+    h3.SetTitle( title3 )
+    if areaNorm :
+        h3.Scale( 1. / h3.Integral() )
+        h3.SetMaximum( max_ )
+    h3.Draw("colz")
+    ROOT.gPad.SetGrid()
+    h3.GetXaxis().SetTitle( xaxis )
+    h3.GetYaxis().SetTitle( yaxis )
+    xVals3 = array('f', [])
+    yVals3 = array('f', [])
+    for point in points :
+        xVals3.append( point )
+        yVals3.append( getAverage( h3, point ) )
+    #print xVals3
+    #print yVals3
+    g3 = ROOT.TGraph(len(xVals3), xVals3, yVals3)
+    g3.SetLineWidth(2)
+    g3.Draw('SAME')
+    if doFit :
+        f3 = ROOT.TF1( 'f3', '([0] + [1]*TMath::Exp(-[2]*x))', mini, maxi)
+        f3.SetParName( 0, "y rise" )
+        f3.SetParName( 1, "scale" )
+        f3.SetParName( 2, "decay" )
+        f3.SetParameter( 0, .5 )
+        f3.SetParameter( 1, 2.5 )
+        f3.SetParameter( 2, .15 )
+        fit3 = g3.Fit('f3', 'R S')
+
+    # Just to show the resulting fit
+    c2.Print(plotDir+"/"+c.GetTitle()+".png")
+    #c2.Print(plotDir+"/"+c.GetTitle()+".C")
+    c2.Print(plotDir+"/"+c.GetTitle()+".pdf")
+
+
+
 def drawPointsHists(h1, h2, title1, title2, xaxis, yaxis, new=False) :
     doFit = False
     c2 = ROOT.TCanvas('c2', 'c2', 1200, 600)
@@ -159,9 +271,9 @@ def drawPointsHists(h1, h2, title1, title2, xaxis, yaxis, new=False) :
     yVals1 = array('f', [])
 
     points = []
-    min_ = 20
+    min_ = 5
     if c.GetTitle() == "genPtVPtResFit_s2Cor" : min_ = 5 
-    for i in range(min_, 300) : points.append( i )
+    for i in range(min_, 505, 10) : points.append( i )
     for point in points :
         # if empty column, don't appent to points
         avg = getAverage( h1, point )
@@ -214,10 +326,11 @@ def drawPointsHists(h1, h2, title1, title2, xaxis, yaxis, new=False) :
 
     # Just to show the resulting fit
     c2.Print(plotDir+"/"+c.GetTitle()+".png")
-    c2.Print(plotDir+"/"+c.GetTitle()+".C")
-    c2.Print(plotDir+"/"+c.GetTitle()+".pdf")
+    #c2.Print(plotDir+"/"+c.GetTitle()+".C")
+    #c2.Print(plotDir+"/"+c.GetTitle()+".pdf")
 
-    if not doFit : return
+    if not doFit :
+        return g2
     cx = ROOT.TCanvas('cx','cx',600,600)
     cx.SetGridx()
     cx.SetGridy()
@@ -248,7 +361,6 @@ def drawPointsHists(h1, h2, title1, title2, xaxis, yaxis, new=False) :
     cx.Print(plotDir+"/"+c.GetTitle()+"_fits.pdf")
 
     del c2, h1, h2, g1, g2, cx
-
 
 
 
@@ -307,14 +419,16 @@ if __name__ == '__main__' :
 
     #base = '/data/truggles/p2/20180911_jets_v2/'
     #base2 = '/data/truggles/p2/20180913_jets/'
-    base = '/data/truggles/phaseII_qcd_20180923_v5-condor_jets/'
+    base = '/data/truggles/phaseII_qcd_20180925_v1-condor_jets/'
+    base = ''
     #jetsF0 = 'qcd_pu0.root'
     #jetsF0 = 'qcd_LOW_L1EG.root'
     #jetsF200 = 'qcd_pu200.root'
-    jetsF0 = 'qcd.root'
+    jetsF0 = 'qcd2.root'
 
     date = '20180923_calibCheckV5'
     date = '20180923_calibCheckV6'
+    date = '20180926_calibCheckV2_visuals'
     plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date+''
     if not os.path.exists( plotDir ) : os.makedirs( plotDir )
 
@@ -331,34 +445,126 @@ if __name__ == '__main__' :
     c.Divide(3)
 
     cut = "abs(genJet_eta)<1.1"
-    x_and_y_bins = [90,25,300, 40,0,2]
+    x_and_y_bins = [30,0,300, 60,0,3]
 
 
-    ### PU 0 ###
-    to_plot = '(jet_pt)/genJet_pt:genJet_pt'
-    h1 = getTH2( tree, 'qcd', to_plot, cut, x_and_y_bins )
-    to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
-    h2 = getTH2( tree, 'stage-2', to_plot, cut, x_and_y_bins )
-    xaxis = "Gen Jet P_{T} (GeV)"
-    yaxis = "Relative Error in P_{T} reco/gen"
-    title1 = "Phase-2 Jets"
-    title2 = "Stage-2 Jets"
-    c.SetTitle("genJetPt_qcd_stage-2_PU0")
-    drawPointsHists(h1, h2, title1, title2, xaxis, yaxis)
+    #### PU 0 ###
+    #to_plot = '(jet_pt)/genJet_pt:genJet_pt'
+    #h1 = getTH2( tree, 'qcd', to_plot, cut, x_and_y_bins )
+    #to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
+    #h2 = getTH2( tree, 'stage-2', to_plot, cut, x_and_y_bins )
+    #xaxis = "Gen Jet P_{T} (GeV)"
+    #yaxis = "Relative Error in P_{T} reco/gen"
+    #title1 = "Phase-2 Jets"
+    #title2 = "Stage-2 Jets"
+    #c.SetTitle("genJetPt_qcd_stage-2_PU0")
+    #drawPointsHists(h1, h2, title1, title2, xaxis, yaxis)
 
-    #cut = "abs(genJet_eta)<1.1 && ecal_L1EG_jet_pt > 0"
-    cut = "abs(genJet_eta)<1.1"
-    to_plot = '(ecal_L1EG_jet_pt + ecal_pt)/genJet_pt:genJet_pt'
-    h1 = getTH2( tree, 'qcd', to_plot, cut, x_and_y_bins )
-    cut = "abs(genJet_eta)<1.1"
-    to_plot = '(hcal_pt)/genJet_pt:genJet_pt'
-    h2 = getTH2( tree, 'stage-2', to_plot, cut, x_and_y_bins )
-    xaxis = "Gen Jet P_{T} (GeV)"
-    yaxis = "Relative Error in P_{T} reco/gen"
-    title1 = "ECAL Reco p_{T}"
-    title2 = "HCAL Reco p_{T}"
-    c.SetTitle("genJetPt_Ecal_vs_Hcal_PU0")
-    drawPointsHists(h1, h2, title1, title2, xaxis, yaxis)
+    #to_plot = '(ecal_L1EG_jet_pt + ecal_pt)/genJet_pt:genJet_pt'
+    #h1 = getTH2( tree, 'qcd', to_plot, cut, x_and_y_bins )
+    #to_plot = '(hcal_pt)/genJet_pt:genJet_pt'
+    #h2 = getTH2( tree, 'stage-2', to_plot, cut, x_and_y_bins )
+    #xaxis = "Gen Jet P_{T} (GeV)"
+    #yaxis = "Relative Error in P_{T} reco/gen"
+    #title1 = "ECAL Total Reco p_{T}"
+    #title2 = "HCAL Reco p_{T}"
+    #c.SetTitle("genJetPt_Ecal_vs_Hcal_PU0")
+    #drawPointsHists(h1, h2, title1, title2, xaxis, yaxis)
+
+    #to_plot = '(ecal_L1EG_jet_pt)/genJet_pt:genJet_pt'
+    #h1 = getTH2( tree, 'qcd', to_plot, cut, x_and_y_bins )
+    #to_plot = '(ecal_pt)/genJet_pt:genJet_pt'
+    #h2 = getTH2( tree, 'stage-2', to_plot, cut, x_and_y_bins )
+    #xaxis = "Gen Jet P_{T} (GeV)"
+    #yaxis = "Relative Error in P_{T} reco/gen"
+    #title1 = "ECAL L1EG Reco p_{T}"
+    #title2 = "ECAL Uncl. Reco p_{T}"
+    #c.SetTitle("genJetPt_Ecal_PU0")
+    #drawPointsHists(h1, h2, title1, title2, xaxis, yaxis)
+
+    #to_plot = '(jet_pt)/genJet_pt:genJet_pt'
+    #h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
+    #to_plot = '(ecal_L1EG_jet_pt + ecal_pt + hcal_pt )/genJet_pt:genJet_pt'
+    #h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
+    #to_plot = '(ecal_L1EG_jet_pt + ecal_pt + (hcal_pt*calib) )/genJet_pt:genJet_pt'
+    #h3 = getTH2( tree, 'qcd3', to_plot, cut, x_and_y_bins )
+    #xaxis = "Gen Jet P_{T} (GeV)"
+    #yaxis = "Relative Error in P_{T} reco/gen"
+    #title1 = "Jet Reco p_{T}"
+    #title2 = "ECAL+HCAL+L1EG Reco p_{T}"
+    #title3 = "ECAL+(HCAL*calib)+L1EG Reco p_{T}"
+    #c.SetTitle("genJetPt_Subdivided_PU0")
+    #drawPointsHists3(h1, h2, h3, title1, title2, title3, xaxis, yaxis)
+
+    x_and_y_bins = [28,20,300, 60,0,3]
+    """ Resulting Calibrations """
+    #to_plot = '(jet_pt)/genJet_pt:genJet_pt'
+    #h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
+    #to_plot = '(ecal_L1EG_jet_pt + ecal_pt + (hcal_pt*calib) )/genJet_pt:genJet_pt'
+    #h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
+    #to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
+    #h3 = getTH2( tree, 's2', to_plot, cut, x_and_y_bins )
+    #xaxis = "Gen Jet P_{T} (GeV)"
+    #yaxis = "Relative Error in P_{T} reco/gen"
+    ###title2 = "ECAL+(HCAL*calib)+L1EG Reco p_{T}"
+    #title1 = "Phase-II before HCAL calibrations"
+    #title2 = "Phase-II with HCAL calibrations"
+    #title3 = "Phase-I with calibrations"
+    #c.SetTitle("genJetPt_Calibrated_vs_Stage-2_PU0")
+    #areaNorm = True
+    #drawPointsHists3(h1, h2, h3, title1, title2, title3, xaxis, yaxis, areaNorm)
+
+    ### Shifting EM fraction plots ###
+    quantile_list = [0,0.0605,0.1355,0.1975,0.2525,0.3065,0.3645,0.4305,0.5185,0.6745,1] # see get_quantiles.py
+
+    #for i in range(len(quantile_list)-1) :
+    #    f_low = quantile_list[i]
+    #    f_high = quantile_list[i+1]
+    #    frac_cut = "abs(genJet_eta)<1.1 && (((ecal_L1EG_jet_pt + ecal_pt)/jet_pt) >= %f && ((ecal_L1EG_jet_pt + ecal_pt)/jet_pt) < %f)" % (f_low, f_high)
+    #    to_plot = '(ecal_L1EG_jet_pt + ecal_pt)/genJet_pt:genJet_pt'
+    #    h1 = getTH2( tree, 'qcd1', to_plot, frac_cut, x_and_y_bins )
+    #    to_plot = '(hcal_pt)/genJet_pt:genJet_pt'
+    #    h2 = getTH2( tree, 'qcd2', to_plot, frac_cut, x_and_y_bins )
+    #    to_plot = '(jet_pt)/genJet_pt:genJet_pt'
+    #    h3 = getTH2( tree, 'qcd3', to_plot, frac_cut, x_and_y_bins )
+    #    xaxis = "Gen Jet P_{T} (GeV)"
+    #    yaxis = "Relative Error in P_{T} reco/gen"
+    #    title1 = "L1CaloJets ECAL - EM %.2f to %.2f" % (f_low, f_high)
+    #    title2 = "L1CaloJets HCAL - EM %.2f to %.2f" % (f_low, f_high)
+    #    title3 = "L1CaloJets Total - EM %.2f to %.2f" % (f_low, f_high)
+    #    c.SetTitle("genJetPt_qcd_EM_frac_%s_to_%s_PU0" % (str(f_low).replace('.','p'), str(f_high).replace('.','p')))
+    #    drawPointsHists3(h1, h2, h3, title1, title2, title3, xaxis, yaxis)
+
+    #XXX f_out = ROOT.TFile('new_calibrations.root','RECREATE')
+    #XXX x_and_y_bins = [50,0,500, 200,0,20]
+    x_and_y_bins = [30,0,300, 60,0,3]
+    for i in range(len(quantile_list)-1) :
+        f_low = quantile_list[i]
+        f_high = quantile_list[i+1]
+        frac_cut = "abs(genJet_eta)<1.1 && (((ecal_L1EG_jet_pt + ecal_pt)/jet_pt) >= %f && ((ecal_L1EG_jet_pt + ecal_pt)/jet_pt) < %f)" % (f_low, f_high)
+        to_plot = '(hcal_pt)/genJet_pt:jet_pt'
+        h1 = getTH2( tree, 'qcd1', to_plot, frac_cut, x_and_y_bins )
+        to_plot = '(genJet_pt - (ecal_L1EG_jet_pt + ecal_pt))/(hcal_pt):jet_pt'
+        h2 = getTH2( tree, 'qcd3', to_plot, frac_cut, x_and_y_bins )
+        xaxis = "Jet P_{T} (GeV)"
+        #yaxis = "Relative Error in P_{T} reco/gen"
+        yaxis = "Gen Jet pT - (ECAL+L1EG) / [ HCAL ]"
+        title1 = "L1CaloJets HCAL1 - EM %.2f to %.2f" % (f_low, f_high)
+        #title2 = "L1CaloJets HCAL2 - EM %.2f to %.2f" % (f_low, f_high)
+        title2 = "HCAL Calibration vs. Reco Jet P_{T}"
+        c.SetTitle("jetPt_qcd_HCALfocus_EM_frac_%s_to_%s_PU0" % (str(f_low).replace('.','p'), str(f_high).replace('.','p')))
+        g = drawPointsHists(h1, h2, title1, title2, xaxis, yaxis)
+        g.SetTitle('EM_frac_%s_to_%s' % (str(f_low).replace('.','p'), str(f_high).replace('.','p')) )
+        g.SetName('EM_frac_%s_to_%s' % (str(f_low).replace('.','p'), str(f_high).replace('.','p')) )
+        print g
+        #XXX g.Write()
+        #x = ROOT.Double(0.)
+        #y = ROOT.Double(0.)
+        #for p in range( g.GetN() ) :
+        #    g.GetPoint(p, x, y)
+        #    print p, x, y
+    #XXX f_out.Close()
+
 
 
     #### PU 0, No ECAL Energy ###
