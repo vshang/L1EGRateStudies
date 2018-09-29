@@ -17,6 +17,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.source = cms.Source("PoolSource",
    fileNames = cms.untracked.vstring($inputFileNames),
+   dropDescendantsOfDroppedBranches=cms.untracked.bool(False),
    inputCommands = cms.untracked.vstring(
                     "keep *",
                     "drop l1tEMTFHitExtras_simEmtfDigis_CSC_HLT",
@@ -27,6 +28,12 @@ process.source = cms.Source("PoolSource",
                     "drop l1tEMTFHit2016s_simEmtfDigis__HLT",
                     "drop l1tEMTFTrack2016Extras_simEmtfDigis__HLT",
                     "drop l1tEMTFTrack2016s_simEmtfDigis__HLT",
+                    "drop l1tHGCalTowerMapBXVector_hgcalTriggerPrimitiveDigiProducer_towerMap_HLT",
+                    "drop PCaloHits_g4SimHits_EcalHitsEB_SIM",
+                    "drop EBDigiCollection_simEcalUnsuppressedDigis__HLT",
+                    "drop PCaloHits_g4SimHits_HGCHitsEE_SIM",
+                    "drop HGCalDetIdHGCSampleHGCDataFramesSorted_mix_HGCDigisEE_HLT",
+
    )
 )
 
