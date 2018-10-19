@@ -412,6 +412,44 @@ def getAverage( h, xVal ) :
     return avgTot
 
 
+# create a list with the output delinimations splitting the calo jets
+# into nBins based on EM fraction
+def get_quantile_em_fraction_list( fName, nBins=10 ) :
+    f = ROOT.TFile( fName, 'r')
+    t = f.Get('analyzer/tree')
+    
+    h = ROOT.TH1D('h','h',10000,0,1.1)
+    t.Draw( '(ecal_L1EG_jet_pt + ecal_pt)/jet_pt >> h', 'jet_pt >= 0')
+
+    # To keep track of total so we can compute relative fractions
+    total = h.Integral()
+    
+    c = ROOT.TCanvas('cx','cx',600,400)
+    h.Draw()
+    #ROOT.gPad.SetLogy()
+    #c.SaveAs('quant.png')
+
+    rtn_list = []    
+    # Store first bin
+    rtn_list.append( 0.0 )
+    cum = 0
+    index = 1
+    for b in range( h.GetXaxis().GetNbins() ) :
+        cum += h.GetBinContent( b )
+        #if b > 20 : break
+        if cum * 10 > total :
+            rtn_list.append( round(h.GetBinCenter(b), 3) )
+            print index, b, h.GetBinCenter(b), cum
+            cum = 0
+            index += 1
+    # Store final bin
+    rtn_list.append( 1.0 )
+
+    del c, h
+
+    return rtn_list
+        
+
 
 if __name__ == '__main__' :
 
@@ -428,7 +466,7 @@ if __name__ == '__main__' :
 
     date = '20180923_calibCheckV5'
     date = '20180923_calibCheckV6'
-    date = '20180926_calibCheckV2_visuals'
+    date = '20180926_calibCheckV2_visuals3'
     plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date+''
     if not os.path.exists( plotDir ) : os.makedirs( plotDir )
 
@@ -515,7 +553,8 @@ if __name__ == '__main__' :
     #drawPointsHists3(h1, h2, h3, title1, title2, title3, xaxis, yaxis, areaNorm)
 
     ### Shifting EM fraction plots ###
-    quantile_list = [0,0.0605,0.1355,0.1975,0.2525,0.3065,0.3645,0.4305,0.5185,0.6745,1] # see get_quantiles.py
+    quantile_list = get_quantile_em_fraction_list( '/data/truggles/phaseII_qcd_20180925_v1-condor_jets/qcd.root', 10 )
+    print quantile_list
 
     #for i in range(len(quantile_list)-1) :
     #    f_low = quantile_list[i]
