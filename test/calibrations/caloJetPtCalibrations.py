@@ -14,6 +14,14 @@ def getTH2( tree, name, to_plot, cut, x_and_y_bins ) :
     return h1
 
 
+def getTH2VarBin( tree, name, to_plot, cut, x_and_y_bins ) :
+    #print cut
+    h1 = ROOT.TH2F(name+'_h', name+'_h', len(x_and_y_bins[0])-1, x_and_y_bins[0], len(x_and_y_bins[1])-1, x_and_y_bins[1])
+    tree.Draw( to_plot + ' >> ' + name+'_h', cut )
+    h1.SetDirectory(0)
+    return h1
+
+
 def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, points, linear=False, doFit=True, includeLine=False, invert=False) :
     doLog = False
     doLog = True
@@ -451,6 +459,54 @@ def get_quantile_em_fraction_list( fName, nBins=10 ) :
         
 
 
+def make_em_fraction_calibrations( fName, cut, plotBase ) :
+
+    ### Shifting EM fraction plots ###
+    nBins = 10
+    quantile_list = get_quantile_em_fraction_list( fName, nBins )
+    print "Quantile List", quantile_list
+
+    # Get same file again
+    jetFile = ROOT.TFile( fName, 'r' )
+    tree = jetFile.Get("analyzer/tree")
+
+    f_out = ROOT.TFile('new_calibrations2.root','RECREATE')
+    #x_and_y_bins = [100,0,500, 200,0,20]
+    xBinning = array('f', [0.,2.5,5.,7.5,10.,12.5,15,17.5,20,22.5,25,27.5,30, \
+        35,40,45,50,55,60,65,70,75,80,85,90,95,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300, \
+        325,350,375,400,450,500]) # x binning
+    yBinning = array('f', [i*0.1 for i in range(201)])
+    x_and_y_bins = [ xBinning, yBinning ]
+    for i in range(len(quantile_list)-1) :
+        f_low = quantile_list[i]
+        f_high = quantile_list[i+1]
+        frac_cut = "abs(genJet_eta)<1.1 && (((ecal_L1EG_jet_pt + ecal_pt)/jet_pt) >= %f && ((ecal_L1EG_jet_pt + ecal_pt)/jet_pt) < %f)" % (f_low, f_high)
+        to_plot = '(hcal_pt)/genJet_pt:jet_pt'
+        #h1 = getTH2( tree, 'qcd1', to_plot, frac_cut, x_and_y_bins )
+        h1 = getTH2VarBin( tree, 'qcd1', to_plot, frac_cut, x_and_y_bins )
+        to_plot = '(genJet_pt - (ecal_L1EG_jet_pt + ecal_pt))/(hcal_pt):jet_pt'
+        #h2 = getTH2( tree, 'qcd3', to_plot, frac_cut, x_and_y_bins )
+        h2 = getTH2VarBin( tree, 'qcd3', to_plot, frac_cut, x_and_y_bins )
+        xaxis = "Jet P_{T} (GeV)"
+        #yaxis = "Relative Error in P_{T} reco/gen"
+        yaxis = "Gen Jet pT - (ECAL+L1EG) / [ HCAL ]"
+        title1 = "L1CaloJets HCAL1 - EM %.2f to %.2f" % (f_low, f_high)
+        #title2 = "L1CaloJets HCAL2 - EM %.2f to %.2f" % (f_low, f_high)
+        title2 = "HCAL Calibration vs. Reco Jet P_{T}"
+        c.SetTitle("jetPt_qcd_HCALfocus_EM_frac_%s_to_%s_PU0" % (str(f_low).replace('.','p'), str(f_high).replace('.','p')))
+        g = drawPointsHists(h1, h2, title1, title2, xaxis, yaxis)
+        g.SetTitle('%i_EM_frac_%s_to_%s' % (i, str(f_low).replace('.','p'), str(f_high).replace('.','p')) )
+        g.SetName('%i_EM_frac_%s_to_%s' % (i, str(f_low).replace('.','p'), str(f_high).replace('.','p')) )
+        print g
+        g.Write()
+        #x = ROOT.Double(0.)
+        #y = ROOT.Double(0.)
+        #for p in range( g.GetN() ) :
+        #    g.GetPoint(p, x, y)
+        #    print p, x, y
+    f_out.Close()
+
+
 if __name__ == '__main__' :
 
     import os
@@ -466,7 +522,7 @@ if __name__ == '__main__' :
 
     date = '20180923_calibCheckV5'
     date = '20180923_calibCheckV6'
-    date = '20180926_calibCheckV2_visuals3'
+    date = '20180926_calibCheckV2_visuals4'
     plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date+''
     if not os.path.exists( plotDir ) : os.makedirs( plotDir )
 
@@ -485,6 +541,13 @@ if __name__ == '__main__' :
     cut = "abs(genJet_eta)<1.1"
     x_and_y_bins = [30,0,300, 60,0,3]
 
+    make_calibrations = False
+    ### Between these two you need to run add_calibrations.py to add 'calib' to TTree
+    plot_calibrated_results = True
+
+    """ Make new calibration root file """
+    if make_calibrations :
+        make_em_fraction_calibrations( base+jetsF0, cut, plotDir )
 
     #### PU 0 ###
     #to_plot = '(jet_pt)/genJet_pt:genJet_pt'
@@ -536,73 +599,21 @@ if __name__ == '__main__' :
 
     x_and_y_bins = [28,20,300, 60,0,3]
     """ Resulting Calibrations """
-    #to_plot = '(jet_pt)/genJet_pt:genJet_pt'
-    #h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
-    #to_plot = '(ecal_L1EG_jet_pt + ecal_pt + (hcal_pt*calib) )/genJet_pt:genJet_pt'
-    #h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
-    #to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
-    #h3 = getTH2( tree, 's2', to_plot, cut, x_and_y_bins )
-    #xaxis = "Gen Jet P_{T} (GeV)"
-    #yaxis = "Relative Error in P_{T} reco/gen"
-    ###title2 = "ECAL+(HCAL*calib)+L1EG Reco p_{T}"
-    #title1 = "Phase-II before HCAL calibrations"
-    #title2 = "Phase-II with HCAL calibrations"
-    #title3 = "Phase-I with calibrations"
-    #c.SetTitle("genJetPt_Calibrated_vs_Stage-2_PU0")
-    #areaNorm = True
-    #drawPointsHists3(h1, h2, h3, title1, title2, title3, xaxis, yaxis, areaNorm)
-
-    ### Shifting EM fraction plots ###
-    quantile_list = get_quantile_em_fraction_list( '/data/truggles/phaseII_qcd_20180925_v1-condor_jets/qcd.root', 10 )
-    print quantile_list
-
-    #for i in range(len(quantile_list)-1) :
-    #    f_low = quantile_list[i]
-    #    f_high = quantile_list[i+1]
-    #    frac_cut = "abs(genJet_eta)<1.1 && (((ecal_L1EG_jet_pt + ecal_pt)/jet_pt) >= %f && ((ecal_L1EG_jet_pt + ecal_pt)/jet_pt) < %f)" % (f_low, f_high)
-    #    to_plot = '(ecal_L1EG_jet_pt + ecal_pt)/genJet_pt:genJet_pt'
-    #    h1 = getTH2( tree, 'qcd1', to_plot, frac_cut, x_and_y_bins )
-    #    to_plot = '(hcal_pt)/genJet_pt:genJet_pt'
-    #    h2 = getTH2( tree, 'qcd2', to_plot, frac_cut, x_and_y_bins )
-    #    to_plot = '(jet_pt)/genJet_pt:genJet_pt'
-    #    h3 = getTH2( tree, 'qcd3', to_plot, frac_cut, x_and_y_bins )
-    #    xaxis = "Gen Jet P_{T} (GeV)"
-    #    yaxis = "Relative Error in P_{T} reco/gen"
-    #    title1 = "L1CaloJets ECAL - EM %.2f to %.2f" % (f_low, f_high)
-    #    title2 = "L1CaloJets HCAL - EM %.2f to %.2f" % (f_low, f_high)
-    #    title3 = "L1CaloJets Total - EM %.2f to %.2f" % (f_low, f_high)
-    #    c.SetTitle("genJetPt_qcd_EM_frac_%s_to_%s_PU0" % (str(f_low).replace('.','p'), str(f_high).replace('.','p')))
-    #    drawPointsHists3(h1, h2, h3, title1, title2, title3, xaxis, yaxis)
-
-    #XXX f_out = ROOT.TFile('new_calibrations.root','RECREATE')
-    #XXX x_and_y_bins = [50,0,500, 200,0,20]
-    x_and_y_bins = [30,0,300, 60,0,3]
-    for i in range(len(quantile_list)-1) :
-        f_low = quantile_list[i]
-        f_high = quantile_list[i+1]
-        frac_cut = "abs(genJet_eta)<1.1 && (((ecal_L1EG_jet_pt + ecal_pt)/jet_pt) >= %f && ((ecal_L1EG_jet_pt + ecal_pt)/jet_pt) < %f)" % (f_low, f_high)
-        to_plot = '(hcal_pt)/genJet_pt:jet_pt'
-        h1 = getTH2( tree, 'qcd1', to_plot, frac_cut, x_and_y_bins )
-        to_plot = '(genJet_pt - (ecal_L1EG_jet_pt + ecal_pt))/(hcal_pt):jet_pt'
-        h2 = getTH2( tree, 'qcd3', to_plot, frac_cut, x_and_y_bins )
-        xaxis = "Jet P_{T} (GeV)"
-        #yaxis = "Relative Error in P_{T} reco/gen"
-        yaxis = "Gen Jet pT - (ECAL+L1EG) / [ HCAL ]"
-        title1 = "L1CaloJets HCAL1 - EM %.2f to %.2f" % (f_low, f_high)
-        #title2 = "L1CaloJets HCAL2 - EM %.2f to %.2f" % (f_low, f_high)
-        title2 = "HCAL Calibration vs. Reco Jet P_{T}"
-        c.SetTitle("jetPt_qcd_HCALfocus_EM_frac_%s_to_%s_PU0" % (str(f_low).replace('.','p'), str(f_high).replace('.','p')))
-        g = drawPointsHists(h1, h2, title1, title2, xaxis, yaxis)
-        g.SetTitle('EM_frac_%s_to_%s' % (str(f_low).replace('.','p'), str(f_high).replace('.','p')) )
-        g.SetName('EM_frac_%s_to_%s' % (str(f_low).replace('.','p'), str(f_high).replace('.','p')) )
-        print g
-        #XXX g.Write()
-        #x = ROOT.Double(0.)
-        #y = ROOT.Double(0.)
-        #for p in range( g.GetN() ) :
-        #    g.GetPoint(p, x, y)
-        #    print p, x, y
-    #XXX f_out.Close()
+    if plot_calibrated_results :
+        to_plot = '(jet_pt)/genJet_pt:genJet_pt'
+        h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
+        to_plot = '(ecal_L1EG_jet_pt + ecal_pt + (hcal_pt*calib) )/genJet_pt:genJet_pt'
+        h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
+        to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
+        h3 = getTH2( tree, 's2', to_plot, cut, x_and_y_bins )
+        xaxis = "Gen Jet P_{T} (GeV)"
+        yaxis = "Relative Error in P_{T} reco/gen"
+        title1 = "Phase-II before HCAL calibrations"
+        title2 = "Phase-II with HCAL calibrations"
+        title3 = "Phase-I with calibrations"
+        c.SetTitle("genJetPt_Calibrated_vs_Stage-2_PU0")
+        areaNorm = True
+        drawPointsHists3(h1, h2, h3, title1, title2, title3, xaxis, yaxis, areaNorm)
 
 
 
