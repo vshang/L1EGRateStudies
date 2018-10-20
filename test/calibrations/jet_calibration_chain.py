@@ -35,18 +35,13 @@ def get_quantile_map( calib_fName ) :
     
 
 
-def add_calibration( name_in, calib_in, quantile_map ) :
+def add_calibration( name_in, quantile_map ) :
     f_in = ROOT.TFile( name_in, 'UPDATE')
     t = f_in.Get( 'analyzer/tree' )
 
-    #f_calib = ROOT.TFile( calib_in, 'r' )
-    #for k, v in quantile_map.iteritems() :
-    #    v.append( f_calib.Get( k ) )
-    #    print v
-
     # new calibrations
     calib = array('f', [ 0 ] )
-    calibB = t.Branch('calib', calib, 'calib/F')
+    calibB = t.Branch('calibX', calib, 'calibX/F')
 
     cnt = 0
     for row in t :
@@ -88,50 +83,56 @@ if '__main__' in __name__ :
     base = '/data/truggles/phaseII_qcd_20180925_v1-condor_jets/'
     base = ''
     jetsF0 = 'qcd3.root'
+    base = '/data/truggles/p2/20180927_QCD_diff_jet_shapes_calib/'
 
-    date = '20180926_calibCheckV2_visuals6'
-    plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date+''
-    if not os.path.exists( plotDir ) : os.makedirs( plotDir )
+    #for shape in ['7x7', '9x9', 'circL', 'circT'] :
+    for shape in ['7x7',] :
+        
+        jetsF0 = 'qcd_20180927_%s.root' % shape
+        date = '20180926_calibCheckV2_visuals7'
+        date = jetsF0.replace('qcd_','').replace('.root','')
+        plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date+''
+        if not os.path.exists( plotDir ) : os.makedirs( plotDir )
 
-    jetFile = ROOT.TFile( base+jetsF0, 'r' )
-    tree = jetFile.Get("analyzer/tree")
+        jetFile = ROOT.TFile( base+jetsF0, 'r' )
+        tree = jetFile.Get("analyzer/tree")
 
-    c = ROOT.TCanvas('c', 'c', 800, 700)
-    ''' Track to cluster reco resolution '''
-    c.SetCanvasSize(1500,600)
-    c.Divide(3)
+        c = ROOT.TCanvas('c', 'c', 800, 700)
+        ''' Track to cluster reco resolution '''
+        c.SetCanvasSize(1500,600)
+        c.Divide(3)
 
 
-    """ Make new calibration root file """
-    cut = "abs(genJet_eta)<1.1"
-    make_em_fraction_calibrations( c, base+jetsF0, cut, plotDir )
-    jetFile.Close()
+        """ Make new calibration root file """
+        cut = "abs(genJet_eta)<1.1"
+        make_em_fraction_calibrations( c, base+jetsF0, cut, plotDir )
+        jetFile.Close()
 
-    """ Add new calibrations to TTree """
-    quantile_map = get_quantile_map( 'jet_em_calibrations.root' )
-    add_calibration( jetsF0, 'new_calibrations.root', quantile_map )
+        """ Add new calibrations to TTree """
+        quantile_map = get_quantile_map( 'jet_em_calibrations.root' )
+        add_calibration( base+jetsF0, quantile_map )
 
-    """ Plot Results """
-    jetFile = ROOT.TFile( base+jetsF0, 'r' )
-    tree = jetFile.Get("analyzer/tree")
+        """ Plot Results """
+        jetFile = ROOT.TFile( base+jetsF0, 'r' )
+        tree = jetFile.Get("analyzer/tree")
 
-    plot_calibrated_results = True
-    x_and_y_bins = [28,20,300, 60,0,3]
-    """ Resulting Calibrations """
-    if plot_calibrated_results :
-        to_plot = '(jet_pt)/genJet_pt:genJet_pt'
-        h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
-        to_plot = '(ecal_L1EG_jet_pt + ecal_pt + (hcal_pt*calib) )/genJet_pt:genJet_pt'
-        h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
-        to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
-        h3 = getTH2( tree, 's2', to_plot, cut, x_and_y_bins )
-        xaxis = "Gen Jet P_{T} (GeV)"
-        yaxis = "Relative Error in P_{T} reco/gen"
-        title1 = "Phase-II before HCAL calibrations"
-        title2 = "Phase-II with HCAL calibrations"
-        title3 = "Phase-I with calibrations"
-        c.SetTitle("genJetPt_Calibrated_vs_Stage-2_PU0")
-        areaNorm = True
-        drawPointsHists3(c.GetTitle(), h1, h2, h3, title1, title2, title3, xaxis, yaxis, areaNorm, plotDir)
+        plot_calibrated_results = True
+        x_and_y_bins = [28,20,300, 60,0,3]
+        """ Resulting Calibrations """
+        if plot_calibrated_results :
+            to_plot = '(jet_pt)/genJet_pt:genJet_pt'
+            h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
+            to_plot = '(ecal_L1EG_jet_pt + ecal_pt + (hcal_pt*calibX) )/genJet_pt:genJet_pt'
+            h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
+            to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
+            h3 = getTH2( tree, 's2', to_plot, cut, x_and_y_bins )
+            xaxis = "Gen Jet P_{T} (GeV)"
+            yaxis = "Relative Error in P_{T} reco/gen"
+            title1 = "Phase-II before HCAL calibrations"
+            title2 = "Phase-II with HCAL calibrations"
+            title3 = "Phase-I with calibrations"
+            c.SetTitle("genJetPt_Calibrated_vs_Stage-2_PU0")
+            areaNorm = True
+            drawPointsHists3(c.GetTitle(), h1, h2, h3, title1, title2, title3, xaxis, yaxis, areaNorm, plotDir)
 
 

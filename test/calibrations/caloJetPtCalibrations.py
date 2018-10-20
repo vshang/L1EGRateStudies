@@ -473,7 +473,7 @@ def make_em_fraction_calibrations( c, fName, cut, plotBase ) :
     #x_and_y_bins = [100,0,500, 200,0,20]
     xBinning = array('f', [0.,2.5,5.,7.5,10.,12.5,15,17.5,20,22.5,25,27.5,30, \
         35,40,45,50,55,60,65,70,75,80,85,90,95,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300, \
-        325,350,375,400,450,500]) # x binning
+        325,400,500]) # x binning
     yBinning = array('f', [i*0.1 for i in range(201)])
     x_and_y_bins = [ xBinning, yBinning ]
     for i in range(len(quantile_list)-1) :
