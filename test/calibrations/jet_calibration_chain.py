@@ -26,7 +26,9 @@ def get_quantile_map( calib_fName ) :
         info = key.split('_')
         f_low = float(info[3].replace('p','.'))
         f_high = float(info[5].replace('p','.'))
-        quantile_map[ key ] = [ f_low, f_high, f.Get( key ) ]
+        eta_low = float(info[7].replace('p','.'))
+        eta_high = float(info[9].replace('p','.'))
+        quantile_map[ key ] = [ f_low, f_high, eta_low, eta_high, f.Get( key ) ]
     for k, v in quantile_map.iteritems() :
         print k, v
 
@@ -42,6 +44,8 @@ def add_calibration( name_in, quantile_map ) :
     # new calibrations
     calib = array('f', [ 0 ] )
     calibB = t.Branch('calibX', calib, 'calibX/F')
+    calibPt = array('f', [ 0 ] )
+    calibPtB = t.Branch('calibPtX', calibPt, 'calibPtX/F')
 
     cnt = 0
     for row in t :
@@ -50,31 +54,44 @@ def add_calibration( name_in, quantile_map ) :
 
         ecal_L1EG_jet_pt = row.ecal_L1EG_jet_pt
         ecal_pt = row.ecal_pt
+        hcal_pt = row.hcal_pt
         jet_pt = row.jet_pt
-        val = calibrate( quantile_map, ecal_L1EG_jet_pt, ecal_pt, jet_pt )
+        abs_jet_eta = abs(row.jet_eta)
+        val = calibrate( quantile_map, abs_jet_eta, ecal_L1EG_jet_pt, ecal_pt, jet_pt )
         calib[0] = val
+        calibPt[0] = ecal_L1EG_jet_pt + ecal_pt + (val * hcal_pt)
 
         calibB.Fill()
+        calibPtB.Fill()
     d = f_in.Get('analyzer')
     d.cd()
     t.Write('', ROOT.TObject.kOverwrite)
     f_in.Close()
 
-def calibrate( quantile_map, ecal_L1EG_jet_pt, ecal_pt, jet_pt ) :
+def calibrate( quantile_map, abs_jet_eta, ecal_L1EG_jet_pt, ecal_pt, jet_pt ) :
     em_frac = (ecal_L1EG_jet_pt + ecal_pt) / jet_pt
     #print "EM Frac: ",em_frac
     if em_frac == 2 : return 1.0 # These are non-recoed jets
     if em_frac > 1.0 : em_frac = 1.0 # These are some corner case problems which will be fixed and only range up to 1.05
     for k, v in quantile_map.iteritems() :
         if em_frac >= v[0] and em_frac <= v[1] :
-            #return v[2].Eval( jet_pt )
-            if jet_pt > 500 : # Straight line extension
-                rtn = v[2].Eval( 500 )
-            else :
-                rtn = v[2].Eval( jet_pt )
-            assert(rtn >= 0), "The calibration result is less than zero for range name %s for \
-                    EM fraction %.2f and Jet pT %.2f, resulting calibration %.2f" % (k, em_frac, jet_pt, rtn)
-            return rtn
+            if abs_jet_eta >= v[2] and abs_jet_eta <= v[3] :
+                #return v[2].Eval( jet_pt )
+                if jet_pt > 500 : # Straight line extension
+                    rtn = v[-1].Eval( 500 )
+                else :
+                    rtn = v[-1].Eval( jet_pt )
+
+                # Ensure not returning a negative value because of
+                # unpopulated low pT bins
+                while (rtn < 0) :
+                    jet_pt += 2
+                    rtn = v[-1].Eval( jet_pt )
+                    if jet_pt > 500 : break
+                assert(rtn >= 0), "The calibration result is less than zero for range name %s for \
+                        EM fraction %.2f and Jet pT %.2f, resulting calibration %.2f" % (k, em_frac, jet_pt, rtn)
+
+                return rtn
     print "Shouldn't get here, em_frac ",em_frac
     return 1.0
 
@@ -83,18 +100,42 @@ if '__main__' in __name__ :
     base = '/data/truggles/phaseII_qcd_20180925_v1-condor_jets/'
     base = ''
     jetsF0 = 'qcd3.root'
+    base = '/data/truggles/l1CaloJets_20181023_4/'
     base = '/data/truggles/p2/20180927_QCD_diff_jet_shapes_calib/'
 
     #for shape in ['7x7', '9x9', 'circL', 'circT'] :
-    for shape in ['7x7',] :
+    #for shape in ['7x7',] :
+    for shape in [
+
+        'qcd200_20180927_7x7',
+        'qcd200_20180927_9x9',
+        'qcd200_20180927_circL',
+        'qcd200_20180927_circT',
+        'qcd_20180927_7x7',
+        'qcd_20180927_9x9',
+        'qcd_20180927_circL',
+        'qcd_20180927_circT',
+
+        #'0_PUTests_1GeV_v4',
+        #'0_PUTests_2GeV_v5',
+        #'0_PUTests_3GeV_v6',
+        #'0_PUTests_v3',
+        #'200_PUTests_1GeV_v4',
+        #'200_PUTests_2GeV_v5',
+        #'200_PUTests_3GeV_v6',
+        #'200_PUTests_v3',
+        #'0_PUTests_0p5GeV_v9b',
+        #'200_PUTests_0p5GeV_v9b',
+    ] :
         
-        jetsF0 = 'qcd_20180927_%s.root' % shape
-        date = '20180926_calibCheckV2_visuals7'
-        date = jetsF0.replace('qcd_','').replace('.root','')
-        plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date+''
+        #jetsF0 = 'merged_QCD-PU%s.root' % shape
+        jetsF0 = '%s.root' % shape
+        date = jetsF0.replace('merged_QCD-','').replace('.root','')
+        plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date+'_v3'
         if not os.path.exists( plotDir ) : os.makedirs( plotDir )
 
         jetFile = ROOT.TFile( base+jetsF0, 'r' )
+        print jetFile
         tree = jetFile.Get("analyzer/tree")
 
         c = ROOT.TCanvas('c', 'c', 800, 700)

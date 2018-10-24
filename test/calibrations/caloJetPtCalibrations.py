@@ -437,15 +437,17 @@ def get_quantile_em_fraction_list( fName, nBins=10 ) :
     #c.SaveAs('quant.png')
 
     rtn_list = []    
-    # Store first bin
-    rtn_list.append( 0.0 )
     cum = 0
     index = 1
     for b in range( h.GetXaxis().GetNbins() ) :
         cum += h.GetBinContent( b )
         #if b > 20 : break
         if cum * 10 > total :
-            rtn_list.append( round(h.GetBinCenter(b), 3) )
+            to_append = round(h.GetBinCenter(b), 3)
+            if len(rtn_list) == 0 and to_append != 0.0 :
+                # Store first bin but don't add two 0.0 if to_append == 0.0
+                rtn_list.append( 0.0 )
+            rtn_list.append( to_append )
             print index, b, h.GetBinCenter(b), cum
             cum = 0
             index += 1
@@ -471,38 +473,46 @@ def make_em_fraction_calibrations( c, fName, cut, plotBase ) :
 
     f_out = ROOT.TFile('jet_em_calibrations.root','RECREATE')
     #x_and_y_bins = [100,0,500, 200,0,20]
-    xBinning = array('f', [0.,2.5,5.,7.5,10.,12.5,15,17.5,20,22.5,25,27.5,30, \
+    #xBinning = array('f', [0.,15,17.5,20,22.5,25,27.5,30, \
+    # Worked xBinning = array('f', [0.,20,22.5,25,27.5,30, \
+    xBinning = array('f', [0.,5.,7.5,10.,12.5,15.,17.5,20,22.5,25,27.5,30, \
         35,40,45,50,55,60,65,70,75,80,85,90,95,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300, \
         325,400,500]) # x binning
+    #xBinningAlt = array('f', [0.,30, \
+    #    35,40,45,50,55,60,65,70,75,80,85,90,95,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300, \
+    #    325,400,500]) # x binning
     yBinning = array('f', [i*0.1 for i in range(201)])
-    x_and_y_bins = [ xBinning, yBinning ]
     for i in range(len(quantile_list)-1) :
-        f_low = quantile_list[i]
-        f_high = quantile_list[i+1]
-        frac_cut = "abs(genJet_eta)<1.1 && (((ecal_L1EG_jet_pt + ecal_pt)/jet_pt) >= %f && ((ecal_L1EG_jet_pt + ecal_pt)/jet_pt) < %f)" % (f_low, f_high)
-        to_plot = '(hcal_pt)/genJet_pt:jet_pt'
-        #h1 = getTH2( tree, 'qcd1', to_plot, frac_cut, x_and_y_bins )
-        h1 = getTH2VarBin( tree, 'qcd1', to_plot, frac_cut, x_and_y_bins )
-        to_plot = '(genJet_pt - (ecal_L1EG_jet_pt + ecal_pt))/(hcal_pt):jet_pt'
-        #h2 = getTH2( tree, 'qcd3', to_plot, frac_cut, x_and_y_bins )
-        h2 = getTH2VarBin( tree, 'qcd3', to_plot, frac_cut, x_and_y_bins )
-        xaxis = "Jet P_{T} (GeV)"
-        #yaxis = "Relative Error in P_{T} reco/gen"
-        yaxis = "Gen Jet pT - (ECAL+L1EG) / [ HCAL ]"
-        title1 = "L1CaloJets HCAL1 - EM %.2f to %.2f" % (f_low, f_high)
-        #title2 = "L1CaloJets HCAL2 - EM %.2f to %.2f" % (f_low, f_high)
-        title2 = "HCAL Calibration vs. Reco Jet P_{T}"
-        c.SetTitle("jetPt_qcd_HCALfocus_EM_frac_%s_to_%s_PU0" % (str(f_low).replace('.','p'), str(f_high).replace('.','p')))
-        g = drawPointsHists(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis, False, plotBase)
-        g.SetTitle('%i_EM_frac_%s_to_%s' % (i, str(f_low).replace('.','p'), str(f_high).replace('.','p')) )
-        g.SetName('%i_EM_frac_%s_to_%s' % (i, str(f_low).replace('.','p'), str(f_high).replace('.','p')) )
-        print g
-        g.Write()
-        #x = ROOT.Double(0.)
-        #y = ROOT.Double(0.)
-        #for p in range( g.GetN() ) :
-        #    g.GetPoint(p, x, y)
-        #    print p, x, y
+        for eta in [['0.0', '0.3'], ['0.3', '0.7'], ['0.7', '2.0']] :
+            f_low = quantile_list[i]
+            f_high = quantile_list[i+1]
+            x_and_y_bins = [ xBinning, yBinning ]
+            #if f_low > 0.0 and f_low < 0.1 and f_high > 0.0 and f_high < 0.1 :
+            #    x_and_y_bins = [ xBinningAlt, yBinning ]
+            frac_cut = "abs(genJet_eta) < 1.1 && abs(jet_eta)>=%s && abs(jet_eta)<=%s && (((ecal_L1EG_jet_pt + ecal_pt)/jet_pt) >= %f && ((ecal_L1EG_jet_pt + ecal_pt)/jet_pt) < %f)" % (eta[0], eta[1], f_low, f_high)
+            to_plot = '(hcal_pt)/genJet_pt:jet_pt'
+            #h1 = getTH2( tree, 'qcd1', to_plot, frac_cut, x_and_y_bins )
+            h1 = getTH2VarBin( tree, 'qcd1', to_plot, frac_cut, x_and_y_bins )
+            to_plot = '(genJet_pt - (ecal_L1EG_jet_pt + ecal_pt))/(hcal_pt):jet_pt'
+            #h2 = getTH2( tree, 'qcd3', to_plot, frac_cut, x_and_y_bins )
+            h2 = getTH2VarBin( tree, 'qcd3', to_plot, frac_cut, x_and_y_bins )
+            xaxis = "Jet P_{T} (GeV)"
+            #yaxis = "Relative Error in P_{T} reco/gen"
+            yaxis = "Gen Jet pT - (ECAL+L1EG) / [ HCAL ]"
+            title1 = "L1CaloJets HCAL1 - EM %.2f to %.2f" % (f_low, f_high)
+            #title2 = "L1CaloJets HCAL2 - EM %.2f to %.2f" % (f_low, f_high)
+            title2 = "HCAL Calibration vs. Reco Jet P_{T}"
+            c.SetTitle("jetPt_qcd_HCALfocus_EM_frac_%s_to_%s_absEta%s_to_%s_PU0" % (str(f_low).replace('.','p'), str(f_high).replace('.','p'), eta[0].replace('.','p'), eta[1].replace('.','p')))
+            g = drawPointsHists(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis, False, plotBase)
+            g.SetTitle('%i_EM_frac_%s_to_%s_absEta_%s_to_%s' % (i, str(f_low).replace('.','p'), str(f_high).replace('.','p'), eta[0].replace('.','p'), eta[1].replace('.','p') ) )
+            g.SetName('%i_EM_frac_%s_to_%s_absEta_%s_to_%s' % (i, str(f_low).replace('.','p'), str(f_high).replace('.','p'), eta[0].replace('.','p'), eta[1].replace('.','p') ) )
+            print g
+            g.Write()
+            #x = ROOT.Double(0.)
+            #y = ROOT.Double(0.)
+            #for p in range( g.GetN() ) :
+            #    g.GetPoint(p, x, y)
+            #    print p, x, y
     f_out.Close()
 
 
