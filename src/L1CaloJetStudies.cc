@@ -47,6 +47,7 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
 #include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
+#include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "DataFormats/JetReco/interface/GenJet.h"
 #include "DataFormats/JetReco/interface/GenJetCollection.h"
 
@@ -94,6 +95,7 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
         void fill_tree_null();
         
         // ----------member data ---------------------------
+        bool doRate;
         bool debug;
         
         double genMatchDeltaRcut;
@@ -121,13 +123,20 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
         edm::EDGetTokenT<BXVector<l1t::Tau> > stage2TauToken_;
         edm::Handle<BXVector<l1t::Tau>> stage2TauHandle;
 
+        edm::EDGetTokenT<std::vector<PileupSummaryInfo>> puToken_;
+        edm::Handle<std::vector<PileupSummaryInfo>> puInfo;
+
         // Efficiency hists
+        TH1F * nEvents;
         TH1F * eff_denom_pt;
         TH1F * eff_num_pt;
         TH1F * eff_num_stage2jet_pt;
         TH1F * eff_denom_eta;
         TH1F * eff_num_eta;
         TH1F * eff_num_stage2jet_eta;
+        TH1F * nTruePUHist;
+        TH1F * totalET;
+        TH1F * nTT;
                 
         // Crystal pt stuff
         TTree * tree;
@@ -135,6 +144,17 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
             double run;
             double lumi;
             double event;
+            float nTruePU;
+            float iPhi_ET_rings_ecal;
+            float iPhi_ET_rings_l1eg;
+            float iPhi_ET_rings_hcal;
+            float iPhi_ET_rings_total;
+            float iPhi_nTowers_rings_ecal;
+            float iPhi_nTowers_rings_l1eg;
+            float iPhi_nTowers_rings_hcal;
+            float iPhi_nTowers_rings_total;
+            float total_et;
+            float total_nTowers;
             float ecal_pt;
             float ecal_eta;
             float ecal_phi;
@@ -155,6 +175,13 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
             float jet_phi;
             float jet_mass;
             float jet_energy;
+            float ecal_PU_pt;
+            float ecal_L1EG_jet_PU_pt;
+            float hcal_PU_pt;
+            float ecal_PU_cor_pt;
+            float ecal_L1EG_jet_PU_cor_pt;
+            float hcal_PU_cor_pt;
+            float jet_PU_cor_pt;
             float hovere;
             float hcal_3x3;
             float hcal_5x5;
@@ -246,6 +273,7 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
 // constructors and destructor
 //
 L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
+    doRate(iConfig.getUntrackedParameter<bool>("doRate", false)),
     debug(iConfig.getUntrackedParameter<bool>("debug", false)),
     genMatchDeltaRcut(iConfig.getUntrackedParameter<double>("genMatchDeltaRcut", 0.3)),
     genMatchRelPtcut(iConfig.getUntrackedParameter<double>("genMatchRelPtcut", 0.5)),
@@ -253,22 +281,45 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     genJetsToken_(consumes<std::vector<reco::GenJet>>(iConfig.getParameter<edm::InputTag>("genJets"))),
     genHadronicTausToken_(consumes<std::vector<reco::GenJet>>(iConfig.getParameter<edm::InputTag>("genHadronicTauSrc"))),
     stage2JetToken_(consumes<BXVector<l1t::Jet>>(iConfig.getParameter<edm::InputTag>("Stage2JetTag"))),
-    stage2TauToken_(consumes<BXVector<l1t::Tau>>(iConfig.getParameter<edm::InputTag>("Stage2TauTag")))
+    stage2TauToken_(consumes<BXVector<l1t::Tau>>(iConfig.getParameter<edm::InputTag>("Stage2TauTag"))),
+    puToken_(consumes<std::vector<PileupSummaryInfo>>(iConfig.getParameter<edm::InputTag>("puSrc")))
 {
 
     edm::Service<TFileService> fs;
 
+    nEvents = fs->make<TH1F>("nEvents", "nEvents", 1, 0.5, 1.5);
     eff_denom_pt = fs->make<TH1F>("eff_denom_pt", "Gen. pt;Gen. pT (GeV); Counts", 30, 0, 300);
     eff_num_pt = fs->make<TH1F>("eff_num_pt", "Gen. pt;Gen. pT (GeV); Counts", 30, 0, 300);
     eff_num_stage2jet_pt = fs->make<TH1F>("eff_num_stage2jet_pt", "Gen. pt;Gen. pT (GeV); Counts", 30, 0, 300);
     eff_denom_eta = fs->make<TH1F>("eff_denom_eta", "Gen. eta;Gen. pT (GeV); Counts", 40, -2.0, 2.0);
     eff_num_eta = fs->make<TH1F>("eff_num_eta", "Gen. eta;Gen. pT (GeV); Counts", 40, -2.0, 2.0);
     eff_num_stage2jet_eta = fs->make<TH1F>("eff_num_stage2jet_eta", "Gen. eta;Gen. pT (GeV); Counts", 40, -2.0, 2.0);
+    nTruePUHist = fs->make<TH1F>("nTruePUHist", "nTrue PU", 250, 0, 250);
+    totalET = fs->make<TH1F>("totalET", "Total ET", 500, 0, 5000);
+    nTT = fs->make<TH1F>("nTT", "nTT", 500, 0, 5000);
 
     tree = fs->make<TTree>("tree", "CaloJet values");
     tree->Branch("run", &treeinfo.run);
     tree->Branch("lumi", &treeinfo.lumi);
     tree->Branch("event", &treeinfo.event);
+    tree->Branch("nTruePU", &treeinfo.nTruePU);
+    tree->Branch("ecal_PU_pt", &treeinfo.ecal_PU_pt);
+    tree->Branch("ecal_L1EG_jet_PU_pt", &treeinfo.ecal_L1EG_jet_PU_pt);
+    tree->Branch("hcal_PU_pt", &treeinfo.hcal_PU_pt);
+    tree->Branch("ecal_PU_cor_pt", &treeinfo.ecal_PU_cor_pt);
+    tree->Branch("ecal_L1EG_jet_PU_cor_pt", &treeinfo.ecal_L1EG_jet_PU_cor_pt);
+    tree->Branch("hcal_PU_cor_pt", &treeinfo.hcal_PU_cor_pt);
+    tree->Branch("jet_PU_cor_pt", &treeinfo.jet_PU_cor_pt);
+    tree->Branch("iPhi_ET_rings_ecal", &treeinfo.iPhi_ET_rings_ecal);
+    tree->Branch("iPhi_ET_rings_l1eg", &treeinfo.iPhi_ET_rings_l1eg);
+    tree->Branch("iPhi_ET_rings_hcal", &treeinfo.iPhi_ET_rings_hcal);
+    tree->Branch("iPhi_ET_rings_total", &treeinfo.iPhi_ET_rings_total);
+    tree->Branch("iPhi_nTowers_rings_ecal", &treeinfo.iPhi_nTowers_rings_ecal);
+    tree->Branch("iPhi_nTowers_rings_l1eg", &treeinfo.iPhi_nTowers_rings_l1eg);
+    tree->Branch("iPhi_nTowers_rings_hcal", &treeinfo.iPhi_nTowers_rings_hcal);
+    tree->Branch("iPhi_nTowers_rings_total", &treeinfo.iPhi_nTowers_rings_total);
+    tree->Branch("total_et", &treeinfo.total_et);
+    tree->Branch("total_nTowers", &treeinfo.total_nTowers);
     tree->Branch("ecal_pt", &treeinfo.ecal_pt);
     tree->Branch("ecal_eta", &treeinfo.ecal_eta);
     tree->Branch("ecal_phi", &treeinfo.ecal_phi);
@@ -386,12 +437,26 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 {
     using namespace edm;
 
+    nEvents->Fill( 1.0 );
 
     // Record the standards
     treeinfo.run = iEvent.eventAuxiliary().run();
     treeinfo.lumi = iEvent.eventAuxiliary().luminosityBlock();
     treeinfo.event = iEvent.eventAuxiliary().event();
 
+    iEvent.getByToken(puToken_, puInfo);
+    treeinfo.nTruePU = -99;
+    if (puInfo.isValid()) 
+    {
+        if (puInfo->size() > 0) 
+        {
+            if (puInfo->begin()->getBunchCrossing() == 0) 
+            {
+                treeinfo.nTruePU = puInfo->begin()->getTrueNumInteractions();
+            }
+        }
+    }
+    nTruePUHist->Fill( treeinfo.nTruePU );
 
     // Get all collections for later in GenJet loop
     // Get Phase-II CaloJet collection
@@ -442,6 +507,59 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
     // Sort caloJets so we can always pick highest pt caloJet matching cuts
     std::sort(begin(caloJets), end(caloJets), [](const l1slhc::L1CaloJet& a, const l1slhc::L1CaloJet& b){return a.pt() > b.pt();});
+
+
+    /*******************************************************
+    * If using a min-biase sample and doRate selected, record the
+    * Phase-2 and Stage-2 CaloJet objects only
+    ************************************************************/
+    if (doRate)
+    {
+        // Stage-2 Jets
+        if ( stage2JetHandle.isValid() )
+        {
+
+
+            // Find stage2 within dR 0.3, beginning with higest pt cand
+            for (auto& s2_jet : stage2Jets)
+            {
+                if (s2_jet.pt() < 30) continue;
+                treeinfo.stage2jet_pt = s2_jet.pt();
+                treeinfo.stage2jet_eta = s2_jet.eta();
+                treeinfo.stage2jet_phi = s2_jet.phi();
+                treeinfo.stage2jet_energy = s2_jet.energy();
+                treeinfo.stage2jet_mass = s2_jet.mass();
+                treeinfo.stage2jet_charge = s2_jet.charge();
+                treeinfo.stage2jet_puEt = s2_jet.puEt();
+                treeinfo.stage2jet_deltaRGen = -9;
+                // Fill Phase-2 CaloJet with dummy values
+                fill_tree_null();
+            }
+
+        }
+        if ( caloJets.size() > 0 )
+        {
+            for(const auto& caloJet : caloJets)
+            {
+                if (caloJet.pt() < 30) continue;
+                // Set Stage-2 to dummy values
+                treeinfo.stage2jet_pt = -9; 
+                treeinfo.stage2jet_eta = -9;
+                treeinfo.stage2jet_phi = -9;
+                treeinfo.stage2jet_energy = -9;
+                treeinfo.stage2jet_mass = -9;
+                treeinfo.stage2jet_charge = -9;
+                treeinfo.stage2jet_puEt = -9;
+                treeinfo.stage2jet_deltaRGen = -9;
+                fill_tree(caloJet);
+            } // end Calo Jets loop
+        } // have CaloJets
+        return;
+    } // end doRate
+
+
+
+
         
     // Loop over all gen jets with pt > 10 GeV and match them to Phase-II CaloJets
     // Generator info (truth)
@@ -663,8 +781,14 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         bool found_caloJet = false;
         if ( caloJets.size() > 0 )
         {
+            // Storing full event info
+            float total_et_f = 0.0;
+            float nTT_f = 0.0;
             for(const auto& caloJet : caloJets)
             {
+                total_et_f = caloJet.GetExperimentalParam("total_et");
+                nTT_f = caloJet.GetExperimentalParam("total_nTowers");
+
                 if ( reco::deltaR(caloJet, genJetP4) < genMatchDeltaRcut )
                       //&& fabs(caloJet.pt()-genJetP4.pt())/genJetP4.pt() < genMatchRelPtcut )
                 {
@@ -685,14 +809,21 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     
                 } // end passes Pt and dR match
             } // end Calo Jets loop
+
+            // Fill with values from final L1CaloJet (same for all calo jets in the event)
+            totalET->Fill(total_et_f);
+            nTT->Fill(nTT_f);
+
             // if not calo_jets were reconstructed to match the gen obj
             if (!found_caloJet) fill_tree_null();
         } // have CaloJets
-        else // no CaloJets
+         // no CaloJets
+        if (caloJets.size() == 0 || !found_caloJet)
         {
             // Fill tree with -1 to signify we lose a gen jet        
             fill_tree_null();
         }
+
     } // end GenJets loop
 }
 
@@ -766,6 +897,25 @@ L1CaloJetStudies::integrateDown(TH1F * hist) {
 
 void
 L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
+    // PU Vars
+    treeinfo.ecal_PU_pt = caloJet.GetExperimentalParam("ecal_PU_pt");
+    treeinfo.ecal_L1EG_jet_PU_pt = caloJet.GetExperimentalParam("ecal_L1EG_jet_PU_pt");
+    treeinfo.hcal_PU_pt = caloJet.GetExperimentalParam("hcal_PU_pt");
+    treeinfo.ecal_PU_cor_pt = caloJet.GetExperimentalParam("ecal_PU_cor_pt");
+    treeinfo.ecal_L1EG_jet_PU_cor_pt = caloJet.GetExperimentalParam("ecal_L1EG_jet_PU_cor_pt");
+    treeinfo.hcal_PU_cor_pt = caloJet.GetExperimentalParam("hcal_PU_cor_pt");
+    treeinfo.jet_PU_cor_pt = caloJet.GetExperimentalParam("jet_PU_cor_pt");
+    treeinfo.iPhi_ET_rings_ecal = caloJet.GetExperimentalParam("iPhi_ET_rings_ecal");
+    treeinfo.iPhi_ET_rings_l1eg = caloJet.GetExperimentalParam("iPhi_ET_rings_l1eg");
+    treeinfo.iPhi_ET_rings_hcal = caloJet.GetExperimentalParam("iPhi_ET_rings_hcal");
+    treeinfo.iPhi_ET_rings_total = caloJet.GetExperimentalParam("iPhi_ET_rings_total");
+    treeinfo.iPhi_nTowers_rings_ecal = caloJet.GetExperimentalParam("iPhi_nTowers_rings_ecal");
+    treeinfo.iPhi_nTowers_rings_l1eg = caloJet.GetExperimentalParam("iPhi_nTowers_rings_l1eg");
+    treeinfo.iPhi_nTowers_rings_hcal = caloJet.GetExperimentalParam("iPhi_nTowers_rings_hcal");
+    treeinfo.iPhi_nTowers_rings_total = caloJet.GetExperimentalParam("iPhi_nTowers_rings_total");
+    treeinfo.total_et = caloJet.GetExperimentalParam("total_et");
+    treeinfo.total_nTowers = caloJet.GetExperimentalParam("total_nTowers");
+
     // As of 28 May 2018 caloJet_pt is post-calibration
     treeinfo.ecal_pt = caloJet.GetExperimentalParam("ecal_pt");
     treeinfo.ecal_eta = caloJet.GetExperimentalParam("ecal_eta");
@@ -832,6 +982,24 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
 void
 L1CaloJetStudies::fill_tree_null() {
     // Fill with -9 with no CaloJet fround
+    treeinfo.ecal_PU_pt = -9;
+    treeinfo.ecal_L1EG_jet_PU_pt = -9;
+    treeinfo.hcal_PU_pt = -9;
+    treeinfo.ecal_PU_cor_pt = -9;
+    treeinfo.ecal_L1EG_jet_PU_cor_pt = -9;
+    treeinfo.hcal_PU_cor_pt = -9;
+    treeinfo.jet_PU_cor_pt = -9;
+    treeinfo.iPhi_ET_rings_ecal = -9;
+    treeinfo.iPhi_ET_rings_l1eg = -9;
+    treeinfo.iPhi_ET_rings_hcal = -9;
+    treeinfo.iPhi_ET_rings_total = -9;
+    treeinfo.iPhi_nTowers_rings_ecal = -9;
+    treeinfo.iPhi_nTowers_rings_l1eg = -9;
+    treeinfo.iPhi_nTowers_rings_hcal = -9;
+    treeinfo.iPhi_nTowers_rings_total = -9;
+    treeinfo.total_et = -9;
+    treeinfo.total_nTowers = -9;
+
     treeinfo.ecal_pt = -9;
     treeinfo.ecal_eta = -9;
     treeinfo.ecal_phi = -9;
