@@ -1,3 +1,4 @@
 *.root
 plots
 ignored
+crab/crab_*

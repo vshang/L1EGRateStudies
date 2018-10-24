@@ -4,6 +4,8 @@ DATE=20180927_circT_v1
 #DATE=20180927_circL_v2
 #DATE=20180927_9x9_v1
 #DATE=20180927_7x7_v1
+DATE=20181021_PU_v5
+DATE=20181023_PU_0GeVv2
 
 # Different options
 doHitAnalyzer=true
@@ -33,22 +35,47 @@ doTau=false
 if $doJets; then
     farmoutAnalysisJobs \
         --output-dir=. \
-        --input-files-per-job=2 \
+        --input-files-per-job=3 \
         --vsize-limit=6000 \
         --input-file-list=submitFileLists/qcd_93X_pu0.txt \
+        --site-requirements='OpSysAndVer == "SL6"' \
         phaseII_qcd_${DATE} $CMSSW_BASE condor_jets.py
-    farmoutAnalysisJobs \
-        --output-dir=. \
-        --input-files-per-job=5 \
-        --vsize-limit=6000 \
-        --input-file-list=submitFileLists/qcd_93X_pu200.txt \
-        phaseII_qcd200_${DATE} $CMSSW_BASE condor_jets.py
     #farmoutAnalysisJobs \
     #    --output-dir=. \
-    #    --input-files-per-job=1 \
+    #    --input-files-per-job=10 \
     #    --vsize-limit=6000 \
-    #    --input-file-list=submitFileLists/ggH_HtoTauTau_93X_pu0.txt \
-    #    phaseII_ggH_HTT_${DATE} $CMSSW_BASE condor_jets.py
+    #    --input-file-list=submitFileLists/qcd_93X_pu140.txt \
+    #    --site-requirements='OpSysAndVer == "SL6"' \
+    #    phaseII_qcd140_${DATE} $CMSSW_BASE condor_jets.py
+    farmoutAnalysisJobs \
+        --output-dir=. \
+        --input-files-per-job=10 \
+        --vsize-limit=6000 \
+        --input-file-list=submitFileLists/qcd_93X_pu200.txt \
+        --site-requirements='OpSysAndVer == "SL6"' \
+        phaseII_qcd200_${DATE} $CMSSW_BASE condor_jets.py
+
+    #farmoutAnalysisJobs \
+    #    --output-dir=. \
+    #    --input-files-per-job=3 \
+    #    --vsize-limit=6000 \
+    #    --input-file-list=submitFileLists/singleNeutrino_93X_pu0.txt \
+    #    --site-requirements='OpSysAndVer == "SL6"' \
+    #    phaseII_minBias_${DATE} $CMSSW_BASE condor_jets.py
+    #farmoutAnalysisJobs \
+    #    --output-dir=. \
+    #    --input-files-per-job=10 \
+    #    --vsize-limit=6000 \
+    #    --input-file-list=submitFileLists/singleNeutrino_93X_pu140.txt \
+    #    --site-requirements='OpSysAndVer == "SL6"' \
+    #    phaseII_minBias140_${DATE} $CMSSW_BASE condor_jets.py
+    farmoutAnalysisJobs \
+        --output-dir=. \
+        --input-files-per-job=10 \
+        --vsize-limit=6000 \
+        --input-file-list=submitFileLists/singleNeutrino_93X_pu200.txt \
+        --site-requirements='OpSysAndVer == "SL6"' \
+        phaseII_minBias200_${DATE} $CMSSW_BASE condor_jets.py
 fi
 
 # Hit Analyzer
