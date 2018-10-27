@@ -55,7 +55,7 @@ if __name__ == '__main__':
     base = os.getenv("CMSSW_BASE")
     print "Base: ",base
     for k in dataMap.keys() :
-        config.General.requestName = '20181024_%s_PUTests_2GeV_v1' % k
+        config.General.requestName = '20181027_%s_UsingET_0p5GeV_v2' % k
         config.Data.outputDatasetTag   = config.General.requestName
         config.JobType.psetName        = 'crabby_jets.py'
         if 'minBias' in k :

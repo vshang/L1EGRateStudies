@@ -111,8 +111,8 @@ process.load('L1Trigger.L1CaloTrigger.L1EGammaCrystalsEmulatorProducer_cfi')
 # ----    Produce the L1CaloTaus with the L1EG clusters as ECAL seeds
 
 process.L1CaloTauProducer = cms.EDProducer("L1CaloTauProducer",
-    HcalTpEtMin = cms.untracked.double(2.), # Default is 0 GeV
-    EcalTpEtMin = cms.untracked.double(2.), # Default is 0 GeV
+    HcalTpEtMin = cms.untracked.double(0.5), # Default is 0 GeV
+    EcalTpEtMin = cms.untracked.double(0.5), # Default is 0 GeV
     debug = cms.untracked.bool(False),
     hcalTP = cms.InputTag("simHcalTriggerPrimitiveDigis","","HLT"),
     l1CaloTowers = cms.InputTag("L1EGammaClusterEmuProducer","L1CaloTowerCollection","L1AlgoTest"),
