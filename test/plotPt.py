@@ -9,7 +9,8 @@ import os
 qcd = 'qcd_pu0.root'
 qcd200 = 'qcd_pu200.root'
 ggH = 'ggH.root'
-version = '20180927_jets_vX'
+version = '20181024_jets_PUSuppressV1'
+#version = '20181023_jets_final_shape_comp_v1'
 #qcd = 'qcd1.root'
 #ggH = 'ggH1.root'
 #version = '93X_ResolutionsV2'
@@ -17,7 +18,6 @@ version = '20180927_jets_vX'
 base = '/data/truggles/p2/20180927_QCD_diff_jet_shapes_calib/'
 universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"/"
 if not os.path.exists( universalSaveDir ) : os.makedirs( universalSaveDir )
-version = '20180911_jets_v2'
 
 qcd0File = ROOT.TFile( base+qcd, 'r' )
 qcd200File = ROOT.TFile( base+qcd200, 'r' )
@@ -422,6 +422,7 @@ def drawDRHists(hists, c, ymax, doFit = False ) :
     marker_styles = [20, 24, 25, 26, 32, 35]
     hs = ROOT.THStack("hs", c.GetTitle())
     maxi = 0.
+    line_style = 2 if len(hists) < 5 else 2
     for i, hist in enumerate(hists) :
         # FIXME
         j = i
@@ -430,7 +431,7 @@ def drawDRHists(hists, c, ymax, doFit = False ) :
         hist.Scale(1./hist.Integral())
         hist.SetLineColor(colors[j])
         hist.SetLineWidth(4)
-        if i > (len(hists)/2-1) : hist.SetLineStyle( 2 )
+        if i > (len(hists)/2-1) : hist.SetLineStyle( line_style )
         hist.SetMarkerColor(colors[j])
         hist.SetMarkerStyle(marker_styles[j])
         #hist.SetMarkerSize(0.8)
@@ -475,6 +476,7 @@ def drawDRHists(hists, c, ymax, doFit = False ) :
     #leg = setLegStyle(0.53,0.78,0.95,0.92)
     #leg = setLegStyle(0.5,0.7,0.9,0.9)
     leg = setLegStyle(0.5,0.5,0.9,0.9)
+    #leg = setLegStyle(0.55,0.55,0.93,0.93)
     for hist in hists :
         leg.AddEntry(hist, hist.GetTitle(),"elp")
     leg.Draw("same")
@@ -545,8 +547,9 @@ def drawDRHists(hists, c, ymax, doFit = False ) :
             
             #shape = ROOT.TF1("shape", "gaus(0) + [3]*[3]", 0.6, 1.0)
             #shape.SetParameters( fitHints[i][0], fitHints[i][1], fitHints[i][2], 0.1 )
-            shape = ROOT.TF1("shape", "gaus(0)", hist_max - 0.05, hist_max + 0.05 )
-            shape.SetParameters(fitHints[i][0], fitHints[i][1], fitHints[i][2])
+            shape = ROOT.TF1("shape", "gaus(0)", hist_max - 0.3, hist_max + 0.3 )
+            #shape.SetParameters(fitHints[i][0], fitHints[i][1], fitHints[i][2])
+            shape.SetParameters(fitHints[0][0], fitHints[0][1], fitHints[0][2])
                 
             hist.Fit(shape, "R")
             hist.GetFunction("shape").SetLineColor(hist.GetLineColor())
@@ -727,46 +730,122 @@ if __name__ == '__main__' :
         #'hcal_pt/genTau_pt',
         #'stage2jet_pt/genTau_pt',
 
-    #trees = OrderedDict()
+    ##trees = OrderedDict()
+    #base = '/data/truggles/p2/20180927_QCD_diff_jet_shapes_calib/'
+    #max_ = 3.0
+    #min_ = 0.
+    #tmpAry=[50,min_,max_]
+    #tmpAry=[100,min_,max_]
+    #baseline_cuts = "(genJet_pt > 40 && abs(genJet_eta) < 1.1)"
+    ##baseline_cuts = "(genJet_pt > 100 && abs(genJet_eta) < 1.1)"
+    ##baseline_cuts = "(genJet_pt > 100 && genJet_pt < 300 && abs(genJet_eta) < 1.1)"
+    #baseline_cuts = "(genJet_pt > 50 && genJet_pt < 90 && abs(genJet_eta) < 1.1)"
+    #pt_name = '_pt100-300'
+    #pt_name = '_pt50-90'
+    ##pt_name = '_pt40'
+    #hists = []
+    #histsPU0 = []
+    #histsPU200 = []
+    #to_plot = 'jet_pt/genJet_pt'
+    #to_plot = '(ecal_L1EG_jet_pt + ecal_pt + (hcal_pt*calibX) )/genJet_pt'
+    ##to_plot = '(ecal_L1EG_jet_pt + ecal_pt + (hcal_pt) )/genJet_pt'
+    #title = 'Reco Jet p_{T} / Gen Jet p_{T}' if 'calibX' not in to_plot else 'Reco Jet p_{T} / Gen Jet p_{T}'
+    #for pu in ['qcd', 'qcd200'] :
+    ##for pu in ['qcd',] :
+    #    for shape in ['7x7', 'circT', 'circL', '9x9'] :
+    #    #for shape in ['7x7', 'circL', 'circT'] :
+    #        f = ROOT.TFile( base+pu+'_20180927_'+shape+'.root', 'r' )
+    #        tree = f.Get('analyzer/tree')
+    #        hists.append( simple1D( pu+'_'+shape, tree, cnt, to_plot, tmpAry, baseline_cuts ) )
+    #        hists[-1].SetTitle( shape + ' ' + title)
+    #        hists[-1].GetXaxis().SetTitle('Reco Jet p_{T} / Gen Jet p_{T}')
+    #        if pu == 'qcd' :
+    #            histsPU0.append( simple1D( pu+'_'+shape, tree, cnt, to_plot, tmpAry, baseline_cuts ) )
+    #            histsPU0[-1].GetXaxis().SetTitle('Reco Jet p_{T} / Gen Jet p_{T}')
+    #            histsPU0[-1].SetTitle( shape + ' ' + title)
+    #        if pu == 'qcd200' :
+    #            histsPU200.append( simple1D( pu+'_'+shape, tree, cnt, to_plot, tmpAry, baseline_cuts ) )
+    #            histsPU200[-1].GetXaxis().SetTitle('Reco Jet p_{T} / Gen Jet p_{T}')
+    #            histsPU200[-1].SetTitle( shape + ' ' + title)
+    #        #hists[-1].SetTitle()
+    #c.SetName("shapes_and_PU_comparison"+pt_name)
+    #drawDRHists(hists, c, 0., False ) # no Fit
+
+    #c.SetName("shapes_PU_200_comparison"+pt_name)
+    #drawDRHists(histsPU200, c, 0., True ) # no Fit
+
+    #c.SetName("shapes_PU_zero_comparison"+pt_name)
+    ##c.SetName("shapes_PU_zero_comparison_calib")
+    #drawDRHists(histsPU0, c, 0., True ) # no Fit
+    
+
+    name_map = {
+        '0GeV' : 'E_{T} #geq 0 GeV',
+        '0p5GeV' : 'E_{T} #geq 0.5GeV',
+        '1GeV' : 'E_{T} #geq 1GeV',
+        '2GeV' : 'E_{T} #geq 2GeV',
+        '3GeV_v6' : 'E_{T} #geq 3GeV'
+    }
+
+    #base = '/data/truggles/l1CaloJets_20181023_4/'
+    base = '/data/truggles/l1CaloJets_20181024/'
     max_ = 3.0
     min_ = 0.
     tmpAry=[50,min_,max_]
     tmpAry=[100,min_,max_]
-    baseline_cuts = "(genJet_pt > 40 && abs(genJet_eta) < 1.1)"
+    baseline_cuts = "(genJet_pt > 100 && abs(genJet_eta) < 1.1)"
+    baseline_cuts = "(genJet_pt > 100 && genJet_pt < 150 && abs(genJet_eta) < 1.1)"
+    #baseline_cuts = "(genJet_pt > 50 && genJet_pt < 90 && abs(genJet_eta) < 1.1)"
+    pt_name = '_pt100-150_s2'
+    #pt_name = '_pt50-90'
     hists = []
     histsPU0 = []
     histsPU200 = []
-    to_plot = 'jet_pt/genJet_pt'
     to_plot = '(ecal_L1EG_jet_pt + ecal_pt + (hcal_pt*calibX) )/genJet_pt'
-    to_plot = '(ecal_L1EG_jet_pt + ecal_pt + (hcal_pt) )/genJet_pt'
-    title = 'Reco Jet p_{T} / Gen Jet p_{T}' if 'calibX' not in to_plot else 'Calibrated Reco Jet p_{T} / Gen Jet p_{T}'
-    for pu in ['qcd', 'qcd200'] :
+    title = 'Reco Jet p_{T} / Gen Jet p_{T}' if 'calibX' not in to_plot else 'Reco Jet p_{T} / Gen Jet p_{T}'
+    for pu in ['PU0','PU200'] :
     #for pu in ['qcd',] :
-        for shape in ['7x7', 'circT', 'circL', '9x9'] :
-        #for shape in ['7x7', 'circL', 'circT'] :
-            f = ROOT.TFile( base+pu+'_20180927_'+shape+'.root', 'r' )
+        # Stage-2 first
+        f = ROOT.TFile( base+'merged_QCD-'+pu+'_PUTests_0GeV.root', 'r' )
+        tree = f.Get('analyzer/tree')
+        hists.append( simple1D( pu+'_stage-2', tree, cnt, 'stage2jet_pt/genJet_pt', tmpAry, baseline_cuts ) )
+        hists[-1].SetTitle( 'Stage-2 CaloJet' )
+        hists[-1].GetXaxis().SetTitle('Reco Jet p_{T} / Gen Jet p_{T}')
+        if pu == 'PU0' :
+            histsPU0.append( simple1D( pu+'_stage-2', tree, cnt, 'stage2jet_pt/genJet_pt', tmpAry, baseline_cuts ) )
+            histsPU0[-1].GetXaxis().SetTitle('Reco Jet p_{T} / Gen Jet p_{T}')
+            histsPU0[-1].SetTitle( 'Stage-2 CaloJet' )
+        if pu == 'PU200' :
+            histsPU200.append( simple1D( pu+'_stage-2', tree, cnt, 'stage2jet_pt/genJet_pt', tmpAry, baseline_cuts ) )
+            histsPU200[-1].GetXaxis().SetTitle('Reco Jet p_{T} / Gen Jet p_{T}')
+            histsPU200[-1].SetTitle( 'Stage-2 CaloJet' )
+        #for shape in ['v3', '1GeV_v4', '2GeV_v5', '3GeV_v6'] :
+        #for shape in ['v3', '0p5GeV_v9b', '1GeV_v4', '2GeV_v5'] :
+        #for shape in ['v3', '0p5GeV_v9b', '1GeV_v4'] :
+        for shape in ['0GeV', '0p5GeV', '1GeV', '2GeV'] :
+            f = ROOT.TFile( base+'merged_QCD-'+pu+'_PUTests_'+shape+'.root', 'r' )
             tree = f.Get('analyzer/tree')
             hists.append( simple1D( pu+'_'+shape, tree, cnt, to_plot, tmpAry, baseline_cuts ) )
-            hists[-1].SetTitle( shape + ' ' + title)
+            hists[-1].SetTitle( name_map[shape] + ' ' + title)
             hists[-1].GetXaxis().SetTitle('Reco Jet p_{T} / Gen Jet p_{T}')
-            if pu == 'qcd' :
+            if pu == 'PU0' :
                 histsPU0.append( simple1D( pu+'_'+shape, tree, cnt, to_plot, tmpAry, baseline_cuts ) )
                 histsPU0[-1].GetXaxis().SetTitle('Reco Jet p_{T} / Gen Jet p_{T}')
-                histsPU0[-1].SetTitle( shape + ' ' + title)
-            if pu == 'qcd200' :
+                histsPU0[-1].SetTitle( name_map[shape] + ' ' + title)
+            if pu == 'PU200' :
                 histsPU200.append( simple1D( pu+'_'+shape, tree, cnt, to_plot, tmpAry, baseline_cuts ) )
                 histsPU200[-1].GetXaxis().SetTitle('Reco Jet p_{T} / Gen Jet p_{T}')
-                histsPU200[-1].SetTitle( shape + ' ' + title)
+                histsPU200[-1].SetTitle( name_map[shape] + ' ' + title)
             #hists[-1].SetTitle()
-    c.SetName("shapes_and_PU_comparison")
+    c.SetName("shapes_and_PU_comparison"+pt_name)
     drawDRHists(hists, c, 0., False ) # no Fit
 
-    c.SetName("shapes_PU_200_comparison")
-    drawDRHists(histsPU200, c, 0., False ) # no Fit
+    c.SetName("shapes_PU_200_comparison"+pt_name)
+    drawDRHists(histsPU200, c, 0., True ) # no Fit
 
-    c.SetName("shapes_PU_zero_comparison")
+    c.SetName("shapes_PU_zero_comparison"+pt_name)
     #c.SetName("shapes_PU_zero_comparison_calib")
-    drawDRHists(histsPU0, c, 0., False ) # no Fit
+    drawDRHists(histsPU0, c, 0., True ) # no Fit
     
 
 

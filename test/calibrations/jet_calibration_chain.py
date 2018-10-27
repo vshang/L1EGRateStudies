@@ -102,36 +102,38 @@ if '__main__' in __name__ :
     jetsF0 = 'qcd3.root'
     base = '/data/truggles/l1CaloJets_20181023_4/'
     base = '/data/truggles/p2/20180927_QCD_diff_jet_shapes_calib/'
+    base = '/data/truggles/l1CaloJets_20181024/'
 
     #for shape in ['7x7', '9x9', 'circL', 'circT'] :
     #for shape in ['7x7',] :
     for shape in [
 
-        'qcd200_20180927_7x7',
-        'qcd200_20180927_9x9',
-        'qcd200_20180927_circL',
-        'qcd200_20180927_circT',
-        'qcd_20180927_7x7',
-        'qcd_20180927_9x9',
-        'qcd_20180927_circL',
-        'qcd_20180927_circT',
+        # SHape Tests
+        #'qcd200_20180927_7x7',
+        #'qcd200_20180927_9x9',
+        #'qcd200_20180927_circL',
+        #'qcd200_20180927_circT',
+        #'qcd_20180927_7x7',
+        #'qcd_20180927_9x9',
+        #'qcd_20180927_circL',
+        #'qcd_20180927_circT',
 
-        #'0_PUTests_1GeV_v4',
-        #'0_PUTests_2GeV_v5',
-        #'0_PUTests_3GeV_v6',
-        #'0_PUTests_v3',
-        #'200_PUTests_1GeV_v4',
-        #'200_PUTests_2GeV_v5',
-        #'200_PUTests_3GeV_v6',
-        #'200_PUTests_v3',
-        #'0_PUTests_0p5GeV_v9b',
-        #'200_PUTests_0p5GeV_v9b',
+        # Threshold Tests
+        #'0_PUTests_0GeV',
+        #'0_PUTests_0p5GeV',
+        #'0_PUTests_1GeV',
+        #'0_PUTests_2GeV',
+        #'200_PUTests_0GeV',
+        '200_PUTests_0p5GeV',
+        #'200_PUTests_1GeV',
+        #'200_PUTests_2GeV',
     ] :
         
         #jetsF0 = 'merged_QCD-PU%s.root' % shape
-        jetsF0 = '%s.root' % shape
-        date = jetsF0.replace('merged_QCD-','').replace('.root','')
-        plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date+'_v3'
+        #date = jetsF0.replace('merged_QCD-','').replace('.root','')
+        jetsF0 = 'merged_minBias-PU%s.root' % shape
+        date = jetsF0.replace('merged_minBiase-','').replace('.root','')
+        plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date+'_v4'
         if not os.path.exists( plotDir ) : os.makedirs( plotDir )
 
         jetFile = ROOT.TFile( base+jetsF0, 'r' )
@@ -146,7 +148,7 @@ if '__main__' in __name__ :
 
         """ Make new calibration root file """
         cut = "abs(genJet_eta)<1.1"
-        make_em_fraction_calibrations( c, base+jetsF0, cut, plotDir )
+        #make_em_fraction_calibrations( c, base+jetsF0, cut, plotDir )
         jetFile.Close()
 
         """ Add new calibrations to TTree """
@@ -157,7 +159,7 @@ if '__main__' in __name__ :
         jetFile = ROOT.TFile( base+jetsF0, 'r' )
         tree = jetFile.Get("analyzer/tree")
 
-        plot_calibrated_results = True
+        plot_calibrated_results = False
         x_and_y_bins = [28,20,300, 60,0,3]
         """ Resulting Calibrations """
         if plot_calibrated_results :
