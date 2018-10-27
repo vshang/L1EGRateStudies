@@ -1,6 +1,9 @@
 import ROOT
+import os
 ROOT.gROOT.SetBatch(False)
 
+def checkDir( plotDir ) :
+    if not os.path.exists( plotDir ) : os.makedirs( plotDir )
 
 def getKeysOfClass( file_, dir_, class_ ) :
     keys = []
@@ -80,7 +83,10 @@ def make_rate_hist( nEvents, tree, x_var, x_var_calib, eta_var, eta_threshold, x
     previous_event = -1
     max_pt = 0.
     # Fill non-cululative distribution
+    cnt = 0
     for row in tree :
+        cnt += 1
+        if cnt % 1000000 == 0 : print cnt
         evt = row.event
         # Initial row
         if previous_event == -1 : previous_event = evt
@@ -108,14 +114,11 @@ def make_rate_hist( nEvents, tree, x_var, x_var_calib, eta_var, eta_threshold, x
         h2.SetBinContent( i, integral )
         h2.SetBinError( b, ROOT.TMath.Sqrt(integral) )
     
-    print h2.Integral()
-    print h2.GetBinContent( 1 )
     h2.Scale( 30000 / nEvents )
-    print h2.Integral()
-    print h2.GetBinContent( 1 )
 
-    h1.SaveAs('tmp1.root')
-    h2.SaveAs('tmp.root')
+    return h2
+
+
 
 if __name__ == '__main__' :
     #f = ROOT.TFile('egTriggerEff.root','r')

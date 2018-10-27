@@ -32,6 +32,9 @@ dataMap['QCD-PU200'] = {'das' : '/QCD_Pt-0to1000_Tune4C_14TeV_pythia8/PhaseIIFal
 ##dataMap['minBias-PU0'] = {'das' : '/SingleNeutrino/PhaseIIFall17D-L1TnoPU_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW'}
 ##dataMap['minBias-PU140'] = {'das' : '/SingleNeutrino/PhaseIIFall17D-L1TPU140_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW'}
 dataMap['minBias-PU200'] = {'das' : '/SingleNeutrino/PhaseIIFall17D-L1TPU200_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW'}
+#dataMap['TTbar-PU0'] = {'das' : '/TT_TuneCUETP8M2T4_14TeV-powheg-pythia8/PhaseIIFall17D-L1TnoPU_93X_upgrade2023_realistic_v5-v2/GEN-SIM-DIGI-RAW'}
+#dataMap['TTbar-PU140'] = {'das' : '/TT_TuneCUETP8M2T4_14TeV-powheg-pythia8/PhaseIIFall17D-L1TPU140_93X_upgrade2023_realistic_v5-v2/GEN-SIM-DIGI-RAW'}
+dataMap['TTbar-PU200'] = {'das' : '/TT_TuneCUETP8M2T4_14TeV-powheg-pythia8/PhaseIIFall17D-L1TPU200_93X_upgrade2023_realistic_v5-v2/GEN-SIM-DIGI-RAW'}
 
 # dasgoclient --query="dataset=/SingleNeutrino/PhaseIIFall17D-L1T*_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW"
 # dasgoclient --query="dataset=/QCD_Pt-0to1000_Tune4C_14TeV_pythia8/PhaseIIFall17D-L1T*_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW"

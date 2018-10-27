@@ -97,12 +97,7 @@ def calibrate( quantile_map, abs_jet_eta, ecal_L1EG_jet_pt, ecal_pt, jet_pt ) :
 
 if '__main__' in __name__ :
 
-    base = '/data/truggles/phaseII_qcd_20180925_v1-condor_jets/'
-    base = ''
-    jetsF0 = 'qcd3.root'
-    base = '/data/truggles/l1CaloJets_20181023_4/'
-    base = '/data/truggles/p2/20180927_QCD_diff_jet_shapes_calib/'
-    base = '/data/truggles/l1CaloJets_20181024/'
+    base = '/data/truggles/l1CaloJets_20181027/'
 
     #for shape in ['7x7', '9x9', 'circL', 'circT'] :
     #for shape in ['7x7',] :
@@ -124,15 +119,22 @@ if '__main__' in __name__ :
         #'0_PUTests_1GeV',
         #'0_PUTests_2GeV',
         #'200_PUTests_0GeV',
-        '200_PUTests_0p5GeV',
+        #'200_PUTests_0p5GeV',
         #'200_PUTests_1GeV',
         #'200_PUTests_2GeV',
+
+        # ET Test
+        #'merged_QCD-PU200_OldP4Vec_0p5GeV',
+        #'merged_minBias-PU200_OldP4Vec_0p5GeV',
+        'merged_QCD-PU200_UsingET_0p5GeV',
+        'merged_minBias-PU200_UsingET_0p5GeV',
+        'merged_TTbar-PU200_UsingET_0p5GeV',
     ] :
         
         #jetsF0 = 'merged_QCD-PU%s.root' % shape
         #date = jetsF0.replace('merged_QCD-','').replace('.root','')
-        jetsF0 = 'merged_minBias-PU%s.root' % shape
-        date = jetsF0.replace('merged_minBiase-','').replace('.root','')
+        jetsF0 = '%s.root' % shape
+        date = jetsF0.replace('merged_','').replace('.root','')
         plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date+'_v4'
         if not os.path.exists( plotDir ) : os.makedirs( plotDir )
 
@@ -147,8 +149,11 @@ if '__main__' in __name__ :
 
 
         """ Make new calibration root file """
+        # Only make for QCD sample, for other samples, pick up the
+        # results of QCD
         cut = "abs(genJet_eta)<1.1"
-        #make_em_fraction_calibrations( c, base+jetsF0, cut, plotDir )
+        if 'QCD' in shape :
+            make_em_fraction_calibrations( c, base+jetsF0, cut, plotDir )
         jetFile.Close()
 
         """ Add new calibrations to TTree """
@@ -159,7 +164,10 @@ if '__main__' in __name__ :
         jetFile = ROOT.TFile( base+jetsF0, 'r' )
         tree = jetFile.Get("analyzer/tree")
 
-        plot_calibrated_results = False
+        plot_calibrated_results = True
+        # Can't plot for minBias b/c no gen
+        if 'minBias' in shape : 
+            plot_calibrated_results = False
         x_and_y_bins = [28,20,300, 60,0,3]
         """ Resulting Calibrations """
         if plot_calibrated_results :
