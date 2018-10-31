@@ -3,8 +3,69 @@ import os
 from array import array
 from collections import OrderedDict
 from caloJetPtCalibrations import getTH2, getTH2VarBin, \
-    drawPointsHists, drawPointsHists3, make_em_fraction_calibrations
+    drawPointsHists, drawPointsHists3, make_em_fraction_calibrations, \
+    get_x_binning
 
+def prepare_calibration_py_cfg( quantile_map ) :
+    o_file = open('new_calibrations.txt', 'w')
+    # Already add zero for EM frac, will add upper val for each loop
+    for k, v in quantile_map.iteritems() :
+        print k, v
+
+    # EM fraction
+    o_file.write( "l1CaloJet.emFractionBins = cms.vdouble([ 0.00" )
+    em_frac_list = [0.0,]
+    for k, v in quantile_map.iteritems() :
+        # continue if not increasing value
+        if v[1] <= em_frac_list[-1] : continue
+        em_frac_list.append( v[1] )
+        o_file.write( ",%.2f" % v[1] )
+    o_file.write( "])\n" )
+    print em_frac_list
+
+    # Eta binning
+    o_file.write( "l1CaloJet.absEtaBins = cms.vdouble([ 0.00" )
+    abs_eta_list = [0.0,]
+    for k, v in quantile_map.iteritems() :
+        # continue if not increasing value
+        if v[3] <= abs_eta_list[-1] : continue
+        abs_eta_list.append( v[3] )
+        o_file.write( ",%.2f" % v[3] )
+    o_file.write( "])\n" )
+    print abs_eta_list
+
+    # Pt binning
+    o_file.write( "l1CaloJet.jetPtBins = cms.vdouble([ 0.0" )
+    pt_binning = []
+    pt_binning_array = get_x_binning()
+    for val in pt_binning_array :
+        if val == 0.0 : continue # skip to keep commans easy
+        pt_binning.append( val )
+        o_file.write( ",%.1f" % val )
+    o_file.write( "])\n" )
+    print pt_binning
+        
+    # Now huge loop of values for each bin
+    o_file.write( "l1CaloJet.jetCalibrations = cms.vdouble([\n" )
+    x = ROOT.Double(0.)
+    y = ROOT.Double(0.)
+    cnt = 1
+    for k, v in quantile_map.iteritems() :
+        val_string = ''
+        for point in range( v[-1].GetN() ) :
+            v[-1].GetPoint( point, x, y )
+            val_string += "%.3f, " % y
+
+        val_string = val_string.strip(' ')
+        # No comma at end if final one
+        if cnt == len( quantile_map.keys() ) :
+            val_string = val_string.strip(',')
+        o_file.write( "\t\t%s\n" % val_string )
+        cnt += 1
+    o_file.write( "])\n" )
+            
+    
+    o_file.close()
 
 def get_quantile_map( calib_fName ) :
 
@@ -29,8 +90,8 @@ def get_quantile_map( calib_fName ) :
         eta_low = float(info[7].replace('p','.'))
         eta_high = float(info[9].replace('p','.'))
         quantile_map[ key ] = [ f_low, f_high, eta_low, eta_high, f.Get( key ) ]
-    for k, v in quantile_map.iteritems() :
-        print k, v
+    #for k, v in quantile_map.iteritems() :
+    #    print k, v
 
     return quantile_map
 
@@ -126,8 +187,8 @@ if '__main__' in __name__ :
         # ET Test
         #'merged_QCD-PU200_OldP4Vec_0p5GeV',
         #'merged_minBias-PU200_OldP4Vec_0p5GeV',
-        'merged_QCD-PU200_UsingET_0p5GeV',
-        'merged_minBias-PU200_UsingET_0p5GeV',
+        #'merged_QCD-PU200_UsingET_0p5GeV',
+        #'merged_minBias-PU200_UsingET_0p5GeV',
         'merged_TTbar-PU200_UsingET_0p5GeV',
     ] :
         
@@ -158,13 +219,15 @@ if '__main__' in __name__ :
 
         """ Add new calibrations to TTree """
         quantile_map = get_quantile_map( 'jet_em_calibrations.root' )
-        add_calibration( base+jetsF0, quantile_map )
+        prepare_calibration_py_cfg( quantile_map )
+        #add_calibration( base+jetsF0, quantile_map )
 
         """ Plot Results """
         jetFile = ROOT.TFile( base+jetsF0, 'r' )
         tree = jetFile.Get("analyzer/tree")
 
         plot_calibrated_results = True
+        plot_calibrated_results = False
         # Can't plot for minBias b/c no gen
         if 'minBias' in shape : 
             plot_calibrated_results = False
