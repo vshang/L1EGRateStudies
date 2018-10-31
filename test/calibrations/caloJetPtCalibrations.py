@@ -280,11 +280,16 @@ def drawPointsHists(saveName, h1, h2, title1, title2, xaxis, yaxis, new=False, p
 
     points = []
     min_ = 5
-    for i in range(min_, 505, 10) : points.append( i )
-    for point in points :
+    # was originally using 10 GeV spacing for calibrations here
+    # Switch to using the same binning as the TH2
+    #for i in range(min_, 505, 10) : points.append( i )
+    points = get_x_binning()
+    for i in range(len(points)-1) :
         # if empty column, don't appent to points
+        point = (points[i]+points[i+1])/2.
         avg = getAverage( h1, point )
         if avg == -999 : continue
+        print i, points[i], points[i+1], point, avg
         xVals1.append( point )
         yVals1.append( avg )
     #print xVals1
@@ -313,7 +318,10 @@ def drawPointsHists(saveName, h1, h2, title1, title2, xaxis, yaxis, new=False, p
     h2.GetYaxis().SetTitle( yaxis )
     xVals2 = array('f', [])
     yVals2 = array('f', [])
-    for point in points :
+    #for point in points :
+    for i in range(len(points)-1) :
+        # if empty column, don't appent to points
+        point = (points[i]+points[i+1])/2.
         xVals2.append( point )
         yVals2.append( getAverage( h2, point ) )
     #print xVals2

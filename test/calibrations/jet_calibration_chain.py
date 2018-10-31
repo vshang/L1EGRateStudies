@@ -7,46 +7,47 @@ from caloJetPtCalibrations import getTH2, getTH2VarBin, \
     get_x_binning
 
 def prepare_calibration_py_cfg( quantile_map ) :
-    o_file = open('new_calibrations.txt', 'w')
+    o_file = open('L1CaloJetCalibrations_cfi.py', 'w')
+    o_file.write( "import FWCore.ParameterSet.Config as cms\n\n" )
     # Already add zero for EM frac, will add upper val for each loop
     for k, v in quantile_map.iteritems() :
         print k, v
 
     # EM fraction
-    o_file.write( "l1CaloJet.emFractionBins = cms.vdouble([ 0.00" )
+    o_file.write( "\temFractionBins = cms.vdouble([ 0.00" )
     em_frac_list = [0.0,]
     for k, v in quantile_map.iteritems() :
         # continue if not increasing value
         if v[1] <= em_frac_list[-1] : continue
         em_frac_list.append( v[1] )
         o_file.write( ",%.2f" % v[1] )
-    o_file.write( "])\n" )
+    o_file.write( "]),\n" )
     print em_frac_list
 
     # Eta binning
-    o_file.write( "l1CaloJet.absEtaBins = cms.vdouble([ 0.00" )
+    o_file.write( "\tabsEtaBins = cms.vdouble([ 0.00" )
     abs_eta_list = [0.0,]
     for k, v in quantile_map.iteritems() :
         # continue if not increasing value
         if v[3] <= abs_eta_list[-1] : continue
         abs_eta_list.append( v[3] )
         o_file.write( ",%.2f" % v[3] )
-    o_file.write( "])\n" )
+    o_file.write( "]),\n" )
     print abs_eta_list
 
     # Pt binning
-    o_file.write( "l1CaloJet.jetPtBins = cms.vdouble([ 0.0" )
+    o_file.write( "\tjetPtBins = cms.vdouble([ 0.0" )
     pt_binning = []
     pt_binning_array = get_x_binning()
     for val in pt_binning_array :
         if val == 0.0 : continue # skip to keep commans easy
         pt_binning.append( val )
         o_file.write( ",%.1f" % val )
-    o_file.write( "])\n" )
+    o_file.write( "]),\n" )
     print pt_binning
         
     # Now huge loop of values for each bin
-    o_file.write( "l1CaloJet.jetCalibrations = cms.vdouble([\n" )
+    o_file.write( "\tjetCalibrations = cms.vdouble([\n" )
     x = ROOT.Double(0.)
     y = ROOT.Double(0.)
     cnt = 1
@@ -54,6 +55,7 @@ def prepare_calibration_py_cfg( quantile_map ) :
         val_string = ''
         for point in range( v[-1].GetN() ) :
             v[-1].GetPoint( point, x, y )
+            #print x, y
             val_string += "%.3f, " % y
 
         val_string = val_string.strip(' ')
@@ -61,6 +63,7 @@ def prepare_calibration_py_cfg( quantile_map ) :
         if cnt == len( quantile_map.keys() ) :
             val_string = val_string.strip(',')
         o_file.write( "\t\t%s\n" % val_string )
+        #print val_string
         cnt += 1
     o_file.write( "])\n" )
             
@@ -187,16 +190,16 @@ if '__main__' in __name__ :
         # ET Test
         #'merged_QCD-PU200_OldP4Vec_0p5GeV',
         #'merged_minBias-PU200_OldP4Vec_0p5GeV',
-        #'merged_QCD-PU200_UsingET_0p5GeV',
+        'merged_QCD-PU200_UsingET_0p5GeV',
         #'merged_minBias-PU200_UsingET_0p5GeV',
-        'merged_TTbar-PU200_UsingET_0p5GeV',
+        #'merged_TTbar-PU200_UsingET_0p5GeV',
     ] :
         
         #jetsF0 = 'merged_QCD-PU%s.root' % shape
         #date = jetsF0.replace('merged_QCD-','').replace('.root','')
         jetsF0 = '%s.root' % shape
         date = jetsF0.replace('merged_','').replace('.root','')
-        plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date+'_v4'
+        plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date+'_v5'
         if not os.path.exists( plotDir ) : os.makedirs( plotDir )
 
         jetFile = ROOT.TFile( base+jetsF0, 'r' )
@@ -213,8 +216,8 @@ if '__main__' in __name__ :
         # Only make for QCD sample, for other samples, pick up the
         # results of QCD
         cut = "abs(genJet_eta)<1.1"
-        if 'QCD' in shape :
-            make_em_fraction_calibrations( c, base+jetsF0, cut, plotDir )
+        #if 'QCD' in shape :
+        #    make_em_fraction_calibrations( c, base+jetsF0, cut, plotDir )
         jetFile.Close()
 
         """ Add new calibrations to TTree """
