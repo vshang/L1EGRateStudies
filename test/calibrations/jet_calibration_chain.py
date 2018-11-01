@@ -20,7 +20,10 @@ def prepare_calibration_py_cfg( quantile_map ) :
         # continue if not increasing value
         if v[1] <= em_frac_list[-1] : continue
         em_frac_list.append( v[1] )
-        o_file.write( ",%.2f" % v[1] )
+        if v[1] == 1.0 : # Need to go a little higher to catch rounding issues
+            o_file.write( ",1.05" )
+        else :
+            o_file.write( ",%.2f" % v[1] )
     o_file.write( "]),\n" )
     print em_frac_list
 
