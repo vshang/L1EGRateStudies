@@ -172,7 +172,8 @@ def drawPointsHists3(saveName, h1, h2, h3, title1, title2, title3, xaxis, yaxis,
 
     points = []
     min_ = 10
-    for i in range(min_, 300) : points.append( i )
+    #for i in range(min_, 300) : points.append( i )
+    for i in range(min_, 400) : points.append( i )
     for point in points :
         # if empty column, don't appent to points
         avg = getAverage( h1, point )
@@ -264,6 +265,52 @@ def drawPointsHists3(saveName, h1, h2, h3, title1, title2, title3, xaxis, yaxis,
 
 
 
+def drawPointsSingleHist(saveName, h1, title1, xaxis, yaxis, plotDir='.') :
+    c2 = ROOT.TCanvas('c2', 'c2', 600, 600)
+    ROOT.gPad.SetRightMargin( ROOT.gPad.GetRightMargin() * 1.4 )
+    h1.GetXaxis().SetTitle( xaxis )
+    h1.GetYaxis().SetTitle( yaxis )
+    h1.SetTitle( title1 )
+    h1.Draw("colz")
+    ROOT.gPad.SetGrid()
+    xVals1 = array('f', [])
+    yVals1 = array('f', [])
+
+    points = []
+    min_ = 5
+    # was originally using 10 GeV spacing for calibrations here
+    # Switch to using the same binning as the TH2
+    for i in range(min_, 505, 10) : points.append( i )
+    #points = get_x_binning()
+    for i in range(len(points)-1) :
+        # if empty column, don't appent to points
+        point = (points[i]+points[i+1])/2.
+        avg = getAverage( h1, point )
+        if avg == -999 : continue
+        #print i, points[i], points[i+1], point, avg
+        xVals1.append( point )
+        yVals1.append( avg )
+    #print xVals1
+    #print yVals1
+    g1 = ROOT.TGraph(len(xVals1), xVals1, yVals1)
+    g1.SetLineWidth(2)
+    g1.GetXaxis().SetTitle( xaxis )
+    g1.GetYaxis().SetTitle( yaxis )
+    #g1.SaveAs('stage-2_calib_%s.root' % saveName)
+    g1.Draw('SAME')
+
+    # Just to show the resulting fit
+    c2.Print(plotDir+"/"+saveName+".png")
+    #c2.Print(plotDir+"/"+saveName+".C")
+    #c2.Print(plotDir+"/"+saveName+".pdf")
+
+    return g1
+
+
+
+
+
+
 def drawPointsHists(saveName, h1, h2, title1, title2, xaxis, yaxis, new=False, plotDir='.') :
     doFit = False
     c2 = ROOT.TCanvas('c2', 'c2', 1200, 600)
@@ -289,7 +336,7 @@ def drawPointsHists(saveName, h1, h2, title1, title2, xaxis, yaxis, new=False, p
         point = (points[i]+points[i+1])/2.
         avg = getAverage( h1, point )
         if avg == -999 : continue
-        print i, points[i], points[i+1], point, avg
+        #print i, points[i], points[i+1], point, avg
         xVals1.append( point )
         yVals1.append( avg )
     #print xVals1
@@ -417,7 +464,7 @@ def getAverage( h, xVal ) :
         #print weightedTot
     # Catch for empty columns
     if tot == 0. :
-        return -999
+        return 1.0
     avgTot = weightedTot/tot
     
     #print "Final average total: ",avgTot
@@ -494,13 +541,14 @@ def make_em_fraction_calibrations( c, fName, cut, plotBase ) :
     xBinning = get_x_binning()
     yBinning = array('f', [i*0.1 for i in range(201)])
     for i in range(len(quantile_list)-1) :
-        for eta in [['0.0', '0.3'], ['0.3', '0.7'], ['0.7', '2.0']] :
+        for eta in [['0.0', '0.3'], ['0.3', '0.7'], ['0.7', '1.0'], ['1.0', '1.2'], ['1.2', '2.0']] :
             f_low = quantile_list[i]
             f_high = quantile_list[i+1]
             x_and_y_bins = [ xBinning, yBinning ]
             #if f_low > 0.0 and f_low < 0.1 and f_high > 0.0 and f_high < 0.1 :
             #    x_and_y_bins = [ xBinningAlt, yBinning ]
-            frac_cut = "abs(genJet_eta) < 1.1 && abs(jet_eta)>=%s && abs(jet_eta)<=%s && (((ecal_L1EG_jet_pt + ecal_pt)/jet_pt) >= %f && ((ecal_L1EG_jet_pt + ecal_pt)/jet_pt) < %f)" % (eta[0], eta[1], f_low, f_high)
+            frac_cut = cut+" && abs(jet_eta)>=%s && abs(jet_eta)<=%s && (((ecal_L1EG_jet_pt + ecal_pt)/jet_pt) >= %f && ((ecal_L1EG_jet_pt + ecal_pt)/jet_pt) < %f)" % (eta[0], eta[1], f_low, f_high)
+            print frac_cut
             to_plot = '(hcal_pt)/genJet_pt:jet_pt'
             #h1 = getTH2( tree, 'qcd1', to_plot, frac_cut, x_and_y_bins )
             h1 = getTH2VarBin( tree, 'qcd1', to_plot, frac_cut, x_and_y_bins )
