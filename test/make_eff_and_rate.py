@@ -15,19 +15,29 @@ p.cd()
 
 
 if doEff :
-    fName = 'merged_QCD-PU200_OldP4Vec_0p5GeV'
-    fName = 'merged_QCD-PU200_UsingET_0p5GeV'
-    #fName = 'merged_TTbar-PU200_UsingET_0p5GeV'
-    base = '/data/truggles/l1CaloJets_20181027/'
+    fName = 'merged_QCD-PU200_Calibrated_v5'
+    base = '/data/truggles/l1CaloJets_20181101/'
     universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/efficiencies/"
     checkDir( universalSaveDir )
 
     f = ROOT.TFile( base+fName+'.root', 'r' )
     t = f.Get('analyzer/tree')
     
-    gP2 = make_efficiency_graph( t, 'abs(genJet_eta)<1.1', 'calibPtX > 100', 'genJet_pt', [60, 0, 300] )
-    gS2 = make_efficiency_graph( t, 'abs(genJet_eta)<1.1', '(stage2jet_pt / 1.2) > 100', 'genJet_pt', [60, 0, 300] )
+    eta_cut = 'abs(genJet_eta)<1.1'
+    eta_cut = 'abs(genJet_eta)<1.2'
+    pt_cut = 100
+    pt_cut = 50
+    #pt_cut = 150
+    #pt_cut = 200
+    #pt_cut = 400
+    #pt_cut = 100
+    #pt_cut = 0
+    axis = [60, 0, 300]
+    axis = [160, 0, 400]
+    gP2 = make_efficiency_graph( t, eta_cut, 'jet_pt_calibration > %i' % pt_cut, 'genJet_pt', axis )
+    gS2 = make_efficiency_graph( t, eta_cut, '(stage2jet_pt_calibration3) > %i' % pt_cut, 'genJet_pt', axis )
     
+    gP2.SetMinimum( 0. )
     gP2.SetLineColor(ROOT.kRed)
     gP2.SetLineWidth(2)
     gS2.SetLineColor(ROOT.kBlack)
@@ -36,6 +46,7 @@ if doEff :
     mg = ROOT.TMultiGraph("mg", "L1 Jet Efficiency")
     mg.Add( gP2 )
     mg.Add( gS2 )
+    mg.SetMinimum( 0. )
     mg.Draw("aplez")
     mg.GetXaxis().SetTitle("Gen Jet p_{T}")
     mg.GetYaxis().SetTitle("L1 Algo. Efficiency w.r.t. Gen")
@@ -49,12 +60,12 @@ if doEff :
     c.Update()
     
     
-    c.SaveAs( universalSaveDir + fName + '_eff.png' )
+    c.SaveAs( universalSaveDir + fName + '_Calib_er1p2_%i_eff.png' % pt_cut )
 
 """ MAKE RATES """
 if doRate :
-    fName = 'merged_minBias-PU200_PUTests_0p5GeV'
-    base = '/data/truggles/l1CaloJets_20181024/'
+    fName = 'merged_minBias-PU200_Calibrated_v5'
+    base = '/data/truggles/l1CaloJets_20181101/'
     universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/rates/"
     checkDir( universalSaveDir )
 
@@ -63,12 +74,12 @@ if doRate :
     t = f.Get('analyzer/tree')
 
     nEvents = f.Get('analyzer/nEvents').Integral()
-    eta_threshold = 1.1
+    eta_threshold = 1.2
     x_info = [56, 20, 300]
     
-    hP2 = make_rate_hist( nEvents, t, 'calibPtX', 1.0, 'jet_eta', eta_threshold, x_info ) 
+    hP2 = make_rate_hist( nEvents, t, 'jet_pt_calibration', 1.0, 'jet_eta', eta_threshold, x_info ) 
     hP2.SaveAs( fName+'_Phase-2.root' )
-    hS2 = make_rate_hist( nEvents, t, 'stage2jet_pt', 1./1.2, 'stage2jet_eta', eta_threshold, x_info )
+    hS2 = make_rate_hist( nEvents, t, 'stage2jet_pt_calibration3', 1.0, 'stage2jet_eta', eta_threshold, x_info )
     hS2.SaveAs( fName+'_Stage-2.root' )
     del hP2, hS2
     
@@ -105,7 +116,7 @@ if doRate :
     c.Update()
     
     
-    c.SaveAs( universalSaveDir + fName +  '_rate.png' )
+    c.SaveAs( universalSaveDir + fName +  '_Calib_er1p2_rate.png' )
 
 
 
