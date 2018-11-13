@@ -3,8 +3,8 @@ import os
 from array import array
 from collections import OrderedDict
 from caloJetPtCalibrations import getTH2, getTH2VarBin, \
-    drawPointsHists, drawPointsHists3, make_em_fraction_calibrations, \
-    get_x_binning
+    drawPointsHists3, make_em_fraction_calibrations, \
+    get_x_binning, drawPointsSingleHist
 
 def prepare_calibration_py_cfg( quantile_map ) :
     o_file = open('L1CaloJetCalibrations_cfi.py', 'w')
@@ -68,7 +68,7 @@ def prepare_calibration_py_cfg( quantile_map ) :
         o_file.write( "\t\t%s\n" % val_string )
         #print val_string
         cnt += 1
-    o_file.write( "])\n" )
+    o_file.write( "\t])\n" )
             
     
     o_file.close()
@@ -135,6 +135,34 @@ def add_calibration( name_in, quantile_map ) :
     t.Write('', ROOT.TObject.kOverwrite)
     f_in.Close()
 
+
+def add_stage2_calibration( name_in, stage2_calib_file ) :
+    f_in = ROOT.TFile( name_in, 'UPDATE')
+    t = f_in.Get( 'analyzer/tree' )
+
+    f_calib = ROOT.TFile( stage2_calib_file, 'READ')
+    g_calib = f_calib.Get( 'Graph' )
+
+    # new calibrations
+    stage2CalibPt = array('f', [ 0 ] )
+    stage2CalibPtB = t.Branch('stage2jet_pt_calibration3', stage2CalibPt, 'stage2jet_pt_calibration3/F')
+
+    cnt = 0
+    for row in t :
+        cnt += 1
+        if cnt % 10000 == 0 : print cnt
+
+        pt = row.stage2jet_pt
+        eval_pt = row.stage2jet_pt
+        if eval_pt > 450 : eval_pt = 450
+        stage2CalibPt[0] = pt * g_calib.Eval( eval_pt )
+
+        stage2CalibPtB.Fill()
+    d = f_in.Get('analyzer')
+    d.cd()
+    t.Write('', ROOT.TObject.kOverwrite)
+    f_in.Close()
+
 def calibrate( quantile_map, abs_jet_eta, ecal_L1EG_jet_pt, ecal_pt, jet_pt ) :
     em_frac = (ecal_L1EG_jet_pt + ecal_pt) / jet_pt
     #print "EM Frac: ",em_frac
@@ -165,12 +193,13 @@ def calibrate( quantile_map, abs_jet_eta, ecal_L1EG_jet_pt, ecal_pt, jet_pt ) :
 if '__main__' in __name__ :
 
     base = '/data/truggles/l1CaloJets_20181027/'
+    base = '/data/truggles/l1CaloJets_20181101/'
 
     #for shape in ['7x7', '9x9', 'circL', 'circT'] :
     #for shape in ['7x7',] :
     for shape in [
 
-        # SHape Tests
+        # SHape Tests 20181027
         #'qcd200_20180927_7x7',
         #'qcd200_20180927_9x9',
         #'qcd200_20180927_circL',
@@ -180,7 +209,7 @@ if '__main__' in __name__ :
         #'qcd_20180927_circL',
         #'qcd_20180927_circT',
 
-        # Threshold Tests
+        # Threshold Tests 20181027
         #'0_PUTests_0GeV',
         #'0_PUTests_0p5GeV',
         #'0_PUTests_1GeV',
@@ -190,19 +219,24 @@ if '__main__' in __name__ :
         #'200_PUTests_1GeV',
         #'200_PUTests_2GeV',
 
-        # ET Test
+        # ET Test 20181027
         #'merged_QCD-PU200_OldP4Vec_0p5GeV',
         #'merged_minBias-PU200_OldP4Vec_0p5GeV',
-        'merged_QCD-PU200_UsingET_0p5GeV',
+        #'merged_QCD-PU200_UsingET_0p5GeV',
         #'merged_minBias-PU200_UsingET_0p5GeV',
         #'merged_TTbar-PU200_UsingET_0p5GeV',
+
+        # Calibration @ EDProducer
+        #'merged_QCD-PU0_Calibrated_v',
+        #'merged_QCD-PU200_Calibrated_v5',
+        'merged_minBias-PU200_Calibrated_v5',
     ] :
         
         #jetsF0 = 'merged_QCD-PU%s.root' % shape
         #date = jetsF0.replace('merged_QCD-','').replace('.root','')
         jetsF0 = '%s.root' % shape
         date = jetsF0.replace('merged_','').replace('.root','')
-        plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date+'_v5'
+        plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date+'_v1'
         if not os.path.exists( plotDir ) : os.makedirs( plotDir )
 
         jetFile = ROOT.TFile( base+jetsF0, 'r' )
@@ -218,15 +252,17 @@ if '__main__' in __name__ :
         """ Make new calibration root file """
         # Only make for QCD sample, for other samples, pick up the
         # results of QCD
-        cut = "abs(genJet_eta)<1.1"
+        cut = "abs(genJet_eta)<2.0"
         #if 'QCD' in shape :
         #    make_em_fraction_calibrations( c, base+jetsF0, cut, plotDir )
         jetFile.Close()
 
         """ Add new calibrations to TTree """
-        quantile_map = get_quantile_map( 'jet_em_calibrations.root' )
-        prepare_calibration_py_cfg( quantile_map )
+        #quantile_map = get_quantile_map( 'jet_em_calibrations.root' )
+        #prepare_calibration_py_cfg( quantile_map )
         #add_calibration( base+jetsF0, quantile_map )
+        """ Add Stage-2 Calibrations which do a good job up to 50 GeV """
+        #add_stage2_calibration( base+jetsF0, 'stage-2_calib_stage2_genOverReco_by_reco.root' )
 
         """ Plot Results """
         jetFile = ROOT.TFile( base+jetsF0, 'r' )
@@ -238,21 +274,59 @@ if '__main__' in __name__ :
         if 'minBias' in shape : 
             plot_calibrated_results = False
         x_and_y_bins = [28,20,300, 60,0,3]
+        x_and_y_bins = [120,0,400, 300,0,15]
         """ Resulting Calibrations """
+        cut = "abs(jet_eta)<1.5"
+        cut = "abs(genJet_eta)<1.2"
         if plot_calibrated_results :
             to_plot = '(jet_pt)/genJet_pt:genJet_pt'
             h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
-            to_plot = '(ecal_L1EG_jet_pt + ecal_pt + (hcal_pt*calibX) )/genJet_pt:genJet_pt'
+            to_plot = '(ecal_L1EG_jet_pt + ecal_pt + (hcal_pt_calibration) )/genJet_pt:genJet_pt'
             h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
-            to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
+            #to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
+            to_plot = '(stage2jet_pt_calibration)/genJet_pt:genJet_pt'
             h3 = getTH2( tree, 's2', to_plot, cut, x_and_y_bins )
             xaxis = "Gen Jet P_{T} (GeV)"
             yaxis = "Relative Error in P_{T} reco/gen"
             title1 = "Phase-II before HCAL calibrations"
             title2 = "Phase-II with HCAL calibrations"
             title3 = "Phase-I with calibrations"
-            c.SetTitle("genJetPt_Calibrated_vs_Stage-2_PU0")
+            c.SetTitle("genJetPt_Calibrated_vs_Stage-2_PU200")
             areaNorm = True
             drawPointsHists3(c.GetTitle(), h1, h2, h3, title1, title2, title3, xaxis, yaxis, areaNorm, plotDir)
+
+
+        x_and_y_bins = [120,0,500, 300,0,15]
+        to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
+        xaxis = "Gen Jet P_{T} (GeV)"
+        yaxis = "Relative Error in P_{T} reco/gen"
+        title1 = "Phase-I Out-of-box"
+        c.SetTitle("stage2_recoOverGen_by_gen")
+
+        x_and_y_bins = [120,0,500, 300,0,5]
+        to_plot = 'genJet_pt/stage2jet_pt:stage2jet_pt'
+        xaxis = "Stage-2 Jet P_{T} (GeV)"
+        yaxis = "Relative Error in P_{T}  gen/reco"
+        title1 = "Phase-I Out-of-box"
+        c.SetTitle("stage2_genOverReco_by_reco")
+
+        x_and_y_bins = [120,0,500, 300,0,15]
+        to_plot = '(stage2jet_pt_calibration3)/genJet_pt:genJet_pt'
+        xaxis = "Gen Jet P_{T} (GeV)"
+        yaxis = "Relative Error in P_{T} reco calib/gen"
+        title1 = "Phase-I Calibration 1"
+        c.SetTitle("stage2_recoCalib1OverGen_by_gen")
+
+        x_and_y_bins = [120,0,500, 300,0,5]
+        to_plot = 'genJet_pt/stage2jet_pt_calibration3:stage2jet_pt_calibration3'
+        xaxis = "Stage-2 Calib1 Jet P_{T} (GeV)"
+        yaxis = "Relative Error in P_{T}  gen/reco calib1"
+        title1 = "Phase-I Calibration 1"
+        c.SetTitle("stage2_genOverRecoCalib1_by_recoCalib1")
+
+        #h1 = getTH2( tree, 's2', to_plot, cut, x_and_y_bins )
+        #drawPointsSingleHist(c.GetTitle(), h1, title1, xaxis, yaxis, plotDir)
+
+
 
 
