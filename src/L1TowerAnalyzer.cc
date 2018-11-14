@@ -582,13 +582,37 @@ void L1TowerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
                 treeinfo.f_ecal_hits_leq_threshold += l1CaloTower.ecal_tower_et;
             }
             
-            //if( l1CaloTower.ecal_tower_et <= puThresholdEcal) 
-            //    treeinfo.i_ecal_hits_er1to3++;
-            //    treeinfo.i_ecal_hits_er4to6++;
-            //    treeinfo.i_ecal_hits_er7to9++;
-            //    treeinfo.i_ecal_hits_er10to12++;
-            //    treeinfo.i_ecal_hits_er13to15++;
-            //    treeinfo.i_ecal_hits_er16to18++;
+            // Sums by eta
+            if( abs(l1CaloTower.tower_iEta) <= 3 )
+            { 
+                treeinfo.i_ecal_hits_er1to3++;
+                treeinfo.f_ecal_hits_er1to3 += l1CaloTower.ecal_tower_et;
+            }
+            if( abs(l1CaloTower.tower_iEta) <= 6 && abs(l1CaloTower.tower_iEta) >= 4 )
+            { 
+                treeinfo.i_ecal_hits_er4to6++;
+                treeinfo.f_ecal_hits_er4to6 += l1CaloTower.ecal_tower_et;
+            }
+            if( abs(l1CaloTower.tower_iEta) <= 9 && abs(l1CaloTower.tower_iEta) >= 7 )
+            { 
+                treeinfo.i_ecal_hits_er7to9++;
+                treeinfo.f_ecal_hits_er7to9 += l1CaloTower.ecal_tower_et;
+            }
+            if( abs(l1CaloTower.tower_iEta) <= 12 && abs(l1CaloTower.tower_iEta) >= 10 )
+            { 
+                treeinfo.i_ecal_hits_er10to12++;
+                treeinfo.f_ecal_hits_er10to12 += l1CaloTower.ecal_tower_et;
+            }
+            if( abs(l1CaloTower.tower_iEta) <= 15 && abs(l1CaloTower.tower_iEta) >= 13 )
+            { 
+                treeinfo.i_ecal_hits_er13to15++;
+                treeinfo.f_ecal_hits_er13to15 += l1CaloTower.ecal_tower_et;
+            }
+            if( abs(l1CaloTower.tower_iEta) <= 18 && abs(l1CaloTower.tower_iEta) >= 16 )
+            { 
+                treeinfo.i_ecal_hits_er16to18++;
+                treeinfo.f_ecal_hits_er16to18 += l1CaloTower.ecal_tower_et;
+            }
         }
 
         if(l1CaloTower.hcal_tower_et > 0.) 
