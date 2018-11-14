@@ -180,14 +180,28 @@ class L1TowerAnalyzer : public edm::EDAnalyzer {
             double run;
             double lumi;
             double event;
+            int nvtx;
+            int nvtx_init;
             // N Tower totals
             int i_total_hits;
             int i_total_hits_gtr_threshold;
             int i_total_hits_leq_threshold;
             int i_ecal_hits;
+            int i_ecal_hits_er1to3;
+            int i_ecal_hits_er4to6;
+            int i_ecal_hits_er7to9;
+            int i_ecal_hits_er10to12;
+            int i_ecal_hits_er13to15;
+            int i_ecal_hits_er16to18;
             int i_ecal_hits_gtr_threshold;
             int i_ecal_hits_leq_threshold;
             int i_hcal_hits;
+            int i_hcal_hits_er1to3;
+            int i_hcal_hits_er4to6;
+            int i_hcal_hits_er7to9;
+            int i_hcal_hits_er10to12;
+            int i_hcal_hits_er13to15;
+            int i_hcal_hits_er16to18;
             int i_hcal_hits_gtr_threshold;
             int i_hcal_hits_leq_threshold;
             int i_l1eg_hits;
@@ -201,9 +215,21 @@ class L1TowerAnalyzer : public edm::EDAnalyzer {
             float f_total_hits_gtr_threshold;
             float f_total_hits_leq_threshold;
             float f_ecal_hits;
+            float f_ecal_hits_er1to3;
+            float f_ecal_hits_er4to6;
+            float f_ecal_hits_er7to9;
+            float f_ecal_hits_er10to12;
+            float f_ecal_hits_er13to15;
+            float f_ecal_hits_er16to18;
             float f_ecal_hits_gtr_threshold;
             float f_ecal_hits_leq_threshold;
             float f_hcal_hits;
+            float f_hcal_hits_er1to3;
+            float f_hcal_hits_er4to6;
+            float f_hcal_hits_er7to9;
+            float f_hcal_hits_er10to12;
+            float f_hcal_hits_er13to15;
+            float f_hcal_hits_er16to18;
             float f_hcal_hits_gtr_threshold;
             float f_hcal_hits_leq_threshold;
             float f_l1eg_hits;
@@ -290,14 +316,28 @@ L1TowerAnalyzer::L1TowerAnalyzer(const edm::ParameterSet& iConfig) :
     hit_tree->Branch("run", &treeinfo.run);
     hit_tree->Branch("lumi", &treeinfo.lumi);
     hit_tree->Branch("event", &treeinfo.event);
+    hit_tree->Branch("nvtx", &treeinfo.nvtx);
+    hit_tree->Branch("nvtx_init", &treeinfo.nvtx_init);
     // N Tower totals
     hit_tree->Branch("i_total_hits",                &treeinfo.i_total_hits);
     hit_tree->Branch("i_total_hits_gtr_threshold",  &treeinfo.i_total_hits_gtr_threshold);
     hit_tree->Branch("i_total_hits_leq_threshold",  &treeinfo.i_total_hits_leq_threshold);
     hit_tree->Branch("i_ecal_hits",                 &treeinfo.i_ecal_hits);
+    hit_tree->Branch("i_ecal_hits_er1to3",          &treeinfo.i_ecal_hits_er1to3);
+    hit_tree->Branch("i_ecal_hits_er4to6",          &treeinfo.i_ecal_hits_er4to6);
+    hit_tree->Branch("i_ecal_hits_er7to9",          &treeinfo.i_ecal_hits_er7to9);
+    hit_tree->Branch("i_ecal_hits_er10to12",        &treeinfo.i_ecal_hits_er10to12);
+    hit_tree->Branch("i_ecal_hits_er13to15",        &treeinfo.i_ecal_hits_er13to15);
+    hit_tree->Branch("i_ecal_hits_er16to18",        &treeinfo.i_ecal_hits_er16to18);
     hit_tree->Branch("i_ecal_hits_gtr_threshold",   &treeinfo.i_ecal_hits_gtr_threshold);
     hit_tree->Branch("i_ecal_hits_leq_threshold",   &treeinfo.i_ecal_hits_leq_threshold);
     hit_tree->Branch("i_hcal_hits",                 &treeinfo.i_hcal_hits);
+    hit_tree->Branch("i_hcal_hits_er1to3",          &treeinfo.i_hcal_hits_er1to3);
+    hit_tree->Branch("i_hcal_hits_er4to6",          &treeinfo.i_hcal_hits_er4to6);
+    hit_tree->Branch("i_hcal_hits_er7to9",          &treeinfo.i_hcal_hits_er7to9);
+    hit_tree->Branch("i_hcal_hits_er10to12",        &treeinfo.i_hcal_hits_er10to12);
+    hit_tree->Branch("i_hcal_hits_er13to15",        &treeinfo.i_hcal_hits_er13to15);
+    hit_tree->Branch("i_hcal_hits_er16to18",        &treeinfo.i_hcal_hits_er16to18);
     hit_tree->Branch("i_hcal_hits_gtr_threshold",   &treeinfo.i_hcal_hits_gtr_threshold);
     hit_tree->Branch("i_hcal_hits_leq_threshold",   &treeinfo.i_hcal_hits_leq_threshold);
     hit_tree->Branch("i_l1eg_hits",                 &treeinfo.i_l1eg_hits);
@@ -311,9 +351,21 @@ L1TowerAnalyzer::L1TowerAnalyzer(const edm::ParameterSet& iConfig) :
     hit_tree->Branch("f_total_hits_gtr_threshold",  &treeinfo.f_total_hits_gtr_threshold);
     hit_tree->Branch("f_total_hits_leq_threshold",  &treeinfo.f_total_hits_leq_threshold);
     hit_tree->Branch("f_ecal_hits",                 &treeinfo.f_ecal_hits);
+    hit_tree->Branch("f_ecal_hits_er1to3",          &treeinfo.f_ecal_hits_er1to3);
+    hit_tree->Branch("f_ecal_hits_er4to6",          &treeinfo.f_ecal_hits_er4to6);
+    hit_tree->Branch("f_ecal_hits_er7to9",          &treeinfo.f_ecal_hits_er7to9);
+    hit_tree->Branch("f_ecal_hits_er10to12",        &treeinfo.f_ecal_hits_er10to12);
+    hit_tree->Branch("f_ecal_hits_er13to15",        &treeinfo.f_ecal_hits_er13to15);
+    hit_tree->Branch("f_ecal_hits_er16to18",        &treeinfo.f_ecal_hits_er16to18);
     hit_tree->Branch("f_ecal_hits_gtr_threshold",   &treeinfo.f_ecal_hits_gtr_threshold);
     hit_tree->Branch("f_ecal_hits_leq_threshold",   &treeinfo.f_ecal_hits_leq_threshold);
     hit_tree->Branch("f_hcal_hits",                 &treeinfo.f_hcal_hits);
+    hit_tree->Branch("f_hcal_hits_er1to3",          &treeinfo.f_hcal_hits_er1to3);
+    hit_tree->Branch("f_hcal_hits_er4to6",          &treeinfo.f_hcal_hits_er4to6);
+    hit_tree->Branch("f_hcal_hits_er7to9",          &treeinfo.f_hcal_hits_er7to9);
+    hit_tree->Branch("f_hcal_hits_er10to12",        &treeinfo.f_hcal_hits_er10to12);
+    hit_tree->Branch("f_hcal_hits_er13to15",        &treeinfo.f_hcal_hits_er13to15);
+    hit_tree->Branch("f_hcal_hits_er16to18",        &treeinfo.f_hcal_hits_er16to18);
     hit_tree->Branch("f_hcal_hits_gtr_threshold",   &treeinfo.f_hcal_hits_gtr_threshold);
     hit_tree->Branch("f_hcal_hits_leq_threshold",   &treeinfo.f_hcal_hits_leq_threshold);
     hit_tree->Branch("f_l1eg_hits",                 &treeinfo.f_l1eg_hits);
@@ -334,9 +386,21 @@ void L1TowerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     treeinfo.i_total_hits_gtr_threshold = 0;
     treeinfo.i_total_hits_leq_threshold = 0;
     treeinfo.i_ecal_hits = 0;
+    treeinfo.i_ecal_hits_er1to3 = 0;
+    treeinfo.i_ecal_hits_er4to6 = 0;
+    treeinfo.i_ecal_hits_er7to9 = 0;
+    treeinfo.i_ecal_hits_er10to12 = 0;
+    treeinfo.i_ecal_hits_er13to15 = 0;
+    treeinfo.i_ecal_hits_er16to18 = 0;
     treeinfo.i_ecal_hits_gtr_threshold = 0;
     treeinfo.i_ecal_hits_leq_threshold = 0;
     treeinfo.i_hcal_hits = 0;
+    treeinfo.i_hcal_hits_er1to3 = 0;
+    treeinfo.i_hcal_hits_er4to6 = 0;
+    treeinfo.i_hcal_hits_er7to9 = 0;
+    treeinfo.i_hcal_hits_er10to12 = 0;
+    treeinfo.i_hcal_hits_er13to15 = 0;
+    treeinfo.i_hcal_hits_er16to18 = 0;
     treeinfo.i_hcal_hits_gtr_threshold = 0;
     treeinfo.i_hcal_hits_leq_threshold = 0;
     treeinfo.i_l1eg_hits = 0;
@@ -350,9 +414,21 @@ void L1TowerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     treeinfo.f_total_hits_gtr_threshold = 0;
     treeinfo.f_total_hits_leq_threshold = 0;
     treeinfo.f_ecal_hits = 0;
+    treeinfo.f_ecal_hits_er1to3 = 0;
+    treeinfo.f_ecal_hits_er4to6 = 0;
+    treeinfo.f_ecal_hits_er7to9 = 0;
+    treeinfo.f_ecal_hits_er10to12 = 0;
+    treeinfo.f_ecal_hits_er13to15 = 0;
+    treeinfo.f_ecal_hits_er16to18 = 0;
     treeinfo.f_ecal_hits_gtr_threshold = 0;
     treeinfo.f_ecal_hits_leq_threshold = 0;
     treeinfo.f_hcal_hits = 0;
+    treeinfo.f_hcal_hits_er1to3 = 0;
+    treeinfo.f_hcal_hits_er4to6 = 0;
+    treeinfo.f_hcal_hits_er7to9 = 0;
+    treeinfo.f_hcal_hits_er10to12 = 0;
+    treeinfo.f_hcal_hits_er13to15 = 0;
+    treeinfo.f_hcal_hits_er16to18 = 0;
     treeinfo.f_hcal_hits_gtr_threshold = 0;
     treeinfo.f_hcal_hits_leq_threshold = 0;
     treeinfo.f_l1eg_hits = 0;
@@ -378,24 +454,24 @@ void L1TowerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     NEvents->Fill( 0. );
     // nvtx
     iEvent.getByToken(simVertexToken_,simVertexHandle);
-    int i_nvtx = 0;
+    treeinfo.nvtx = 0;
     for (auto& vert : *simVertexHandle.product())
     {
         //std::cout << i_nvtx << "  eventId().bunchCrossing(): " << vert.eventId().bunchCrossing() << "    parentIndex(): " << vert.parentIndex() << "   processType: " << vert.processType() << std::endl;
         if(vert.eventId().bunchCrossing() != 0) continue;
-        i_nvtx++;
+        treeinfo.nvtx++;
     }
-    nvtx->Fill( i_nvtx );
+    nvtx->Fill( treeinfo.nvtx );
     
     iEvent.getByToken(trackingVertexInitToken_,trackingVertexInitHandle);
-    i_nvtx = 0;
+    treeinfo.nvtx_init = 0;
     for (auto& vert : *trackingVertexInitHandle.product())
     {
         //std::cout << i_nvtx << "  eventId().bunchCrossing(): " << vert.eventId().bunchCrossing() << "    parentIndex(): " << vert.parentIndex() << "   processType: " << vert.processType() << std::endl;
         if(vert.eventId().bunchCrossing() != 0) continue;
-        i_nvtx++;
+        treeinfo.nvtx_init++;
     }
-    nvtx_init->Fill( i_nvtx );
+    nvtx_init->Fill( treeinfo.nvtx_init );
     
     // Load the ECAL+HCAL tower sums coming from L1EGammaCrystalsEmulatorProducer.cc
     std::vector< SimpleCaloHit > l1CaloTowers;
@@ -478,80 +554,92 @@ void L1TowerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
             treeinfo.i_total_hits++;
             total_hits_et->Fill( l1CaloTower.total_tower_plus_L1EGs_et );
             treeinfo.f_total_hits += l1CaloTower.total_tower_plus_L1EGs_et;
+            if(l1CaloTower.total_tower_plus_L1EGs_et > puThreshold)
+            {
+                treeinfo.i_total_hits_gtr_threshold++;
+                treeinfo.f_total_hits_gtr_threshold += l1CaloTower.total_tower_plus_L1EGs_et;
+            }
+            if(l1CaloTower.total_tower_plus_L1EGs_et <= puThreshold) 
+            {
+                treeinfo.i_total_hits_leq_threshold++;
+                treeinfo.f_total_hits_leq_threshold += l1CaloTower.total_tower_plus_L1EGs_et;
+            }
         }
-        if(l1CaloTower.total_tower_plus_L1EGs_et > puThreshold)
-        {
-            treeinfo.i_total_hits_gtr_threshold++;
-            treeinfo.f_total_hits_gtr_threshold += l1CaloTower.total_tower_plus_L1EGs_et;
-        }
-        if(l1CaloTower.total_tower_plus_L1EGs_et <= puThreshold) 
-        {
-            treeinfo.i_total_hits_leq_threshold++;
-            treeinfo.f_total_hits_leq_threshold += l1CaloTower.total_tower_plus_L1EGs_et;
-        }
+
         if(l1CaloTower.ecal_tower_et > 0.) 
         {
             treeinfo.i_ecal_hits++;
             ecal_hits_et->Fill( l1CaloTower.ecal_tower_et );
             treeinfo.f_ecal_hits += l1CaloTower.ecal_tower_et;
+            if(l1CaloTower.ecal_tower_et > puThresholdEcal) 
+            {
+                treeinfo.i_ecal_hits_gtr_threshold++;
+                treeinfo.f_ecal_hits_gtr_threshold += l1CaloTower.ecal_tower_et;
+            }
+            if(l1CaloTower.ecal_tower_et <= puThresholdEcal) 
+            {
+                treeinfo.i_ecal_hits_leq_threshold++;
+                treeinfo.f_ecal_hits_leq_threshold += l1CaloTower.ecal_tower_et;
+            }
+            
+            //if( l1CaloTower.ecal_tower_et <= puThresholdEcal) 
+            //    treeinfo.i_ecal_hits_er1to3++;
+            //    treeinfo.i_ecal_hits_er4to6++;
+            //    treeinfo.i_ecal_hits_er7to9++;
+            //    treeinfo.i_ecal_hits_er10to12++;
+            //    treeinfo.i_ecal_hits_er13to15++;
+            //    treeinfo.i_ecal_hits_er16to18++;
         }
-        if(l1CaloTower.ecal_tower_et > puThresholdEcal) 
-        {
-            treeinfo.i_ecal_hits_gtr_threshold++;
-            treeinfo.f_ecal_hits_gtr_threshold += l1CaloTower.ecal_tower_et;
-        }
-        if(l1CaloTower.ecal_tower_et <= puThresholdEcal) 
-        {
-            treeinfo.i_ecal_hits_leq_threshold++;
-            treeinfo.f_ecal_hits_leq_threshold += l1CaloTower.ecal_tower_et;
-        }
+
         if(l1CaloTower.hcal_tower_et > 0.) 
         {
             treeinfo.i_hcal_hits++;
             hcal_hits_et->Fill( l1CaloTower.hcal_tower_et );
             treeinfo.f_hcal_hits += l1CaloTower.hcal_tower_et;
+            if(l1CaloTower.hcal_tower_et > puThresholdHcal) 
+            {
+                treeinfo.i_hcal_hits_gtr_threshold++;
+                treeinfo.f_hcal_hits_gtr_threshold += l1CaloTower.hcal_tower_et;
+            }
+            if(l1CaloTower.hcal_tower_et <= puThresholdHcal)
+            {
+                treeinfo.i_hcal_hits_leq_threshold++;
+                treeinfo.f_hcal_hits_leq_threshold += l1CaloTower.hcal_tower_et;
+            }
         }
-        if(l1CaloTower.hcal_tower_et > puThresholdHcal) 
-        {
-            treeinfo.i_hcal_hits_gtr_threshold++;
-            treeinfo.f_hcal_hits_gtr_threshold += l1CaloTower.hcal_tower_et;
-        }
-        if(l1CaloTower.hcal_tower_et <= puThresholdHcal)
-        {
-            treeinfo.i_hcal_hits_leq_threshold++;
-            treeinfo.f_hcal_hits_leq_threshold += l1CaloTower.hcal_tower_et;
-        }
+
         if(( l1CaloTower.total_tower_plus_L1EGs_et - l1CaloTower.total_tower_et) > 0.) 
         {
             treeinfo.i_l1eg_hits++;
             l1eg_hits_et->Fill( ( l1CaloTower.total_tower_plus_L1EGs_et - l1CaloTower.total_tower_et) );
             treeinfo.f_l1eg_hits += ( l1CaloTower.total_tower_plus_L1EGs_et - l1CaloTower.total_tower_et);
+            if( ( l1CaloTower.total_tower_plus_L1EGs_et - l1CaloTower.total_tower_et) > puThresholdL1eg) 
+            {
+                treeinfo.i_l1eg_hits_gtr_threshold++;
+                treeinfo.f_l1eg_hits_gtr_threshold += ( l1CaloTower.total_tower_plus_L1EGs_et - l1CaloTower.total_tower_et);
+            }
+            if( ( l1CaloTower.total_tower_plus_L1EGs_et - l1CaloTower.total_tower_et) <= puThresholdL1eg) 
+            {
+                treeinfo.i_l1eg_hits_leq_threshold++;
+                treeinfo.f_l1eg_hits_leq_threshold += ( l1CaloTower.total_tower_plus_L1EGs_et - l1CaloTower.total_tower_et);
+            }
         }
-        if( ( l1CaloTower.total_tower_plus_L1EGs_et - l1CaloTower.total_tower_et) > puThresholdL1eg) 
-        {
-            treeinfo.i_l1eg_hits_gtr_threshold++;
-            treeinfo.f_l1eg_hits_gtr_threshold += ( l1CaloTower.total_tower_plus_L1EGs_et - l1CaloTower.total_tower_et);
-        }
-        if( ( l1CaloTower.total_tower_plus_L1EGs_et - l1CaloTower.total_tower_et) <= puThresholdL1eg) 
-        {
-            treeinfo.i_l1eg_hits_leq_threshold++;
-            treeinfo.f_l1eg_hits_leq_threshold += ( l1CaloTower.total_tower_plus_L1EGs_et - l1CaloTower.total_tower_et);
-        }
+
         if((l1CaloTower.ecal_tower_et + l1CaloTower.hcal_tower_et) > 0.) 
         {
             treeinfo.i_unc_hits++;
             unc_hits_et->Fill( (l1CaloTower.ecal_tower_et + l1CaloTower.hcal_tower_et) );
             treeinfo.f_unc_hits += (l1CaloTower.ecal_tower_et + l1CaloTower.hcal_tower_et);
-        }
-        if((l1CaloTower.ecal_tower_et + l1CaloTower.hcal_tower_et) > puThreshold) 
-        {
-            treeinfo.i_unc_hits_gtr_threshold++;
-            treeinfo.f_unc_hits_gtr_threshold += (l1CaloTower.ecal_tower_et + l1CaloTower.hcal_tower_et);
-        }
-        if((l1CaloTower.ecal_tower_et + l1CaloTower.hcal_tower_et) <= puThreshold)
-        {
-            treeinfo.i_unc_hits_leq_threshold++;
-            treeinfo.f_unc_hits_leq_threshold += (l1CaloTower.ecal_tower_et + l1CaloTower.hcal_tower_et);
+            if((l1CaloTower.ecal_tower_et + l1CaloTower.hcal_tower_et) > puThreshold) 
+            {
+                treeinfo.i_unc_hits_gtr_threshold++;
+                treeinfo.f_unc_hits_gtr_threshold += (l1CaloTower.ecal_tower_et + l1CaloTower.hcal_tower_et);
+            }
+            if((l1CaloTower.ecal_tower_et + l1CaloTower.hcal_tower_et) <= puThreshold)
+            {
+                treeinfo.i_unc_hits_leq_threshold++;
+                treeinfo.f_unc_hits_leq_threshold += (l1CaloTower.ecal_tower_et + l1CaloTower.hcal_tower_et);
+            }
         }
 
     }
