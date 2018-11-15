@@ -2,7 +2,7 @@ import ROOT
 from ROOT import gStyle, gPad
 import tdrstyle
 from optimizer import makeCutROC, makeComparisons
-import trigHelpers
+import L1Trigger.L1EGRateStudies.trigHelpers as trigHelpers
 from drawRateEff import drawDRHists, draw2DdeltaRHist, loadHists
 
 

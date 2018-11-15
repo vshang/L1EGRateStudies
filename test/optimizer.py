@@ -3,7 +3,7 @@ from ROOT import gStyle, gPad
 import math
 from drawRateEff import setLegStyle, drawCMSString
 import CMS_lumi, tdrstyle
-from trigHelpers import makeNewCutTrees
+from L1Trigger.L1EGRateStudies.trigHelpers import makeNewCutTrees
 from array import array
 gStyle.SetOptStat(0)
 ROOT.gROOT.SetBatch(True)

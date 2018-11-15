@@ -1,6 +1,6 @@
 import ROOT
 import math
-from trigHelpers import setLegStyle
+from L1Trigger.L1EGRateStudies.trigHelpers import setLegStyle
 ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
 
@@ -44,10 +44,15 @@ def make_PU_SFs( c, base, name, calo ) :
                 t200.Draw( 'i_%s_hits_%s >> hits' % (calo, iEta), cut )
                 t200.Draw( 'f_%s_hits_%s >> et_sum' % (calo, iEta), cut )
             if h_n_hits.Integral() > 0. :
-                print iEta_index, nvtx+5, h_ET_sum.GetMean() / h_n_hits.GetMean()
-                h.Fill( iEta_index, nvtx+5, h_ET_sum.GetMean() / h_n_hits.GetMean() )
-                if h_ET_sum.GetMean() / h_n_hits.GetMean() < mini : mini = h_ET_sum.GetMean() / h_n_hits.GetMean()
-                h1.SetBinContent( h1.FindBin( nvtx+5), h_ET_sum.GetMean() / h_n_hits.GetMean() )
+                #print iEta_index, nvtx+5, h_ET_sum.GetMean() / h_n_hits.GetMean()
+                #h.Fill( iEta_index, nvtx+5, h_ET_sum.GetMean() / h_n_hits.GetMean() )
+                #if h_ET_sum.GetMean() / h_n_hits.GetMean() < mini : mini = h_ET_sum.GetMean() / h_n_hits.GetMean()
+                #h1.SetBinContent( h1.FindBin( nvtx+5), h_ET_sum.GetMean() / h_n_hits.GetMean() )
+                #h1.SetBinError( h1.FindBin( nvtx+5), 1./math.sqrt(h_ET_sum.Integral()) )
+                print iEta_index, nvtx+5, h_ET_sum.GetMean()
+                h.Fill( iEta_index, nvtx+5, h_ET_sum.GetMean() )
+                if h_ET_sum.GetMean() < mini : mini = h_ET_sum.GetMean()
+                h1.SetBinContent( h1.FindBin( nvtx+5), h_ET_sum.GetMean() )
                 h1.SetBinError( h1.FindBin( nvtx+5), 1./math.sqrt(h_ET_sum.Integral()) )
             del h_n_hits, h_ET_sum
         h.GetXaxis().SetBinLabel( iEta_index+1, iEta )

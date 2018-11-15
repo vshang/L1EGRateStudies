@@ -1,5 +1,5 @@
 import ROOT
-import trigHelpers
+import L1Trigger.L1EGRateStudies.trigHelpers as trigHelpers
 
 version = 'v9'
 

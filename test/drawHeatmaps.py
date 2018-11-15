@@ -1,6 +1,6 @@
 import ROOT
 from ROOT import gStyle, gROOT
-import trigHelpers
+import L1Trigger.L1EGRateStudies.trigHelpers
 
 def drawHeatmaps() :
    gStyle.SetOptStat(0)
