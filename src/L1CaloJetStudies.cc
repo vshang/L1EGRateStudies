@@ -137,6 +137,8 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
         TH1F * nTruePUHist;
         TH1F * totalET;
         TH1F * nTT;
+        TH1F * phase2_rate_hist;
+        TH1F * stage2_rate_hist;
                 
         // Crystal pt stuff
         TTree * tree;
@@ -295,12 +297,14 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     eff_denom_pt = fs->make<TH1F>("eff_denom_pt", "Gen. pt;Gen. pT (GeV); Counts", 30, 0, 300);
     eff_num_pt = fs->make<TH1F>("eff_num_pt", "Gen. pt;Gen. pT (GeV); Counts", 30, 0, 300);
     eff_num_stage2jet_pt = fs->make<TH1F>("eff_num_stage2jet_pt", "Gen. pt;Gen. pT (GeV); Counts", 30, 0, 300);
-    eff_denom_eta = fs->make<TH1F>("eff_denom_eta", "Gen. eta;Gen. pT (GeV); Counts", 40, -2.0, 2.0);
-    eff_num_eta = fs->make<TH1F>("eff_num_eta", "Gen. eta;Gen. pT (GeV); Counts", 40, -2.0, 2.0);
+    eff_denom_eta = fs->make<TH1F>("eff_denom_eta", "Gen. eta;Gen. pT (GeV); Counts", 70, -3.5, 3.5);
+    eff_num_eta = fs->make<TH1F>("eff_num_eta", "Gen. eta;Gen. pT (GeV); Counts", 70, -3.5, 3.5);
     eff_num_stage2jet_eta = fs->make<TH1F>("eff_num_stage2jet_eta", "Gen. eta;Gen. pT (GeV); Counts", 40, -2.0, 2.0);
     nTruePUHist = fs->make<TH1F>("nTruePUHist", "nTrue PU", 250, 0, 250);
     totalET = fs->make<TH1F>("totalET", "Total ET", 500, 0, 5000);
     nTT = fs->make<TH1F>("nTT", "nTT", 500, 0, 5000);
+    phase2_rate_hist = fs->make<TH1F>("phase2_rate_hist", "phase2_rate_hist", 500, 0, 500);
+    stage2_rate_hist = fs->make<TH1F>("stage2_rate_hist", "stage2_rate_hist", 500, 0, 500);
 
     tree = fs->make<TTree>("tree", "CaloJet values");
     tree->Branch("run", &treeinfo.run);
@@ -523,6 +527,8 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     ************************************************************/
     if (doRate)
     {
+        bool stage2_filled = false;
+        bool phase2_filled = false;
         // Stage-2 Jets
         if ( stage2JetHandle.isValid() )
         {
@@ -531,6 +537,11 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
             // Find stage2 within dR 0.3, beginning with higest pt cand
             for (auto& s2_jet : stage2Jets)
             {
+                if ( fabs(s2_jet.eta()) < 3.0 && !stage2_filled )
+                {
+                    stage2_rate_hist->Fill( s2_jet.pt() );
+                    stage2_filled = true;
+                }
                 if (s2_jet.pt() < 30) continue;
                 treeinfo.stage2jet_pt = s2_jet.pt();
                 treeinfo.stage2jet_eta = s2_jet.eta();
@@ -549,6 +560,11 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         {
             for(const auto& caloJet : caloJets)
             {
+                if ( fabs( caloJet.GetExperimentalParam("jet_eta") ) < 3.0 && !phase2_filled )
+                {
+                    phase2_rate_hist->Fill( caloJet.GetExperimentalParam("jet_pt") );
+                    phase2_filled = true;
+                }
                 if (caloJet.pt() < 30) continue;
                 // Set Stage-2 to dummy values
                 treeinfo.stage2jet_pt = -9; 
@@ -582,8 +598,8 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     {
         // Skip lowest pT Jets
         if (genJet.pt() < 10) break;  // no need for continue as we sorted by pT so we're done
-        // Skip high eta, keep things hear boundary for future study
-        if ( fabs(genJet.eta())  > 2.0) continue;
+        // HGCal detector stops at abs(eta)=3.0, keep gen jets up to 3.5
+        if ( fabs(genJet.eta())  > 3.5) continue;
         ++cnt;
         //std::cout << cnt << " Gen pT: " << genJet.pt() << std::endl;
 
@@ -594,7 +610,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     
         // Fill basic denominator efficiencies
         eff_denom_pt->Fill(genJet.pt());
-        eff_denom_eta->Fill(genJet.eta());
+        if (genJet.pt() > 20) eff_denom_eta->Fill(genJet.eta());
     
         reco::Candidate::PolarLorentzVector genJetP4(genJet.pt(), genJet.eta(), genJet.phi(), genJet.mass() );
     
@@ -621,7 +637,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
                     // Fill basic numerator efficiencies
                     eff_num_stage2jet_pt->Fill(genJet.pt());
-                    eff_num_stage2jet_eta->Fill(genJet.eta());
+                    if (genJet.pt() > 20) eff_num_stage2jet_eta->Fill(genJet.eta());
 
                     jet_matched = true;
                     break;
@@ -810,7 +826,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
                     // Fill basic numerator efficiencies
                     eff_num_pt->Fill(genJet.pt());
-                    eff_num_eta->Fill(genJet.eta());
+                    if (genJet.pt() > 20) eff_num_eta->Fill(genJet.eta());
     
                     found_caloJet = true;
                     break;
@@ -846,6 +862,11 @@ L1CaloJetStudies::beginJob()
 void 
 L1CaloJetStudies::endJob() 
 {
+    if (doRate)
+    {
+        integrateDown( phase2_rate_hist );
+        integrateDown( stage2_rate_hist );
+    }
 }
 
 // ------------ method called when starting to processes a run  ------------
@@ -900,6 +921,7 @@ L1CaloJetStudies::integrateDown(TH1F * hist) {
     {
         integral += hist->GetBinContent(i);
         hist->SetBinContent(i, integral);
+        hist->SetBinError(i, std::sqrt(integral));
     }
 }
 
@@ -943,7 +965,8 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
     treeinfo.hcal_energy = caloJet.GetExperimentalParam("hcal_energy");
     treeinfo.jet_pt = caloJet.GetExperimentalParam("jet_pt");
     treeinfo.jet_pt_calibration = caloJet.GetExperimentalParam("jet_pt_calibration");
-    treeinfo.transition_calibration = caloJet.GetExperimentalParam("transition_calibration");
+    //treeinfo.transition_calibration = caloJet.GetExperimentalParam("transition_calibration");
+    treeinfo.transition_calibration = -9;
     treeinfo.jet_eta = caloJet.GetExperimentalParam("jet_eta");
     treeinfo.jet_phi = caloJet.GetExperimentalParam("jet_phi");
     treeinfo.jet_mass = caloJet.GetExperimentalParam("jet_mass");
