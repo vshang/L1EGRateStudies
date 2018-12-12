@@ -128,17 +128,27 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
 
         // Efficiency hists
         TH1F * nEvents;
-        TH1F * eff_denom_pt;
-        TH1F * eff_num_pt;
-        TH1F * eff_num_stage2jet_pt;
-        TH1F * eff_denom_eta;
-        TH1F * eff_num_eta;
-        TH1F * eff_num_stage2jet_eta;
+        TH1F * eff_all_denom_pt;
+        TH1F * eff_all_num_pt;
+        TH1F * eff_all_num_stage2jet_pt;
+        TH1F * eff_all_denom_eta;
+        TH1F * eff_all_num_eta;
+        TH1F * eff_all_num_stage2jet_eta;
+
+        TH1F * eff_barrel_denom_pt;
+        TH1F * eff_barrel_num_pt;
+        TH1F * eff_barrel_num_stage2jet_pt;
+        TH1F * eff_barrel_denom_eta;
+        TH1F * eff_barrel_num_eta;
+        TH1F * eff_barrel_num_stage2jet_eta;
+
         TH1F * nTruePUHist;
         TH1F * totalET;
         TH1F * nTT;
-        TH1F * phase2_rate_hist;
-        TH1F * stage2_rate_hist;
+        TH1F * phase2_rate_all_hist;
+        TH1F * stage2_rate_all_hist;
+        TH1F * phase2_rate_barrel_hist;
+        TH1F * stage2_rate_barrel_hist;
                 
         // Crystal pt stuff
         TTree * tree;
@@ -294,17 +304,27 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     edm::Service<TFileService> fs;
 
     nEvents = fs->make<TH1F>("nEvents", "nEvents", 1, 0.5, 1.5);
-    eff_denom_pt = fs->make<TH1F>("eff_denom_pt", "Gen. pt;Gen. pT (GeV); Counts", 30, 0, 300);
-    eff_num_pt = fs->make<TH1F>("eff_num_pt", "Gen. pt;Gen. pT (GeV); Counts", 30, 0, 300);
-    eff_num_stage2jet_pt = fs->make<TH1F>("eff_num_stage2jet_pt", "Gen. pt;Gen. pT (GeV); Counts", 30, 0, 300);
-    eff_denom_eta = fs->make<TH1F>("eff_denom_eta", "Gen. eta;Gen. pT (GeV); Counts", 70, -3.5, 3.5);
-    eff_num_eta = fs->make<TH1F>("eff_num_eta", "Gen. eta;Gen. pT (GeV); Counts", 70, -3.5, 3.5);
-    eff_num_stage2jet_eta = fs->make<TH1F>("eff_num_stage2jet_eta", "Gen. eta;Gen. pT (GeV); Counts", 40, -2.0, 2.0);
+    eff_all_denom_pt = fs->make<TH1F>("eff_all_denom_pt", "Gen. pt;Gen. pT (GeV); Counts", 30, 0, 300);
+    eff_all_num_pt = fs->make<TH1F>("eff_all_num_pt", "Gen. pt;Gen. pT (GeV); Counts", 30, 0, 300);
+    eff_all_num_stage2jet_pt = fs->make<TH1F>("eff_all_num_stage2jet_pt", "Gen. pt;Gen. pT (GeV); Counts", 30, 0, 300);
+    eff_all_denom_eta = fs->make<TH1F>("eff_all_denom_eta", "Gen. eta;Gen. #eta; Counts", 70, -3.5, 3.5);
+    eff_all_num_eta = fs->make<TH1F>("eff_all_num_eta", "Gen. eta;Gen. #eta; Counts", 70, -3.5, 3.5);
+    eff_all_num_stage2jet_eta = fs->make<TH1F>("eff_all_num_stage2jet_eta", "Gen. eta;Gen. #eta; Counts", 70, -3.5, 3.5);
+
+    eff_barrel_denom_pt = fs->make<TH1F>("eff_barrel_denom_pt", "Gen. pt;Gen. pT (GeV); Counts", 30, 0, 300);
+    eff_barrel_num_pt = fs->make<TH1F>("eff_barrel_num_pt", "Gen. pt;Gen. pT (GeV); Counts", 30, 0, 300);
+    eff_barrel_num_stage2jet_pt = fs->make<TH1F>("eff_barrel_num_stage2jet_pt", "Gen. pt;Gen. pT (GeV); Counts", 30, 0, 300);
+    eff_barrel_denom_eta = fs->make<TH1F>("eff_barrel_denom_eta", "Gen. eta;Gen. #eta; Counts", 70, -3.5, 3.5);
+    eff_barrel_num_eta = fs->make<TH1F>("eff_barrel_num_eta", "Gen. eta;Gen. #eta; Counts", 70, -3.5, 3.5);
+    eff_barrel_num_stage2jet_eta = fs->make<TH1F>("eff_barrel_num_stage2jet_eta", "Gen. eta;Gen. #eta; Counts", 70, -3.5, 3.5);
+
     nTruePUHist = fs->make<TH1F>("nTruePUHist", "nTrue PU", 250, 0, 250);
     totalET = fs->make<TH1F>("totalET", "Total ET", 500, 0, 5000);
     nTT = fs->make<TH1F>("nTT", "nTT", 500, 0, 5000);
-    phase2_rate_hist = fs->make<TH1F>("phase2_rate_hist", "phase2_rate_hist", 500, 0, 500);
-    stage2_rate_hist = fs->make<TH1F>("stage2_rate_hist", "stage2_rate_hist", 500, 0, 500);
+    phase2_rate_all_hist = fs->make<TH1F>("phase2_rate_all_hist", "phase2_rate_all_hist", 500, 0, 500);
+    stage2_rate_all_hist = fs->make<TH1F>("stage2_rate_all_hist", "stage2_rate_all_hist", 500, 0, 500);
+    phase2_rate_barrel_hist = fs->make<TH1F>("phase2_rate_barrel_hist", "phase2_rate_barrel_hist", 500, 0, 500);
+    stage2_rate_barrel_hist = fs->make<TH1F>("stage2_rate_barrel_hist", "stage2_rate_barrel_hist", 500, 0, 500);
 
     tree = fs->make<TTree>("tree", "CaloJet values");
     tree->Branch("run", &treeinfo.run);
@@ -527,8 +547,10 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     ************************************************************/
     if (doRate)
     {
-        bool stage2_filled = false;
-        bool phase2_filled = false;
+        bool stage2_all_filled = false;
+        bool phase2_all_filled = false;
+        bool stage2_barrel_filled = false;
+        bool phase2_barrel_filled = false;
         // Stage-2 Jets
         if ( stage2JetHandle.isValid() )
         {
@@ -537,12 +559,17 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
             // Find stage2 within dR 0.3, beginning with higest pt cand
             for (auto& s2_jet : stage2Jets)
             {
-                if ( fabs(s2_jet.eta()) < 3.0 && !stage2_filled )
+                if ( fabs(s2_jet.eta()) < 3.0 && !stage2_all_filled )
                 {
-                    stage2_rate_hist->Fill( s2_jet.pt() );
-                    stage2_filled = true;
+                    stage2_rate_all_hist->Fill( s2_jet.pt() );
+                    stage2_all_filled = true;
                 }
-                if (s2_jet.pt() < 30) continue;
+                if ( fabs(s2_jet.eta()) < 1.5 && !stage2_barrel_filled )
+                {
+                    stage2_rate_barrel_hist->Fill( s2_jet.pt() );
+                    stage2_barrel_filled = true;
+                }
+                if (s2_jet.pt() < 50) continue;
                 treeinfo.stage2jet_pt = s2_jet.pt();
                 treeinfo.stage2jet_eta = s2_jet.eta();
                 treeinfo.stage2jet_phi = s2_jet.phi();
@@ -560,12 +587,17 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         {
             for(const auto& caloJet : caloJets)
             {
-                if ( fabs( caloJet.GetExperimentalParam("jet_eta") ) < 3.0 && !phase2_filled )
+                if ( fabs( caloJet.GetExperimentalParam("jet_eta") ) < 3.0 && !phase2_all_filled )
                 {
-                    phase2_rate_hist->Fill( caloJet.GetExperimentalParam("jet_pt") );
-                    phase2_filled = true;
+                    phase2_rate_all_hist->Fill( caloJet.GetExperimentalParam("jet_pt") );
+                    phase2_all_filled = true;
                 }
-                if (caloJet.pt() < 30) continue;
+                if ( fabs( caloJet.GetExperimentalParam("jet_eta") ) < 1.5 && !phase2_barrel_filled )
+                {
+                    phase2_rate_barrel_hist->Fill( caloJet.GetExperimentalParam("jet_pt") );
+                    phase2_barrel_filled = true;
+                }
+                if (caloJet.pt() < 50) continue;
                 // Set Stage-2 to dummy values
                 treeinfo.stage2jet_pt = -9; 
                 treeinfo.stage2jet_eta = -9;
@@ -609,8 +641,13 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         //}
     
         // Fill basic denominator efficiencies
-        eff_denom_pt->Fill(genJet.pt());
-        if (genJet.pt() > 20) eff_denom_eta->Fill(genJet.eta());
+        eff_all_denom_pt->Fill(genJet.pt());
+        if (genJet.pt() > 20) eff_all_denom_eta->Fill(genJet.eta());
+        if ( fabs(genJet.eta()) < 1.5 )
+        {
+            eff_barrel_denom_pt->Fill(genJet.pt());
+            if (genJet.pt() > 20) eff_barrel_denom_eta->Fill(genJet.eta());
+        }
     
         reco::Candidate::PolarLorentzVector genJetP4(genJet.pt(), genJet.eta(), genJet.phi(), genJet.mass() );
     
@@ -636,8 +673,13 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
                     treeinfo.stage2jet_deltaRGen = reco::deltaR( s2_jet.p4(), genJetP4 );
 
                     // Fill basic numerator efficiencies
-                    eff_num_stage2jet_pt->Fill(genJet.pt());
-                    if (genJet.pt() > 20) eff_num_stage2jet_eta->Fill(genJet.eta());
+                    eff_all_num_stage2jet_pt->Fill(genJet.pt());
+                    if (genJet.pt() > 20) eff_all_num_stage2jet_eta->Fill(genJet.eta());
+                    if ( fabs(genJet.eta()) < 1.5 )
+                    {
+                        eff_barrel_num_stage2jet_pt->Fill(genJet.pt());
+                        if (genJet.pt() > 20) eff_barrel_num_stage2jet_eta->Fill(genJet.eta());
+                    }
 
                     jet_matched = true;
                     break;
@@ -825,8 +867,13 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
                     fill_tree(caloJet);
 
                     // Fill basic numerator efficiencies
-                    eff_num_pt->Fill(genJet.pt());
-                    if (genJet.pt() > 20) eff_num_eta->Fill(genJet.eta());
+                    eff_all_num_pt->Fill(genJet.pt());
+                    if (genJet.pt() > 20) eff_all_num_eta->Fill(genJet.eta());
+                    if ( fabs(genJet.eta()) < 1.5 )
+                    {
+                        eff_barrel_num_pt->Fill(genJet.pt());
+                        if (genJet.pt() > 20) eff_barrel_num_eta->Fill(genJet.eta());
+                    }
     
                     found_caloJet = true;
                     break;
@@ -864,8 +911,10 @@ L1CaloJetStudies::endJob()
 {
     if (doRate)
     {
-        integrateDown( phase2_rate_hist );
-        integrateDown( stage2_rate_hist );
+        integrateDown( phase2_rate_all_hist );
+        integrateDown( stage2_rate_all_hist );
+        integrateDown( phase2_rate_barrel_hist );
+        integrateDown( stage2_rate_barrel_hist );
     }
 }
 
