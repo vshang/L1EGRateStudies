@@ -1,11 +1,12 @@
 import ROOT
 import math
 from L1Trigger.L1EGRateStudies.trigHelpers import setLegStyle
+from array import array
 ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
 
 
-
+saveDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/puTest_20190122v1/'
 
 
 def make_PU_SFs( c, base, name, calo ) :
@@ -17,7 +18,7 @@ def make_PU_SFs( c, base, name, calo ) :
     f200 = ROOT.TFile( base+name, 'r' )
     f140 = ROOT.TFile( base+name.replace('200','140'), 'r' )
     f0 = ROOT.TFile( base+name.replace('200','0'), 'r' )
-    h = ROOT.TH2F( 'SF_hist', 'SF_hist;Num iEta Bins;nvtx', 6, 0, 6, 25, 0, 250 )
+    h = ROOT.TH2F( 'SF_hist', 'SF_hist;iEta Bin;nvtx', 6, 0, 6, 50, 0, 250 )
     #h = ROOT.TH2F( 'SF_hist', 'SF_hist;iEta Bins;nvtx', 6, 0, 6, 10, 150, 250 )
     #h = ROOT.TH2F( 'SF_hist', 'SF_hist;iEta Bins;nvtx', 6, 0, 6, 1, 0, 10 )
     t200 = f200.Get( 'analyzer/hit_tree' )
@@ -27,7 +28,9 @@ def make_PU_SFs( c, base, name, calo ) :
     mini = 99
     for iEta in ['er1to3', 'er4to6', 'er7to9', 'er10to12', 'er13to15', 'er16to18'] :
         h1 = ROOT.TH1F( 'SF_hist_%s' % iEta, 'SF_hist;nvtx', 25, 0, 250 )
-        for nvtx in range( 0, 261, 10 ) :
+        x_vals = array('f', [])
+        y_vals = array('f', [])
+        for nvtx in range( 0, 251, 5 ) :
             nvtx_low = nvtx
             nvtx_high = nvtx+10
             cut = '(nvtx_init >= %i && nvtx_init <= %i)' % (nvtx_low, nvtx_high)
@@ -44,16 +47,18 @@ def make_PU_SFs( c, base, name, calo ) :
                 t200.Draw( 'i_%s_hits_%s >> hits' % (calo, iEta), cut )
                 t200.Draw( 'f_%s_hits_%s >> et_sum' % (calo, iEta), cut )
             if h_n_hits.Integral() > 0. :
-                #print iEta_index, nvtx+5, h_ET_sum.GetMean() / h_n_hits.GetMean()
-                #h.Fill( iEta_index, nvtx+5, h_ET_sum.GetMean() / h_n_hits.GetMean() )
+                #print iEta_index, nvtx+2.5, h_ET_sum.GetMean() / h_n_hits.GetMean()
+                #h.Fill( iEta_index, nvtx+2.5, h_ET_sum.GetMean() / h_n_hits.GetMean() )
                 #if h_ET_sum.GetMean() / h_n_hits.GetMean() < mini : mini = h_ET_sum.GetMean() / h_n_hits.GetMean()
-                #h1.SetBinContent( h1.FindBin( nvtx+5), h_ET_sum.GetMean() / h_n_hits.GetMean() )
-                #h1.SetBinError( h1.FindBin( nvtx+5), 1./math.sqrt(h_ET_sum.Integral()) )
-                print iEta_index, nvtx+5, h_ET_sum.GetMean()
-                h.Fill( iEta_index, nvtx+5, h_ET_sum.GetMean() )
+                #h1.SetBinContent( h1.FindBin( nvtx+2.5), h_ET_sum.GetMean() / h_n_hits.GetMean() )
+                #h1.SetBinError( h1.FindBin( nvtx+2.5), 1./math.sqrt(h_ET_sum.Integral()) )
+                print iEta_index, nvtx+2.5, h_ET_sum.GetMean()
+                h.Fill( iEta_index, nvtx+2.5, h_ET_sum.GetMean() )
+                x_vals.append( nvtx+2.5 )
+                y_vals.append( h_ET_sum.GetMean() )
                 if h_ET_sum.GetMean() < mini : mini = h_ET_sum.GetMean()
-                h1.SetBinContent( h1.FindBin( nvtx+5), h_ET_sum.GetMean() )
-                h1.SetBinError( h1.FindBin( nvtx+5), 1./math.sqrt(h_ET_sum.Integral()) )
+                h1.SetBinContent( h1.FindBin( nvtx+2.5), h_ET_sum.GetMean() )
+                h1.SetBinError( h1.FindBin( nvtx+2.5), 1./math.sqrt(h_ET_sum.Integral()) )
             del h_n_hits, h_ET_sum
         h.GetXaxis().SetBinLabel( iEta_index+1, iEta )
         iEta_index += 1
@@ -68,21 +73,30 @@ def make_PU_SFs( c, base, name, calo ) :
         f.SetLineWidth( 2 )
         f2.SetLineWidth( 2 )
         f2.SetLineColor( ROOT.kBlue )
-        h1.Draw()
+        #h1.Draw()
+        g1 = ROOT.TGraph( len(x_vals), x_vals, y_vals )
+        g1.SetTitle( 'ET_sum_graph_%s_%s' % (calo, iEta) )
+        g1.SetName( 'ET_sum_graph_%s_%s' % (calo, iEta) )
+        g1.SetLineColor( ROOT.kBlack )
+        g1.SetLineWidth( 2 )
+        g1.GetYaxis().SetTitle( 'MinBias E_{T} Sum (GeV)' )
+        g1.GetXaxis().SetTitle( 'Number of Simulated Vertices' )
+        g1.Draw()
         f.Draw('l same')
         f2.Draw('l same')
         f_out.cd()
-        f2.Write()
-        c.SaveAs( '/afs/cern.ch/user/t/truggles/www/Phase-II/puTest_20181114v3/SFs/SFs_%s_%s.png' % (calo, iEta) )
+        g1.Write()
+        #f2.Write()
+        c.SaveAs( saveDir+'SFs/SFs_%s_%s.png' % (calo, iEta) )
         del h1, f
     f_out.Close()
     h.SetMinimum( h.GetMinimum() )
     h.GetZaxis().SetRangeUser( mini, h.GetMaximum() )
     h.Draw('colz')
     ROOT.gPad.SetRightMargin( .15 )
-    c.SaveAs( '/afs/cern.ch/user/t/truggles/www/Phase-II/puTest_20181114v3/SFs/SFs_%s.png' % calo )
-    #c.SaveAs( '/afs/cern.ch/user/t/truggles/www/Phase-II/puTest_20181114v3/SFs_PU200_%s.png' % calo )
-    #c.SaveAs( '/afs/cern.ch/user/t/truggles/www/Phase-II/puTest_20181114v3/SFs_PU0_%s.png' % calo )
+    c.SaveAs( saveDir+'SFs/SFs_%s.png' % calo )
+    #c.SaveAs( saveDir+'SFs_PU200_%s.png' % calo )
+    #c.SaveAs( saveDir+'SFs_PU0_%s.png' % calo )
     
 
 
@@ -158,8 +172,8 @@ def plot_fit_params( c, var, fit_params ) :
     ROOT.gPad.SetLogy(0)
     ROOT.gPad.SetLogz(0)
     print var
-    c.SaveAs( '/afs/cern.ch/user/t/truggles/www/Phase-II/puTest_20181114v3/fits_'+var.replace(':','_')+'.root' )
-    c.SaveAs( '/afs/cern.ch/user/t/truggles/www/Phase-II/puTest_20181114v3/fits_'+var.replace(':','_')+'.png' )
+    c.SaveAs( saveDir+'fits_'+var.replace(':','_')+'.root' )
+    c.SaveAs( saveDir+'fits_'+var.replace(':','_')+'.png' )
 
 
 def plot_hists( c, var, hists, set_logy=False, append='' ) :
@@ -185,7 +199,7 @@ def plot_hists( c, var, hists, set_logy=False, append='' ) :
         ROOT.gPad.SetLogy()
     else :
         ROOT.gPad.SetLogy(0)
-    c.SaveAs( '/afs/cern.ch/user/t/truggles/www/Phase-II/puTest_20181114v3/'+append+'_'+var.replace(':','_')+'.png' )
+    c.SaveAs( saveDir+append+'_'+var.replace(':','_')+'.png' )
     if 'TH2' in str(type(hists)) :
         return [hists.GetFunction('f1_'+append).GetParameter(0), hists.GetFunction('f1_'+append).GetParameter(1), \
             hists.GetXaxis().GetBinLowEdge(1), hists.GetXaxis().GetBinUpEdge( hists.GetNbinsX() )]
@@ -228,31 +242,33 @@ if '__main__' in __name__ :
     #    plot_hists( c, k, hists )
     
     draw_map = {
-        #'i_total_hits:nvtx_init' : [100, 0, 300, 60, 0, 3000],
-        #'f_total_hits:nvtx_init' : [100, 0, 300, 60, 0, 6000],
-        #'i_total_hits_gtr_threshold:nvtx_init' : [100, 0, 300, 60, 0, 1500],
-        #'f_total_hits_gtr_threshold:nvtx_init' : [100, 0, 300, 60, 0, 6000],
-        #'i_total_hits_leq_threshold:nvtx_init' : [100, 0, 300, 60, 0, 1500],
-        #'f_total_hits_leq_threshold:nvtx_init' : [100, 0, 300, 60, 0, 1500],
-        'i_ecal_hits:nvtx_init' : [100, 0, 300, 60, 0, 800],
-        'f_ecal_hits:nvtx_init' : [100, 0, 300, 60, 0, 1000],
-        'i_ecal_hits_gtr_threshold:nvtx_init' : [100, 0, 300, 60, 0, 800],
-        'f_ecal_hits_gtr_threshold:nvtx_init' : [100, 0, 300, 60, 0, 200],
-        'i_ecal_hits_leq_threshold:nvtx_init' : [100, 0, 300, 60, 0, 800],
-        'f_ecal_hits_leq_threshold:nvtx_init' : [100, 0, 300, 60, 0, 1000],
-        'i_hcal_hits:nvtx_init' : [100, 0, 300, 60, 0, 800],
-        'f_hcal_hits:nvtx_init' : [100, 0, 300, 60, 0, 4000],
-        'i_hcal_hits_gtr_threshold:nvtx_init' : [100, 0, 300, 60, 0, 800],
-        'f_hcal_hits_gtr_threshold:nvtx_init' : [100, 0, 300, 60, 0, 4000],
-        'i_hcal_hits_leq_threshold:nvtx_init' : [100, 0, 300, 60, 0, 800],
-        'i_hcal_hits_leq_threshold:f_hcal_hits' : [60, 0, 4000, 60, 0, 800],
-        'f_hcal_hits_leq_threshold:nvtx_init' : [100, 0, 300, 60, 0, 1500],
-        #'i_l1eg_hits:nvtx_init' : [100, 0, 300, 60, 0, 100],
-        #'f_l1eg_hits:nvtx_init' : [100, 0, 300, 60, 0, 4000],
-        #'i_l1eg_hits_gtr_threshold:nvtx_init' : [100, 0, 300, 60, 0, 100],
-        #'f_l1eg_hits_gtr_threshold:nvtx_init' : [100, 0, 300, 60, 0, 1500],
-        #'i_l1eg_hits_leq_threshold:nvtx_init' : [100, 0, 300, 60, 0, 100],
-        #'f_l1eg_hits_leq_threshold:nvtx_init' : [100, 0, 300, 60, 0, 1500],
+        ##'i_total_hits:nvtx_init' : [100, 0, 300, 60, 0, 3000],
+        ##'f_total_hits:nvtx_init' : [100, 0, 300, 60, 0, 6000],
+        ##'i_total_hits_gtr_threshold:nvtx_init' : [100, 0, 300, 60, 0, 1500],
+        ##'f_total_hits_gtr_threshold:nvtx_init' : [100, 0, 300, 60, 0, 6000],
+        ##'i_total_hits_leq_threshold:nvtx_init' : [100, 0, 300, 60, 0, 1500],
+        ##'f_total_hits_leq_threshold:nvtx_init' : [100, 0, 300, 60, 0, 1500],
+        #'i_ecal_hits:nvtx_init' : [100, 0, 300, 60, 0, 800],
+        #'f_ecal_hits:nvtx_init' : [100, 0, 300, 60, 0, 1000],
+        #'i_ecal_hits_gtr_threshold:nvtx_init' : [100, 0, 300, 60, 0, 800],
+        #'f_ecal_hits_gtr_threshold:nvtx_init' : [100, 0, 300, 60, 0, 200],
+        'nvtx_init:i_ecal_hits_leq_threshold' : [60, 0, 300, 100, 0, 300],
+        #'i_ecal_hits_leq_threshold:nvtx_init' : [100, 0, 300, 60, 0, 800],
+        #'f_ecal_hits_leq_threshold:nvtx_init' : [100, 0, 300, 60, 0, 1000],
+        #'i_hcal_hits:nvtx_init' : [100, 0, 300, 60, 0, 800],
+        #'f_hcal_hits:nvtx_init' : [100, 0, 300, 60, 0, 4000],
+        #'i_hcal_hits_gtr_threshold:nvtx_init' : [100, 0, 300, 60, 0, 800],
+        #'f_hcal_hits_gtr_threshold:nvtx_init' : [100, 0, 300, 60, 0, 4000],
+        #'i_hcal_hits_leq_threshold:f_hcal_hits' : [60, 0, 4000, 60, 0, 800],
+        'nvtx_init:i_hcal_hits_leq_threshold' : [60, 0, 300, 100, 0, 300],
+        #'i_hcal_hits_leq_threshold:nvtx_init' : [100, 0, 300, 60, 0, 800],
+        #'f_hcal_hits_leq_threshold:nvtx_init' : [100, 0, 300, 60, 0, 1500],
+        ##'i_l1eg_hits:nvtx_init' : [100, 0, 300, 60, 0, 100],
+        ##'f_l1eg_hits:nvtx_init' : [100, 0, 300, 60, 0, 4000],
+        ##'i_l1eg_hits_gtr_threshold:nvtx_init' : [100, 0, 300, 60, 0, 100],
+        ##'f_l1eg_hits_gtr_threshold:nvtx_init' : [100, 0, 300, 60, 0, 1500],
+        ##'i_l1eg_hits_leq_threshold:nvtx_init' : [100, 0, 300, 60, 0, 100],
+        ##'f_l1eg_hits_leq_threshold:nvtx_init' : [100, 0, 300, 60, 0, 1500],
     }
 
     namesMB = [
@@ -267,22 +283,23 @@ if '__main__' in __name__ :
         'qcd_PU0.root',
         'qcd_PU200.root'
     ]
-    #for k, v in draw_map.iteritems() :
-    #    fits = []
-    #    hists = draw_comp_hist( base,namesMB,k,v )
-    #    h = to_add( hists )
-    #    fits.append( plot_hists( c, k, h, False, namesMB[0].split('_')[0] ) )
-    #    hists = draw_comp_hist( base,namesTT,k,v )
-    #    h = to_add( hists )
-    #    fits.append( plot_hists( c, k, h, False, namesTT[0].split('_')[0] ) )
-    #    hists = draw_comp_hist( base,namesQCD,k,v )
-    #    h = to_add( hists )
-    #    fits.append( plot_hists( c, k, h, False, namesQCD[0].split('_')[0] ) )
 
-    #    plot_fit_params( c, k, fits )
+    for k, v in draw_map.iteritems() :
+        fits = []
+        hists = draw_comp_hist( base,namesMB,k,v )
+        h = to_add( hists )
+        fits.append( plot_hists( c, k, h, False, namesMB[0].split('_')[0] ) )
+        hists = draw_comp_hist( base,namesTT,k,v )
+        h = to_add( hists )
+        fits.append( plot_hists( c, k, h, False, namesTT[0].split('_')[0] ) )
+        hists = draw_comp_hist( base,namesQCD,k,v )
+        h = to_add( hists )
+        fits.append( plot_hists( c, k, h, False, namesQCD[0].split('_')[0] ) )
+
+        plot_fit_params( c, k, fits )
 
     name = 'minBias_PU200.root'
     #make_PU_SFs( c, base, name, 'ecal' )
-    make_PU_SFs( c, base, name, 'hcal' )
+    #make_PU_SFs( c, base, name, 'hcal' )
 
 
