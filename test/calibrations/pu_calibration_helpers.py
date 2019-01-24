@@ -93,12 +93,14 @@ def make_PU_SFs( c, base, name, calo ) :
             else : 
                 t200.Draw( 'f_%s_hits_%s >> et_sum' % (calo, iEta), cut )
             if h_ET_sum.Integral() > 0. :
-                print iEta_index, nvtx+delta, h_ET_sum.GetMean()
-                h.Fill( iEta_index, nvtx+delta, h_ET_sum.GetMean() )
+                # Total energy / nTowers = Energy per Tower to subtract
+                energy_per_tower = h_ET_sum.GetMean()/eta_map[ iEta ]
+                print iEta_index, nvtx+delta, energy_per_tower
+                h.Fill( iEta_index, nvtx+delta, energy_per_tower )
                 x_vals.append( nvtx+delta )
-                y_vals.append( h_ET_sum.GetMean() )
-                if h_ET_sum.GetMean() < mini : mini = h_ET_sum.GetMean()
-                h1.SetBinContent( h1.FindBin( nvtx+delta), h_ET_sum.GetMean() )
+                y_vals.append( energy_per_tower )
+                if energy_per_tower < mini : mini = energy_per_tower
+                h1.SetBinContent( h1.FindBin( nvtx+delta), energy_per_tower )
                 h1.SetBinError( h1.FindBin( nvtx+delta), 1./math.sqrt(h_ET_sum.Integral()) )
             del h_ET_sum
         h.GetXaxis().SetBinLabel( iEta_index+1, iEta )
@@ -305,7 +307,7 @@ def to_add( hists ) :
     
 if '__main__' in __name__ :
     date = '20190123v8'
-    saveDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/puTest_'+date+'/'
+    saveDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/puTest_'+date+'vX/'
     trigHelpers.checkDir( saveDir )
     base = '/data/truggles/l1CaloJets_'+date+'/'
     c = ROOT.TCanvas('c','c',800,800)
@@ -416,5 +418,8 @@ if '__main__' in __name__ :
     name = 'minBias_PU200.root'
     make_PU_SFs( c, base, name, 'ecal' )
     make_PU_SFs( c, base, name, 'hcal' )
+    make_PU_SFs( c, base, name, 'hgcalEM' )
+    make_PU_SFs( c, base, name, 'hgcalHad' )
+    make_PU_SFs( c, base, name, 'hf' )
 
 
