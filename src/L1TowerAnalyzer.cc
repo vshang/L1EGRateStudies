@@ -80,9 +80,12 @@ class L1TowerAnalyzer : public edm::EDAnalyzer {
         double puThresholdEcal;
         double puThresholdHcal;
         double puThresholdL1eg;
-        double puThresholdHGCalEM;
-        double puThresholdHGCalHad;
-        double puThresholdHF;
+        double puThresholdHGCalEMMin;
+        double puThresholdHGCalEMMax;
+        double puThresholdHGCalHadMin;
+        double puThresholdHGCalHadMax;
+        double puThresholdHFMin;
+        double puThresholdHFMax;
 
         bool debug;
         edm::EDGetTokenT< std::vector< SimVertex > > simVertexToken_;
@@ -321,9 +324,12 @@ L1TowerAnalyzer::L1TowerAnalyzer(const edm::ParameterSet& iConfig) :
     puThresholdEcal(iConfig.getParameter<double>("puThresholdEcal")), // Should default to 5.0 GeV
     puThresholdHcal(iConfig.getParameter<double>("puThresholdHcal")), // Should default to 5.0 GeV
     puThresholdL1eg(iConfig.getParameter<double>("puThresholdL1eg")), // Should default to 5.0 GeV
-    puThresholdHGCalEM(iConfig.getParameter<double>("puThresholdHGCalEM")), // Should default to 5.0 GeV
-    puThresholdHGCalHad(iConfig.getParameter<double>("puThresholdHGCalHad")), // Should default to 5.0 GeV
-    puThresholdHF(iConfig.getParameter<double>("puThresholdHF")), // Should default to 5.0 GeV
+    puThresholdHGCalEMMin(iConfig.getParameter<double>("puThresholdHGCalEMMin")), // Should default to 5.0 GeV
+    puThresholdHGCalEMMax(iConfig.getParameter<double>("puThresholdHGCalEMMax")), // Should default to 5.0 GeV
+    puThresholdHGCalHadMin(iConfig.getParameter<double>("puThresholdHGCalHadMin")), // Should default to 5.0 GeV
+    puThresholdHGCalHadMax(iConfig.getParameter<double>("puThresholdHGCalHadMax")), // Should default to 5.0 GeV
+    puThresholdHFMin(iConfig.getParameter<double>("puThresholdHFMin")), // Should default to 5.0 GeV
+    puThresholdHFMax(iConfig.getParameter<double>("puThresholdHFMax")), // Should default to 5.0 GeV
     debug(iConfig.getParameter<bool>("debug")),
     simVertexToken_(consumes< std::vector< SimVertex > >(iConfig.getParameter<edm::InputTag>("vertexTag"))),
     trackingVertexInitToken_(consumes< std::vector< TrackingVertex > >(iConfig.getParameter<edm::InputTag>("trackingVertexInitTag"))),
@@ -855,12 +861,12 @@ void L1TowerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
             treeinfo.i_hgcalEM_hits++;
             hgcalEM_hits_et->Fill( l1CaloTower.ecal_tower_et );
             treeinfo.f_hgcalEM_hits += l1CaloTower.ecal_tower_et;
-            if(l1CaloTower.ecal_tower_et > puThresholdHGCalEM) 
+            if(l1CaloTower.ecal_tower_et > puThresholdHGCalEMMax) 
             {
                 treeinfo.i_hgcalEM_hits_gtr_threshold++;
                 treeinfo.f_hgcalEM_hits_gtr_threshold += l1CaloTower.ecal_tower_et;
             }
-            if(l1CaloTower.ecal_tower_et <= puThresholdHGCalEM) 
+            if(l1CaloTower.ecal_tower_et <= puThresholdHGCalEMMax && l1CaloTower.ecal_tower_et >= puThresholdHGCalEMMin) 
             {
                 treeinfo.i_hgcalEM_hits_leq_threshold++;
                 treeinfo.f_hgcalEM_hits_leq_threshold += l1CaloTower.ecal_tower_et;
@@ -951,12 +957,12 @@ void L1TowerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
             treeinfo.i_hgcalHad_hits++;
             hgcalHad_hits_et->Fill( l1CaloTower.hcal_tower_et );
             treeinfo.f_hgcalHad_hits += l1CaloTower.hcal_tower_et;
-            if(l1CaloTower.hcal_tower_et > puThresholdHGCalHad) 
+            if(l1CaloTower.hcal_tower_et > puThresholdHGCalHadMax) 
             {
                 treeinfo.i_hgcalHad_hits_gtr_threshold++;
                 treeinfo.f_hgcalHad_hits_gtr_threshold += l1CaloTower.hcal_tower_et;
             }
-            if(l1CaloTower.hcal_tower_et <= puThresholdHGCalHad) 
+            if(l1CaloTower.hcal_tower_et <= puThresholdHGCalHadMax && l1CaloTower.hcal_tower_et >= puThresholdHGCalHadMin) 
             {
                 treeinfo.i_hgcalHad_hits_leq_threshold++;
                 treeinfo.f_hgcalHad_hits_leq_threshold += l1CaloTower.hcal_tower_et;
@@ -996,12 +1002,12 @@ void L1TowerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
             treeinfo.i_hf_hits++;
             hf_hits_et->Fill( l1CaloTower.hcal_tower_et );
             treeinfo.f_hf_hits += l1CaloTower.hcal_tower_et;
-            if(l1CaloTower.hcal_tower_et > puThresholdHF) 
+            if(l1CaloTower.hcal_tower_et > puThresholdHFMax) 
             {
                 treeinfo.i_hf_hits_gtr_threshold++;
                 treeinfo.f_hf_hits_gtr_threshold += l1CaloTower.hcal_tower_et;
             }
-            if(l1CaloTower.hcal_tower_et <= puThresholdHF)
+            if(l1CaloTower.hcal_tower_et <= puThresholdHFMax && l1CaloTower.hcal_tower_et >= puThresholdHFMin)
             {
                 treeinfo.i_hf_hits_leq_threshold++;
                 treeinfo.f_hf_hits_leq_threshold += l1CaloTower.hcal_tower_et;

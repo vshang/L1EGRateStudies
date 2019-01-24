@@ -7,58 +7,78 @@ ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
 
 
+# Provide number of towers for the geometrical area for energy normalization
+#def get_n_towers( sub_detector, eta_range ) :
+#    sub_detector_map = {
+#'ecal' : {
+#    'er1to3' :
+#    'er4to6' : 
+#    'er7to9' : 
+#    'er10to12' : 
+#    'er13to15' : 
+#    'er16to18' :
+#}
+#
+#
+#
+#    }
+    
 
 
 def make_PU_SFs( c, base, name, calo ) :
 
     # Output function file
     f_out = ROOT.TFile( 'PU_SF_%s_functions.root' % calo, 'RECREATE' )
+    trigHelpers.checkDir( saveDir+'SFs/' )
 
+    h_max = 270
+    n_bins = 27
+    delta = h_max / n_bins
 
     f200 = ROOT.TFile( base+name, 'r' )
-    f140 = ROOT.TFile( base+name.replace('200','140'), 'r' )
+    #f140 = ROOT.TFile( base+name.replace('200','140'), 'r' )
     f0 = ROOT.TFile( base+name.replace('200','0'), 'r' )
-    h = ROOT.TH2F( 'SF_hist', 'SF_hist;iEta Bin;nvtx', 6, 0, 6, 50, 0, 250 )
+    h = ROOT.TH2F( 'SF_hist', 'SF_hist;iEta Bin;nvtx', 6, 0, 6, 27, 0, h_max )
     #h = ROOT.TH2F( 'SF_hist', 'SF_hist;iEta Bins;nvtx', 6, 0, 6, 10, 150, 250 )
     #h = ROOT.TH2F( 'SF_hist', 'SF_hist;iEta Bins;nvtx', 6, 0, 6, 1, 0, 10 )
     t200 = f200.Get( 'analyzer/hit_tree' )
-    t140 = f140.Get( 'analyzer/hit_tree' )
+    #t140 = f140.Get( 'analyzer/hit_tree' )
     t0 = f0.Get( 'analyzer/hit_tree' )
     iEta_index = 0
     mini = 99
     for iEta in ['er1to3', 'er4to6', 'er7to9', 'er10to12', 'er13to15', 'er16to18'] :
-        h1 = ROOT.TH1F( 'SF_hist_%s' % iEta, 'SF_hist;nvtx', 25, 0, 250 )
+        h1 = ROOT.TH1F( 'SF_hist_%s' % iEta, 'SF_hist;nvtx', 27, 0, h_max )
         x_vals = array('f', [])
         y_vals = array('f', [])
-        for nvtx in range( 0, 251, 5 ) :
+        for nvtx in range( 0, h_max+1, delta ) :
             nvtx_low = nvtx
             nvtx_high = nvtx+10
-            cut = '(nvtx_init >= %i && nvtx_init <= %i)' % (nvtx_low, nvtx_high)
+            cut = '(nvtx_init >= %i && nvtx_init < %i)' % (nvtx_low, nvtx_high)
             h_n_hits = ROOT.TH1F('hits','hits',1000,0,10000)
             h_ET_sum = ROOT.TH1F('et_sum','et_sum',1000,0,10000)
             # Use PU0 sample for lowest nvtx bin
             if nvtx == 0 :
                 t0.Draw( 'i_%s_hits_%s >> hits' % (calo, iEta), cut )
                 t0.Draw( 'f_%s_hits_%s >> et_sum' % (calo, iEta), cut )
-            elif nvtx >= 90 and nvtx < 160 : 
-                t140.Draw( 'i_%s_hits_%s >> hits' % (calo, iEta), cut )
-                t140.Draw( 'f_%s_hits_%s >> et_sum' % (calo, iEta), cut )
+            #elif nvtx >= 90 and nvtx < 160 : 
+            #    t140.Draw( 'i_%s_hits_%s >> hits' % (calo, iEta), cut )
+            #    t140.Draw( 'f_%s_hits_%s >> et_sum' % (calo, iEta), cut )
             else : 
                 t200.Draw( 'i_%s_hits_%s >> hits' % (calo, iEta), cut )
                 t200.Draw( 'f_%s_hits_%s >> et_sum' % (calo, iEta), cut )
             if h_n_hits.Integral() > 0. :
-                #print iEta_index, nvtx+2.5, h_ET_sum.GetMean() / h_n_hits.GetMean()
-                #h.Fill( iEta_index, nvtx+2.5, h_ET_sum.GetMean() / h_n_hits.GetMean() )
+                #print iEta_index, nvtx+delta, h_ET_sum.GetMean() / h_n_hits.GetMean()
+                #h.Fill( iEta_index, nvtx+delta, h_ET_sum.GetMean() / h_n_hits.GetMean() )
                 #if h_ET_sum.GetMean() / h_n_hits.GetMean() < mini : mini = h_ET_sum.GetMean() / h_n_hits.GetMean()
-                #h1.SetBinContent( h1.FindBin( nvtx+2.5), h_ET_sum.GetMean() / h_n_hits.GetMean() )
-                #h1.SetBinError( h1.FindBin( nvtx+2.5), 1./math.sqrt(h_ET_sum.Integral()) )
-                print iEta_index, nvtx+2.5, h_ET_sum.GetMean()
-                h.Fill( iEta_index, nvtx+2.5, h_ET_sum.GetMean() )
-                x_vals.append( nvtx+2.5 )
+                #h1.SetBinContent( h1.FindBin( nvtx+delta), h_ET_sum.GetMean() / h_n_hits.GetMean() )
+                #h1.SetBinError( h1.FindBin( nvtx+delta), 1./math.sqrt(h_ET_sum.Integral()) )
+                print iEta_index, nvtx+delta, h_ET_sum.GetMean()
+                h.Fill( iEta_index, nvtx+delta, h_ET_sum.GetMean() )
+                x_vals.append( nvtx+delta )
                 y_vals.append( h_ET_sum.GetMean() )
                 if h_ET_sum.GetMean() < mini : mini = h_ET_sum.GetMean()
-                h1.SetBinContent( h1.FindBin( nvtx+2.5), h_ET_sum.GetMean() )
-                h1.SetBinError( h1.FindBin( nvtx+2.5), 1./math.sqrt(h_ET_sum.Integral()) )
+                h1.SetBinContent( h1.FindBin( nvtx+delta), h_ET_sum.GetMean() )
+                h1.SetBinError( h1.FindBin( nvtx+delta), 1./math.sqrt(h_ET_sum.Integral()) )
             del h_n_hits, h_ET_sum
         h.GetXaxis().SetBinLabel( iEta_index+1, iEta )
         iEta_index += 1
@@ -263,8 +283,8 @@ def to_add( hists ) :
 
     
 if '__main__' in __name__ :
-    date = '20190123v7'
-    saveDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/puTest_'+date+'x/'
+    date = '20190123v8'
+    saveDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/puTest_'+date+'/'
     trigHelpers.checkDir( saveDir )
     base = '/data/truggles/l1CaloJets_'+date+'/'
     c = ROOT.TCanvas('c','c',800,800)
@@ -372,8 +392,8 @@ if '__main__' in __name__ :
 
         plot_fit_params( c, k, v, fits )
 
-    #name = 'minBias_PU200.root'
-    #make_PU_SFs( c, base, name, 'ecal' )
-    #make_PU_SFs( c, base, name, 'hcal' )
+    name = 'minBias_PU200.root'
+    make_PU_SFs( c, base, name, 'ecal' )
+    make_PU_SFs( c, base, name, 'hcal' )
 
 

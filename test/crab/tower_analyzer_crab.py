@@ -70,19 +70,21 @@ process.load('L1Trigger.L1CaloTrigger.L1EGammaCrystalsEmulatorProducer_cfi')
 
 
 process.analyzer = cms.EDAnalyzer("L1TowerAnalyzer",
-    HcalTpEtMin = cms.double(0.0), # Default is 0.5 GeV
-    EcalTpEtMin = cms.double(0.0), # Default is 0.5 GeV
-    HGCalHadTpEtMin = cms.double(0.0),
-    HGCalEmTpEtMin = cms.double(0.0),
+    HcalTpEtMin = cms.double(0.5), # Default is 0.5 GeV
+    EcalTpEtMin = cms.double(0.5), # Default is 0.5 GeV
+    HGCalHadTpEtMin = cms.double(0.5),
+    HGCalEmTpEtMin = cms.double(0.5),
+    HFTpEtMin = cms.double(0.5),
     puThreshold = cms.double(5.0), # Default is 5 GeV
-    #puThresholdEcal = cms.double(3.0), # Default is 5 GeV # Original values
-    #puThresholdHcal = cms.double(4.0), # Default is 5 GeV
     puThresholdEcal = cms.double(2.0), # Default is 5 GeV
     puThresholdHcal = cms.double(3.0), # Default is 5 GeV
     puThresholdL1eg = cms.double(4.0), # Default is 5 GeV
-    puThresholdHGCalEM = cms.double(3.0), # Default is 5 GeV
-    puThresholdHGCalHad = cms.double(3.0), # Default is 5 GeV
-    puThresholdHF = cms.double(5.0), # Default is 5 GeV
+    puThresholdHGCalEMMin = cms.double(1.0), # Default is 5 GeV
+    puThresholdHGCalEMMax = cms.double(1.5), # Default is 5 GeV
+    puThresholdHGCalHadMin = cms.double(0.5), # Default is 5 GeV
+    puThresholdHGCalHadMax = cms.double(1.0), # Default is 5 GeV
+    puThresholdHFMin = cms.double(4.0), # Default is 5 GeV
+    puThresholdHFMax = cms.double(10.0), # Default is 5 GeV
     debug = cms.bool(False),
     #debug = cms.untracked.bool(True),
     vertexTag = cms.InputTag("g4SimHits","","SIM"),
