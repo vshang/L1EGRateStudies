@@ -2,11 +2,11 @@ import ROOT
 import math
 from L1Trigger.L1EGRateStudies.trigHelpers import setLegStyle
 from array import array
+import L1Trigger.L1EGRateStudies.trigHelpers as trigHelpers
 ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
 
 
-saveDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/puTest_20190122v1/'
 
 
 def make_PU_SFs( c, base, name, calo ) :
@@ -112,6 +112,7 @@ def draw_comp_hist( base, names, var, x_and_y_bins ) :
         t.Draw( var+' >> '+name_var )
         #h.Scale ( 1. / h.Integral() )
         h.SetLineColor( cnt )
+        h.SetMarkerColor( cnt )
         h.SetDirectory(0)
         h.GetXaxis().SetTitle( var.split(':')[1] )
         h.GetYaxis().SetTitle( var.split(':')[0] )
@@ -127,8 +128,11 @@ def make_comp_hist( base, names, var, scan=[0,10], hist_max=-1 ) :
     for n in names :
         f = ROOT.TFile( base+n, 'r' )
         h = f.Get( 'analyzer/'+var )
-        h.Scale ( 1. / h.Integral() )
+        if h.Integral() > 0. :
+        #    h.Scale ( 1. / h.Integral() )
+            h.Scale ( 1. / f.Get( 'analyzer/NEvents' ).Integral() )
         h.SetLineColor( cnt )
+        h.SetMarkerColor( cnt )
         h.SetDirectory(0)
         h.GetXaxis().SetTitle( var+' (GeV)' )
         h.GetYaxis().SetTitle( 'A.U.' )
@@ -140,7 +144,7 @@ def make_comp_hist( base, names, var, scan=[0,10], hist_max=-1 ) :
         hists.append( h )
     return hists
 
-def plot_fit_params( c, var, fit_params ) :
+def plot_fit_params( c, var, x_y_info, fit_params ) :
     c.Clear()
     leg = setLegStyle(0.2,0.5,0.45,0.87)
     n_map = {
@@ -156,24 +160,44 @@ def plot_fit_params( c, var, fit_params ) :
         f.SetParameter(0, fit_vals[0] )
         f.SetParameter(1, fit_vals[1] )
         f.SetLineColor( cnt )
-        f.GetXaxis().SetTitle( var.split(':')[1] )
-        f.GetYaxis().SetTitle( var.split(':')[0] )
+        #f.GetXaxis().SetTitle( var.split(':')[1] )
+        #f.GetYaxis().SetTitle( var.split(':')[0] )
         if f.Eval( fit_vals[3] ) > max_v : max_v = f.Eval( fit_vals[3] )
         funcs.append( f )
         cnt += 1
     cnt = 1
-    funcs[0].Draw()
-    funcs[0].SetMaximum( max_v * 1.1 )
+    funcs[0].Draw('ec')
+    #funcs[0].SetMaximum( max_v * 1.1 )
+    # this version of SetRange is: (x_low, y_low, x_max, y_max)
+    #    'nvtx_init:i_hf_hits_leq_threshold' : [60, 0, 1000, 100, 0, 300], # not so good...
+    #funcs[0].SetRange( x_y_info[1], x_y_info[2], max_v, x_y_info[5] )
+    funcs[0].SetRange( x_y_info[1], x_y_info[4], x_y_info[2], 300 )
+    #funcs[0].GetYaxis().SetRangeUser( max_v, x_y_info[5] )
+    #funcs[0].GetXaxis().SetRangeUser( x_y_info[1], x_y_info[2] )
+    #funcs[0].Draw('ec')
+    funcs[0].GetXaxis().SetTitle( var.split(':')[1] )
+    funcs[0].GetYaxis().SetTitle( var.split(':')[0] )
+    funcs[0].SetTitle( var.split(':')[1] )
     for f in funcs :
-        f.Draw('same')
+        f.Draw('ec same')
         leg.AddEntry(f, n_map[cnt],"l")
         cnt += 1
     leg.Draw()
     ROOT.gPad.SetLogy(0)
     ROOT.gPad.SetLogz(0)
     print var
-    c.SaveAs( saveDir+'fits_'+var.replace(':','_')+'.root' )
+    #c.SaveAs( saveDir+'fits_'+var.replace(':','_')+'.root' )
     c.SaveAs( saveDir+'fits_'+var.replace(':','_')+'.png' )
+    f_out = ROOT.TFile( 'fits_'+var.replace(':','_')+'.root', 'RECREATE' )
+    f_out.cd()
+    cnt = 1
+    for f in funcs :
+        f.SetTitle( n_map[cnt]+var.replace(':','_') )
+        f.SetName( n_map[cnt]+var.replace(':','_') )
+        cnt += 1
+        f.Write()
+    f_out.Close()
+    
 
 
 def plot_hists( c, var, hists, set_logy=False, append='' ) :
@@ -189,11 +213,35 @@ def plot_hists( c, var, hists, set_logy=False, append='' ) :
         f.Draw('l same')
         ROOT.gPad.SetLogz()
     if 'list' in str(type(hists)) :
-        hists[0].Draw('hist')
-        leg = setLegStyle(0.5,0.5,0.95,0.87)
+        maxi = 0.
         for h in hists :
-            h.Draw('hist SAME')
-            leg.AddEntry(h, h.GetName(),"lpe")
+            if h.GetMaximum() > maxi : maxi = h.GetMaximum()
+            if var == 'ecal_hits_et' : h.Rebin( 4 ) 
+            if var == 'hcal_hits_et' : h.Rebin( 4 )
+            if var == 'l1eg_hits_et' : h.Rebin( 4 )
+            if var == 'hgcalEM_hits_et' : h.Rebin( 1 ) 
+            if var == 'hgcalHad_hits_et' : h.Rebin( 1 ) 
+            if var == 'hf_hits_et' : h.Rebin( 8 ) 
+        if 'hits_et' in var :
+            hists[0].GetXaxis().SetRangeUser( 0, 10 )
+        #hists[0].Draw('hist')
+        hists[0].Draw('E0L')
+        hists[0].SetMaximum( maxi * 10 )
+        if 'hits_et' in var :
+            ROOT.gPad.SetLogy()
+        else :
+            ROOT.gPad.SetLogy(0)
+        ROOT.gPad.Update()
+        leg = setLegStyle(0.5,0.5,0.95,0.87)
+        marker = 20
+        for h in hists :
+            h.SetMarkerStyle( marker )
+            marker += 1
+            h.SetMarkerSize( 1 )
+            h.SetLineWidth( 2 )
+            #h.Draw('hist SAME')
+            h.Draw('E0L SAME')
+            leg.AddEntry(h, h.GetName().split('/')[-1],"lpe")
         leg.Draw()
     if set_logy :
         ROOT.gPad.SetLogy()
@@ -201,6 +249,7 @@ def plot_hists( c, var, hists, set_logy=False, append='' ) :
         ROOT.gPad.SetLogy(0)
     c.SaveAs( saveDir+append+'_'+var.replace(':','_')+'.png' )
     if 'TH2' in str(type(hists)) :
+        #return
         return [hists.GetFunction('f1_'+append).GetParameter(0), hists.GetFunction('f1_'+append).GetParameter(1), \
             hists.GetXaxis().GetBinLowEdge(1), hists.GetXaxis().GetBinUpEdge( hists.GetNbinsX() )]
         
@@ -214,32 +263,39 @@ def to_add( hists ) :
 
     
 if '__main__' in __name__ :
-    base = '/data/truggles/l1CaloJets_20181114v3/'
-    c = ROOT.TCanvas('c','c',500,500)
+    date = '20190123v7'
+    saveDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/puTest_'+date+'x/'
+    trigHelpers.checkDir( saveDir )
+    base = '/data/truggles/l1CaloJets_'+date+'/'
+    c = ROOT.TCanvas('c','c',800,800)
     names = [
         'minBias_PU0.root',
         'minBias_PU200.root',
         'ttbar_PU0.root',
         'ttbar_PU200.root',
-        'qcd_PU0.root',
-        'qcd_PU200.root']
+        #'qcd_PU0.root',
+        #'qcd_PU200.root'
+        ]
     scan=[0,10]
     hist_max=10
     var_map = {
         'total_hits_et' : ([0, 50], 50),
-        'total_et_sum' : ([0, 3000], -1),
+        #'total_et_sum' : ([0, 3000], -1),
         'ecal_hits_et' : ([0, 10], 50),
-        'ecal_et_sum' : ([0, 3000], -1),
+        #'ecal_et_sum' : ([0, 3000], -1),
         'hcal_hits_et' : ([0, 50], 50),
-        'hcal_et_sum' : ([0, 3000], -1),
+        #'hcal_et_sum' : ([0, 3000], -1),
         'l1eg_hits_et' : ([0, 50], 50),
-        'l1eg_et_sum' : ([0, 3000], -1),
+        #'l1eg_et_sum' : ([0, 3000], -1),
         'unc_hits_et' : ([0, 50], 50),
-        'unc_et_sum' : ([0, 3000], -1),
+        #'unc_et_sum' : ([0, 3000], -1),
+        'hgcalEM_hits_et' : ([0, 50], 50),
+        'hgcalHad_hits_et' : ([0, 50], 50),
+        'hf_hits_et' : ([0, 50], 50),
     }
-    #for k, v in var_map.iteritems() :
-    #    hists = make_comp_hist( base,names,k,v[0],v[1] )
-    #    plot_hists( c, k, hists )
+    for k, v in var_map.iteritems() :
+        hists = make_comp_hist( base,names,k,v[0],v[1] )
+        plot_hists( c, k, hists, True )
     
     draw_map = {
         ##'i_total_hits:nvtx_init' : [100, 0, 300, 60, 0, 3000],
@@ -252,7 +308,6 @@ if '__main__' in __name__ :
         #'f_ecal_hits:nvtx_init' : [100, 0, 300, 60, 0, 1000],
         #'i_ecal_hits_gtr_threshold:nvtx_init' : [100, 0, 300, 60, 0, 800],
         #'f_ecal_hits_gtr_threshold:nvtx_init' : [100, 0, 300, 60, 0, 200],
-        'nvtx_init:i_ecal_hits_leq_threshold' : [60, 0, 300, 100, 0, 300],
         #'i_ecal_hits_leq_threshold:nvtx_init' : [100, 0, 300, 60, 0, 800],
         #'f_ecal_hits_leq_threshold:nvtx_init' : [100, 0, 300, 60, 0, 1000],
         #'i_hcal_hits:nvtx_init' : [100, 0, 300, 60, 0, 800],
@@ -260,7 +315,6 @@ if '__main__' in __name__ :
         #'i_hcal_hits_gtr_threshold:nvtx_init' : [100, 0, 300, 60, 0, 800],
         #'f_hcal_hits_gtr_threshold:nvtx_init' : [100, 0, 300, 60, 0, 4000],
         #'i_hcal_hits_leq_threshold:f_hcal_hits' : [60, 0, 4000, 60, 0, 800],
-        'nvtx_init:i_hcal_hits_leq_threshold' : [60, 0, 300, 100, 0, 300],
         #'i_hcal_hits_leq_threshold:nvtx_init' : [100, 0, 300, 60, 0, 800],
         #'f_hcal_hits_leq_threshold:nvtx_init' : [100, 0, 300, 60, 0, 1500],
         ##'i_l1eg_hits:nvtx_init' : [100, 0, 300, 60, 0, 100],
@@ -269,6 +323,26 @@ if '__main__' in __name__ :
         ##'f_l1eg_hits_gtr_threshold:nvtx_init' : [100, 0, 300, 60, 0, 1500],
         ##'i_l1eg_hits_leq_threshold:nvtx_init' : [100, 0, 300, 60, 0, 100],
         ##'f_l1eg_hits_leq_threshold:nvtx_init' : [100, 0, 300, 60, 0, 1500],
+        'nvtx_init:i_ecal_hits_leq_threshold' : [60, 0, 600, 100, 0, 300], # good
+        'nvtx_init:i_hcal_hits_leq_threshold' : [60, 0, 300, 100, 0, 300], # decent
+        'nvtx_init:i_hgcalEM_hits_leq_threshold' : [60, 0, 1000, 100, 0, 300], # decent, needs zero PU for minB
+        'nvtx_init:i_hgcalHad_hits_leq_threshold' : [60, 0, 1000, 100, 0, 300], # okay
+        'nvtx_init:i_hf_hits_leq_threshold' : [60, 0, 1000, 100, 0, 300], # not so good...
+        #'nvtx_init:f_hf_hits_leq_threshold' : [60, 0, 3000, 100, 0, 300],
+
+        #'nvtx_init:i_ecal_hits_gtr_threshold' : [60, 0, 600, 100, 0, 300],
+        #'nvtx_init:i_hcal_hits_gtr_threshold' : [60, 0, 300, 100, 0, 300],
+        #'nvtx_init:i_hgcalEM_hits_gtr_threshold' : [60, 0, 3000, 100, 0, 300],
+        #'nvtx_init:i_hgcalHad_hits_gtr_threshold' : [60, 0, 3000, 100, 0, 300],
+        #'nvtx_init:i_hf_hits_gtr_threshold' : [60, 0, 1000, 100, 0, 300],
+        #'nvtx_init:f_hf_hits_gtr_threshold' : [60, 0, 1000, 100, 0, 300],
+
+        #'nvtx_init:f_hgcalHad_hits' : [60, 0, 2000, 100, 0, 300],
+        #'nvtx_init:f_hgcalEM_hits' : [60, 0, 5000, 100, 0, 300],
+        #'nvtx_init:f_hf_hits' : [60, 0, 10000, 100, 0, 300],
+        #'nvtx_init:i_hgcalHad_hits' : [60, 0, 1000, 100, 0, 300],
+        #'nvtx_init:i_hgcalEM_hits' : [60, 0, 1000, 100, 0, 300],
+        #'nvtx_init:i_hf_hits' : [60, 0, 1000, 100, 0, 300],
     }
 
     namesMB = [
@@ -292,13 +366,13 @@ if '__main__' in __name__ :
         hists = draw_comp_hist( base,namesTT,k,v )
         h = to_add( hists )
         fits.append( plot_hists( c, k, h, False, namesTT[0].split('_')[0] ) )
-        hists = draw_comp_hist( base,namesQCD,k,v )
-        h = to_add( hists )
-        fits.append( plot_hists( c, k, h, False, namesQCD[0].split('_')[0] ) )
+        #hists = draw_comp_hist( base,namesQCD,k,v )
+        #h = to_add( hists )
+        #fits.append( plot_hists( c, k, h, False, namesQCD[0].split('_')[0] ) )
 
-        plot_fit_params( c, k, fits )
+        plot_fit_params( c, k, v, fits )
 
-    name = 'minBias_PU200.root'
+    #name = 'minBias_PU200.root'
     #make_PU_SFs( c, base, name, 'ecal' )
     #make_PU_SFs( c, base, name, 'hcal' )
 
