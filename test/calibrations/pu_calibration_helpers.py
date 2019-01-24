@@ -7,25 +7,55 @@ ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
 
 
-# Provide number of towers for the geometrical area for energy normalization
-#def get_n_towers( sub_detector, eta_range ) :
-#    sub_detector_map = {
-#'ecal' : {
-#    'er1to3' :
-#    'er4to6' : 
-#    'er7to9' : 
-#    'er10to12' : 
-#    'er13to15' : 
-#    'er16to18' :
-#}
-#
-#
-#
-#    }
+# Provide the map for the number of  towers for 
+# the geometrical area for energy normalization
+def get_n_towers_map( sub_detector ) :
+    n_iPhi_barrel = 72
+    n_iPhi_hf = 36
+    eta = 2
+    
+    sub_detector_map = {
+        'barrel' : {
+            'er1to3' : 3 * n_iPhi_barrel * eta,
+            'er4to6' : 3 * n_iPhi_barrel * eta, 
+            'er7to9' : 3 * n_iPhi_barrel * eta, 
+            'er10to12' : 3 * n_iPhi_barrel * eta, 
+            'er13to15' : 3 * n_iPhi_barrel * eta, 
+            'er16to18' : 3 * n_iPhi_barrel * eta,
+        },
+        'hgcal' : { # These are imprecise and come from testing the
+            # saturation of nHits using minBias PU 200 sample.
+            # They should be within a few percent of true.
+            # FIXME validate this in the future.
+            'er1p4to1p8' : 576,
+            'er1p8to2p1' : 448,
+            'er2p1to2p4' : 576,
+            'er2p4to2p7' : 486,
+            'er2p7to3p1' : 552,
+        },
+        'hf' : { # This is again from a saturation test
+            # and is perfectly correct based on how the
+            # L1TowerAnalyzer is clustering HF (last one looks
+            # like it should have 4 iEta, but apparently doesn't?)
+            'er29to33' : 288,
+            'er34to37' : 288,
+            'er38to41' : 216,
+        }
+    }
+    geometry_code = ''
+    if sub_detector == 'ecal' : geometry_code = 'barrel'
+    elif sub_detector == 'hcal' : geometry_code = 'barrel'
+    elif sub_detector == 'hgcalEM' : geometry_code = 'hgcal'
+    elif sub_detector == 'hgcalHad' : geometry_code = 'hgcal'
+    elif sub_detector == 'hf' : geometry_code = 'hf'
+    else : assert geometry_code is not '', "Error with subdetectors in get_n_towers, called %s" % sub_detector
+
+    return sub_detector_map[ geometry_code ]
     
 
 
 def make_PU_SFs( c, base, name, calo ) :
+    eta_map = get_n_towers_map( calo )
 
     # Output function file
     f_out = ROOT.TFile( 'PU_SF_%s_functions.root' % calo, 'RECREATE' )
@@ -46,7 +76,7 @@ def make_PU_SFs( c, base, name, calo ) :
     t0 = f0.Get( 'analyzer/hit_tree' )
     iEta_index = 0
     mini = 99
-    for iEta in ['er1to3', 'er4to6', 'er7to9', 'er10to12', 'er13to15', 'er16to18'] :
+    for iEta in eta_map.keys() :
         h1 = ROOT.TH1F( 'SF_hist_%s' % iEta, 'SF_hist;nvtx', 27, 0, h_max )
         x_vals = array('f', [])
         y_vals = array('f', [])
@@ -54,24 +84,15 @@ def make_PU_SFs( c, base, name, calo ) :
             nvtx_low = nvtx
             nvtx_high = nvtx+10
             cut = '(nvtx_init >= %i && nvtx_init < %i)' % (nvtx_low, nvtx_high)
-            h_n_hits = ROOT.TH1F('hits','hits',1000,0,10000)
             h_ET_sum = ROOT.TH1F('et_sum','et_sum',1000,0,10000)
             # Use PU0 sample for lowest nvtx bin
             if nvtx == 0 :
-                t0.Draw( 'i_%s_hits_%s >> hits' % (calo, iEta), cut )
                 t0.Draw( 'f_%s_hits_%s >> et_sum' % (calo, iEta), cut )
             #elif nvtx >= 90 and nvtx < 160 : 
-            #    t140.Draw( 'i_%s_hits_%s >> hits' % (calo, iEta), cut )
             #    t140.Draw( 'f_%s_hits_%s >> et_sum' % (calo, iEta), cut )
             else : 
-                t200.Draw( 'i_%s_hits_%s >> hits' % (calo, iEta), cut )
                 t200.Draw( 'f_%s_hits_%s >> et_sum' % (calo, iEta), cut )
-            if h_n_hits.Integral() > 0. :
-                #print iEta_index, nvtx+delta, h_ET_sum.GetMean() / h_n_hits.GetMean()
-                #h.Fill( iEta_index, nvtx+delta, h_ET_sum.GetMean() / h_n_hits.GetMean() )
-                #if h_ET_sum.GetMean() / h_n_hits.GetMean() < mini : mini = h_ET_sum.GetMean() / h_n_hits.GetMean()
-                #h1.SetBinContent( h1.FindBin( nvtx+delta), h_ET_sum.GetMean() / h_n_hits.GetMean() )
-                #h1.SetBinError( h1.FindBin( nvtx+delta), 1./math.sqrt(h_ET_sum.Integral()) )
+            if h_ET_sum.Integral() > 0. :
                 print iEta_index, nvtx+delta, h_ET_sum.GetMean()
                 h.Fill( iEta_index, nvtx+delta, h_ET_sum.GetMean() )
                 x_vals.append( nvtx+delta )
@@ -79,7 +100,7 @@ def make_PU_SFs( c, base, name, calo ) :
                 if h_ET_sum.GetMean() < mini : mini = h_ET_sum.GetMean()
                 h1.SetBinContent( h1.FindBin( nvtx+delta), h_ET_sum.GetMean() )
                 h1.SetBinError( h1.FindBin( nvtx+delta), 1./math.sqrt(h_ET_sum.Integral()) )
-            del h_n_hits, h_ET_sum
+            del h_ET_sum
         h.GetXaxis().SetBinLabel( iEta_index+1, iEta )
         iEta_index += 1
         # for some reason there is an event at nvtx 40
@@ -313,9 +334,9 @@ if '__main__' in __name__ :
         'hgcalHad_hits_et' : ([0, 50], 50),
         'hf_hits_et' : ([0, 50], 50),
     }
-    for k, v in var_map.iteritems() :
-        hists = make_comp_hist( base,names,k,v[0],v[1] )
-        plot_hists( c, k, hists, True )
+    #for k, v in var_map.iteritems() :
+    #    hists = make_comp_hist( base,names,k,v[0],v[1] )
+    #    plot_hists( c, k, hists, True )
     
     draw_map = {
         ##'i_total_hits:nvtx_init' : [100, 0, 300, 60, 0, 3000],
@@ -378,19 +399,19 @@ if '__main__' in __name__ :
         'qcd_PU200.root'
     ]
 
-    for k, v in draw_map.iteritems() :
-        fits = []
-        hists = draw_comp_hist( base,namesMB,k,v )
-        h = to_add( hists )
-        fits.append( plot_hists( c, k, h, False, namesMB[0].split('_')[0] ) )
-        hists = draw_comp_hist( base,namesTT,k,v )
-        h = to_add( hists )
-        fits.append( plot_hists( c, k, h, False, namesTT[0].split('_')[0] ) )
-        #hists = draw_comp_hist( base,namesQCD,k,v )
-        #h = to_add( hists )
-        #fits.append( plot_hists( c, k, h, False, namesQCD[0].split('_')[0] ) )
+    #for k, v in draw_map.iteritems() :
+    #    fits = []
+    #    hists = draw_comp_hist( base,namesMB,k,v )
+    #    h = to_add( hists )
+    #    fits.append( plot_hists( c, k, h, False, namesMB[0].split('_')[0] ) )
+    #    hists = draw_comp_hist( base,namesTT,k,v )
+    #    h = to_add( hists )
+    #    fits.append( plot_hists( c, k, h, False, namesTT[0].split('_')[0] ) )
+    #    #hists = draw_comp_hist( base,namesQCD,k,v )
+    #    #h = to_add( hists )
+    #    #fits.append( plot_hists( c, k, h, False, namesQCD[0].split('_')[0] ) )
 
-        plot_fit_params( c, k, v, fits )
+    #    plot_fit_params( c, k, v, fits )
 
     name = 'minBias_PU200.root'
     make_PU_SFs( c, base, name, 'ecal' )

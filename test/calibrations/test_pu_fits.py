@@ -6,7 +6,7 @@ ROOT.gStyle.SetOptStat(0)
 
 
 if '__main__' in __name__ :
-    date = '20190123v7'
+    date = '20190123v8'
     saveDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/puTest_'+date+'_res/'
     trigHelpers.checkDir( saveDir )
     base = '/data/truggles/l1CaloJets_'+date+'/'

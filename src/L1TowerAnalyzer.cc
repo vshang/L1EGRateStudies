@@ -730,7 +730,7 @@ void L1TowerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         l1Hit.tower_iPhi  = id.iphi();
         l1CaloTowers.push_back( l1Hit );
 
-        if (debug) printf("Hcal HF Tower eta %f phi %f ecal_et %f hcal_et %f total_et %f\n", l1Hit.tower_eta, l1Hit.tower_phi, l1Hit.ecal_tower_et, l1Hit.hcal_tower_et, l1Hit.total_tower_et);
+        if (debug) printf("Hcal HF Tower eta %f phi %f iEta %i iPhi %i ecal_et %f hcal_et %f total_et %f\n", l1Hit.tower_eta, l1Hit.tower_phi, l1Hit.tower_iEta, l1Hit.tower_iPhi, l1Hit.ecal_tower_et, l1Hit.hcal_tower_et, l1Hit.total_tower_et);
     }
 
 
