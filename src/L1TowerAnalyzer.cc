@@ -75,6 +75,7 @@ class L1TowerAnalyzer : public edm::EDAnalyzer {
         double EcalTpEtMin;
         double HGCalHadTpEtMin;
         double HGCalEmTpEtMin;
+        double HFTpEtMin;
         double puThreshold;
         double puThresholdEcal;
         double puThresholdHcal;
@@ -193,6 +194,9 @@ class L1TowerAnalyzer : public edm::EDAnalyzer {
         TH1D *unc_gtr_threshold_sum;
         TH1D *unc_leq_threshold_sum;
         TH1D *unc_et_sum;
+        TH1D *hgcalEM_hits_et;
+        TH1D *hgcalHad_hits_et;
+        TH1D *hf_hits_et;
 
 
         TTree * hit_tree;
@@ -312,6 +316,7 @@ L1TowerAnalyzer::L1TowerAnalyzer(const edm::ParameterSet& iConfig) :
     EcalTpEtMin(iConfig.getParameter<double>("EcalTpEtMin")), // Should default to 0 MeV
     HGCalHadTpEtMin(iConfig.getParameter<double>("HGCalHadTpEtMin")), // Should default to 0 MeV
     HGCalEmTpEtMin(iConfig.getParameter<double>("HGCalEmTpEtMin")), // Should default to 0 MeV
+    HFTpEtMin(iConfig.getParameter<double>("HFTpEtMin")), // Should default to 0 MeV
     puThreshold(iConfig.getParameter<double>("puThreshold")), // Should default to 5.0 GeV
     puThresholdEcal(iConfig.getParameter<double>("puThresholdEcal")), // Should default to 5.0 GeV
     puThresholdHcal(iConfig.getParameter<double>("puThresholdHcal")), // Should default to 5.0 GeV
@@ -343,7 +348,7 @@ L1TowerAnalyzer::L1TowerAnalyzer(const edm::ParameterSet& iConfig) :
     total_hits = fs->make<TH1D>("total_hits" , "total_hits" , total_n_bins , 0 , total_max );
     total_hits_gtr_threshold = fs->make<TH1D>("total_hits_gtr_threshold" , "total_hits_gtr_threshold" , 250 , 0 , 250 );
     total_hits_leq_threshold = fs->make<TH1D>("total_hits_leq_threshold" , "total_hits_leq_threshold" , total_n_bins , 0 , total_max );
-    total_hits_et = fs->make<TH1D>("total_hits_et" , "total_hits_et" , 300 , 0 , 150 );
+    total_hits_et = fs->make<TH1D>("total_hits_et" , "total_hits_et" , 1600 , 0 , 100 );
     total_gtr_threshold_sum = fs->make<TH1D>("total_gtr_threshold_sum" , "total_gtr_threshold_sum" , et_total_n_bins, 0, et_total_max );
     total_leq_threshold_sum = fs->make<TH1D>("total_leq_threshold_sum" , "total_leq_threshold_sum" , et_total_n_bins , 0 , et_total_max );
     total_et_sum = fs->make<TH1D>("total_et_sum" , "total_et_sum" , et_total_n_bins , 0 , et_total_max );
@@ -351,7 +356,7 @@ L1TowerAnalyzer::L1TowerAnalyzer(const edm::ParameterSet& iConfig) :
     ecal_hits = fs->make<TH1D>("ecal_hits" , "ecal_hits" , total_n_bins , 0 , total_max );
     ecal_hits_gtr_threshold = fs->make<TH1D>("ecal_hits_gtr_threshold" , "ecal_hits_gtr_threshold" , 50 , 0 , 50 );
     ecal_hits_leq_threshold = fs->make<TH1D>("ecal_hits_leq_threshold" , "ecal_hits_leq_threshold" , total_n_bins , 0 , total_max );
-    ecal_hits_et = fs->make<TH1D>("ecal_hits_et" , "ecal_hits_et" , 100 , 0 , 100 );
+    ecal_hits_et = fs->make<TH1D>("ecal_hits_et" , "ecal_hits_et" , 1600 , 0 , 100 );
     ecal_gtr_threshold_sum = fs->make<TH1D>("ecal_gtr_threshold_sum" , "ecal_gtr_threshold_sum" , et_total_n_bins, 0, 100 );
     ecal_leq_threshold_sum = fs->make<TH1D>("ecal_leq_threshold_sum" , "ecal_leq_threshold_sum" , et_total_n_bins , 0 , et_total_max );
     ecal_et_sum = fs->make<TH1D>("ecal_et_sum" , "ecal_et_sum" , et_total_n_bins , 0 , et_total_max );
@@ -359,7 +364,7 @@ L1TowerAnalyzer::L1TowerAnalyzer(const edm::ParameterSet& iConfig) :
     hcal_hits = fs->make<TH1D>("hcal_hits" , "hcal_hits" , total_n_bins , 0 , total_max );
     hcal_hits_gtr_threshold = fs->make<TH1D>("hcal_hits_gtr_threshold" , "hcal_hits_gtr_threshold" , 250 , 0 , 250 );
     hcal_hits_leq_threshold = fs->make<TH1D>("hcal_hits_leq_threshold" , "hcal_hits_leq_threshold" , total_n_bins , 0 , total_max );
-    hcal_hits_et = fs->make<TH1D>("hcal_hits_et" , "hcal_hits_et" , 300 , 0 , 150 );
+    hcal_hits_et = fs->make<TH1D>("hcal_hits_et" , "hcal_hits_et" , 1600 , 0 , 100 );
     hcal_gtr_threshold_sum = fs->make<TH1D>("hcal_gtr_threshold_sum" , "hcal_gtr_threshold_sum" , et_total_n_bins, 0, et_total_max );
     hcal_leq_threshold_sum = fs->make<TH1D>("hcal_leq_threshold_sum" , "hcal_leq_threshold_sum" , et_total_n_bins , 0 , et_total_max );
     hcal_et_sum = fs->make<TH1D>("hcal_et_sum" , "hcal_et_sum" , et_total_n_bins , 0 , et_total_max );
@@ -367,7 +372,7 @@ L1TowerAnalyzer::L1TowerAnalyzer(const edm::ParameterSet& iConfig) :
     l1eg_hits = fs->make<TH1D>("l1eg_hits" , "l1eg_hits" , total_n_bins , 0 , total_max );
     l1eg_hits_gtr_threshold = fs->make<TH1D>("l1eg_hits_gtr_threshold" , "l1eg_hits_gtr_threshold" , 250 , 0 , 250 );
     l1eg_hits_leq_threshold = fs->make<TH1D>("l1eg_hits_leq_threshold" , "l1eg_hits_leq_threshold" , total_n_bins , 0 , total_max );
-    l1eg_hits_et = fs->make<TH1D>("l1eg_hits_et" , "l1eg_hits_et" , 300 , 0 , 300 );
+    l1eg_hits_et = fs->make<TH1D>("l1eg_hits_et" , "l1eg_hits_et" , 1600 , 0 , 100 );
     l1eg_gtr_threshold_sum = fs->make<TH1D>("l1eg_gtr_threshold_sum" , "l1eg_gtr_threshold_sum" , et_total_n_bins, 0, et_total_max );
     l1eg_leq_threshold_sum = fs->make<TH1D>("l1eg_leq_threshold_sum" , "l1eg_leq_threshold_sum" , et_total_n_bins , 0 , et_total_max );
     l1eg_et_sum = fs->make<TH1D>("l1eg_et_sum" , "l1eg_et_sum" , et_total_n_bins , 0 , et_total_max );
@@ -375,10 +380,13 @@ L1TowerAnalyzer::L1TowerAnalyzer(const edm::ParameterSet& iConfig) :
     unc_hits = fs->make<TH1D>("unc_hits" , "unc_hits" , total_n_bins , 0 , total_max );
     unc_hits_gtr_threshold = fs->make<TH1D>("unc_hits_gtr_threshold" , "unc_hits_gtr_threshold" , 250 , 0 , 250 );
     unc_hits_leq_threshold = fs->make<TH1D>("unc_hits_leq_threshold" , "unc_hits_leq_threshold" , total_n_bins , 0 , total_max );
-    unc_hits_et = fs->make<TH1D>("unc_hits_et" , "unc_hits_et" , 300 , 0 , 150 );
+    unc_hits_et = fs->make<TH1D>("unc_hits_et" , "unc_hits_et" , 1600 , 0 , 100 );
     unc_gtr_threshold_sum = fs->make<TH1D>("unc_gtr_threshold_sum" , "unc_gtr_threshold_sum" , et_total_n_bins, 0, et_total_max );
     unc_leq_threshold_sum = fs->make<TH1D>("unc_leq_threshold_sum" , "unc_leq_threshold_sum" , et_total_n_bins , 0 , et_total_max );
     unc_et_sum = fs->make<TH1D>("unc_et_sum" , "unc_et_sum" , et_total_n_bins , 0 , et_total_max );
+    hgcalEM_hits_et = fs->make<TH1D>("hgcalEM_hits_et" , "hgcalEM_hits_et" , 1600 , 0 , 100 );
+    hgcalHad_hits_et = fs->make<TH1D>("hgcalHad_hits_et" , "hgcalHad_hits_et" , 1600 , 0 , 100 );
+    hf_hits_et = fs->make<TH1D>("hf_hits_et" , "hf_hits_et" , 1600 , 0 , 100 );
 
 
 
@@ -678,8 +686,13 @@ void L1TowerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         if (it->etEm() < HGCalEmTpEtMin && it->etHad() < HGCalHadTpEtMin) continue;
 
         SimpleCaloHit l1Hit;
-        l1Hit.ecal_tower_et  = it->etEm();
-        l1Hit.hcal_tower_et  = it->etHad();
+        // Set energies normally, but need to zero if below threshold
+        if (it->etEm() < HGCalEmTpEtMin) l1Hit.ecal_tower_et  = 0.;
+        else l1Hit.ecal_tower_et  = it->etEm();
+
+        if (it->etHad() < HGCalHadTpEtMin) l1Hit.hcal_tower_et  = 0.;
+        else l1Hit.hcal_tower_et  = it->etHad();
+
         l1Hit.total_tower_et  = l1Hit.ecal_tower_et + l1Hit.hcal_tower_et;
         l1Hit.tower_eta  = it->eta();
         l1Hit.tower_phi  = it->phi();
@@ -696,7 +709,7 @@ void L1TowerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     for (const auto & hit : *hcalTowerHandle.product()) {
         HcalTrigTowerDetId id = hit.id();
         double et = decoder_->hcaletValue(hit.id(), hit.t0());
-        if (et <= 0) continue;
+        if (et < HFTpEtMin) continue;
         // Only doing HF so skip outside range
         if ( abs(id.ieta()) < l1t::CaloTools::kHFBegin ) continue;
         if ( abs(id.ieta()) > l1t::CaloTools::kHFEnd ) continue;
@@ -840,7 +853,7 @@ void L1TowerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         if(l1CaloTower.ecal_tower_et > 0. && l1CaloTower.tower_iEta == -98) 
         {
             treeinfo.i_hgcalEM_hits++;
-            //ecal_hits_et->Fill( l1CaloTower.ecal_tower_et );
+            hgcalEM_hits_et->Fill( l1CaloTower.ecal_tower_et );
             treeinfo.f_hgcalEM_hits += l1CaloTower.ecal_tower_et;
             if(l1CaloTower.ecal_tower_et > puThresholdHGCalEM) 
             {
@@ -936,7 +949,7 @@ void L1TowerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         if(l1CaloTower.hcal_tower_et > 0. && l1CaloTower.tower_iEta == -98) 
         {
             treeinfo.i_hgcalHad_hits++;
-            //hcal_hits_et->Fill( l1CaloTower.hcal_tower_et );
+            hgcalHad_hits_et->Fill( l1CaloTower.hcal_tower_et );
             treeinfo.f_hgcalHad_hits += l1CaloTower.hcal_tower_et;
             if(l1CaloTower.hcal_tower_et > puThresholdHGCalHad) 
             {
@@ -981,7 +994,7 @@ void L1TowerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         if(l1CaloTower.hcal_tower_et > 0. && l1CaloTower.tower_iEta != -98 && abs(l1CaloTower.tower_eta) > 2.0) // abs(eta) > 2 keeps us out of barrel HF 
         {
             treeinfo.i_hf_hits++;
-            //hcal_hits_et->Fill( l1CaloTower.hcal_tower_et );
+            hf_hits_et->Fill( l1CaloTower.hcal_tower_et );
             treeinfo.f_hf_hits += l1CaloTower.hcal_tower_et;
             if(l1CaloTower.hcal_tower_et > puThresholdHF) 
             {
