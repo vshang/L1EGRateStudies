@@ -3,6 +3,7 @@ import math
 from L1Trigger.L1EGRateStudies.trigHelpers import setLegStyle
 from array import array
 import L1Trigger.L1EGRateStudies.trigHelpers as trigHelpers
+from collections import OrderedDict
 ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
 
@@ -14,34 +15,38 @@ def get_n_towers_map( sub_detector ) :
     n_iPhi_hf = 36
     eta = 2
     
+    # Keep ordered for clean plotting later
     sub_detector_map = {
-        'barrel' : {
-            'er1to3' : 3 * n_iPhi_barrel * eta,
-            'er4to6' : 3 * n_iPhi_barrel * eta, 
-            'er7to9' : 3 * n_iPhi_barrel * eta, 
-            'er10to12' : 3 * n_iPhi_barrel * eta, 
-            'er13to15' : 3 * n_iPhi_barrel * eta, 
-            'er16to18' : 3 * n_iPhi_barrel * eta,
-        },
-        'hgcal' : { # These are imprecise and come from testing the
-            # saturation of nHits using minBias PU 200 sample.
-            # They should be within a few percent of true.
-            # FIXME validate this in the future.
-            'er1p4to1p8' : 576,
-            'er1p8to2p1' : 448,
-            'er2p1to2p4' : 576,
-            'er2p4to2p7' : 486,
-            'er2p7to3p1' : 552,
-        },
-        'hf' : { # This is again from a saturation test
-            # and is perfectly correct based on how the
-            # L1TowerAnalyzer is clustering HF (last one looks
-            # like it should have 4 iEta, but apparently doesn't?)
-            'er29to33' : 288,
-            'er34to37' : 288,
-            'er38to41' : 216,
-        }
+        'barrel' : OrderedDict(),
+        'hgcal' : OrderedDict(), 
+        'hf' : OrderedDict()
     }
+
+    sub_detector_map['barrel']['er1to3'] = 3 * n_iPhi_barrel * eta
+    sub_detector_map['barrel']['er4to6'] = 3 * n_iPhi_barrel * eta
+    sub_detector_map['barrel']['er7to9'] = 3 * n_iPhi_barrel * eta
+    sub_detector_map['barrel']['er10to12'] = 3 * n_iPhi_barrel * eta
+    sub_detector_map['barrel']['er13to15'] = 3 * n_iPhi_barrel * eta
+    sub_detector_map['barrel']['er16to18'] = 3 * n_iPhi_barrel * eta
+
+    # These are imprecise and come from testing the
+    # saturation of nHits using minBias PU 200 sample.
+    # They should be within a few percent of true.
+    # FIXME validate this in the future.
+    sub_detector_map['hgcal']['er1p4to1p8'] = 576
+    sub_detector_map['hgcal']['er1p8to2p1'] = 448
+    sub_detector_map['hgcal']['er2p1to2p4'] = 576
+    sub_detector_map['hgcal']['er2p4to2p7'] = 486
+    sub_detector_map['hgcal']['er2p7to3p1'] = 552
+    
+    # This is again from a saturation test
+    # and is perfectly correct based on how the
+    # L1TowerAnalyzer is clustering HF (last one looks
+    # like it should have 4 iEta, but apparently doesn't?)
+    sub_detector_map['hf']['er29to33'] = 288
+    sub_detector_map['hf']['er34to37'] = 288
+    sub_detector_map['hf']['er38to41'] = 216
+
     geometry_code = ''
     if sub_detector == 'ecal' : geometry_code = 'barrel'
     elif sub_detector == 'hcal' : geometry_code = 'barrel'
@@ -63,24 +68,22 @@ def make_PU_SFs( c, base, name, calo ) :
 
     h_max = 270
     n_bins = 27
-    delta = h_max / n_bins
+    bin_width = h_max / n_bins
+    half_bw = (h_max / n_bins) / 2
 
     f200 = ROOT.TFile( base+name, 'r' )
     #f140 = ROOT.TFile( base+name.replace('200','140'), 'r' )
     f0 = ROOT.TFile( base+name.replace('200','0'), 'r' )
-    h = ROOT.TH2F( 'SF_hist', 'SF_hist;iEta Bin;nvtx', 6, 0, 6, 27, 0, h_max )
-    #h = ROOT.TH2F( 'SF_hist', 'SF_hist;iEta Bins;nvtx', 6, 0, 6, 10, 150, 250 )
-    #h = ROOT.TH2F( 'SF_hist', 'SF_hist;iEta Bins;nvtx', 6, 0, 6, 1, 0, 10 )
+    h = ROOT.TH2F( calo+' SF hist', calo+' SF hist;iEta Bin;nvtx', len(eta_map.keys()), 0, len(eta_map.keys()), 27, 0, h_max )
     t200 = f200.Get( 'analyzer/hit_tree' )
     #t140 = f140.Get( 'analyzer/hit_tree' )
     t0 = f0.Get( 'analyzer/hit_tree' )
     iEta_index = 0
-    mini = 99
     for iEta in eta_map.keys() :
         h1 = ROOT.TH1F( 'SF_hist_%s' % iEta, 'SF_hist;nvtx', 27, 0, h_max )
         x_vals = array('f', [])
         y_vals = array('f', [])
-        for nvtx in range( 0, h_max+1, delta ) :
+        for nvtx in range( 0, h_max+1, bin_width ) :
             nvtx_low = nvtx
             nvtx_high = nvtx+10
             cut = '(nvtx_init >= %i && nvtx_init < %i)' % (nvtx_low, nvtx_high)
@@ -92,31 +95,33 @@ def make_PU_SFs( c, base, name, calo ) :
             #    t140.Draw( 'f_%s_hits_%s >> et_sum' % (calo, iEta), cut )
             else : 
                 t200.Draw( 'f_%s_hits_%s >> et_sum' % (calo, iEta), cut )
+
             if h_ET_sum.Integral() > 0. :
                 # Total energy / nTowers = Energy per Tower to subtract
                 energy_per_tower = h_ET_sum.GetMean()/eta_map[ iEta ]
-                print iEta_index, nvtx+delta, energy_per_tower
-                h.Fill( iEta_index, nvtx+delta, energy_per_tower )
-                x_vals.append( nvtx+delta )
+
+                # Default to a tiny bit above zero for plotting purposes in TH2 which does zero suppress
+                if nvtx_low == 0 and energy_per_tower == 0.0 :
+                    energy_per_tower = 1e-5
+
+                print iEta_index, nvtx+half_bw, energy_per_tower
+                h.Fill( iEta_index, nvtx+half_bw, energy_per_tower )
+                x_vals.append( nvtx+half_bw )
                 y_vals.append( energy_per_tower )
-                if energy_per_tower < mini : mini = energy_per_tower
-                h1.SetBinContent( h1.FindBin( nvtx+delta), energy_per_tower )
-                h1.SetBinError( h1.FindBin( nvtx+delta), 1./math.sqrt(h_ET_sum.Integral()) )
+                h1.SetBinContent( h1.FindBin( nvtx+half_bw), energy_per_tower )
+                #h1.SetBinError( h1.FindBin( nvtx+half_bw), 1./math.sqrt(h_ET_sum.Integral()) )
+
             del h_ET_sum
         h.GetXaxis().SetBinLabel( iEta_index+1, iEta )
         iEta_index += 1
-        # for some reason there is an event at nvtx 40
-        #h1.SetBinContent( 5, 0 )
-        #h1.SetBinError( 5, 0 )
         f = ROOT.TF1('f1','[0] + [1] * x', h1.GetXaxis().GetBinLowEdge(1), h1.GetXaxis().GetBinUpEdge( h1.GetNbinsX() ) )
         h1.Fit( f )
-        f2 = ROOT.TF1('%s_%s' % (calo, iEta),'[0] + [1] * x', h1.GetXaxis().GetBinLowEdge(2), h1.GetXaxis().GetBinUpEdge( h1.GetNbinsX() ) )
-        h1.Fit( f2, "R" )
+        #f2 = ROOT.TF1('%s_%s' % (calo, iEta),'[0] + [1] * x', h1.GetXaxis().GetBinLowEdge(2), h1.GetXaxis().GetBinUpEdge( h1.GetNbinsX() ) )
+        #h1.Fit( f2, "R" )
         h1.SetLineWidth( 2 )
         f.SetLineWidth( 2 )
-        f2.SetLineWidth( 2 )
-        f2.SetLineColor( ROOT.kBlue )
-        #h1.Draw()
+        #f2.SetLineWidth( 2 )
+        #f2.SetLineColor( ROOT.kBlue )
         g1 = ROOT.TGraph( len(x_vals), x_vals, y_vals )
         g1.SetTitle( 'ET_sum_graph_%s_%s' % (calo, iEta) )
         g1.SetName( 'ET_sum_graph_%s_%s' % (calo, iEta) )
@@ -126,7 +131,7 @@ def make_PU_SFs( c, base, name, calo ) :
         g1.GetXaxis().SetTitle( 'Number of Simulated Vertices' )
         g1.Draw()
         f.Draw('l same')
-        f2.Draw('l same')
+        #f2.Draw('l same')
         f_out.cd()
         g1.Write()
         #f2.Write()
@@ -134,12 +139,10 @@ def make_PU_SFs( c, base, name, calo ) :
         del h1, f
     f_out.Close()
     h.SetMinimum( h.GetMinimum() )
-    h.GetZaxis().SetRangeUser( mini, h.GetMaximum() )
+    h.GetZaxis().SetRangeUser( 0., h.GetMaximum() )
     h.Draw('colz')
     ROOT.gPad.SetRightMargin( .15 )
     c.SaveAs( saveDir+'SFs/SFs_%s.png' % calo )
-    #c.SaveAs( saveDir+'SFs_PU200_%s.png' % calo )
-    #c.SaveAs( saveDir+'SFs_PU0_%s.png' % calo )
     
 
 
@@ -307,7 +310,7 @@ def to_add( hists ) :
     
 if '__main__' in __name__ :
     date = '20190123v8'
-    saveDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/puTest_'+date+'vX/'
+    saveDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/puTest_'+date+'vXY/'
     trigHelpers.checkDir( saveDir )
     base = '/data/truggles/l1CaloJets_'+date+'/'
     c = ROOT.TCanvas('c','c',800,800)
