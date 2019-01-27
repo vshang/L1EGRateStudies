@@ -8,6 +8,27 @@ ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
 
 
+
+# Make a simple output CMSSW cfg type file with the parameter
+# values from the nHits to nvtx fits
+def prepare_nvtx_calibration_py_cfg( fit_functions ) :
+    o_file = open('L1TowerCalibrations_cfi.py', 'w')
+    print "This only produces a portion to be copied later"
+    o_file.write( "\n\n" )
+    o_file.write( "\tnHits_to_nvtx_params = cms.VPSet(\n" )
+
+    # Loop over the fit functions
+    for k, v in fit_functions.iteritems() :
+        sub_d = v.GetName().replace('minBias','').replace('nvtx_init_i_','').replace('_hits_leq_threshold','')
+        print k, sub_d, v
+
+        o_file.write( "\t\tcms.PSet(\n" )
+        o_file.write( '\t\t\tfit = cms.string( "%s" ),\n' % sub_d )
+        o_file.write( "\t\t\tparams = cms.vdouble( %.3f, %.3f )\n" % (v.GetParameter(0), v.GetParameter(1) ) )
+        o_file.write( "\t\t),\n" )
+    o_file.write( "\t)\n" )
+    o_file.close()
+
 # Provide the map for the number of  towers for 
 # the geometrical area for energy normalization
 def get_n_towers_map( sub_detector ) :
@@ -231,18 +252,14 @@ def plot_fit_params( c, var, x_y_info, fit_params ) :
     leg.Draw()
     ROOT.gPad.SetLogy(0)
     ROOT.gPad.SetLogz(0)
-    print var
-    #c.SaveAs( saveDir+'fits_'+var.replace(':','_')+'.root' )
+
     c.SaveAs( saveDir+'fits_'+var.replace(':','_')+'.png' )
-    f_out = ROOT.TFile( 'fits_'+var.replace(':','_')+'.root', 'RECREATE' )
-    f_out.cd()
-    cnt = 1
-    for f in funcs :
-        f.SetTitle( n_map[cnt]+var.replace(':','_') )
-        f.SetName( n_map[cnt]+var.replace(':','_') )
-        cnt += 1
-        f.Write()
-    f_out.Close()
+
+    funcs[0].SetTitle( n_map[1]+var.replace(':','_') )
+    funcs[0].SetName( n_map[1]+var.replace(':','_') )
+    funcs[0].GetXaxis().SetTitle( n_map[1]+var.replace(':','_') )
+    funcs[0].GetYaxis().SetTitle( 'estimated nvtx' )
+    return funcs[0]
     
 
 
@@ -404,20 +421,26 @@ if '__main__' in __name__ :
         'qcd_PU200.root'
     ]
 
-    #for k, v in draw_map.iteritems() :
-    #    fits = []
-    #    hists = draw_comp_hist( base,namesMB,k,v )
-    #    h = to_add( hists )
-    #    fits.append( plot_hists( c, k, h, False, namesMB[0].split('_')[0] ) )
-    #    hists = draw_comp_hist( base,namesTT,k,v )
-    #    h = to_add( hists )
-    #    fits.append( plot_hists( c, k, h, False, namesTT[0].split('_')[0] ) )
-    #    #hists = draw_comp_hist( base,namesQCD,k,v )
-    #    #h = to_add( hists )
-    #    #fits.append( plot_hists( c, k, h, False, namesQCD[0].split('_')[0] ) )
+    # To make the nHits to nvtx fit functions
+    fit_functions = OrderedDict()
+    for k, v in draw_map.iteritems() :
+        fits = []
+        hists = draw_comp_hist( base,namesMB,k,v )
+        h = to_add( hists )
+        fits.append( plot_hists( c, k, h, False, namesMB[0].split('_')[0] ) )
+        hists = draw_comp_hist( base,namesTT,k,v )
+        h = to_add( hists )
+        fits.append( plot_hists( c, k, h, False, namesTT[0].split('_')[0] ) )
+        #hists = draw_comp_hist( base,namesQCD,k,v )
+        #h = to_add( hists )
+        #fits.append( plot_hists( c, k, h, False, namesQCD[0].split('_')[0] ) )
 
-    #    plot_fit_params( c, k, v, fits )
+        fit_functions[ k ] = plot_fit_params( c, k, v, fits )
 
+    prepare_nvtx_calibration_py_cfg( fit_functions )
+    
+
+    # To make the nvtx to energy subtraction fits
     name = 'minBias_PU200.root'
     make_PU_SFs( c, base, name, 'ecal' )
     make_PU_SFs( c, base, name, 'hcal' )
