@@ -29,6 +29,32 @@ def prepare_nvtx_calibration_py_cfg( fit_functions ) :
     o_file.write( "\t)\n" )
     o_file.close()
 
+
+
+# Make a simple output CMSSW cfg type file with the parameter
+# values from the nvtx to PU subtraction fits
+def prepare_PU_sub_calibration_py_cfg( fit_maps ) :
+    o_file = open('L1TowerCalibrations2_cfi.py', 'w')
+    print "This only produces a portion to be copied later"
+    o_file.write( "\n\n" )
+    o_file.write( "\tnvtx_to_PU_sub_params = cms.VPSet(\n" )
+
+    # Loop over the calo detectors
+    for calo, iEtas in fit_maps.iteritems() :
+        # Loop over the fit functions
+        for iEta, params in iEtas.iteritems() :
+            print calo, iEta, params
+            o_file.write( "\t\tcms.PSet(\n" )
+            o_file.write( '\t\t\tcalo = cms.string( "%s" ),\n' % calo )
+            o_file.write( '\t\t\tiEta = cms.string( "%s" ),\n' % iEta )
+            o_file.write( "\t\t\tparams = cms.vdouble( %.6f, %.6f )\n" % ( params[0], params[1] ) )
+            o_file.write( "\t\t),\n" )
+    o_file.write( "\t)\n" )
+    o_file.close()
+
+
+
+
 # Provide the map for the number of  towers for 
 # the geometrical area for energy normalization
 def get_n_towers_map( sub_detector ) :
@@ -87,6 +113,9 @@ def make_PU_SFs( c, base, name, calo ) :
     f_out = ROOT.TFile( 'PU_SF_%s_functions.root' % calo, 'RECREATE' )
     trigHelpers.checkDir( saveDir+'SFs/' )
 
+    # Return map
+    fits_map = OrderedDict()
+
     h_max = 270
     n_bins = 27
     bin_width = h_max / n_bins
@@ -135,7 +164,7 @@ def make_PU_SFs( c, base, name, calo ) :
             del h_ET_sum
         h.GetXaxis().SetBinLabel( iEta_index+1, iEta )
         iEta_index += 1
-        f = ROOT.TF1('f1','[0] + [1] * x', h1.GetXaxis().GetBinLowEdge(1), h1.GetXaxis().GetBinUpEdge( h1.GetNbinsX() ) )
+        f = ROOT.TF1('%s_%s' % (calo, iEta),'[0] + [1] * x', h1.GetXaxis().GetBinLowEdge(1), h1.GetXaxis().GetBinUpEdge( h1.GetNbinsX() ) )
         h1.Fit( f )
         #f2 = ROOT.TF1('%s_%s' % (calo, iEta),'[0] + [1] * x', h1.GetXaxis().GetBinLowEdge(2), h1.GetXaxis().GetBinUpEdge( h1.GetNbinsX() ) )
         #h1.Fit( f2, "R" )
@@ -152,8 +181,10 @@ def make_PU_SFs( c, base, name, calo ) :
         g1.GetXaxis().SetTitle( 'Number of Simulated Vertices' )
         g1.Draw()
         f.Draw('l same')
+        fits_map[ iEta ] = [f.GetParameter(0), f.GetParameter(1)]
         #f2.Draw('l same')
         f_out.cd()
+        f.Write()
         g1.Write()
         #f2.Write()
         c.SaveAs( saveDir+'SFs/SFs_%s_%s.png' % (calo, iEta) )
@@ -164,6 +195,7 @@ def make_PU_SFs( c, base, name, calo ) :
     h.Draw('colz')
     ROOT.gPad.SetRightMargin( .15 )
     c.SaveAs( saveDir+'SFs/SFs_%s.png' % calo )
+    return fits_map
     
 
 
@@ -422,30 +454,39 @@ if '__main__' in __name__ :
     ]
 
     # To make the nHits to nvtx fit functions
-    fit_functions = OrderedDict()
-    for k, v in draw_map.iteritems() :
-        fits = []
-        hists = draw_comp_hist( base,namesMB,k,v )
-        h = to_add( hists )
-        fits.append( plot_hists( c, k, h, False, namesMB[0].split('_')[0] ) )
-        hists = draw_comp_hist( base,namesTT,k,v )
-        h = to_add( hists )
-        fits.append( plot_hists( c, k, h, False, namesTT[0].split('_')[0] ) )
-        #hists = draw_comp_hist( base,namesQCD,k,v )
-        #h = to_add( hists )
-        #fits.append( plot_hists( c, k, h, False, namesQCD[0].split('_')[0] ) )
+    make_nHits_to_nvtx_fits = True
+    make_nHits_to_nvtx_fits = False
+    if make_nHits_to_nvtx_fits :
+        fit_functions = OrderedDict()
+        for k, v in draw_map.iteritems() :
+            fits = []
+            hists = draw_comp_hist( base,namesMB,k,v )
+            h = to_add( hists )
+            fits.append( plot_hists( c, k, h, False, namesMB[0].split('_')[0] ) )
+            hists = draw_comp_hist( base,namesTT,k,v )
+            h = to_add( hists )
+            fits.append( plot_hists( c, k, h, False, namesTT[0].split('_')[0] ) )
+            #hists = draw_comp_hist( base,namesQCD,k,v )
+            #h = to_add( hists )
+            #fits.append( plot_hists( c, k, h, False, namesQCD[0].split('_')[0] ) )
 
-        fit_functions[ k ] = plot_fit_params( c, k, v, fits )
+            fit_functions[ k ] = plot_fit_params( c, k, v, fits )
 
-    prepare_nvtx_calibration_py_cfg( fit_functions )
+        prepare_nvtx_calibration_py_cfg( fit_functions )
     
 
     # To make the nvtx to energy subtraction fits
-    name = 'minBias_PU200.root'
-    make_PU_SFs( c, base, name, 'ecal' )
-    make_PU_SFs( c, base, name, 'hcal' )
-    make_PU_SFs( c, base, name, 'hgcalEM' )
-    make_PU_SFs( c, base, name, 'hgcalHad' )
-    make_PU_SFs( c, base, name, 'hf' )
+    make_nvtx_to_PU_sub_fits = True
+    #make_nvtx_to_PU_sub_fits = False
+    if make_nvtx_to_PU_sub_fits :
+        pu_maps = OrderedDict()
+        name = 'minBias_PU200.root'
+        pu_maps[ 'ecal' ] = make_PU_SFs( c, base, name, 'ecal' )
+        pu_maps[ 'hcal' ] = make_PU_SFs( c, base, name, 'hcal' )
+        pu_maps[ 'hgcalEM' ] = make_PU_SFs( c, base, name, 'hgcalEM' )
+        pu_maps[ 'hgcalHad' ] = make_PU_SFs( c, base, name, 'hgcalHad' )
+        pu_maps[ 'hf' ] = make_PU_SFs( c, base, name, 'hf' )
+        
+        prepare_PU_sub_calibration_py_cfg( pu_maps )
 
 
