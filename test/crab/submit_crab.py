@@ -62,35 +62,37 @@ if __name__ == '__main__':
     for k in dataMap.keys() :
 
         # Normal eff and rate analysis
-        ###config.General.requestName = '20190122_%s_v1a' % k
-        ###config.JobType.psetName        = 'crabby_jets.py'
-        ###if 'minBias' in k :
-        ###    config.JobType.psetName        = 'rate_crabby_jets.py'
-        ###    #config.Data.totalUnits      = 30 # FIXME - for test
-        ###config.Data.inputDataset = dataMap[ k ][ 'das' ]
-        ###if 'PU200' in k or 'PU140' in k :
-        ###    config.Data.unitsPerJob        = 10 # events / job when using EventAwareLumiBased
-        ###    #config.Data.unitsPerJob        = 5 # events / job when using EventAwareLumiBased
-        ###    #config.Data.totalUnits      = 100 # for tests
-        ###else :
-        ###    config.Data.unitsPerJob        = 3 # events / job when using EventAwareLumiBased
-        ###    #config.Data.totalUnits      = 30 # for tests
-
-        # Tower sum Pu analysis
-        config.General.requestName = '20190123_%s_TowerSums_v8' % k
-        config.Data.outputDatasetTag   = config.General.requestName
-        config.JobType.psetName        = 'tower_analyzer_crab.py'
+        config.General.requestName = '20190128_%s_v3' % k
+        config.JobType.psetName        = 'crabby_jets.py'
+        if 'minBias' in k :
+            config.JobType.psetName        = 'rate_crabby_jets.py'
+            #config.Data.totalUnits      = 30 # FIXME - for test
         config.Data.inputDataset = dataMap[ k ][ 'das' ]
-        if 'minBias-PU140' in k :
-            config.Data.unitsPerJob        = 3 # events / job when using EventAwareLumiBased
-        elif 'PU200' in k or 'PU140' in k :
-            #config.Data.unitsPerJob        = 30 # events / job when using EventAwareLumiBased
+        if 'PU200' in k or 'PU140' in k :
             config.Data.unitsPerJob        = 10 # events / job when using EventAwareLumiBased
-        else :
             #config.Data.unitsPerJob        = 5 # events / job when using EventAwareLumiBased
-            config.Data.unitsPerJob        = 2 # events / job when using EventAwareLumiBased
-        if 'minBias-PU200' in k :
-            config.Data.totalUnits      = 200 # for tests
+            #config.Data.totalUnits      = 100 # for tests
+        else :
+            config.Data.unitsPerJob        = 3 # events / job when using EventAwareLumiBased
+            #config.Data.totalUnits      = 30 # for tests
+        #config.Data.unitsPerJob        = 2 # events / job when using EventAwareLumiBased
+        #config.Data.totalUnits      = 10 # for tests
+
+        ## Tower sum Pu analysis
+        #config.General.requestName = '20190123_%s_TowerSums_v8' % k
+        #config.Data.outputDatasetTag   = config.General.requestName
+        #config.JobType.psetName        = 'tower_analyzer_crab.py'
+        #config.Data.inputDataset = dataMap[ k ][ 'das' ]
+        #if 'minBias-PU140' in k :
+        #    config.Data.unitsPerJob        = 3 # events / job when using EventAwareLumiBased
+        #elif 'PU200' in k or 'PU140' in k :
+        #    #config.Data.unitsPerJob        = 30 # events / job when using EventAwareLumiBased
+        #    config.Data.unitsPerJob        = 10 # events / job when using EventAwareLumiBased
+        #else :
+        #    #config.Data.unitsPerJob        = 5 # events / job when using EventAwareLumiBased
+        #    config.Data.unitsPerJob        = 2 # events / job when using EventAwareLumiBased
+        #if 'minBias-PU200' in k :
+        #    config.Data.totalUnits      = 200 # for tests
 
         config.Data.outputDatasetTag   = config.General.requestName
 

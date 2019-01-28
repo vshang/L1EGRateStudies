@@ -106,19 +106,22 @@ process.tauGenJetsSelectorMuons = cms.EDFilter("TauGenJetDecayModeSelector",
 process.load('L1Trigger.L1CaloTrigger.L1EGammaCrystalsEmulatorProducer_cfi')
 
 
+
+# --------------------------------------------------------------------------------------------
+#
+# ----    Produce the calibrated tower collection combining Barrel, HGCal, HF
+
+process.load('L1Trigger/L1CaloTrigger/L1TowerCalibrationProducer_cfi')
+
+
+
 # --------------------------------------------------------------------------------------------
 #
 # ----    Produce the L1CaloJets with the L1EG clusters as ECAL seeds
 
 process.load('L1Trigger/L1CaloTrigger/L1CaloJetProducer_cfi')
-#process.L1CaloJetProducer = cms.EDProducer("L1CaloJetProducer",
-#    HcalTpEtMin = cms.untracked.double(0.5), # Default is 0 GeV
-#    EcalTpEtMin = cms.untracked.double(0.5), # Default is 0 GeV
-#    debug = cms.untracked.bool(False),
-#    hcalTP = cms.InputTag("simHcalTriggerPrimitiveDigis","","HLT"),
-#    l1CaloTowers = cms.InputTag("L1EGammaClusterEmuProducer","L1CaloTowerCollection","L1AlgoTest"),
-#    L1CrystalClustersInputTag = cms.InputTag("L1EGammaClusterEmuProducer", "L1EGXtalClusterEmulator", "L1AlgoTest")
-#)
+
+
 
 process.pL1Objs = cms.Path( 
     process.tauGenJets *
@@ -126,6 +129,7 @@ process.pL1Objs = cms.Path(
     process.tauGenJetsSelectorElectrons *
     process.tauGenJetsSelectorMuons *
     process.L1EGammaClusterEmuProducer *
+    process.L1TowerCalibrationProducer *
     process.L1CaloJetProducer
 )
 
