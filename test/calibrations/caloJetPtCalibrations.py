@@ -579,56 +579,71 @@ if __name__ == '__main__' :
 
     import os
 
-    #base = '/data/truggles/p2/20180911_jets_v2/'
-    #base2 = '/data/truggles/p2/20180913_jets/'
-    base = '/data/truggles/phaseII_qcd_20180925_v1-condor_jets/'
-    base = ''
-    #jetsF0 = 'qcd_pu0.root'
-    #jetsF0 = 'qcd_LOW_L1EG.root'
-    #jetsF200 = 'qcd_pu200.root'
-    jetsF0 = 'qcd2.root'
+    base2 = '/data/truggles/l1CaloJets_20190128v2/'
+    base3 = '/data/truggles/l1CaloJets_20190128v3/'
+    jetsF200 = 'ttbar_PU200.root'
+    jetsF0 = 'ttbar_PU0.root'
 
-    date = '20180923_calibCheckV5'
-    date = '20180923_calibCheckV6'
-    date = '20180926_calibCheckV2_visuals4'
-    plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date+''
+    date = '20190128_v2_v_v3'
+    plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date+'v2'
     if not os.path.exists( plotDir ) : os.makedirs( plotDir )
     plotBase = plotDir
 
-    jetFile0 = ROOT.TFile( base+jetsF0, 'r' )
-    #jetFile0 = ROOT.TFile( base2+jetsF0, 'r' )
-    #jetFile200 = ROOT.TFile( base+jetsF200, 'r' )
+    jetFile0v2 = ROOT.TFile( base2+jetsF0, 'r' )
+    jetFile200v2 = ROOT.TFile( base2+jetsF200, 'r' )
+    jetFile0v3 = ROOT.TFile( base3+jetsF0, 'r' )
+    jetFile200v3 = ROOT.TFile( base3+jetsF200, 'r' )
 
 
-    tree = jetFile0.Get("analyzer/tree")
-    #tree200 = jetFile200.Get("analyzer/tree")
+    tree2 = jetFile0v2.Get("analyzer/tree")
+    tree2002 = jetFile200v2.Get("analyzer/tree")
+    tree3 = jetFile0v3.Get("analyzer/tree")
+    tree2003 = jetFile200v3.Get("analyzer/tree")
     c = ROOT.TCanvas('c', 'c', 800, 700)
     ''' Track to cluster reco resolution '''
     c.SetCanvasSize(1500,600)
     c.Divide(3)
 
-    cut = "abs(genJet_eta)<1.1"
+    #cut = "abs(genJet_eta)<1.1"
+    cut = "abs(genJet_eta)<5"
     x_and_y_bins = [30,0,300, 60,0,3]
+    x_and_y_bins = [30,0,300, 120,0,6]
 
     make_calibrations = False
     ### Between these two you need to run add_calibrations.py to add 'calib' to TTree
-    plot_calibrated_results = True
+    plot_calibrated_results = False
 
     """ Make new calibration root file """
     if make_calibrations :
         make_em_fraction_calibrations( c, base+jetsF0, cut, plotDir )
 
-    #### PU 0 ###
-    #to_plot = '(jet_pt)/genJet_pt:genJet_pt'
-    #h1 = getTH2( tree, 'qcd', to_plot, cut, x_and_y_bins )
-    #to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
-    #h2 = getTH2( tree, 'stage-2', to_plot, cut, x_and_y_bins )
-    #xaxis = "Gen Jet P_{T} (GeV)"
-    #yaxis = "Relative Error in P_{T} reco/gen"
-    #title1 = "Phase-2 Jets"
-    #title2 = "Stage-2 Jets"
-    #c.SetTitle("genJetPt_qcd_stage-2_PU0")
-    #drawPointsHists(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis)
+    eta_ranges = {
+    'all' : '(abs(genJet_eta)<10)',
+    'golden' : '(abs(genJet_eta)<1.2)',
+    'barrel' : '(abs(genJet_eta)<1.5)',
+    'barrel_transition' : '(abs(genJet_eta)<1.8 && abs(genJet_eta)>1.2)',
+    'hgcal' : '(abs(genJet_eta)<3 && abs(genJet_eta)>1.5)',
+    'hf' : '(abs(genJet_eta)>3)',
+    }
+    for k, cut in eta_ranges.iteritems() :
+        to_plot = '(jet_pt)/genJet_pt:genJet_pt'
+        h1 = getTH2( tree3, 'ttbar', to_plot, cut, x_and_y_bins )
+        h2 = getTH2( tree2, 'ttbar', to_plot, cut, x_and_y_bins )
+        xaxis = "Gen Jet P_{T} (GeV)"
+        yaxis = "Relative Error in P_{T} reco/gen"
+        title1 = "ttbar PU Uncorrected"
+        title2 = "ttbar PU Corrected"
+        c.SetTitle("genJetPt_ttbar_PU0_"+k)
+        drawPointsHists(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis, False, plotDir)
+
+        h1 = getTH2( tree2003, 'ttbar', to_plot, cut, x_and_y_bins )
+        h2 = getTH2( tree2002, 'ttbar', to_plot, cut, x_and_y_bins )
+        xaxis = "Gen Jet P_{T} (GeV)"
+        yaxis = "Relative Error in P_{T} reco/gen"
+        title1 = "ttbar PU Uncorrected"
+        title2 = "ttbar PU Corrected"
+        c.SetTitle("genJetPt_ttbar_PU200_"+k)
+        drawPointsHists(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis, False, plotDir)
 
     #to_plot = '(ecal_L1EG_jet_pt + ecal_pt)/genJet_pt:genJet_pt'
     #h1 = getTH2( tree, 'qcd', to_plot, cut, x_and_y_bins )
