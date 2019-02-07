@@ -112,6 +112,10 @@ process.load('L1Trigger.L1CaloTrigger.L1EGammaCrystalsEmulatorProducer_cfi')
 # ----    Produce the calibrated tower collection combining Barrel, HGCal, HF
 
 process.load('L1Trigger/L1CaloTrigger/L1TowerCalibrationProducer_cfi')
+process.L1TowerCalibrationProducer.barrelSF = cms.double(1.0)
+process.L1TowerCalibrationProducer.hgcalSF = cms.double(1.)
+process.L1TowerCalibrationProducer.hfSF = cms.double(1.)
+#process.L1TowerCalibrationProducer.skipCalibrations = cms.bool(True)
 
 
 
