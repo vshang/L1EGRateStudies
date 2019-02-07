@@ -261,7 +261,7 @@ def drawPointsHists3(saveName, h1, h2, h3, title1, title2, title3, xaxis, yaxis,
     # Just to show the resulting fit
     c2.Print(plotDir+"/"+saveName+".png")
     #c2.Print(plotDir+"/"+saveName+".C")
-    c2.Print(plotDir+"/"+saveName+".pdf")
+    #c2.Print(plotDir+"/"+saveName+".pdf")
 
 
 
@@ -476,12 +476,19 @@ def getAverage( h, xVal ) :
 
 # create a list with the output delinimations splitting the calo jets
 # into nBins based on EM fraction
-def get_quantile_em_fraction_list( fName, nBins=10 ) :
+def get_quantile_em_fraction_list( fName, calo_region, nBins=10 ) :
     f = ROOT.TFile( fName, 'r')
     t = f.Get('analyzer/tree')
+
+    # Define new quantile mapping per calo region
+    calo_map = {
+        'barrel' : '( abs(jet_eta) < 1.5 )',
+        'hgcal' : '( abs(jet_eta) < 3. && abs(jet_eta) >= 1.5 )',
+        'hf' : '( abs(jet_eta) >= 3. )',
+    }
     
     h = ROOT.TH1D('h','h',10000,0,1.1)
-    t.Draw( '(ecal_L1EG_jet_pt + ecal_pt)/jet_pt >> h', 'jet_pt >= 0')
+    t.Draw( '(ecal_L1EG_jet_pt + ecal_pt)/jet_pt >> h', 'jet_pt >= 0 && '+calo_map[ calo_region ] )
 
     # To keep track of total so we can compute relative fractions
     total = h.Integral()
@@ -497,7 +504,7 @@ def get_quantile_em_fraction_list( fName, nBins=10 ) :
     for b in range( h.GetXaxis().GetNbins() ) :
         cum += h.GetBinContent( b )
         #if b > 20 : break
-        if cum * 10 > total :
+        if cum * nBins > total :
             to_append = round(h.GetBinCenter(b), 3)
             if len(rtn_list) == 0 and to_append != 0.0 :
                 # Store first bin but don't add two 0.0 if to_append == 0.0
@@ -528,9 +535,13 @@ def get_x_binning() :
 def make_em_fraction_calibrations( c, fName, cut, plotBase ) :
 
     ### Shifting EM fraction plots ###
-    nBins = 10
-    quantile_list = get_quantile_em_fraction_list( fName, nBins )
-    print "Quantile List", quantile_list
+    quantile_list_barrel = get_quantile_em_fraction_list( fName, 'barrel', 10 ) # last number is nBins
+    quantile_list_hgcal = get_quantile_em_fraction_list( fName, 'hgcal', 4 )
+    quantile_list_hf = get_quantile_em_fraction_list( fName, 'hf', 2 )
+    print "Quantile Lists:"
+    print quantile_list_barrel
+    print quantile_list_hgcal
+    print quantile_list_hf
 
     # Get same file again
     jetFile = ROOT.TFile( fName, 'r' )
@@ -540,14 +551,29 @@ def make_em_fraction_calibrations( c, fName, cut, plotBase ) :
     #x_and_y_bins = [100,0,500, 200,0,20]
     xBinning = get_x_binning()
     yBinning = array('f', [i*0.1 for i in range(201)])
-    for i in range(len(quantile_list)-1) :
-        for eta in [['0.0', '0.3'], ['0.3', '0.7'], ['0.7', '1.0'], ['1.0', '1.2'], ['1.2', '2.0']] :
+    for eta in [['0.0', '0.3'], ['0.3', '0.6'], ['0.6', '1.0'], ['1.0', '1.5'], # Barrel
+                #['1.3', '1.8'], # Barrel --> HGCal transition
+                ['1.5', '1.9'], ['1.9', '2.4'], ['2.4', '3.0'], # HGCal
+                #['2.7', '3.2'], # HGCal --> HF transition
+                ['3.0', '3.6'], ['3.6', '6.0']] : # HF
+
+        # Use appropriate calo region quantile map
+        if float( eta[1] ) <= 1.5 :
+            quantile_list = quantile_list_barrel
+        elif float( eta[1] ) <= 3.0 :
+            quantile_list = quantile_list_hgcal
+        else :
+            quantile_list = quantile_list_hf
+
+        for i in range(len(quantile_list)-1) :
+
+
             f_low = quantile_list[i]
             f_high = quantile_list[i+1]
             x_and_y_bins = [ xBinning, yBinning ]
             #if f_low > 0.0 and f_low < 0.1 and f_high > 0.0 and f_high < 0.1 :
             #    x_and_y_bins = [ xBinningAlt, yBinning ]
-            frac_cut = cut+" && abs(jet_eta)>=%s && abs(jet_eta)<=%s && (((ecal_L1EG_jet_pt + ecal_pt)/jet_pt) >= %f && ((ecal_L1EG_jet_pt + ecal_pt)/jet_pt) < %f)" % (eta[0], eta[1], f_low, f_high)
+            frac_cut = cut+"abs(jet_eta)>=%s && abs(jet_eta)<=%s && (((ecal_L1EG_jet_pt + ecal_pt)/jet_pt) >= %f && ((ecal_L1EG_jet_pt + ecal_pt)/jet_pt) < %f)" % (eta[0], eta[1], f_low, f_high)
             print frac_cut
             to_plot = '(hcal_pt)/genJet_pt:jet_pt'
             #h1 = getTH2( tree, 'qcd1', to_plot, frac_cut, x_and_y_bins )
@@ -561,7 +587,7 @@ def make_em_fraction_calibrations( c, fName, cut, plotBase ) :
             title1 = "L1CaloJets HCAL1 - EM %.2f to %.2f" % (f_low, f_high)
             #title2 = "L1CaloJets HCAL2 - EM %.2f to %.2f" % (f_low, f_high)
             title2 = "HCAL Calibration vs. Reco Jet P_{T}"
-            c.SetTitle("jetPt_qcd_HCALfocus_EM_frac_%s_to_%s_absEta%s_to_%s_PU0" % (str(f_low).replace('.','p'), str(f_high).replace('.','p'), eta[0].replace('.','p'), eta[1].replace('.','p')))
+            c.SetTitle("jetPt_ttbar_HCALfocus_absEta%s_to_%s EM_frac_%s_to_%s" % (eta[0].replace('.','p'), eta[1].replace('.','p'), str(f_low).replace('.','p'), str(f_high).replace('.','p')))
             g = drawPointsHists(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis, False, plotBase)
             g.SetTitle('%i_EM_frac_%s_to_%s_absEta_%s_to_%s' % (i, str(f_low).replace('.','p'), str(f_high).replace('.','p'), eta[0].replace('.','p'), eta[1].replace('.','p') ) )
             g.SetName('%i_EM_frac_%s_to_%s_absEta_%s_to_%s' % (i, str(f_low).replace('.','p'), str(f_high).replace('.','p'), eta[0].replace('.','p'), eta[1].replace('.','p') ) )
@@ -579,71 +605,76 @@ if __name__ == '__main__' :
 
     import os
 
-    base2 = '/data/truggles/l1CaloJets_20190128v2/'
-    base3 = '/data/truggles/l1CaloJets_20190128v3/'
-    jetsF200 = 'ttbar_PU200.root'
-    jetsF0 = 'ttbar_PU0.root'
+    base= '/data/truggles/l1CaloJets_20190206/'
+    jetsF200 = 'ttbar_PU200'
+    jetsF0 = 'ttbar_PU0'
 
-    date = '20190128_v2_v_v3'
-    plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date+'v2'
+    date = '20190206_PU_calib_comp'
+    plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/'+date+''
     if not os.path.exists( plotDir ) : os.makedirs( plotDir )
     plotBase = plotDir
 
-    jetFile0v2 = ROOT.TFile( base2+jetsF0, 'r' )
-    jetFile200v2 = ROOT.TFile( base2+jetsF200, 'r' )
-    jetFile0v3 = ROOT.TFile( base3+jetsF0, 'r' )
-    jetFile200v3 = ROOT.TFile( base3+jetsF200, 'r' )
+    for ver in ['v2', 'v3', 'v4', 'v5'] :
+        jetFile0nom = ROOT.TFile( base+jetsF0+'_v1'+'.root', 'r' )
+        jetFile200nom = ROOT.TFile( base+jetsF200+'_v1'+'.root', 'r' )
+        #jetFile0mod = ROOT.TFile( base+jetsF0+'.root', 'r' )
+        jetFile200mod = ROOT.TFile( base+jetsF200+'_'+ver+'.root', 'r' )
 
 
-    tree2 = jetFile0v2.Get("analyzer/tree")
-    tree2002 = jetFile200v2.Get("analyzer/tree")
-    tree3 = jetFile0v3.Get("analyzer/tree")
-    tree2003 = jetFile200v3.Get("analyzer/tree")
-    c = ROOT.TCanvas('c', 'c', 800, 700)
-    ''' Track to cluster reco resolution '''
-    c.SetCanvasSize(1500,600)
-    c.Divide(3)
+        treenom = jetFile0nom.Get("analyzer/tree")
+        tree200nom = jetFile200nom.Get("analyzer/tree")
+        #treemod = jetFile0mod.Get("analyzer/tree")
+        tree200mod = jetFile200mod.Get("analyzer/tree")
+        c = ROOT.TCanvas('c', 'c', 800, 700)
+        ''' Track to cluster reco resolution '''
+        c.SetCanvasSize(1500,600)
+        c.Divide(3)
 
-    #cut = "abs(genJet_eta)<1.1"
-    cut = "abs(genJet_eta)<5"
-    x_and_y_bins = [30,0,300, 60,0,3]
-    x_and_y_bins = [30,0,300, 120,0,6]
+        #cut = "abs(genJet_eta)<1.1"
+        cut = "abs(genJet_eta)<5"
+        x_and_y_bins = [30,0,300, 60,0,3]
+        #x_and_y_bins = [30,0,300, 120,0,6]
 
-    make_calibrations = False
-    ### Between these two you need to run add_calibrations.py to add 'calib' to TTree
-    plot_calibrated_results = False
+        make_calibrations = False
+        ### Between these two you need to run add_calibrations.py to add 'calib' to TTree
+        plot_calibrated_results = False
 
-    """ Make new calibration root file """
-    if make_calibrations :
-        make_em_fraction_calibrations( c, base+jetsF0, cut, plotDir )
+        """ Make new calibration root file """
+        if make_calibrations :
+            make_em_fraction_calibrations( c, base+jetsF0, cut, plotDir )
 
-    eta_ranges = {
-    'all' : '(abs(genJet_eta)<10)',
-    'golden' : '(abs(genJet_eta)<1.2)',
-    'barrel' : '(abs(genJet_eta)<1.5)',
-    'barrel_transition' : '(abs(genJet_eta)<1.8 && abs(genJet_eta)>1.2)',
-    'hgcal' : '(abs(genJet_eta)<3 && abs(genJet_eta)>1.5)',
-    'hf' : '(abs(genJet_eta)>3)',
-    }
-    for k, cut in eta_ranges.iteritems() :
-        to_plot = '(jet_pt)/genJet_pt:genJet_pt'
-        h1 = getTH2( tree3, 'ttbar', to_plot, cut, x_and_y_bins )
-        h2 = getTH2( tree2, 'ttbar', to_plot, cut, x_and_y_bins )
-        xaxis = "Gen Jet P_{T} (GeV)"
-        yaxis = "Relative Error in P_{T} reco/gen"
-        title1 = "ttbar PU Uncorrected"
-        title2 = "ttbar PU Corrected"
-        c.SetTitle("genJetPt_ttbar_PU0_"+k)
-        drawPointsHists(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis, False, plotDir)
+        eta_ranges = {
+        'all' : '(abs(genJet_eta)<10)',
+        'golden' : '(abs(genJet_eta)<1.2)',
+        'barrel' : '(abs(genJet_eta)<1.4)',
+        'barrel_transition' : '(abs(genJet_eta)<1.8 && abs(genJet_eta)>1.2)',
+        'hgcal' : '(abs(genJet_eta)<2.9 && abs(genJet_eta)>1.6)',
+        'hf' : '(abs(genJet_eta)>3.1)',
+        }
+        for k, cut in eta_ranges.iteritems() :
+            to_plot = '(jet_pt)/genJet_pt:genJet_pt'
+            #h1 = getTH2( tree3, 'ttbar', to_plot, cut, x_and_y_bins )
+            #h2 = getTH2( tree2, 'ttbar', to_plot, cut, x_and_y_bins )
+            #xaxis = "Gen Jet P_{T} (GeV)"
+            #yaxis = "Relative Error in P_{T} reco/gen"
+            #title1 = "ttbar PU Uncorrected"
+            #title2 = "ttbar PU Corrected"
+            #c.SetTitle("genJetPt_ttbar_PU0_"+k)
+            #drawPointsHists(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis, False, plotDir)
 
-        h1 = getTH2( tree2003, 'ttbar', to_plot, cut, x_and_y_bins )
-        h2 = getTH2( tree2002, 'ttbar', to_plot, cut, x_and_y_bins )
-        xaxis = "Gen Jet P_{T} (GeV)"
-        yaxis = "Relative Error in P_{T} reco/gen"
-        title1 = "ttbar PU Uncorrected"
-        title2 = "ttbar PU Corrected"
-        c.SetTitle("genJetPt_ttbar_PU200_"+k)
-        drawPointsHists(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis, False, plotDir)
+            h1 = getTH2( tree200nom, 'ttbar', to_plot, cut, x_and_y_bins )
+            h2 = getTH2( tree200mod, 'ttbar', to_plot, cut, x_and_y_bins )
+            xaxis = "Gen Jet P_{T} (GeV)"
+            yaxis = "Relative Error in P_{T} reco/gen"
+            title1 = "ttbar PU Uncorrected"
+            title2 = "ttbar PU Corrected "+ver
+            c.SetTitle("genJetPt_ttbar_PU200_"+k+"_"+ver)
+            drawPointsHists(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis, False, plotDir)
+
+            h3 = getTH2( treenom, 'ttbar', to_plot, cut, x_and_y_bins )
+            title3 = "ttbar PU Zero Corrected"
+            c.SetTitle("trip_genJetPt_ttbar_PU200_"+k+"_"+ver)
+            drawPointsHists3(c.GetTitle(), h1, h2, h3, title1, title2, title3, xaxis, yaxis, False, plotDir)
 
     #to_plot = '(ecal_L1EG_jet_pt + ecal_pt)/genJet_pt:genJet_pt'
     #h1 = getTH2( tree, 'qcd', to_plot, cut, x_and_y_bins )
