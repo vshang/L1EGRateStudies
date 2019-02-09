@@ -120,6 +120,141 @@ def make_rate_hist( nEvents, tree, x_var, x_var_calib, eta_var, eta_threshold, x
 
 
 
+def drawCMSString( title ) :
+    cmsString = ROOT.TLatex(
+        ROOT.gPad.GetAbsXlowNDC()+ROOT.gPad.GetAbsWNDC()-ROOT.gPad.GetLeftMargin(),
+        ROOT.gPad.GetAbsYlowNDC()+ROOT.gPad.GetAbsHNDC()-ROOT.gPad.GetTopMargin()+0.005,
+        title )
+    cmsString.SetTextFont(42)
+    cmsString.SetTextSize(0.03)
+    cmsString.SetNDC(1)
+    cmsString.SetTextAlign(31)
+    cmsString.Draw()
+    return cmsString
+
+
+
+def drawDRHists(hists, c, ymax, plotDir, doFit = False ) :
+    c.cd()
+    colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray+2]
+    marker_styles = [20, 24, 25, 26, 32, 35]
+    hs = ROOT.THStack("hs", c.GetTitle())
+    maxi = 0.
+    for i, hist in enumerate(hists) :
+        hist.Sumw2()
+        hist.Scale(1./hist.Integral())
+        hist.SetLineColor(colors[i])
+        hist.SetMarkerColor(colors[i])
+        hist.SetMarkerStyle(marker_styles[i])
+        hist.SetMarkerSize(0.8)
+        if hist.GetMaximum() > maxi : maxi = hist.GetMaximum()
+        hs.Add(hist, "ex0 hist")
+
+    c.Clear()
+    if c.GetLogy() == 0 : # linear
+        hs.SetMinimum(0.)
+    if ymax == 0. :
+        hs.SetMaximum( maxi * 1.8 )
+    elif ymax == -1 :
+        hs.SetMaximum( maxi * 1.5 )
+    elif ymax != 0. :
+        hs.SetMaximum(ymax)
+    #hs.SetMinimum(0.0001)
+ 
+    hs.Draw("nostack")
+ 
+    markers = []
+    for hist in hists :
+        markers.append( hist )
+        markers[-1].Draw("psame")
+ 
+    fit = ROOT.TF1("doublegaus", "gaus+gaus(3)", 0., 0.25)
+    fit.SetParameters(0.3, 0., 0.003, 0.1, 0., 0.02)
+    #hists[0].Fit(fit, "n")
+    #fit.Draw("lsame")
+ 
+    #leg = setLegStyle(0.53,0.78,0.95,0.92)
+    leg = setLegStyle(0.38,0.7,0.88,0.88)
+    for hist in hists :
+        leg.AddEntry(hist, hist.GetTitle(),"elp")
+    leg.Draw("same")
+    ROOT.gPad.SetLeftMargin( .14 )
+    c.Update()
+
+    hs.GetXaxis().SetTitle(hists[0].GetXaxis().GetTitle())
+    #hs.GetYaxis().SetTitle(hists[0].GetYaxis().GetTitle())
+    hs.GetYaxis().SetTitleOffset(1.2)
+    #hs.GetYaxis().SetTitle("Fraction of Events")
+    hs.GetYaxis().SetTitle("Jets / Events")
+    hs.GetYaxis().SetTitleOffset( 2. )
+    if c.GetName() == "dyncrystalEG_deltaR2" :
+        hs.GetXaxis().SetRangeUser(0., 0.15)
+ 
+    cmsString = drawCMSString("CMS Simulation")
+                
+    c.Print(plotDir+'/'+c.GetName()+".png")
+    #c.Print(plotDir+"/"+c.GetName()+".pdf")
+    #c.Print(plotDir+"/"+c.GetName()+".C")
+
+    # Don't produce CDFs at the moment
+    #del markers
+    #markers = []
+ 
+    ## Now for integral
+    #for  hist in hists :
+    #   hs.RecursiveRemove(hist)
+    #   intHist = hist.Clone( hist.GetName()+"_cdf" )
+    #   integral = 0.
+    #   for bin in range(0, intHist.GetNbinsX()+1) :
+    #      integral += intHist.GetBinContent(bin)
+    #      intHist.SetBinContent(bin, integral)
+
+    #   hs.Add(intHist, "ex0 hist")
+    #   markers.append(intHist)
+
+    #hs.SetMaximum(1.2)
+    #hs.GetYaxis().SetTitle( "Cumulative "+hs.GetYaxis().GetTitle() )
+    #hs.Draw("nostack")
+    #for  m in markers : m.Draw("psame")
+    #leg.Draw("same")
+    #cmsString2 = drawCMSString("CMS Simulation, <PU>=200 bx=25, Single Electron")
+    #c.Print( "plots/"+c.GetName()+"_cdf.png" )
+
+    if doFit :
+        gStyle.SetOptFit(0)
+        # Poorly done hard coding for fit suggestions
+        # and fit ranges, sorry
+        fitHints = [[.17, -0.025, 0.07],
+                    [.08, 0.1, .1 ]]
+        fitRanges = [[-.15, .08],
+                    [-0.09, .3]]
+        fitResults = []
+        fitResults.append( ROOT.TLatex(.7, .7, "Gaussian Fits:" ))
+        for i, hist in enumerate(hists) :
+            shape = ROOT.TF1("shape", "gaus(0)", fitRanges[i][0], fitRanges[i][1])
+            shape.SetParameters(fitHints[i][0], fitHints[i][1], fitHints[i][2])
+            hist.Fit(shape, "R")
+            hist.GetFunction("shape").SetLineColor(hist.GetLineColor())
+            hist.GetFunction("shape").SetLineWidth(hist.GetLineWidth()*2)
+
+            fitResult = hist.GetFunction("shape")
+            fitResults.append( ROOT.TLatex(.7, .66-i*.09, "#mu: "+format(fitResult.GetParameter(1), '.2g')))
+            fitResults.append( ROOT.TLatex(.7, .62-i*.09, "#sigma: "+format(ROOT.TMath.Sqrt(.5*abs(fitResult.GetParameter(2))), '.2g')))
+        for i in range( len(fitResults) ) :
+            fitResults[i].SetTextSize(0.045)
+            fitResults[i].SetTextFont(42)
+            fitResults[i].SetNDC()
+            if i > 2 : fitResults[i].SetTextColor(ROOT.kRed)
+            fitResults[i].Draw()
+
+        c.Print( plotDir+'/'+c.GetName()+"_fit.png" )
+        #c.Print( plotDir+c.GetName()+"_fit.pdf" )
+
+    c.Clear()
+
+
+
+
 if __name__ == '__main__' :
     #f = ROOT.TFile('egTriggerEff.root','r')
     #dir_ = 'analyzer'

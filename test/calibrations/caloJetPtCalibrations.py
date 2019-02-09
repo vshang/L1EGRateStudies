@@ -6,6 +6,14 @@ ROOT.gROOT.SetBatch(True)
 gStyle.SetOptStat(0)
 
 
+def getTH1( tree, name, to_plot, cut, x_bins ) :
+    #print cut
+    h1 = ROOT.TH1F(name+'_h', name, x_bins[0], x_bins[1], x_bins[2])
+    tree.Draw( to_plot + ' >> ' + name+'_h', cut )
+    h1.SetDirectory(0)
+    return h1
+
+
 def getTH2( tree, name, to_plot, cut, x_and_y_bins ) :
     #print cut
     h1 = ROOT.TH2F(name+'_h', name+'_h', x_and_y_bins[0], x_and_y_bins[1], x_and_y_bins[2], x_and_y_bins[3], x_and_y_bins[4], x_and_y_bins[5])
