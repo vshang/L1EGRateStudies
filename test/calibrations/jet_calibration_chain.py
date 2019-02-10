@@ -77,6 +77,7 @@ def prepare_calibration_py_cfg( quantile_map ) :
 def get_quantile_map( calib_fName ) :
 
     # Open calibration root file and get thresholds from TGraphs
+    print ("Calibrating with file: %s" % calib_fName )
     f = ROOT.TFile( calib_fName, 'r' )
 
     keys = []
@@ -112,9 +113,9 @@ def add_calibration( name_in, quantile_map ) :
 
     # new calibrations
     calib = array('f', [ 0 ] )
-    calibB = t.Branch('calibZ', calib, 'calibZ/F')
+    calibB = t.Branch('calibAA', calib, 'calibAA/F')
     calibPt = array('f', [ 0 ] )
-    calibPtB = t.Branch('calibPtZ', calibPt, 'calibPtZ/F')
+    calibPtB = t.Branch('calibPtAA', calibPt, 'calibPtAA/F')
 
     cnt = 0
     for row in t :
@@ -200,18 +201,23 @@ if '__main__' in __name__ :
 
     for shape in [
         #'ttbar_PU0_v1',
-        'ttbar_PU200_v1',
-        'ttbar_PU200_v2',
-        'ttbar_PU200_v3',
-        'ttbar_PU200_v4',
-        'ttbar_PU200_v5',
+        #'ttbar_PU200_v1',
+        #'ttbar_PU200_v2',
+        #'ttbar_PU200_v3',
+        #'ttbar_PU200_v4',
+        #'ttbar_PU200_v5',
+        'ttbar_PU200_rate_v1',
+        'ttbar_PU200_rate_v2',
+        'ttbar_PU200_rate_v3',
+        'ttbar_PU200_rate_v4',
+        'ttbar_PU200_rate_v5',
     ] :
         
         #jetsF0 = 'merged_QCD-PU%s.root' % shape
         #date = jetsF0.replace('merged_QCD-','').replace('.root','')
         jetsF0 = '%s.root' % shape
         date = jetsF0.replace('merged_','').replace('.root','')
-        plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/20190206_PU_calib_comp/'+date+'_V1'
+        plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/20190206_PU_calib_comp/'+date+'_V2'
         if not os.path.exists( plotDir ) : os.makedirs( plotDir )
 
         jetFile = ROOT.TFile( base+jetsF0, 'r' )
@@ -233,8 +239,9 @@ if '__main__' in __name__ :
         jetFile.Close()
 
         """ Add new calibrations to TTree """
-        #quantile_map = get_quantile_map( 'jet_em_calibrations.root' )
-        ##prepare_calibration_py_cfg( quantile_map )
+        #version = shape.split('_')[-1]
+        #quantile_map = get_quantile_map( 'jet_em_calibrations_'+version+'.root' )
+        ###prepare_calibration_py_cfg( quantile_map )
         #add_calibration( base+jetsF0, quantile_map )
         """ Add Stage-2 Calibrations which do a good job up to 50 GeV """
         #add_stage2_calibration( base+jetsF0, 'stage-2_calib_stage2_genOverReco_by_reco.root' )
@@ -264,7 +271,7 @@ if '__main__' in __name__ :
             #    to_plot = '(jet_pt)/genJet_pt:genJet_pt'
             #    h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
             #    #to_plot = '(ecal_L1EG_jet_pt + ecal_pt + (hcal_pt_calibration) )/genJet_pt:genJet_pt' # For EDProducer check
-            #    to_plot = '( calibPtZ )/genJet_pt:genJet_pt'
+            #    to_plot = '( calibPtAA )/genJet_pt:genJet_pt'
             #    h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
             #    #to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
             #    to_plot = '(stage2jet_pt_calibration3)/genJet_pt:genJet_pt'
@@ -283,7 +290,9 @@ if '__main__' in __name__ :
             c.Divide(1)
 
             # PU Zero
-            jetFileX = ROOT.TFile( base+'ttbar_PU0_v1.root', 'r' )
+            # Rate file
+            #jetFileX = ROOT.TFile( base+'ttbar_PU0_v1.root', 'r' )
+            jetFileX = ROOT.TFile( base+jetsF0.replace('_rate',''), 'r' )
             print jetFileX
             treeX = jetFileX.Get("analyzer/tree")
 
@@ -302,42 +311,43 @@ if '__main__' in __name__ :
                         pt_min = pt-20
                         pt_max = pt+20
         
-                    cutX = '( calibPtZ > %i && calibPtZ < %i )' % (pt_min, pt_max )
+                    cutX = '( calibPtAA > %i && calibPtAA < %i )' % (pt_min, pt_max )
                     cutX += '*'+cut.replace('genJet_eta', 'jet_eta')
-                    to_plot = '( calibPtZ - genJet_pt )/genJet_pt'
-                    pt_res_hists.append( getTH1( tree, 'ttbar PU 200, pt  [%i,%i]' % (pt_min,pt_max), to_plot, cutX, x_bins ) )
+                    to_plot = '( calibPtAA - genJet_pt )/genJet_pt'
+                    pt_res_hists.append( getTH1( treeX, 'ttbar PU 200, pt  [%i,%i]' % (pt_min,pt_max), to_plot, cutX, x_bins ) )
                     pt_res_hists[-1].GetXaxis().SetTitle('p_{T} Resolution (reco-gen)/gen')
                 c.SetName( 'jet_pt_calib_resolution_'+k )
                 trigHelpers.drawDRHists( pt_res_hists, c, -1, plotDir, True ) # True is doFit
 
             ## Normalizations
-            #norm_200 = jetFile.Get('analyzer/nEvents').Integral()
-            #norm_0 = jetFileX.Get('analyzer/nEvents').Integral()
+            #norm_200_gen = jetFile.Get('analyzer/nEvents').Integral()
+            #norm_200_all = jetFileX.Get('analyzer/nEvents').Integral()
             #x_bins = [110, -5.5, 5.5]
+            #c.SetLogy(1) 
             #for pt in [20, 30, 40, 50] :
-            #    cut = '( calibPtZ > %i )' % pt
+            #    cut = '( calibPtAA > %i )' % pt
             #    to_plot = '( jet_eta )'
-            #    hx = getTH1( tree, 'ttbar PU 200, pt > %i' % pt, to_plot, cut, x_bins )
-            #    hx.Scale( 1. / norm_200 )
-            #    cut = '( calibPtY > %i )' % pt
-            #    hy = getTH1( treeX, 'ttbar PU 0, pt > %i' % pt, to_plot, cut, x_bins )
-            #    hy.Scale( 1. / norm_0 )
+            #    hx = getTH1( tree, 'ttbar PU 200 gen, pt > %i' % pt, to_plot, cut, x_bins )
+            #    hx.Scale( 1. / norm_200_gen )
+            #    cut = '( calibPtAA > %i )' % pt
+            #    hy = getTH1( treeX, 'ttbar PU 0 all, pt > %i' % pt, to_plot, cut, x_bins )
+            #    hy.Scale( 1. / norm_200_all )
             #    c.SetName( 'jet_eta_calib_pt_gtr'+str(pt) )
             #    hx.GetXaxis().SetTitle('Reco Jet #eta')
-            #    trigHelpers.drawDRHists( [hx, hy], c, -1, plotDir )
+            #    trigHelpers.drawDRHists( [hx, hy], c, 100, plotDir, False, True ) # noFit, skip rescaling
 
-            #to_plot = '( calibPtZ )'
+            #to_plot = '( calibPtAA )'
             #x_bins = [40, 0, 200]
             #for k, cut in eta_ranges.iteritems() :
             #    cutX = cut.replace('genJet_eta', 'jet_eta')
-            #    hx = getTH1( tree, 'ttbar PU 200 '+k, to_plot, cutX, x_bins )
-            #    hx.Scale( 1. / norm_200 )
-            #    hy = getTH1( treeX, 'ttbar PU 0 '+k, '( calibPtY )', cutX, x_bins )
-            #    hy.Scale( 1. / norm_0 )
+            #    hx = getTH1( tree, 'ttbar PU 200 gen '+k, to_plot, cutX, x_bins )
+            #    hx.Scale( 1. / norm_200_gen )
+            #    hy = getTH1( treeX, 'ttbar PU 200 all '+k, '( calibPtAA )', cutX, x_bins )
+            #    hy.Scale( 1. / norm_200_all )
             #    c.SaveAs( plotDir+'/jet_pt_calib_'+k+'.png' )
             #    c.SetName( 'jet_pt_calib_'+k )
             #    hx.GetXaxis().SetTitle('Reco Jet p_{T} (GeV)')
-            #    trigHelpers.drawDRHists( [hx, hy], c, -1, plotDir )
+            #    trigHelpers.drawDRHists( [hx, hy], c, 100, plotDir, False, True ) # noFit, skip rescaling
 
         #x_and_y_bins = [120,0,500, 300,0,15]
         #to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'

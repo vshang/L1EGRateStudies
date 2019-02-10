@@ -134,15 +134,16 @@ def drawCMSString( title ) :
 
 
 
-def drawDRHists(hists, c, ymax, plotDir, doFit = False ) :
+def drawDRHists(hists, c, ymax, plotDir, doFit = False, skipScale = False ) :
     c.cd()
     colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray+2]
     marker_styles = [20, 24, 25, 26, 32, 35]
     hs = ROOT.THStack("hs", c.GetTitle())
     maxi = 0.
     for i, hist in enumerate(hists) :
-        hist.Sumw2()
-        hist.Scale(1./hist.Integral())
+        #hist.Sumw2()
+        if not skipScale :
+            hist.Scale(1./hist.Integral())
         hist.SetLineColor(colors[i])
         hist.SetMarkerColor(colors[i])
         hist.SetMarkerStyle(marker_styles[i])
@@ -153,14 +154,23 @@ def drawDRHists(hists, c, ymax, plotDir, doFit = False ) :
     c.Clear()
     if c.GetLogy() == 0 : # linear
         hs.SetMinimum(0.)
+    # Reasonable minimum on logY plots
+    if not c.GetLogy() == 0 :
+        #if hs.GetMinimum() < hs.GetMaximum() / 1000. :
+        hs.SetMinimum( hs.GetMaximum() / 1000. )
+
     if ymax == 0. :
         hs.SetMaximum( maxi * 1.8 )
+    elif not c.GetLogy() == 0 :
+        hs.SetMaximum( maxi * ymax )
+        #hs.SetMinimum(10e-3)
     elif ymax == -1 :
         hs.SetMaximum( maxi * 1.5 )
     elif ymax != 0. :
         hs.SetMaximum(ymax)
     #hs.SetMinimum(0.0001)
  
+
     hs.Draw("nostack")
  
     markers = []

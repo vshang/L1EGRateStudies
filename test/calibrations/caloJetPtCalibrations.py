@@ -555,7 +555,8 @@ def make_em_fraction_calibrations( c, fName, cut, plotBase ) :
     jetFile = ROOT.TFile( fName, 'r' )
     tree = jetFile.Get("analyzer/tree")
 
-    f_out = ROOT.TFile('jet_em_calibrations.root','RECREATE')
+    version = fName.strip('.root').split('_')[-1]
+    f_out = ROOT.TFile('jet_em_calibrations_'+version+'.root','RECREATE')
     #x_and_y_bins = [100,0,500, 200,0,20]
     xBinning = get_x_binning()
     yBinning = array('f', [i*0.1 for i in range(201)])
