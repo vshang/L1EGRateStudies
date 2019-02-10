@@ -221,30 +221,31 @@ def drawDRHists(hists, c, ymax, plotDir, doFit = False ) :
     #c.Print( "plots/"+c.GetName()+"_cdf.png" )
 
     if doFit :
-        gStyle.SetOptFit(0)
-        # Poorly done hard coding for fit suggestions
-        # and fit ranges, sorry
-        fitHints = [[.17, -0.025, 0.07],
-                    [.08, 0.1, .1 ]]
-        fitRanges = [[-.15, .08],
-                    [-0.09, .3]]
+        ROOT.gStyle.SetOptFit(0)
         fitResults = []
-        fitResults.append( ROOT.TLatex(.7, .7, "Gaussian Fits:" ))
+        fitResults.append( ROOT.TLatex(.6, .65, "Gaussian Fits:" ))
         for i, hist in enumerate(hists) :
-            shape = ROOT.TF1("shape", "gaus(0)", fitRanges[i][0], fitRanges[i][1])
-            shape.SetParameters(fitHints[i][0], fitHints[i][1], fitHints[i][2])
+            # Fit in window around the mean value
+            hist_max = hist.GetMean(1)
+            fit_min = hist_max - .4
+            fit_max = hist_max + .4
+
+            shape = ROOT.TF1("shape", "gaus(0)", fit_min, fit_max)
+            #shape.SetParameters(fitHints[i][0], fitHints[i][1], fitHints[i][2])
             hist.Fit(shape, "R")
             hist.GetFunction("shape").SetLineColor(hist.GetLineColor())
             hist.GetFunction("shape").SetLineWidth(hist.GetLineWidth()*2)
 
             fitResult = hist.GetFunction("shape")
-            fitResults.append( ROOT.TLatex(.7, .66-i*.09, "#mu: "+format(fitResult.GetParameter(1), '.2g')))
-            fitResults.append( ROOT.TLatex(.7, .62-i*.09, "#sigma: "+format(ROOT.TMath.Sqrt(.5*abs(fitResult.GetParameter(2))), '.2g')))
+            fitResults.append( ROOT.TLatex(.7, .61-i*.1, "#mu: "+format(fitResult.GetParameter(1), '.2g')))
+            fitResults[-1].SetTextColor(hist.GetLineColor())
+            fitResults.append( ROOT.TLatex(.7, .57-i*.1, "#sigma: "+format(ROOT.TMath.Sqrt(.5*abs(fitResult.GetParameter(2))), '.2g')))
+            fitResults[-1].SetTextColor(hist.GetLineColor())
         for i in range( len(fitResults) ) :
             fitResults[i].SetTextSize(0.045)
             fitResults[i].SetTextFont(42)
             fitResults[i].SetNDC()
-            if i > 2 : fitResults[i].SetTextColor(ROOT.kRed)
+            #fitResults[i].SetTextColor()
             fitResults[i].Draw()
 
         c.Print( plotDir+'/'+c.GetName()+"_fit.png" )

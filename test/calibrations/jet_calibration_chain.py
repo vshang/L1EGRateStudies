@@ -200,10 +200,10 @@ if '__main__' in __name__ :
 
     for shape in [
         #'ttbar_PU0_v1',
-        #'ttbar_PU200_v1',
-        #'ttbar_PU200_v2',
-        #'ttbar_PU200_v3',
-        #'ttbar_PU200_v4',
+        'ttbar_PU200_v1',
+        'ttbar_PU200_v2',
+        'ttbar_PU200_v3',
+        'ttbar_PU200_v4',
         'ttbar_PU200_v5',
     ] :
         
@@ -278,42 +278,66 @@ if '__main__' in __name__ :
             #    areaNorm = True
             #    drawPointsHists3(c.GetTitle(), h1, h2, h3, title1, title2, title3, xaxis, yaxis, areaNorm, plotDir)
 
+
             c.SetCanvasSize(600,600)
             c.Divide(1)
-            x_bins = [110, -5.5, 5.5]
 
             # PU Zero
             jetFileX = ROOT.TFile( base+'ttbar_PU0_v1.root', 'r' )
             print jetFileX
             treeX = jetFileX.Get("analyzer/tree")
 
-            # Normalizations
-            norm_200 = jetFile.Get('analyzer/nEvents').Integral()
-            norm_0 = jetFileX.Get('analyzer/nEvents').Integral()
-            for pt in [20, 30, 40, 50] :
-                cut = '( calibPtZ > %i )' % pt
-                to_plot = '( jet_eta )'
-                hx = getTH1( tree, 'ttbar PU 200, pt > %i' % pt, to_plot, cut, x_bins )
-                hx.Scale( 1. / norm_200 )
-                cut = '( calibPtY > %i )' % pt
-                hy = getTH1( treeX, 'ttbar PU 0, pt > %i' % pt, to_plot, cut, x_bins )
-                hy.Scale( 1. / norm_0 )
-                c.SetName( 'jet_eta_calib_pt_gtr'+str(pt) )
-                hx.GetXaxis().SetTitle('Reco Jet #eta')
-                trigHelpers.drawDRHists( [hx, hy], c, -1, plotDir )
-
-            to_plot = '( calibPtZ )'
-            x_bins = [40, 0, 200]
+            # Pt resolution
+            x_bins = [100, -1, 1]
             for k, cut in eta_ranges.iteritems() :
-                cutX = cut.replace('genJet_eta', 'jet_eta')
-                hx = getTH1( tree, 'ttbar PU 200 '+k, to_plot, cutX, x_bins )
-                hx.Scale( 1. / norm_200 )
-                hy = getTH1( treeX, 'ttbar PU 0 '+k, '( calibPtY )', cutX, x_bins )
-                hy.Scale( 1. / norm_0 )
-                c.SaveAs( plotDir+'/jet_pt_calib_'+k+'.png' )
-                c.SetName( 'jet_pt_calib_'+k )
-                hx.GetXaxis().SetTitle('Reco Jet p_{T} (GeV)')
-                trigHelpers.drawDRHists( [hx, hy], c, -1, plotDir )
+                pt_res_hists = []
+                #for pt in [20, 50, 100, 200] :
+                for pt in [ 50, 100, 200] :
+                    pt_min = pt-10
+                    pt_max = pt+10
+                    if pt == 20 :
+                        pt_min = pt
+                        pt_max = pt+10
+                    if pt == 200 :
+                        pt_min = pt-20
+                        pt_max = pt+20
+        
+                    cutX = '( calibPtZ > %i && calibPtZ < %i )' % (pt_min, pt_max )
+                    cutX += '*'+cut.replace('genJet_eta', 'jet_eta')
+                    to_plot = '( calibPtZ - genJet_pt )/genJet_pt'
+                    pt_res_hists.append( getTH1( tree, 'ttbar PU 200, pt  [%i,%i]' % (pt_min,pt_max), to_plot, cutX, x_bins ) )
+                    pt_res_hists[-1].GetXaxis().SetTitle('p_{T} Resolution (reco-gen)/gen')
+                c.SetName( 'jet_pt_calib_resolution_'+k )
+                trigHelpers.drawDRHists( pt_res_hists, c, -1, plotDir, True ) # True is doFit
+
+            ## Normalizations
+            #norm_200 = jetFile.Get('analyzer/nEvents').Integral()
+            #norm_0 = jetFileX.Get('analyzer/nEvents').Integral()
+            #x_bins = [110, -5.5, 5.5]
+            #for pt in [20, 30, 40, 50] :
+            #    cut = '( calibPtZ > %i )' % pt
+            #    to_plot = '( jet_eta )'
+            #    hx = getTH1( tree, 'ttbar PU 200, pt > %i' % pt, to_plot, cut, x_bins )
+            #    hx.Scale( 1. / norm_200 )
+            #    cut = '( calibPtY > %i )' % pt
+            #    hy = getTH1( treeX, 'ttbar PU 0, pt > %i' % pt, to_plot, cut, x_bins )
+            #    hy.Scale( 1. / norm_0 )
+            #    c.SetName( 'jet_eta_calib_pt_gtr'+str(pt) )
+            #    hx.GetXaxis().SetTitle('Reco Jet #eta')
+            #    trigHelpers.drawDRHists( [hx, hy], c, -1, plotDir )
+
+            #to_plot = '( calibPtZ )'
+            #x_bins = [40, 0, 200]
+            #for k, cut in eta_ranges.iteritems() :
+            #    cutX = cut.replace('genJet_eta', 'jet_eta')
+            #    hx = getTH1( tree, 'ttbar PU 200 '+k, to_plot, cutX, x_bins )
+            #    hx.Scale( 1. / norm_200 )
+            #    hy = getTH1( treeX, 'ttbar PU 0 '+k, '( calibPtY )', cutX, x_bins )
+            #    hy.Scale( 1. / norm_0 )
+            #    c.SaveAs( plotDir+'/jet_pt_calib_'+k+'.png' )
+            #    c.SetName( 'jet_pt_calib_'+k )
+            #    hx.GetXaxis().SetTitle('Reco Jet p_{T} (GeV)')
+            #    trigHelpers.drawDRHists( [hx, hy], c, -1, plotDir )
 
         #x_and_y_bins = [120,0,500, 300,0,15]
         #to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
