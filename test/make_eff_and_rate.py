@@ -1,5 +1,5 @@
 import ROOT
-from trigHelpers import make_efficiency_graph, make_rate_hist, setLegStyle, checkDir
+from L1Trigger.L1EGRateStudies.trigHelpers import make_efficiency_graph, make_rate_hist, setLegStyle, checkDir
 ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
 
@@ -15,16 +15,17 @@ p.cd()
 
 
 if doEff :
-    fName = 'merged_QCD-PU200_Calibrated_v5'
-    base = '/data/truggles/l1CaloJets_20181101/'
-    universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/efficiencies/"
+    fName = 'ttbar_PU200_v2'
+    base = '/data/truggles/l1CaloJets_20190210/'
+    date = '20190210'
+    universalSaveDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/efficiencies/20190210_PU_calib_comp/'+date+'_V3'
     checkDir( universalSaveDir )
 
     f = ROOT.TFile( base+fName+'.root', 'r' )
     t = f.Get('analyzer/tree')
     
-    eta_cut = 'abs(genJet_eta)<1.1'
-    eta_cut = 'abs(genJet_eta)<1.2'
+
+    # Threshold cuts for passing region
     pt_cut = 100
     pt_cut = 50
     #pt_cut = 150
@@ -32,10 +33,20 @@ if doEff :
     #pt_cut = 400
     #pt_cut = 100
     #pt_cut = 0
-    axis = [60, 0, 300]
+
+    """ Pt Eff """
+    # Use eta cuts to restrict when doing pT efficiencies
+    denom_cut = 'abs(genJet_eta)<1.2'
     axis = [160, 0, 400]
-    gP2 = make_efficiency_graph( t, eta_cut, 'jet_pt_calibration > %i' % pt_cut, 'genJet_pt', axis )
-    gS2 = make_efficiency_graph( t, eta_cut, '(stage2jet_pt_calibration3) > %i' % pt_cut, 'genJet_pt', axis )
+    gP2 = make_efficiency_graph( t, denom_cut, 'calibPtAA > %i' % pt_cut, 'genJet_pt', axis )
+    gS2 = make_efficiency_graph( t, denom_cut, '(stage2jet_pt_calibration3) > %i' % pt_cut, 'genJet_pt', axis )
+
+    """ Eta Eff """
+    # Use pt cuts to restrict included objects when doing eta efficiencies
+    #denom_cut = '(genJet_pt > 50)'
+    #axis = [100, -5, 5]
+    #gP2 = make_efficiency_graph( t, denom_cut, 'calibPtAA > %i' % pt_cut, 'genJet_eta', axis )
+    #gS2 = make_efficiency_graph( t, denom_cut, '(stage2jet_pt_calibration3) > %i' % pt_cut, 'genJet_eta', axis )
     
     gP2.SetMinimum( 0. )
     gP2.SetLineColor(ROOT.kRed)
