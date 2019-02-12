@@ -184,7 +184,7 @@ def drawDRHists(hists, c, ymax, plotDir, doFit = False, skipScale = False ) :
     #fit.Draw("lsame")
  
     #leg = setLegStyle(0.53,0.78,0.95,0.92)
-    leg = setLegStyle(0.38,0.7,0.88,0.88)
+    leg = setLegStyle(0.18,0.7,0.88,0.88)
     for hist in hists :
         leg.AddEntry(hist, hist.GetTitle(),"elp")
     leg.Draw("same")
