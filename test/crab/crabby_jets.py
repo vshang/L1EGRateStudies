@@ -112,9 +112,9 @@ process.load('L1Trigger.L1CaloTrigger.L1EGammaCrystalsEmulatorProducer_cfi')
 # ----    Produce the calibrated tower collection combining Barrel, HGCal, HF
 
 process.load('L1Trigger/L1CaloTrigger/L1TowerCalibrationProducer_cfi')
-#process.L1TowerCalibrationProducer.barrelSF = cms.double(1.0)
-#process.L1TowerCalibrationProducer.hgcalSF = cms.double(1.0)
-#process.L1TowerCalibrationProducer.hfSF = cms.double(1.0)
+process.L1TowerCalibrationProducer.barrelSF = cms.double(4.0)
+process.L1TowerCalibrationProducer.hgcalSF = cms.double(1.45)
+process.L1TowerCalibrationProducer.hfSF = cms.double(1.2)
 #process.L1TowerCalibrationProducer.skipCalibrations = cms.bool(True)
 
 
@@ -150,7 +150,7 @@ process.analyzer = cms.EDAnalyzer('L1CaloJetStudies',
     genMatchDeltaRcut = cms.untracked.double(0.4),
     genMatchRelPtcut = cms.untracked.double(0.5),
     debug = cms.untracked.bool(False),
-    #doRate = cms.untracked.bool(True), # TEMPORARY FIXME
+    doRate = cms.untracked.bool(False), # TEMPORARY FIXME
     Stage2JetTag = cms.InputTag("simCaloStage2Digis", "MP", "HLT"),
     Stage2TauTag = cms.InputTag("simCaloStage2Digis", "MP", "HLT"),
     puSrc = cms.InputTag("addPileupInfo")
