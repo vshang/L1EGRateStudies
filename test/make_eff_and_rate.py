@@ -5,6 +5,10 @@ ROOT.gStyle.SetOptStat(0)
 
 doEff = True
 #doEff = False
+
+doPtEff = True
+#doPtEff = False
+
 doRate = True
 doRate = False
 
@@ -15,10 +19,10 @@ p.cd()
 
 
 if doEff :
-    fName = 'ttbar_PU200_v2'
-    base = '/data/truggles/l1CaloJets_20190210/'
-    date = '20190210'
-    universalSaveDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/efficiencies/20190210_PU_calib_comp/'+date+'_V3'
+    fName = 'ttbar_PU200_v7'
+    date = '20190210v7'
+    base = '/data/truggles/l1CaloJets_%s/' % date
+    universalSaveDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/efficiencies/20190210_PU_calib_comp/'+date+'_V3/'
     checkDir( universalSaveDir )
 
     f = ROOT.TFile( base+fName+'.root', 'r' )
@@ -27,7 +31,7 @@ if doEff :
 
     # Threshold cuts for passing region
     pt_cut = 100
-    pt_cut = 50
+    pt_cut = 40
     #pt_cut = 150
     #pt_cut = 200
     #pt_cut = 400
@@ -35,18 +39,20 @@ if doEff :
     #pt_cut = 0
 
     """ Pt Eff """
-    # Use eta cuts to restrict when doing pT efficiencies
-    denom_cut = 'abs(genJet_eta)<1.2'
-    axis = [160, 0, 400]
-    gP2 = make_efficiency_graph( t, denom_cut, 'calibPtAA > %i' % pt_cut, 'genJet_pt', axis )
-    gS2 = make_efficiency_graph( t, denom_cut, '(stage2jet_pt_calibration3) > %i' % pt_cut, 'genJet_pt', axis )
+    if doPtEff :
+        # Use eta cuts to restrict when doing pT efficiencies
+        denom_cut = 'abs(genJet_eta)<1.2'
+        axis = [160, 0, 400]
+        gP2 = make_efficiency_graph( t, denom_cut, 'calibPtAA > %i' % pt_cut, 'genJet_pt', axis )
+        gS2 = make_efficiency_graph( t, denom_cut, '(stage2jet_pt_calibration3) > %i' % pt_cut, 'genJet_pt', axis )
 
     """ Eta Eff """
-    # Use pt cuts to restrict included objects when doing eta efficiencies
-    #denom_cut = '(genJet_pt > 50)'
-    #axis = [100, -5, 5]
-    #gP2 = make_efficiency_graph( t, denom_cut, 'calibPtAA > %i' % pt_cut, 'genJet_eta', axis )
-    #gS2 = make_efficiency_graph( t, denom_cut, '(stage2jet_pt_calibration3) > %i' % pt_cut, 'genJet_eta', axis )
+    if not doPtEff :
+        # Use pt cuts to restrict included objects when doing eta efficiencies
+        denom_cut = '(genJet_pt > 50)'
+        axis = [100, -5, 5]
+        gP2 = make_efficiency_graph( t, denom_cut, 'calibPtAA > %i' % pt_cut, 'genJet_eta', axis )
+        gS2 = make_efficiency_graph( t, denom_cut, '(stage2jet_pt_calibration3) > %i' % pt_cut, 'genJet_eta', axis )
     
     gP2.SetMinimum( 0. )
     gP2.SetLineColor(ROOT.kRed)
@@ -61,17 +67,25 @@ if doEff :
     mg.Draw("aplez")
     mg.GetXaxis().SetTitle("Gen Jet p_{T}")
     mg.GetYaxis().SetTitle("L1 Algo. Efficiency w.r.t. Gen")
+    mg.SetMaximum(1.3)
     p.SetGrid()
     
+    txt = ROOT.TLatex()
+    txt.SetTextSize(0.035)
+    txt.DrawLatexNDC(.12, .85,  "Baseline:")
+    txt.DrawLatexNDC(.12, .81,  "   %s" % denom_cut)
+    txt.DrawLatexNDC(.12, .76, "Passing: (Reco p_{T} > %i)" % pt_cut)
     
-    leg = setLegStyle(0.5,0.3,0.9,0.7)
+    #leg = setLegStyle(0.5,0.3,0.9,0.7)
+    leg = setLegStyle(0.5,0.72,0.9,0.88)
     leg.AddEntry(gS2, "Phase-I Jet Algo.","lpe")
     leg.AddEntry(gP2, "Phase-II Jet Algo.","lpe")
     leg.Draw("same")
     c.Update()
     
     
-    c.SaveAs( universalSaveDir + fName + '_Calib_er1p2_%i_eff.png' % pt_cut )
+    app = 'ptEff' if doPtEff else 'etaEff'
+    c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s.png' % (pt_cut, app) )
 
 """ MAKE RATES """
 if doRate :
