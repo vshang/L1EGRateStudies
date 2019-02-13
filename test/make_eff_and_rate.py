@@ -1,18 +1,19 @@
 import ROOT
+from collections import OrderedDict
 from L1Trigger.L1EGRateStudies.trigHelpers import make_efficiency_graph, make_rate_hist, setLegStyle, checkDir
 ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
 
 doEff = True
-#doEff = False
+doEff = False
 
 doPtEff = True
 #doPtEff = False
 
 doRate = True
-doRate = False
+#doRate = False
 
-c = ROOT.TCanvas('c', 'c', 600, 600)
+c = ROOT.TCanvas('c', 'c', 900, 900)
 p = ROOT.TPad('p','p', 0, 0, 1, 1)
 p.Draw()
 p.cd()
@@ -22,7 +23,8 @@ if doEff :
     fName = 'ttbar_PU200_v7'
     date = '20190210v7'
     base = '/data/truggles/l1CaloJets_%s/' % date
-    universalSaveDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/efficiencies/20190210_PU_calib_comp/'+date+'_V3/'
+    universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/efficiencies/"+date+"/"+fName+"/"
+    checkDir( universalSaveDir )
     checkDir( universalSaveDir )
 
     f = ROOT.TFile( base+fName+'.root', 'r' )
@@ -89,7 +91,12 @@ if doEff :
 
 """ MAKE RATES """
 if doRate :
-    fName = 'merged_minBias-PU200_Calibrated_v5'
+    fName = 'minBias_PU200_withCuts_v7'
+    date = '20190210v7'
+    base = '/data/truggles/l1CaloJets_%s/' % date
+    universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/rates/"+date+"/"+fName+"/"
+    # Stage-2
+    fName = 'merged_minBias-PU200_Calibrated_withCuts_v5'
     base = '/data/truggles/l1CaloJets_20181101/'
     universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/rates/"
     checkDir( universalSaveDir )
@@ -98,34 +105,79 @@ if doRate :
     print f
     t = f.Get('analyzer/tree')
 
-    nEvents = f.Get('analyzer/nEvents').Integral()
-    eta_threshold = 1.2
-    x_info = [56, 20, 300]
+    # We used cuts to make a slimmed ttree for looping, so need to get nEvents from the
+    # original file
+
+    fEvents = ROOT.TFile( base+fName.replace('_withCuts','')+'.root', 'r' )
+    print fEvents
+    nEvents = fEvents.Get('analyzer/nEvents').Integral()
+
+    # Min and Max eta thresholds for barrel, HGCal, HF rates
+    eta_thresholds = OrderedDict()
+    eta_thresholds['all']    = [0., 6.0]
+    eta_thresholds['barrel'] = [0., 1.5]
+    eta_thresholds['hgcal']  = [1.5, 3.0]
+    eta_thresholds['hf']     = [3.0, 6.0]
+
+    # nBins, min, max
+    x_info = [54, 30, 300]
     
-    hP2 = make_rate_hist( nEvents, t, 'jet_pt_calibration', 1.0, 'jet_eta', eta_threshold, x_info ) 
-    hP2.SaveAs( fName+'_Phase-2.root' )
-    hS2 = make_rate_hist( nEvents, t, 'stage2jet_pt_calibration3', 1.0, 'stage2jet_eta', eta_threshold, x_info )
-    hS2.SaveAs( fName+'_Stage-2.root' )
-    del hP2, hS2
+    #for name, thresholds in eta_thresholds.iteritems() :
+    #    #hP2 = make_rate_hist( nEvents, t, 'jet_pt_calibration', 1.0, 'jet_eta', thresholds[0], thresholds[1], x_info ) 
+    #    #hP2.SaveAs( fName+'_'+name+'_Phase-2.root' )
+    #    #del hP2
+    #    hS2 = make_rate_hist( nEvents, t, 'stage2jet_pt_calibration3', 1.0, 'stage2jet_eta', thresholds[0], thresholds[1], x_info )
+    #    hS2.SaveAs( fName+'_'+name+'_Stage-2.root' )
+    #    del hS2
+
+    #assert(0)
+
     
-    f1 = ROOT.TFile( fName+'_Phase-2.root', 'r')
-    hP2 = f1.Get('cumul')
-    f2 = ROOT.TFile( fName+'_Stage-2.root', 'r')
-    hS2 = f2.Get('cumul')
+    rates = []
+    colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray+2]
+    cnt = 0
+    p2name = 'minBias_PU200_withCuts_v7'
+    s2name = 'merged_minBias-PU200_Calibrated_withCuts_v5'
+    for name, thresholds in eta_thresholds.iteritems() :
+        f1 = ROOT.TFile( p2name+'_'+name+'_Phase-2.root', 'r')
+        print f1
+        rates.append( f1.Get('cumul') )
+        rates[-1].SetDirectory( 0 )
+        rates[-1].SetTitle( 'Phase2 - %s' % name )
+        rates[-1].SetName( 'Phase2 - %s' %name )
+        rates[-1].SetLineColor( colors[cnt] )
+        rates[-1].SetMarkerColor( colors[cnt] )
+        rates[-1].SetLineWidth( 2 )
+        if name == 'all' :
+            rates[-1].SetLineWidth( 4 )
+        rates[-1].GetXaxis().SetRangeUser(x_info[1], x_info[2])
+        cnt += 1
+    cnt = 0
+    for name, thresholds in eta_thresholds.iteritems() :
+        f1 = ROOT.TFile( s2name+'_'+name+'_Stage-2.root', 'r')
+        print f1
+        rates.append( f1.Get('cumul') )
+        rates[-1].SetDirectory( 0 )
+        rates[-1].SetTitle( 'Stage2 - %s' % name )
+        rates[-1].SetName( 'Stage2 - %s' % name )
+        rates[-1].SetLineColor( colors[cnt]+2 )
+        rates[-1].SetMarkerColor( colors[cnt]+2 )
+        rates[-1].SetLineWidth( 2 )
+        rates[-1].GetXaxis().SetRangeUser(x_info[1], x_info[2])
+        cnt += 1
     
-    hP2.SetLineColor(ROOT.kRed)
-    hP2.SetLineWidth(2)
-    hS2.SetLineColor(ROOT.kBlack)
-    hS2.SetLineWidth(2)
-    
-    #hP2.GetXaxis().SetRangeUser(20, 200)
-    #hS2.GetXaxis().SetRangeUser(20, 200)
-    
-    hP2.SetTitle("L1 Algo. Rates")
-    hP2.GetXaxis().SetTitle("Reco Jet p_{T}")
-    hP2.GetYaxis().SetTitle("L1 Algo. Rate (kHz)")
-    hP2.Draw()
-    hS2.Draw('SAME')
+    print rates[0]
+    rates[0].SetTitle("L1 Algo. Rates")
+    rates[0].GetXaxis().SetTitle("Reco Jet p_{T}")
+    rates[0].GetYaxis().SetTitle("L1 Algo. Rate (kHz)")
+    rates[0].Draw()
+    cnt = 0
+    for rate in rates :
+        cnt += 1
+        if cnt == 1 : continue
+        if rate.GetTitle() == 'Stage2 - hgcal' : continue
+        if rate.GetTitle() == 'Stage2 - all' : continue
+        rate.Draw('SAME')
     
     
     p.SetGrid()
@@ -135,13 +187,16 @@ if doRate :
     
     
     leg = setLegStyle(0.5,0.55,0.9,0.85)
-    leg.AddEntry(hS2, "Phase-I Jet Algo.","lpe")
-    leg.AddEntry(hP2, "Phase-II Jet Algo.","lpe")
+    for rate in rates :
+        if rate.GetTitle() == 'Stage2 - hgcal' : continue
+        if rate.GetTitle() == 'Stage2 - all' : continue
+        title = rate.GetTitle() if not rate.GetTitle() == "L1 Algo. Rates" else "Phase2 - All"
+        leg.AddEntry(rate, title,"lpe")
     leg.Draw("same")
     c.Update()
     
     
-    c.SaveAs( universalSaveDir + fName +  '_Calib_er1p2_rate.png' )
+    c.SaveAs( universalSaveDir + fName +  '_Calib_rate.png' )
 
 
 
