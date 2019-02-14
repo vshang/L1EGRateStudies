@@ -1,6 +1,10 @@
 import ROOT
 from collections import OrderedDict
 from L1Trigger.L1EGRateStudies.trigHelpers import make_efficiency_graph, make_rate_hist, setLegStyle, checkDir
+import os
+
+if not os.path.exists( 'eff_and_rate_roots/' ) : os.makedirs( 'eff_and_rate_roots/' )
+
 ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
 
@@ -8,7 +12,7 @@ doEff = True
 doEff = False
 
 doPtEff = True
-#doPtEff = False
+doPtEff = False
 
 doRate = True
 #doRate = False
@@ -32,8 +36,8 @@ if doEff :
     
 
     # Threshold cuts for passing region
-    pt_cut = 100
-    pt_cut = 40
+    #pt_cut = 100
+    pt_cut = 80
     #pt_cut = 150
     #pt_cut = 200
     #pt_cut = 400
@@ -51,7 +55,8 @@ if doEff :
     """ Eta Eff """
     if not doPtEff :
         # Use pt cuts to restrict included objects when doing eta efficiencies
-        denom_cut = '(genJet_pt > 50)'
+        denom_pt = 100
+        denom_cut = '(genJet_pt > %i)' % denom_pt
         axis = [100, -5, 5]
         gP2 = make_efficiency_graph( t, denom_cut, 'calibPtAA > %i' % pt_cut, 'genJet_eta', axis )
         gS2 = make_efficiency_graph( t, denom_cut, '(stage2jet_pt_calibration3) > %i' % pt_cut, 'genJet_eta', axis )
@@ -86,7 +91,7 @@ if doEff :
     c.Update()
     
     
-    app = 'ptEff' if doPtEff else 'etaEff'
+    app = 'ptEff' if doPtEff else 'etaEff_ptDenom%i' % denom_pt
     c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s.png' % (pt_cut, app) )
 
 """ MAKE RATES """
@@ -96,8 +101,11 @@ if doRate :
     base = '/data/truggles/l1CaloJets_%s/' % date
     universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/rates/"+date+"/"+fName+"/"
     # Stage-2
-    fName = 'merged_minBias-PU200_Calibrated_withCuts_v5'
-    base = '/data/truggles/l1CaloJets_20181101/'
+    fName = 'minBias_PU200_v8'
+    date = '20190210v8'
+    base = '/data/truggles/l1CaloJets_%s/' % date
+    #fName = 'merged_minBias-PU200_Calibrated_withCuts_v5'
+    #base = '/data/truggles/l1CaloJets_20181101/'
     universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/rates/"
     checkDir( universalSaveDir )
 
@@ -108,9 +116,10 @@ if doRate :
     # We used cuts to make a slimmed ttree for looping, so need to get nEvents from the
     # original file
 
-    fEvents = ROOT.TFile( base+fName.replace('_withCuts','')+'.root', 'r' )
-    print fEvents
-    nEvents = fEvents.Get('analyzer/nEvents').Integral()
+    #fEvents = ROOT.TFile( base+fName.replace('_withCuts','')+'.root', 'r' )
+    #print fEvents
+    #nEvents = fEvents.Get('analyzer/nEvents').Integral()
+    nEvents = f.Get('analyzer/nEvents').Integral()
 
     # Min and Max eta thresholds for barrel, HGCal, HF rates
     eta_thresholds = OrderedDict()
@@ -124,10 +133,10 @@ if doRate :
     
     #for name, thresholds in eta_thresholds.iteritems() :
     #    #hP2 = make_rate_hist( nEvents, t, 'jet_pt_calibration', 1.0, 'jet_eta', thresholds[0], thresholds[1], x_info ) 
-    #    #hP2.SaveAs( fName+'_'+name+'_Phase-2.root' )
+    #    #hP2.SaveAs( 'eff_and_rate_roots/'+fName+'_'+name+'_Phase-2.root' )
     #    #del hP2
     #    hS2 = make_rate_hist( nEvents, t, 'stage2jet_pt_calibration3', 1.0, 'stage2jet_eta', thresholds[0], thresholds[1], x_info )
-    #    hS2.SaveAs( fName+'_'+name+'_Stage-2.root' )
+    #    hS2.SaveAs( 'eff_and_rate_roots/'+fName+'_'+name+'_Stage-2.root' )
     #    del hS2
 
     #assert(0)
@@ -137,9 +146,9 @@ if doRate :
     colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray+2]
     cnt = 0
     p2name = 'minBias_PU200_withCuts_v7'
-    s2name = 'merged_minBias-PU200_Calibrated_withCuts_v5'
+    s2name = 'minBias_PU200_v8'
     for name, thresholds in eta_thresholds.iteritems() :
-        f1 = ROOT.TFile( p2name+'_'+name+'_Phase-2.root', 'r')
+        f1 = ROOT.TFile( 'eff_and_rate_roots/'+p2name+'_'+name+'_Phase-2.root', 'r')
         print f1
         rates.append( f1.Get('cumul') )
         rates[-1].SetDirectory( 0 )
@@ -154,7 +163,7 @@ if doRate :
         cnt += 1
     cnt = 0
     for name, thresholds in eta_thresholds.iteritems() :
-        f1 = ROOT.TFile( s2name+'_'+name+'_Stage-2.root', 'r')
+        f1 = ROOT.TFile( 'eff_and_rate_roots/'+s2name+'_'+name+'_Stage-2.root', 'r')
         print f1
         rates.append( f1.Get('cumul') )
         rates[-1].SetDirectory( 0 )
