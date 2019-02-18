@@ -197,7 +197,7 @@ def calibrate( quantile_map, abs_jet_eta, ecal_L1EG_jet_pt, ecal_pt, jet_pt ) :
 
 if '__main__' in __name__ :
 
-    base= '/data/truggles/l1CaloJets_20190210/'
+    base= '/data/truggles/l1CaloJets_20190210v8/'
     #base= '/data/truggles/l1CaloJets_20190206/'
 
     for shape in [
@@ -215,7 +215,9 @@ if '__main__' in __name__ :
         #'minBias_PU200_v1',
         #'minBias_PU200_v2',
         #'ttbar_PU0_v2',
-        'ttbar_PU200_v2',
+        #'ttbar_PU200_v2',
+        #'ttbar_PU200_v7',
+        'minBias_PU200_v8',
     ] :
         
         #jetsF0 = 'merged_QCD-PU%s.root' % shape
@@ -249,14 +251,14 @@ if '__main__' in __name__ :
         ###prepare_calibration_py_cfg( quantile_map )
         #add_calibration( base+jetsF0, quantile_map )
         """ Add Stage-2 Calibrations which do a good job up to 50 GeV """
-        #add_stage2_calibration( base+jetsF0, 'stage-2_calib_stage2_genOverReco_by_reco.root' )
+        add_stage2_calibration( base+jetsF0, 'stage-2_calib_stage2_genOverReco_by_reco.root' )
 
         """ Plot Results """
         jetFile = ROOT.TFile( base+jetsF0, 'r' )
         tree = jetFile.Get("analyzer/tree")
 
         plot_calibrated_results = True
-        #plot_calibrated_results = False
+        plot_calibrated_results = False
         # Can't plot for minBias b/c no gen
         #if 'minBias' in shape : 
         #    plot_calibrated_results = False

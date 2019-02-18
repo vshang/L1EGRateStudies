@@ -77,7 +77,7 @@ def make_efficiency_graph( tree, base_cut, threshold_cut, x_var, x_info ) :
     #g.SaveAs('tmp.root')
     return g
 
-def make_rate_hist( nEvents, tree, x_var, x_var_calib, eta_var, eta_threshold, x_info ) : 
+def make_rate_hist( nEvents, tree, x_var, x_var_calib, eta_var, eta_min, eta_max, x_info ) : 
     h1 = ROOT.TH1F('hist', 'hist', x_info[0], x_info[1], x_info[2])
 
     previous_event = -1
@@ -99,7 +99,8 @@ def make_rate_hist( nEvents, tree, x_var, x_var_calib, eta_var, eta_threshold, x
 
         # Skip jets outside of eta threshold region
         eta = getattr( row, eta_var )
-        if abs(eta) > eta_threshold : continue
+        if abs(eta) >= eta_max : continue
+        if abs(eta) < eta_min : continue
 
         pt = getattr( row, x_var ) * x_var_calib
         if pt > max_pt : max_pt = pt

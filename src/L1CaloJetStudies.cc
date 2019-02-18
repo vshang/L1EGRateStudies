@@ -669,6 +669,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
 
         
+  if (!doRate) {
     // Loop over all gen jets with pt > 10 GeV and match them to Phase-II CaloJets
     // Generator info (truth)
     iEvent.getByToken(genJetsToken_,genJetsHandle);
@@ -948,6 +949,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         }
 
     } // end GenJets loop
+  } // end if NOT doRate
 }
 
 
