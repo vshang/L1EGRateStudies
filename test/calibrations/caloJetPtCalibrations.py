@@ -319,8 +319,7 @@ def drawPointsSingleHist(saveName, h1, title1, xaxis, yaxis, plotDir='.') :
 
 
 
-def drawPointsHists(saveName, h1, h2, title1, title2, xaxis, yaxis, new=False, plotDir='.') :
-    doFit = False
+def drawPointsHists(saveName, h1, h2, title1, title2, xaxis, yaxis, new=False, plotDir='.', doFit=False) :
     c2 = ROOT.TCanvas('c2', 'c2', 1200, 600)
     c2.Divide(2)
     c2.cd(1)
@@ -353,15 +352,18 @@ def drawPointsHists(saveName, h1, h2, title1, title2, xaxis, yaxis, new=False, p
     g1.SetLineWidth(2)
     g1.Draw('SAME')
     if doFit :
-        mini = points[0]
+        #mini = points[0]
+        mini = 11.
         maxi = points[-1]
-        f1 = ROOT.TF1( 'f1', '([0] + [1]*TMath::Exp(-[2]*x))', mini, maxi)
+        f1 = ROOT.TF1( 'f1', '([0] + [1]*x + [2]*TMath::Exp(-[3]*x))', mini, maxi)
         f1.SetParName( 0, "y rise" )
-        f1.SetParName( 1, "scale" )
-        f1.SetParName( 2, "decay" )
+        f1.SetParName( 1, "linear" )
+        f1.SetParName( 2, "scale" )
+        f1.SetParName( 3, "decay" )
         f1.SetParameter( 0, .5 )
-        f1.SetParameter( 1, 2.5 )
-        f1.SetParameter( 2, .15 )
+        f1.SetParameter( 1, .01 )
+        f1.SetParameter( 2, 2.5 )
+        f1.SetParameter( 3, .15 )
         fit1 = g1.Fit('f1', 'R S')
     
     c2.cd(2)
@@ -385,13 +387,15 @@ def drawPointsHists(saveName, h1, h2, title1, title2, xaxis, yaxis, new=False, p
     g2.SetLineWidth(2)
     g2.Draw('SAME')
     if doFit :
-        f2 = ROOT.TF1( 'f2', '([0] + [1]*TMath::Exp(-[2]*x))', mini, maxi)
+        f2 = ROOT.TF1( 'f2', '([0] + [1]*x + [2]*TMath::Exp(-[3]*x))', mini, maxi)
         f2.SetParName( 0, "y rise" )
-        f2.SetParName( 1, "scale" )
-        f2.SetParName( 2, "decay" )
+        f2.SetParName( 1, "linear" )
+        f2.SetParName( 2, "scale" )
+        f2.SetParName( 3, "decay" )
         f2.SetParameter( 0, .5 )
-        f2.SetParameter( 1, 2.5 )
-        f2.SetParameter( 2, .15 )
+        f2.SetParameter( 1, .01 )
+        f2.SetParameter( 2, 2.5 )
+        f2.SetParameter( 3, .15 )
         fit2 = g2.Fit('f2', 'R S')
 
     # Just to show the resulting fit
@@ -401,36 +405,38 @@ def drawPointsHists(saveName, h1, h2, title1, title2, xaxis, yaxis, new=False, p
 
     if not doFit :
         return g2
-    cx = ROOT.TCanvas('cx','cx',600,600)
-    cx.SetGridx()
-    cx.SetGridy()
-    if new :
-        f3 = ROOT.TF1( 'f3', '(([0] + [1]*TMath::Exp(-[2]*x))*(1./([3] + [4]*TMath::Exp(-[5]*x))))', mini, maxi)
-    else :
-        f3 = ROOT.TF1( 'f3', '(-([0] + [1]*TMath::Exp(-[2]*x))+([3] + [4]*TMath::Exp(-[5]*x)))', mini, maxi)
-    f3.SetParameter( 0, f1.GetParameter( 0 ) )
-    f3.SetParameter( 1, f1.GetParameter( 1 ) )
-    f3.SetParameter( 2, f1.GetParameter( 2 ) )
-    f3.SetParameter( 3, f2.GetParameter( 0 ) )
-    f3.SetParameter( 4, f2.GetParameter( 1 ) )
-    f3.SetParameter( 5, f2.GetParameter( 2 ) )
+    if doFit :
+        return [g2, f2]
+    #cx = ROOT.TCanvas('cx','cx',600,600)
+    #cx.SetGridx()
+    #cx.SetGridy()
+    #if new :
+    #    f3 = ROOT.TF1( 'f3', '(([0] + [1]*TMath::Exp(-[2]*x))*(1./([3] + [4]*TMath::Exp(-[5]*x))))', mini, maxi)
+    #else :
+    #    f3 = ROOT.TF1( 'f3', '(-([0] + [1]*TMath::Exp(-[2]*x))+([3] + [4]*TMath::Exp(-[5]*x)))', mini, maxi)
+    #f3.SetParameter( 0, f1.GetParameter( 0 ) )
+    #f3.SetParameter( 1, f1.GetParameter( 1 ) )
+    #f3.SetParameter( 2, f1.GetParameter( 2 ) )
+    #f3.SetParameter( 3, f2.GetParameter( 0 ) )
+    #f3.SetParameter( 4, f2.GetParameter( 1 ) )
+    #f3.SetParameter( 5, f2.GetParameter( 2 ) )
 
-    f3.Draw()
-    #g1.Draw('SAME')
-    #g2.Draw('SAME')
-    
-    for i in range( 0, 6 ) :
-        print "Fit Param: %i = %f" % (i, f3.GetParameter( i ) )
-        fitVal = ROOT.TLatex()
-        fitVal.SetTextSize(0.04)
-        fitVal.DrawLatexNDC(.45, .80-(i*.1), "Fit Param: %i = %f" % (i, f3.GetParameter( i ) ) )
+    #f3.Draw()
+    ##g1.Draw('SAME')
+    ##g2.Draw('SAME')
+    #
+    #for i in range( 0, 6 ) :
+    #    print "Fit Param: %i = %f" % (i, f3.GetParameter( i ) )
+    #    fitVal = ROOT.TLatex()
+    #    fitVal.SetTextSize(0.04)
+    #    fitVal.DrawLatexNDC(.45, .80-(i*.1), "Fit Param: %i = %f" % (i, f3.GetParameter( i ) ) )
 
-    # Just to show the resulting fit
-    cx.Print(plotDir+"/"+c.GetTitle()+"_fits.png")
-    cx.Print(plotDir+"/"+c.GetTitle()+"_fits.C")
-    cx.Print(plotDir+"/"+c.GetTitle()+"_fits.pdf")
+    ## Just to show the resulting fit
+    #cx.Print(plotDir+"/"+c.GetTitle()+"_fits.png")
+    #cx.Print(plotDir+"/"+c.GetTitle()+"_fits.C")
+    #cx.Print(plotDir+"/"+c.GetTitle()+"_fits.pdf")
 
-    del c2, h1, h2, g1, g2, cx
+    #del c2, h1, h2, g1, g2, cx
 
 
 
@@ -596,12 +602,17 @@ def make_em_fraction_calibrations( c, fName, cut, plotBase ) :
             title1 = "L1CaloJets HCAL1 - EM %.2f to %.2f" % (f_low, f_high)
             #title2 = "L1CaloJets HCAL2 - EM %.2f to %.2f" % (f_low, f_high)
             title2 = "HCAL Calibration vs. Reco Jet P_{T}"
-            c.SetTitle("jetPt_ttbar_HCALfocus_absEta%s_to_%s EM_frac_%s_to_%s" % (eta[0].replace('.','p'), eta[1].replace('.','p'), str(f_low).replace('.','p'), str(f_high).replace('.','p')))
-            g = drawPointsHists(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis, False, plotBase)
+            c.SetTitle("jetPt_ttbar_HCALfocus_absEta%s_to_%s_EM_frac_%s_to_%s" % (eta[0].replace('.','p'), eta[1].replace('.','p'), str(f_low).replace('.','p'), str(f_high).replace('.','p')))
+            g_and_fit = drawPointsHists(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis, False, plotBase, True)
+            g = g_and_fit[0]
+            f = g_and_fit[1]
             g.SetTitle('%i_EM_frac_%s_to_%s_absEta_%s_to_%s' % (i, str(f_low).replace('.','p'), str(f_high).replace('.','p'), eta[0].replace('.','p'), eta[1].replace('.','p') ) )
             g.SetName('%i_EM_frac_%s_to_%s_absEta_%s_to_%s' % (i, str(f_low).replace('.','p'), str(f_high).replace('.','p'), eta[0].replace('.','p'), eta[1].replace('.','p') ) )
+            f.SetTitle('%i_EM_frac_%s_to_%s_absEta_%s_to_%s_fit' % (i, str(f_low).replace('.','p'), str(f_high).replace('.','p'), eta[0].replace('.','p'), eta[1].replace('.','p') ) )
+            f.SetName('%i_EM_frac_%s_to_%s_absEta_%s_to_%s_fit' % (i, str(f_low).replace('.','p'), str(f_high).replace('.','p'), eta[0].replace('.','p'), eta[1].replace('.','p') ) )
             print g
             g.Write()
+            f.Write()
             #x = ROOT.Double(0.)
             #y = ROOT.Double(0.)
             #for p in range( g.GetN() ) :
