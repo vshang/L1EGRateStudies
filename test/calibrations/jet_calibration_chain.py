@@ -14,10 +14,33 @@ def prepare_calibration_py_cfg( quantile_map ) :
     for k, v in quantile_map.iteritems() :
         print k, v
 
+    # Currently Pt binning is constant for all regions
+    o_file.write( "\tjetPtBins = cms.vdouble([ 0.0" )
+    pt_binning = []
+    pt_binning_array = get_x_binning()
+    for val in pt_binning_array :
+        if val == 0.0 : continue # skip to keep commans easy
+        pt_binning.append( val )
+        o_file.write( ",%.1f" % val )
+    o_file.write( "]),\n" )
+    print pt_binning
+
+    prepare_calo_region_calibrations( 'Barrel', 0.0, 1.5, o_file, quantile_map )
+    prepare_calo_region_calibrations( 'HGCal', 1.5, 3.0, o_file, quantile_map )
+    prepare_calo_region_calibrations( 'HF', 3.0, 6.0, o_file, quantile_map )
+
+    o_file.close()
+
+def prepare_calo_region_calibrations( calo_region_name, eta_min, eta_max, o_file, quantile_map ) :
     # EM fraction
-    o_file.write( "\temFractionBins = cms.vdouble([ 0.00" )
+    o_file.write( "\temFractionBins%s = cms.vdouble([ 0.00" % calo_region_name )
     em_frac_list = [0.0,]
     for k, v in quantile_map.iteritems() :
+
+        # Check this entry is in the correct eta range
+        if v[2] < eta_min : continue
+        if v[3] > eta_max : continue
+
         # continue if not increasing value
         if v[1] <= em_frac_list[-1] : continue
         em_frac_list.append( v[1] )
@@ -29,33 +52,32 @@ def prepare_calibration_py_cfg( quantile_map ) :
     print em_frac_list
 
     # Eta binning
-    o_file.write( "\tabsEtaBins = cms.vdouble([ 0.00" )
-    abs_eta_list = [0.0,]
+    o_file.write( "\tabsEtaBins%s = cms.vdouble([ %.2f" % (calo_region_name, eta_min) )
+    abs_eta_list = [eta_min,]
     for k, v in quantile_map.iteritems() :
+
+        # Check this entry is in the correct eta range
+        if v[2] < eta_min : continue
+        if v[3] > eta_max : continue
+
         # continue if not increasing value
         if v[3] <= abs_eta_list[-1] : continue
         abs_eta_list.append( v[3] )
         o_file.write( ",%.2f" % v[3] )
     o_file.write( "]),\n" )
     print abs_eta_list
-
-    # Pt binning
-    o_file.write( "\tjetPtBins = cms.vdouble([ 0.0" )
-    pt_binning = []
-    pt_binning_array = get_x_binning()
-    for val in pt_binning_array :
-        if val == 0.0 : continue # skip to keep commans easy
-        pt_binning.append( val )
-        o_file.write( ",%.1f" % val )
-    o_file.write( "]),\n" )
-    print pt_binning
         
     # Now huge loop of values for each bin
-    o_file.write( "\tjetCalibrations = cms.vdouble([\n" )
+    o_file.write( "\tjetCalibrations%s = cms.vdouble([\n" % calo_region_name )
     x = ROOT.Double(0.)
     y = ROOT.Double(0.)
     cnt = 1
     for k, v in quantile_map.iteritems() :
+
+        # Check this entry is in the correct eta range
+        if v[2] < eta_min : continue
+        if v[3] > eta_max : continue
+
         val_string = ''
         for point in range( v[-1].GetN() ) :
             v[-1].GetPoint( point, x, y )
@@ -69,10 +91,7 @@ def prepare_calibration_py_cfg( quantile_map ) :
         o_file.write( "\t\t%s\n" % val_string )
         #print val_string
         cnt += 1
-    o_file.write( "\t])\n" )
-            
-    
-    o_file.close()
+    o_file.write( "\t]),\n" )
 
 def get_quantile_map( calib_fName ) :
 
@@ -197,7 +216,7 @@ def calibrate( quantile_map, abs_jet_eta, ecal_L1EG_jet_pt, ecal_pt, jet_pt ) :
 
 if '__main__' in __name__ :
 
-    base= '/data/truggles/l1CaloJets_20190210v8/'
+    base= '/data/truggles/l1CaloJets_20190210v7/'
     #base= '/data/truggles/l1CaloJets_20190206/'
 
     for shape in [
@@ -216,8 +235,8 @@ if '__main__' in __name__ :
         #'minBias_PU200_v2',
         #'ttbar_PU0_v2',
         #'ttbar_PU200_v2',
-        #'ttbar_PU200_v7',
-        'minBias_PU200_v8',
+        'ttbar_PU200_v7',
+        #'minBias_PU200_v8',
     ] :
         
         #jetsF0 = 'merged_QCD-PU%s.root' % shape
@@ -246,12 +265,12 @@ if '__main__' in __name__ :
         jetFile.Close()
 
         """ Add new calibrations to TTree """
-        #version = shape.split('_')[-1]
-        #quantile_map = get_quantile_map( 'jet_em_calibrations_'+version+'.root' )
-        ###prepare_calibration_py_cfg( quantile_map )
+        version = shape.split('_')[-1]
+        quantile_map = get_quantile_map( 'jet_em_calibrations_'+version+'.root' )
+        prepare_calibration_py_cfg( quantile_map )
         #add_calibration( base+jetsF0, quantile_map )
         """ Add Stage-2 Calibrations which do a good job up to 50 GeV """
-        add_stage2_calibration( base+jetsF0, 'stage-2_calib_stage2_genOverReco_by_reco.root' )
+        #add_stage2_calibration( base+jetsF0, 'stage-2_calib_stage2_genOverReco_by_reco.root' )
 
         """ Plot Results """
         jetFile = ROOT.TFile( base+jetsF0, 'r' )
