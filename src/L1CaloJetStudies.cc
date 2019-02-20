@@ -173,14 +173,6 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
             double lumi;
             double event;
             float nTruePU;
-            float iPhi_ET_rings_ecal;
-            float iPhi_ET_rings_l1eg;
-            float iPhi_ET_rings_hcal;
-            float iPhi_ET_rings_total;
-            float iPhi_nTowers_rings_ecal;
-            float iPhi_nTowers_rings_l1eg;
-            float iPhi_nTowers_rings_hcal;
-            float iPhi_nTowers_rings_total;
             float total_et;
             float total_nTowers;
             float ecal_pt;
@@ -371,14 +363,6 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("ecal_L1EG_jet_PU_cor_pt", &treeinfo.ecal_L1EG_jet_PU_cor_pt);
     tree->Branch("hcal_PU_cor_pt", &treeinfo.hcal_PU_cor_pt);
     tree->Branch("jet_PU_cor_pt", &treeinfo.jet_PU_cor_pt);
-    tree->Branch("iPhi_ET_rings_ecal", &treeinfo.iPhi_ET_rings_ecal);
-    tree->Branch("iPhi_ET_rings_l1eg", &treeinfo.iPhi_ET_rings_l1eg);
-    tree->Branch("iPhi_ET_rings_hcal", &treeinfo.iPhi_ET_rings_hcal);
-    tree->Branch("iPhi_ET_rings_total", &treeinfo.iPhi_ET_rings_total);
-    tree->Branch("iPhi_nTowers_rings_ecal", &treeinfo.iPhi_nTowers_rings_ecal);
-    tree->Branch("iPhi_nTowers_rings_l1eg", &treeinfo.iPhi_nTowers_rings_l1eg);
-    tree->Branch("iPhi_nTowers_rings_hcal", &treeinfo.iPhi_nTowers_rings_hcal);
-    tree->Branch("iPhi_nTowers_rings_total", &treeinfo.iPhi_nTowers_rings_total);
     tree->Branch("total_et", &treeinfo.total_et);
     tree->Branch("total_nTowers", &treeinfo.total_nTowers);
     tree->Branch("ecal_pt", &treeinfo.ecal_pt);
@@ -501,6 +485,7 @@ L1CaloJetStudies::~L1CaloJetStudies()
 void
 L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+    if (debug) printf("Starting L1CaloJetStudies Analyzer\n");
     using namespace edm;
 
     nEvents->Fill( 1.0 );
@@ -950,6 +935,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
     } // end GenJets loop
   } // end if NOT doRate
+    if (debug) printf("Ending L1CaloJetStudies Analyzer\n");
 }
 
 
@@ -1040,14 +1026,6 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
     treeinfo.ecal_L1EG_jet_PU_cor_pt = caloJet.GetExperimentalParam("ecal_L1EG_jet_PU_cor_pt");
     treeinfo.hcal_PU_cor_pt = caloJet.GetExperimentalParam("hcal_PU_cor_pt");
     treeinfo.jet_PU_cor_pt = caloJet.GetExperimentalParam("jet_PU_cor_pt");
-    treeinfo.iPhi_ET_rings_ecal = caloJet.GetExperimentalParam("iPhi_ET_rings_ecal");
-    treeinfo.iPhi_ET_rings_l1eg = caloJet.GetExperimentalParam("iPhi_ET_rings_l1eg");
-    treeinfo.iPhi_ET_rings_hcal = caloJet.GetExperimentalParam("iPhi_ET_rings_hcal");
-    treeinfo.iPhi_ET_rings_total = caloJet.GetExperimentalParam("iPhi_ET_rings_total");
-    treeinfo.iPhi_nTowers_rings_ecal = caloJet.GetExperimentalParam("iPhi_nTowers_rings_ecal");
-    treeinfo.iPhi_nTowers_rings_l1eg = caloJet.GetExperimentalParam("iPhi_nTowers_rings_l1eg");
-    treeinfo.iPhi_nTowers_rings_hcal = caloJet.GetExperimentalParam("iPhi_nTowers_rings_hcal");
-    treeinfo.iPhi_nTowers_rings_total = caloJet.GetExperimentalParam("iPhi_nTowers_rings_total");
     treeinfo.total_et = caloJet.GetExperimentalParam("total_et");
     treeinfo.total_nTowers = caloJet.GetExperimentalParam("total_nTowers");
 
@@ -1130,14 +1108,6 @@ L1CaloJetStudies::fill_tree_null() {
     treeinfo.ecal_L1EG_jet_PU_cor_pt = -9;
     treeinfo.hcal_PU_cor_pt = -9;
     treeinfo.jet_PU_cor_pt = -9;
-    treeinfo.iPhi_ET_rings_ecal = -9;
-    treeinfo.iPhi_ET_rings_l1eg = -9;
-    treeinfo.iPhi_ET_rings_hcal = -9;
-    treeinfo.iPhi_ET_rings_total = -9;
-    treeinfo.iPhi_nTowers_rings_ecal = -9;
-    treeinfo.iPhi_nTowers_rings_l1eg = -9;
-    treeinfo.iPhi_nTowers_rings_hcal = -9;
-    treeinfo.iPhi_nTowers_rings_total = -9;
     treeinfo.total_et = -9;
     treeinfo.total_nTowers = -9;
 
