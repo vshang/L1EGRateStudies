@@ -2,12 +2,16 @@ import FWCore.ParameterSet.Config as cms
 
 from Configuration.StandardSequences.Eras import eras
 
-process = cms.Process("L1Jets2",eras.Phase2_trigger)
+process = cms.Process('L1Jets2',eras.Phase2C4_trigger)
 
 process.load('Configuration.StandardSequences.Services_cff')
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.load('Configuration.EventContent.EventContent_cff')
-process.MessageLogger.categories = cms.untracked.vstring('L1EGRateStudies', 'FwkReport')
+process.load('Configuration.Geometry.GeometryExtended2023D35Reco_cff')
+process.load('Configuration.Geometry.GeometryExtended2023D35_cff')
+process.load('Configuration.StandardSequences.MagneticField_cff')
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+process.MessageLogger.categories = cms.untracked.vstring('L1CaloJetStudies', 'FwkReport')
 process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
    reportEvery = cms.untracked.int32(100)
 )
@@ -17,45 +21,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.source = cms.Source("PoolSource",
    fileNames = cms.untracked.vstring(
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_1.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_10.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_11.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_12.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_13.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_14.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_15.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_16.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_17.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_18.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_19.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_2.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_20.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_21.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_22.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_24.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_25.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_26.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_27.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_28.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_29.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_3.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_30.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_31.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_32.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_33.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_34.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_35.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_36.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_39.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_4.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_41.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_42.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_43.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_5.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_6.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_7.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_8.root',
-        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_9.root',
+        'file:./output_round1.root',
 
     ),
    dropDescendantsOfDroppedBranches=cms.untracked.bool(False),
@@ -64,14 +30,8 @@ process.source = cms.Source("PoolSource",
 # All this stuff just runs the various EG algorithms that we are studying
                          
 # ---- Global Tag :
-process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
-#process.GlobalTag = GlobalTag(process.GlobalTag, '100X_upgrade2023_realistic_v1', '')
-process.GlobalTag = GlobalTag(process.GlobalTag, '93X_upgrade2023_realistic_v5', '')
-
-# Choose a 2030 geometry!
-process.load('Configuration.Geometry.GeometryExtended2023D17Reco_cff')
-process.load('Configuration.StandardSequences.MagneticField_cff')
+process.GlobalTag = GlobalTag(process.GlobalTag, '103X_upgrade2023_realistic_v2', '') 
 
 
 
