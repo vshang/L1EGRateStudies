@@ -29,7 +29,7 @@ dataMap = OrderedDict()
 #dataMap['QCD-PU0'] = {'das' : '/QCD_Pt-0to1000_Tune4C_14TeV_pythia8/PhaseIIFall17D-L1TnoPU_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW'}
 #dataMap['QCD-PU200'] = {'das' : '/QCD_Pt-0to1000_Tune4C_14TeV_pythia8/PhaseIIFall17D-L1TPU200_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW'}
 #dataMap['minBias-PU0'] = {'das' : '/SingleNeutrino/PhaseIIFall17D-L1TnoPU_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW'}
-#dataMap['minBias-PU200'] = {'das' : '/SingleNeutrino/PhaseIIFall17D-L1TPU200_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW'}
+dataMap['minBias-PU200'] = {'das' : '/SingleNeutrino/PhaseIIFall17D-L1TPU200_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW'}
 ##
 ###dataMap['QCD-PU140'] = {'das' : '/QCD_Pt-0to1000_Tune4C_14TeV_pythia8/PhaseIIFall17D-L1TPU140_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW'}
 #dataMap['minBias-PU140'] = {'das' : '/SingleNeutrino/PhaseIIFall17D-L1TPU140_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW'}
@@ -37,6 +37,14 @@ dataMap = OrderedDict()
 #dataMap['TTbar-PU0'] = {'das' : '/TT_TuneCUETP8M2T4_14TeV-powheg-pythia8/PhaseIIFall17D-L1TnoPU_93X_upgrade2023_realistic_v5-v2/GEN-SIM-DIGI-RAW'}
 #dataMap['TTbar-PU140'] = {'das' : '/TT_TuneCUETP8M2T4_14TeV-powheg-pythia8/PhaseIIFall17D-L1TPU140_93X_upgrade2023_realistic_v5-v2/GEN-SIM-DIGI-RAW'}
 dataMap['TTbar-PU200'] = {'das' : '/TT_TuneCUETP8M2T4_14TeV-powheg-pythia8/PhaseIIFall17D-L1TPU200_93X_upgrade2023_realistic_v5-v2/GEN-SIM-DIGI-RAW'}
+
+#dataMap['SingleTau-PU140'] = {'das' : '/SingleTau_FlatPt-2to150/PhaseIIFall17D-L1TPU140_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW'}
+#dataMap['SingleTau-PU200'] = {'das' : '/SingleTau_FlatPt-2to150/PhaseIIFall17D-L1TPU200_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW'}
+#dataMap['SingleTau-PU0'] = {'das' : '/SingleTau_FlatPt-2to150/PhaseIIFall17D-L1TnoPU_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW'}
+
+#dataMap['SingleTau-PU140'] = {'das' : '/GluGluHToTauTau_M125_14TeV_powheg_pythia8/PhaseIIFall17D-L1TPU140_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW'}
+#dataMap['SingleTau-PU200'] = {'das' : '/GluGluHToTauTau_M125_14TeV_powheg_pythia8/PhaseIIFall17D-L1TPU200_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW'}
+#dataMap['SingleTau-PU0'] = {'das' : '/GluGluHToTauTau_M125_14TeV_powheg_pythia8/PhaseIIFall17D-L1TnoPU_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW'}
 
 # dasgoclient --query="dataset=/SingleNeutrino/PhaseIIFall17D-L1T*_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW"
 # dasgoclient --query="dataset=/QCD_Pt-0to1000_Tune4C_14TeV_pythia8/PhaseIIFall17D-L1T*_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW"
@@ -62,7 +70,7 @@ if __name__ == '__main__':
     for k in dataMap.keys() :
 
         # Normal eff and rate analysis
-        config.General.requestName = '20190220_%s_r1_calib_v1' % k
+        config.General.requestName = '20190220_%s_r1_calib_v2' % k
         config.JobType.psetName        = 'r1_crabby_jets.py'
         config.Data.inputDataset = dataMap[ k ][ 'das' ]
         if 'PU200' in k or 'PU140' in k :

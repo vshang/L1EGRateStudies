@@ -17,7 +17,46 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.source = cms.Source("PoolSource",
    fileNames = cms.untracked.vstring(
-        'file:./output_round1.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_1.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_10.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_11.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_12.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_13.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_14.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_15.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_16.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_17.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_18.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_19.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_2.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_20.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_21.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_22.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_24.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_25.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_26.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_27.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_28.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_29.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_3.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_30.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_31.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_32.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_33.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_34.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_35.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_36.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_39.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_4.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_41.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_42.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_43.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_5.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_6.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_7.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_8.root',
+        'file:/data/truggles/l1CaloJets_20190220v2/TTbar/output_round1_9.root',
+
     ),
    dropDescendantsOfDroppedBranches=cms.untracked.bool(False),
 )
@@ -93,7 +132,7 @@ process.panalyzer = cms.Path(process.analyzer)
 
 
 process.TFileService = cms.Service("TFileService", 
-   fileName = cms.string( "output_round2.root" ), 
+   fileName = cms.string( "output_round2_eff_hists.root" ), 
    closeFileFast = cms.untracked.bool(True)
 )
 

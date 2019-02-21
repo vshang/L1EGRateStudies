@@ -62,14 +62,14 @@ if __name__ == '__main__':
     for k in dataMap.keys() :
 
         # Normal eff and rate analysis
-        config.General.requestName = '20190210_%s_v7' % k
+        config.General.requestName = '20190219_%s_calib_fit_v4' % k
         config.JobType.psetName        = 'crabby_jets.py'
         if 'minBias' in k :
             config.JobType.psetName        = 'rate_crabby_jets.py'
             #config.Data.totalUnits      = 30 # FIXME - for test
         config.Data.inputDataset = dataMap[ k ][ 'das' ]
         if 'PU200' in k or 'PU140' in k :
-            config.Data.unitsPerJob        = 10 # events / job when using EventAwareLumiBased
+            config.Data.unitsPerJob        = 3 # events / job when using EventAwareLumiBased
             #config.Data.unitsPerJob        = 5 # events / job when using EventAwareLumiBased
             #config.Data.totalUnits      = 100 # for tests
         else :

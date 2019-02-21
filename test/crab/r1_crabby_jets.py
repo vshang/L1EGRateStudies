@@ -84,7 +84,7 @@ process.L1TowerCalibrationProducer.hfSF = cms.double(1.2)
 # ----    Produce the L1CaloJets with the L1EG clusters as ECAL seeds
 
 process.load('L1Trigger/L1CaloTrigger/L1CaloJetProducer_cfi')
-
+process.L1CaloJetProducer.EtMinForCollection = cms.double(20)
 
 
 process.pL1Objs = cms.Path( 
