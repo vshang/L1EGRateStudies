@@ -62,7 +62,7 @@ if __name__ == '__main__':
     for k in dataMap.keys() :
 
         # Normal eff and rate analysis
-        config.General.requestName = '20190219_%s_calib_fit_v4' % k
+        config.General.requestName = '20190219_%s_slc7_v1' % k
         config.JobType.psetName        = 'crabby_jets.py'
         if 'minBias' in k :
             config.JobType.psetName        = 'rate_crabby_jets.py'
