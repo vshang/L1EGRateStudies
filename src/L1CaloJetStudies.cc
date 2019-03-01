@@ -187,22 +187,22 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
             float total_et;
             float total_nTowers;
             float ecal_pt;
-            float ecal_eta;
-            float ecal_phi;
-            float ecal_mass;
-            float ecal_energy;
+            //float ecal_eta;
+            //float ecal_phi;
+            //float ecal_mass;
+            //float ecal_energy;
             float ecal_L1EG_jet_pt;
-            float ecal_L1EG_jet_eta;
-            float ecal_L1EG_jet_phi;
-            float ecal_L1EG_jet_mass;
-            float ecal_L1EG_jet_energy;
+            //float ecal_L1EG_jet_eta;
+            //float ecal_L1EG_jet_phi;
+            //float ecal_L1EG_jet_mass;
+            //float ecal_L1EG_jet_energy;
             float hcal_pt;
             float hcal_calibration;
             float hcal_pt_calibration;
-            float hcal_eta;
-            float hcal_phi;
-            float hcal_mass;
-            float hcal_energy;
+            //float hcal_eta;
+            //float hcal_phi;
+            //float hcal_mass;
+            //float hcal_energy;
             float jet_pt;
             float jet_pt_calibration;
             float transition_calibration;
@@ -210,21 +210,11 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
             float jet_phi;
             float jet_mass;
             float jet_energy;
-            float ecal_PU_pt;
-            float ecal_L1EG_jet_PU_pt;
-            float hcal_PU_pt;
-            float ecal_PU_cor_pt;
-            float ecal_L1EG_jet_PU_cor_pt;
-            float hcal_PU_cor_pt;
-            float jet_PU_cor_pt;
             float hovere;
             float hcal_3x3;
             float hcal_5x5;
             float hcal_7x7;
-            float hcal_2x2_1;
-            float hcal_2x2_2;
-            float hcal_2x2_3;
-            float hcal_2x2_4;
+            float hcal_2x2;
             float seed_pt;
             float seed_iEta;
             float seed_iPhi;
@@ -363,32 +353,25 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("lumi", &treeinfo.lumi);
     tree->Branch("event", &treeinfo.event);
     tree->Branch("nTruePU", &treeinfo.nTruePU);
-    tree->Branch("ecal_PU_pt", &treeinfo.ecal_PU_pt);
-    tree->Branch("ecal_L1EG_jet_PU_pt", &treeinfo.ecal_L1EG_jet_PU_pt);
-    tree->Branch("hcal_PU_pt", &treeinfo.hcal_PU_pt);
-    tree->Branch("ecal_PU_cor_pt", &treeinfo.ecal_PU_cor_pt);
-    tree->Branch("ecal_L1EG_jet_PU_cor_pt", &treeinfo.ecal_L1EG_jet_PU_cor_pt);
-    tree->Branch("hcal_PU_cor_pt", &treeinfo.hcal_PU_cor_pt);
-    tree->Branch("jet_PU_cor_pt", &treeinfo.jet_PU_cor_pt);
     tree->Branch("total_et", &treeinfo.total_et);
     tree->Branch("total_nTowers", &treeinfo.total_nTowers);
     tree->Branch("ecal_pt", &treeinfo.ecal_pt);
-    tree->Branch("ecal_eta", &treeinfo.ecal_eta);
-    tree->Branch("ecal_phi", &treeinfo.ecal_phi);
-    tree->Branch("ecal_mass", &treeinfo.ecal_mass);
-    tree->Branch("ecal_energy", &treeinfo.ecal_energy);
+    //tree->Branch("ecal_eta", &treeinfo.ecal_eta);
+    //tree->Branch("ecal_phi", &treeinfo.ecal_phi);
+    //tree->Branch("ecal_mass", &treeinfo.ecal_mass);
+    //tree->Branch("ecal_energy", &treeinfo.ecal_energy);
     tree->Branch("ecal_L1EG_jet_pt", &treeinfo.ecal_L1EG_jet_pt);
-    tree->Branch("ecal_L1EG_jet_eta", &treeinfo.ecal_L1EG_jet_eta);
-    tree->Branch("ecal_L1EG_jet_phi", &treeinfo.ecal_L1EG_jet_phi);
-    tree->Branch("ecal_L1EG_jet_mass", &treeinfo.ecal_L1EG_jet_mass);
-    tree->Branch("ecal_L1EG_jet_energy", &treeinfo.ecal_L1EG_jet_energy);
+    //tree->Branch("ecal_L1EG_jet_eta", &treeinfo.ecal_L1EG_jet_eta);
+    //tree->Branch("ecal_L1EG_jet_phi", &treeinfo.ecal_L1EG_jet_phi);
+    //tree->Branch("ecal_L1EG_jet_mass", &treeinfo.ecal_L1EG_jet_mass);
+    //tree->Branch("ecal_L1EG_jet_energy", &treeinfo.ecal_L1EG_jet_energy);
     tree->Branch("hcal_pt", &treeinfo.hcal_pt);
     tree->Branch("hcal_calibration", &treeinfo.hcal_calibration);
     tree->Branch("hcal_pt_calibration", &treeinfo.hcal_pt_calibration);
-    tree->Branch("hcal_eta", &treeinfo.hcal_eta);
-    tree->Branch("hcal_phi", &treeinfo.hcal_phi);
-    tree->Branch("hcal_mass", &treeinfo.hcal_mass);
-    tree->Branch("hcal_energy", &treeinfo.hcal_energy);
+    //tree->Branch("hcal_eta", &treeinfo.hcal_eta);
+    //tree->Branch("hcal_phi", &treeinfo.hcal_phi);
+    //tree->Branch("hcal_mass", &treeinfo.hcal_mass);
+    //tree->Branch("hcal_energy", &treeinfo.hcal_energy);
     tree->Branch("jet_pt", &treeinfo.jet_pt);
     tree->Branch("jet_pt_calibration", &treeinfo.jet_pt_calibration);
     tree->Branch("transition_calibration", &treeinfo.transition_calibration);
@@ -400,10 +383,7 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("hcal_3x3", &treeinfo.hcal_3x3);
     tree->Branch("hcal_5x5", &treeinfo.hcal_5x5);
     tree->Branch("hcal_7x7", &treeinfo.hcal_7x7);
-    tree->Branch("hcal_2x2_1", &treeinfo.hcal_2x2_1);
-    tree->Branch("hcal_2x2_2", &treeinfo.hcal_2x2_2);
-    tree->Branch("hcal_2x2_3", &treeinfo.hcal_2x2_3);
-    tree->Branch("hcal_2x2_4", &treeinfo.hcal_2x2_4);
+    tree->Branch("hcal_2x2", &treeinfo.hcal_2x2);
     tree->Branch("seed_pt", &treeinfo.seed_pt);
     tree->Branch("seed_iEta", &treeinfo.seed_iEta);
     tree->Branch("seed_iPhi", &treeinfo.seed_iPhi);
@@ -554,7 +534,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     }
 
 
-    std::cout << " -- Input L1CaloTaus: " << caloJets.size() << std::endl;
+    //std::cout << " -- Input L1CaloTaus: " << caloJets.size() << std::endl;
 
     // Sort caloJets so we can always pick highest pt caloJet matching cuts
     std::sort(begin(caloJets), end(caloJets), [](const l1slhc::L1CaloJet& a, const l1slhc::L1CaloJet& b){return a.pt() > b.pt();});
@@ -1035,33 +1015,26 @@ L1CaloJetStudies::integrateDown(TH1F * hist) {
 void
 L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
     // PU Vars
-    treeinfo.ecal_PU_pt = caloJet.GetExperimentalParam("ecal_PU_pt");
-    treeinfo.ecal_L1EG_jet_PU_pt = caloJet.GetExperimentalParam("ecal_L1EG_jet_PU_pt");
-    treeinfo.hcal_PU_pt = caloJet.GetExperimentalParam("hcal_PU_pt");
-    treeinfo.ecal_PU_cor_pt = caloJet.GetExperimentalParam("ecal_PU_cor_pt");
-    treeinfo.ecal_L1EG_jet_PU_cor_pt = caloJet.GetExperimentalParam("ecal_L1EG_jet_PU_cor_pt");
-    treeinfo.hcal_PU_cor_pt = caloJet.GetExperimentalParam("hcal_PU_cor_pt");
-    treeinfo.jet_PU_cor_pt = caloJet.GetExperimentalParam("jet_PU_cor_pt");
     treeinfo.total_et = caloJet.GetExperimentalParam("total_et");
     treeinfo.total_nTowers = caloJet.GetExperimentalParam("total_nTowers");
 
     // As of 28 May 2018 caloJet_pt is post-calibration
     treeinfo.ecal_pt = caloJet.GetExperimentalParam("ecal_pt");
-    treeinfo.ecal_eta = caloJet.GetExperimentalParam("ecal_eta");
-    treeinfo.ecal_phi = caloJet.GetExperimentalParam("ecal_phi");
-    treeinfo.ecal_mass = caloJet.GetExperimentalParam("ecal_mass");
-    treeinfo.ecal_energy = caloJet.GetExperimentalParam("ecal_energy");
+    //treeinfo.ecal_eta = caloJet.GetExperimentalParam("ecal_eta");
+    //treeinfo.ecal_phi = caloJet.GetExperimentalParam("ecal_phi");
+    //treeinfo.ecal_mass = caloJet.GetExperimentalParam("ecal_mass");
+    //treeinfo.ecal_energy = caloJet.GetExperimentalParam("ecal_energy");
     treeinfo.ecal_L1EG_jet_pt = caloJet.GetExperimentalParam("ecal_L1EG_jet_pt");
-    treeinfo.ecal_L1EG_jet_eta = caloJet.GetExperimentalParam("ecal_L1EG_jet_eta");
-    treeinfo.ecal_L1EG_jet_phi = caloJet.GetExperimentalParam("ecal_L1EG_jet_phi");
-    treeinfo.ecal_L1EG_jet_energy = caloJet.GetExperimentalParam("ecal_L1EG_jet_energy");
+    //treeinfo.ecal_L1EG_jet_eta = caloJet.GetExperimentalParam("ecal_L1EG_jet_eta");
+    //treeinfo.ecal_L1EG_jet_phi = caloJet.GetExperimentalParam("ecal_L1EG_jet_phi");
+    //treeinfo.ecal_L1EG_jet_energy = caloJet.GetExperimentalParam("ecal_L1EG_jet_energy");
     treeinfo.hcal_pt = caloJet.GetExperimentalParam("hcal_pt");
     treeinfo.hcal_calibration = caloJet.GetExperimentalParam("hcal_calibration");
     treeinfo.hcal_pt_calibration = caloJet.GetExperimentalParam("hcal_pt_calibration");
-    treeinfo.hcal_eta = caloJet.GetExperimentalParam("hcal_eta");
-    treeinfo.hcal_phi = caloJet.GetExperimentalParam("hcal_phi");
-    treeinfo.hcal_mass = caloJet.GetExperimentalParam("hcal_mass");
-    treeinfo.hcal_energy = caloJet.GetExperimentalParam("hcal_energy");
+    //treeinfo.hcal_eta = caloJet.GetExperimentalParam("hcal_eta");
+    //treeinfo.hcal_phi = caloJet.GetExperimentalParam("hcal_phi");
+    //treeinfo.hcal_mass = caloJet.GetExperimentalParam("hcal_mass");
+    //treeinfo.hcal_energy = caloJet.GetExperimentalParam("hcal_energy");
     treeinfo.jet_pt = caloJet.GetExperimentalParam("jet_pt");
     treeinfo.jet_pt_calibration = caloJet.GetExperimentalParam("jet_pt_calibration");
     //treeinfo.transition_calibration = caloJet.GetExperimentalParam("transition_calibration");
@@ -1081,10 +1054,7 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
     treeinfo.hcal_3x3 = caloJet.GetExperimentalParam("hcal_3x3");
     treeinfo.hcal_5x5 = caloJet.GetExperimentalParam("hcal_5x5");
     treeinfo.hcal_7x7 = caloJet.GetExperimentalParam("hcal_7x7");
-    treeinfo.hcal_2x2_1 = caloJet.GetExperimentalParam("hcal_2x2_1");
-    treeinfo.hcal_2x2_2 = caloJet.GetExperimentalParam("hcal_2x2_2");
-    treeinfo.hcal_2x2_3 = caloJet.GetExperimentalParam("hcal_2x2_3");
-    treeinfo.hcal_2x2_4 = caloJet.GetExperimentalParam("hcal_2x2_4");
+    treeinfo.hcal_2x2 = caloJet.GetExperimentalParam("hcal_2x2");
     treeinfo.ecal_nHits = caloJet.GetExperimentalParam("ecal_nHits");
     treeinfo.ecal_leading_pt = caloJet.GetExperimentalParam("ecal_leading_pt");
     treeinfo.ecal_leading_eta = caloJet.GetExperimentalParam("ecal_leading_eta");
@@ -1102,14 +1072,14 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
     treeinfo.ecal_nL1EGs = caloJet.GetExperimentalParam("ecal_nL1EGs");
     treeinfo.ecal_nL1EGs_standalone = caloJet.GetExperimentalParam("ecal_nL1EGs_standalone");
     treeinfo.ecal_nL1EGs_trkMatch = caloJet.GetExperimentalParam("ecal_nL1EGs_trkMatch");
-    treeinfo.deltaR_ecal_vs_jet = caloJet.GetExperimentalParam("deltaR_ecal_vs_jet");
-    treeinfo.deltaR_hcal_vs_jet = caloJet.GetExperimentalParam("deltaR_hcal_vs_jet");
-    treeinfo.deltaR_L1EGjet_vs_jet = caloJet.GetExperimentalParam("deltaR_L1EGjet_vs_jet");
-    //treeinfo.deltaR_hcal_vs_seed = caloJet.GetExperimentalParam("deltaR_hcal_vs_seed");
-    treeinfo.deltaR_ecal_vs_hcal = caloJet.GetExperimentalParam("deltaR_ecal_vs_hcal");
-    treeinfo.deltaR_ecal_vs_seed = caloJet.GetExperimentalParam("deltaR_ecal_vs_seed");
-    treeinfo.deltaR_ecal_lead_vs_jet = caloJet.GetExperimentalParam("deltaR_ecal_lead_vs_jet");
-    treeinfo.deltaR_ecal_lead_vs_ecal = caloJet.GetExperimentalParam("deltaR_ecal_lead_vs_ecal");
+    //treeinfo.deltaR_ecal_vs_jet = caloJet.GetExperimentalParam("deltaR_ecal_vs_jet");
+    //treeinfo.deltaR_hcal_vs_jet = caloJet.GetExperimentalParam("deltaR_hcal_vs_jet");
+    //treeinfo.deltaR_L1EGjet_vs_jet = caloJet.GetExperimentalParam("deltaR_L1EGjet_vs_jet");
+    ////treeinfo.deltaR_hcal_vs_seed = caloJet.GetExperimentalParam("deltaR_hcal_vs_seed");
+    //treeinfo.deltaR_ecal_vs_hcal = caloJet.GetExperimentalParam("deltaR_ecal_vs_hcal");
+    //treeinfo.deltaR_ecal_vs_seed = caloJet.GetExperimentalParam("deltaR_ecal_vs_seed");
+    //treeinfo.deltaR_ecal_lead_vs_jet = caloJet.GetExperimentalParam("deltaR_ecal_lead_vs_jet");
+    //treeinfo.deltaR_ecal_lead_vs_ecal = caloJet.GetExperimentalParam("deltaR_ecal_lead_vs_ecal");
     tree->Fill();
 }
 
@@ -1117,32 +1087,25 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
 void
 L1CaloJetStudies::fill_tree_null() {
     // Fill with -9 with no CaloJet fround
-    treeinfo.ecal_PU_pt = -9;
-    treeinfo.ecal_L1EG_jet_PU_pt = -9;
-    treeinfo.hcal_PU_pt = -9;
-    treeinfo.ecal_PU_cor_pt = -9;
-    treeinfo.ecal_L1EG_jet_PU_cor_pt = -9;
-    treeinfo.hcal_PU_cor_pt = -9;
-    treeinfo.jet_PU_cor_pt = -9;
     treeinfo.total_et = -9;
     treeinfo.total_nTowers = -9;
 
     treeinfo.ecal_pt = -9;
-    treeinfo.ecal_eta = -9;
-    treeinfo.ecal_phi = -9;
-    treeinfo.ecal_mass = -9;
-    treeinfo.ecal_energy = -9;
+    //treeinfo.ecal_eta = -9;
+    //treeinfo.ecal_phi = -9;
+    //treeinfo.ecal_mass = -9;
+    //treeinfo.ecal_energy = -9;
     treeinfo.ecal_L1EG_jet_pt = -9;
-    treeinfo.ecal_L1EG_jet_eta = -9;
-    treeinfo.ecal_L1EG_jet_phi = -9;
-    treeinfo.ecal_L1EG_jet_energy = -9;
+    //treeinfo.ecal_L1EG_jet_eta = -9;
+    //treeinfo.ecal_L1EG_jet_phi = -9;
+    //treeinfo.ecal_L1EG_jet_energy = -9;
     treeinfo.hcal_pt = -9;
     treeinfo.hcal_calibration = -9;
     treeinfo.hcal_pt_calibration = -9;
-    treeinfo.hcal_eta = -9;
-    treeinfo.hcal_phi = -9;
-    treeinfo.hcal_mass = -9;
-    treeinfo.hcal_energy = -9;
+    //treeinfo.hcal_eta = -9;
+    //treeinfo.hcal_phi = -9;
+    //treeinfo.hcal_mass = -9;
+    //treeinfo.hcal_energy = -9;
     treeinfo.jet_pt = -9;
     treeinfo.jet_pt_calibration = -9;
     treeinfo.transition_calibration = -9;
@@ -1161,10 +1124,7 @@ L1CaloJetStudies::fill_tree_null() {
     treeinfo.hcal_3x3 = -9;
     treeinfo.hcal_5x5 = -9;
     treeinfo.hcal_7x7 = -9;
-    treeinfo.hcal_2x2_1 = -9;
-    treeinfo.hcal_2x2_2 = -9;
-    treeinfo.hcal_2x2_3 = -9;
-    treeinfo.hcal_2x2_4 = -9;
+    treeinfo.hcal_2x2 = -9;
     treeinfo.ecal_nHits = -9;
     treeinfo.ecal_leading_pt = -9;
     treeinfo.ecal_leading_eta = -9;
