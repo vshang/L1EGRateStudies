@@ -98,6 +98,7 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
         // ----------member data ---------------------------
         bool doRate;
         bool debug;
+        bool use_gen_taus;
         
         double genMatchDeltaRcut;
         double genMatchRelPtcut;
@@ -132,6 +133,8 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
 
         edm::EDGetTokenT<std::vector<reco::GenJet>> genHadronicTausToken_;
         edm::Handle<std::vector<reco::GenJet>> genHTaus;
+
+        std::vector<reco::GenJet> * genCollection;
 
         // Stage2 Digis
         edm::EDGetTokenT<BXVector<l1t::Jet> > stage2JetToken_;
@@ -250,18 +253,14 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
             float deltaR;
             float deltaPhi;
             float deltaEta;
+            float genJet;
+            float genTau;
             float genJet_pt;
             float genJet_eta;
             float genJet_phi;
             float genJet_energy;
             float genJet_mass;
             float genJet_charge;
-            float genTau_pt;
-            float genTau_eta;
-            float genTau_phi;
-            float genTau_energy;
-            float genTau_mass;
-            float genTau_charge;
             float stage2jet_pt;
             float stage2jet_pt_calib;
             float stage2jet_eta;
@@ -302,6 +301,7 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
 L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     doRate(iConfig.getUntrackedParameter<bool>("doRate", false)),
     debug(iConfig.getUntrackedParameter<bool>("debug", false)),
+    use_gen_taus(iConfig.getUntrackedParameter<bool>("useGenTaus", false)),
     genMatchDeltaRcut(iConfig.getUntrackedParameter<double>("genMatchDeltaRcut", 0.3)),
     genMatchRelPtcut(iConfig.getUntrackedParameter<double>("genMatchRelPtcut", 0.5)),
     caloJetsToken_(consumes<l1slhc::L1CaloJetsCollection>(iConfig.getParameter<edm::InputTag>("L1CaloJetsInputTag"))),
@@ -420,18 +420,14 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("deltaR_gen", &treeinfo.deltaR);
     tree->Branch("deltaPhi_gen", &treeinfo.deltaPhi);
     tree->Branch("deltaEta_gen", &treeinfo.deltaEta);
+    tree->Branch("genJet", &treeinfo.genJet);
+    tree->Branch("genTau", &treeinfo.genTau);
     tree->Branch("genJet_pt", &treeinfo.genJet_pt);
     tree->Branch("genJet_eta", &treeinfo.genJet_eta);
     tree->Branch("genJet_phi", &treeinfo.genJet_phi);
     tree->Branch("genJet_energy", &treeinfo.genJet_energy);
     tree->Branch("genJet_mass", &treeinfo.genJet_mass);
     tree->Branch("genJet_charge", &treeinfo.genJet_charge);
-    tree->Branch("genTau_pt", &treeinfo.genTau_pt);
-    tree->Branch("genTau_eta", &treeinfo.genTau_eta);
-    tree->Branch("genTau_phi", &treeinfo.genTau_phi);
-    tree->Branch("genTau_energy", &treeinfo.genTau_energy);
-    tree->Branch("genTau_mass", &treeinfo.genTau_mass);
-    tree->Branch("genTau_charge", &treeinfo.genTau_charge);
     // Stage-2
     tree->Branch("stage2jet_pt", &treeinfo.stage2jet_pt);
     tree->Branch("stage2jet_pt_calib", &treeinfo.stage2jet_pt_calib);
@@ -657,8 +653,18 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     // Sort gen jets
     std::sort(begin(genJets), end(genJets), [](const reco::GenJet& a, const reco::GenJet& b){return a.pt() > b.pt();});
 
+    // Use a bool to toggel between matching to genJets and genTaus
+    if (use_gen_taus)
+    {
+        genCollection = &genHTauCollection;
+    }
+    else
+    {
+        genCollection = &genJets;
+    }
+
     int cnt = 0;
-    for (auto& genJet : genJets ) 
+    for (auto& genJet : *genCollection ) 
     {
         // Skip lowest pT Jets
         if (genJet.pt() < 10) break;  // no need for continue as we sorted by pT so we're done
@@ -828,6 +834,16 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     
     
     
+        if (use_gen_taus)
+        {
+            treeinfo.genTau = 1.;
+            treeinfo.genJet = 0.;
+        }
+        else
+        {
+            treeinfo.genTau = 0.;
+            treeinfo.genJet = 1.;
+        }
         treeinfo.genJet_pt = genJet.pt();
         treeinfo.genJet_eta = genJet.eta();
         treeinfo.genJet_phi = genJet.phi();
@@ -841,41 +857,6 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
 
 
-        // Gen Hadronic Taus
-        bool gen_tau_matched = false;
-        if ( genHTaus.isValid() )
-        {
-
-            // Find stage2 within dR 0.3, beginning with higest pt cand
-            for (auto& gen_tau : genHTauCollection)
-            {
-                if ( reco::deltaR( gen_tau.p4(), genJetP4 ) < 0.3 )
-                {
-                    treeinfo.genTau_pt = gen_tau.pt();
-                    treeinfo.genTau_eta = gen_tau.eta();
-                    treeinfo.genTau_phi = gen_tau.phi();
-                    treeinfo.genTau_energy = gen_tau.energy();
-                    treeinfo.genTau_mass = gen_tau.mass();
-                    treeinfo.genTau_charge = gen_tau.charge();
-                    gen_tau_matched = true;
-                    break;
-                }
-            }
-
-        }
-        if (!gen_tau_matched) // No Stage-2 Jets
-        {
-            treeinfo.genTau_pt = -9.;
-            treeinfo.genTau_eta = -9.;
-            treeinfo.genTau_phi = -9.;
-            treeinfo.genTau_energy = -9.;
-            treeinfo.genTau_mass = -9.;
-            treeinfo.genTau_charge = -9.;
-        } 
-    
-    
-    
-    
     
         //std::cout << "    ---!!!--- L1EG Size: " << caloJets.size() << std::endl;
         bool found_caloJet = false;
