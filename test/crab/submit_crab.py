@@ -36,7 +36,12 @@ dataMap = OrderedDict()
 
 #dataMap['TTbar-PU0'] = {'das' : '/TT_TuneCUETP8M2T4_14TeV-powheg-pythia8/PhaseIIFall17D-L1TnoPU_93X_upgrade2023_realistic_v5-v2/GEN-SIM-DIGI-RAW'}
 #dataMap['TTbar-PU140'] = {'das' : '/TT_TuneCUETP8M2T4_14TeV-powheg-pythia8/PhaseIIFall17D-L1TPU140_93X_upgrade2023_realistic_v5-v2/GEN-SIM-DIGI-RAW'}
-dataMap['TTbar-PU200'] = {'das' : '/TT_TuneCUETP8M2T4_14TeV-powheg-pythia8/PhaseIIFall17D-L1TPU200_93X_upgrade2023_realistic_v5-v2/GEN-SIM-DIGI-RAW'}
+#dataMap['TTbar-PU200'] = {'das' : '/TT_TuneCUETP8M2T4_14TeV-powheg-pythia8/PhaseIIFall17D-L1TPU200_93X_upgrade2023_realistic_v5-v2/GEN-SIM-DIGI-RAW'}
+
+#dataMap['TauGun-PU200'] = {'das' : '/SingleTau_FlatPt-2to150/PhaseIIFall17D-L1TPU200_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW'}
+#dataMap['TauGun-PU0'] = {'das' : '/SingleTau_FlatPt-2to150/PhaseIIFall17D-L1TnoPU_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW'}
+dataMap['ggHTauTau-PU200'] = {'das' : '/GluGluHToTauTau_M125_14TeV_powheg_pythia8/PhaseIIFall17D-L1TPU200_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW'}
+dataMap['ggHTauTau-PU0'] = {'das' : '/GluGluHToTauTau_M125_14TeV_powheg_pythia8/PhaseIIFall17D-L1TnoPU_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW'}
 
 # dasgoclient --query="dataset=/SingleNeutrino/PhaseIIFall17D-L1T*_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW"
 # dasgoclient --query="dataset=/QCD_Pt-0to1000_Tune4C_14TeV_pythia8/PhaseIIFall17D-L1T*_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW"
@@ -62,8 +67,10 @@ if __name__ == '__main__':
     for k in dataMap.keys() :
 
         # Normal eff and rate analysis
-        config.General.requestName = '20190304_%s_slc7_v1' % k
+        config.General.requestName = '20190305_%s_slc7_v2' % k
         config.JobType.psetName        = 'crabby_jets_93X_samples.py'
+        if 'Tau' in k :
+            config.JobType.psetName    = 'crabby_jets_93X_samples_with_taus.py'
         if 'minBias' in k :
             config.JobType.psetName        = 'rate_crabby_jets.py'
             #config.Data.totalUnits      = 30 # FIXME - for test
@@ -73,7 +80,7 @@ if __name__ == '__main__':
             #config.Data.unitsPerJob        = 5 # events / job when using EventAwareLumiBased
             #config.Data.totalUnits      = 100 # for tests
         else :
-            config.Data.unitsPerJob        = 3 # events / job when using EventAwareLumiBased
+            config.Data.unitsPerJob        = 1 # events / job when using EventAwareLumiBased
             #config.Data.totalUnits      = 30 # for tests
         #config.Data.unitsPerJob        = 2 # events / job when using EventAwareLumiBased
         #config.Data.totalUnits      = 10 # for tests

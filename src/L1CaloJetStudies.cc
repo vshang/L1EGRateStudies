@@ -301,7 +301,7 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
 L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     doRate(iConfig.getUntrackedParameter<bool>("doRate", false)),
     debug(iConfig.getUntrackedParameter<bool>("debug", false)),
-    use_gen_taus(iConfig.getUntrackedParameter<bool>("useGenTaus", false)),
+    use_gen_taus(iConfig.getUntrackedParameter<bool>("use_gen_taus", false)),
     genMatchDeltaRcut(iConfig.getUntrackedParameter<double>("genMatchDeltaRcut", 0.3)),
     genMatchRelPtcut(iConfig.getUntrackedParameter<double>("genMatchRelPtcut", 0.5)),
     caloJetsToken_(consumes<l1slhc::L1CaloJetsCollection>(iConfig.getParameter<edm::InputTag>("L1CaloJetsInputTag"))),
@@ -666,8 +666,8 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     int cnt = 0;
     for (auto& genJet : *genCollection ) 
     {
-        // Skip lowest pT Jets
-        if (genJet.pt() < 10) break;  // no need for continue as we sorted by pT so we're done
+        // Skip lowest pT Jets, don't skip for low pT taus
+        if (!use_gen_taus && genJet.pt() < 10) break;  // no need for continue as we sorted by pT so we're done
         // HGCal detector stops at abs(eta)=3.0, keep gen jets up to 3.5
         //if ( fabs(genJet.eta())  > 3.5) continue;
         ++cnt;
