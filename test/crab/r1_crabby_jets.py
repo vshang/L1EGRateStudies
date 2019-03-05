@@ -47,8 +47,6 @@ process.source = cms.Source("PoolSource",
    )
 )
 
-# All this stuff just runs the various EG algorithms that we are studying
-                         
 # ---- Global Tag :
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, '103X_upgrade2023_realistic_v2', '') 
