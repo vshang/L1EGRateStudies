@@ -263,6 +263,10 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
             float genJet_energy;
             float genJet_mass;
             float genJet_charge;
+            float genTau_n_prongs;
+            float genTau_n_photons;
+            float genTau_pt_prongs;
+            float genTau_pt_photons;
             float stage2jet_pt;
             float stage2jet_pt_calib;
             float stage2jet_eta;
@@ -432,6 +436,10 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("genJet_energy", &treeinfo.genJet_energy);
     tree->Branch("genJet_mass", &treeinfo.genJet_mass);
     tree->Branch("genJet_charge", &treeinfo.genJet_charge);
+    tree->Branch("genTau_n_prongs", &treeinfo.genTau_n_prongs);
+    tree->Branch("genTau_n_photons", &treeinfo.genTau_n_photons);
+    tree->Branch("genTau_pt_prongs", &treeinfo.genTau_pt_prongs);
+    tree->Branch("genTau_pt_photons", &treeinfo.genTau_pt_photons);
     // Stage-2
     tree->Branch("stage2jet_pt", &treeinfo.stage2jet_pt);
     tree->Branch("stage2jet_pt_calib", &treeinfo.stage2jet_pt_calib);
@@ -675,6 +683,34 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         // HGCal detector stops at abs(eta)=3.0, keep gen jets up to 3.5
         //if ( fabs(genJet.eta())  > 3.5) continue;
         ++cnt;
+
+
+        // Record DM (essentially) for the taus
+        treeinfo.genTau_n_prongs = 0;
+        treeinfo.genTau_n_photons = 0;
+        treeinfo.genTau_pt_prongs = 0;
+        treeinfo.genTau_pt_photons = 0;
+        if (use_gen_taus)
+        {
+            for (auto& part : genJet.getGenConstituents())
+            {
+                //printf(" --- part idgId %i,    pt: %f     isDirectPromptTauDecayProductFinalState %i  isLastCopy %i\n", part->pdgId(), part->pt(), int(part->isDirectPromptTauDecayProductFinalState()), int(part->isLastCopy()) );
+                if ( abs(part->pdgId()) == 211 && part->isDirectPromptTauDecayProductFinalState() ) 
+                {
+                    treeinfo.genTau_n_prongs += 1;
+                    treeinfo.genTau_pt_prongs += part->pt();
+                }
+                if ( part->pdgId() == 22 && part->isLastCopy() )
+                {
+                    treeinfo.genTau_n_photons += 1;
+                    treeinfo.genTau_pt_photons += part->pt();
+                }
+            }
+            //printf(" - tau %i   pt: %f,    n_prongs %f,   n_photons %f,   pt_prongs/pt %f,    pt_photons/pt %f\n", cnt, genJet.pt(), treeinfo.genTau_n_prongs, treeinfo.genTau_n_photons, treeinfo.genTau_pt_prongs/genJet.pt(), treeinfo.genTau_pt_photons/genJet.pt() );
+        }
+
+
+
         //std::cout << cnt << " Gen pT: " << genJet.pt() << std::endl;
 
         //if ( fabs(genJet.pdgId()) != 11) {
