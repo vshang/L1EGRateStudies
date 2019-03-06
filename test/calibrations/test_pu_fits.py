@@ -6,15 +6,16 @@ ROOT.gStyle.SetOptStat(0)
 
 
 if '__main__' in __name__ :
-    date = '20190123v8'
+    date = '20190306v2'
     saveDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/puTest_'+date+'_res/'
     trigHelpers.checkDir( saveDir )
-    base = '/data/truggles/l1CaloJets_'+date+'/'
+    base = '/data/truggles/l1Towers_'+date+'/'
     names = [
         #'minBias_PU0.root',
         'minBias_PU200.root',
         #'ttbar_PU0.root',
-        'ttbar_PU200.root',
+        #'ttbar_PU200.root',
+        'qcd_PU200.root',
     ]
 
     pu_fits = ROOT.TFile( 'fits_pu.root', 'READ' )
@@ -62,8 +63,9 @@ if '__main__' in __name__ :
 
                 # This is to remove the poor resolution HF from the avg to improve it
                 #tot += val
-                if not '_hf_' in k :
+                if not '_ecal_' in k and not '_hcal_' in k :
                     tot += val
+                #tot += val
 
                 # fill resolution plot
                 v[1].Fill( (val - nvtx) / nvtx )
@@ -71,7 +73,7 @@ if '__main__' in __name__ :
 
             # This is to remove the poor resolution HF from the avg to improve it
             #h_avg.Fill( ( (tot/ (len(fits)) ) - nvtx) / nvtx )
-            h_avg.Fill( ( (tot/ (len(fits)-1) ) - nvtx) / nvtx )
+            h_avg.Fill( ( (tot/ (len(fits)-2) ) - nvtx) / nvtx )
 
         c = ROOT.TCanvas('c','c',800,800)
         h_avg.Scale( 1. / h_avg.Integral() )
@@ -92,6 +94,9 @@ if '__main__' in __name__ :
         fit_min = -0.2
         fit_max = 0.2
         shape = ROOT.TF1("shape", "gaus(0)", fit_min, fit_max )
+        shape.SetParameter( 0, 7.96490e-02 )
+        shape.SetParameter( 1, 5.14506e-03 )
+        shape.SetParameter( 2, 5.43907e-02 )
         h_avg.Fit(shape, "R")
         fitResult = h_avg.GetFunction("shape")
         fitResults = []

@@ -11,7 +11,7 @@ ROOT.gStyle.SetOptStat(0)
 
 # Make a simple output CMSSW cfg type file with the parameter
 # values from the nHits to nvtx fits
-def prepare_nvtx_calibration_py_cfg( fit_functions ) :
+def prepare_nvtx_calibration_py_cfg( fit_functions, save_root=False ) :
     o_file = open('L1TowerCalibrations_cfi.py', 'w')
     print "This only produces a portion to be copied later"
     o_file.write( "\n\n" )
@@ -29,6 +29,11 @@ def prepare_nvtx_calibration_py_cfg( fit_functions ) :
     o_file.write( "\t)\n" )
     o_file.close()
 
+    if save_root :
+        pu_fits = ROOT.TFile( 'fits_pu.root', 'RECREATE' )
+        for k, v in fit_functions.iteritems() :
+            v.Write()
+        pu_fits.Close()
 
 
 # Make a simple output CMSSW cfg type file with the parameter
@@ -123,11 +128,11 @@ def make_PU_SFs( c, base, name, calo ) :
 
     f200 = ROOT.TFile( base+name, 'r' )
     #f140 = ROOT.TFile( base+name.replace('200','140'), 'r' )
-    f0 = ROOT.TFile( base+name.replace('200','0'), 'r' )
-    h = ROOT.TH2F( calo+' SF hist', calo+' SF hist;iEta Bin;nvtx', len(eta_map.keys()), 0, len(eta_map.keys()), 27, 0, h_max )
+    #FIXME f0 = ROOT.TFile( base+name.replace('200','0'), 'r' )
+    h = ROOT.TH2F( calo+' SF hist', calo+' SF hist;Eta Bin;Gen Nvtx;E_{T} To Subtract (GeV)', len(eta_map.keys()), 0, len(eta_map.keys()), 27, 0, h_max )
     t200 = f200.Get( 'analyzer/hit_tree' )
     #t140 = f140.Get( 'analyzer/hit_tree' )
-    t0 = f0.Get( 'analyzer/hit_tree' )
+    #FIXME t0 = f0.Get( 'analyzer/hit_tree' )
     iEta_index = 0
     for iEta in eta_map.keys() :
         h1 = ROOT.TH1F( 'SF_hist_%s' % iEta, 'SF_hist;nvtx', 27, 0, h_max )
@@ -139,12 +144,21 @@ def make_PU_SFs( c, base, name, calo ) :
             cut = '(nvtx_init >= %i && nvtx_init < %i)' % (nvtx_low, nvtx_high)
             h_ET_sum = ROOT.TH1F('et_sum','et_sum',1000,0,10000)
             # Use PU0 sample for lowest nvtx bin
-            if nvtx == 0 :
-                t0.Draw( 'f_%s_hits_%s >> et_sum' % (calo, iEta), cut )
-            #elif nvtx >= 90 and nvtx < 160 : 
-            #    t140.Draw( 'f_%s_hits_%s >> et_sum' % (calo, iEta), cut )
-            else : 
+            #FIXME No PU 0 10_3_X MTD samples, only use PU200
+            #FIXME if nvtx == 0 :
+            #FIXME     t0.Draw( 'f_%s_hits_%s >> et_sum' % (calo, iEta), cut )
+            #FIXME #elif nvtx >= 90 and nvtx < 160 : 
+            #FIXME #    t140.Draw( 'f_%s_hits_%s >> et_sum' % (calo, iEta), cut )
+            #FIXME else : 
+            #FIXME    t200.Draw( 'f_%s_hits_%s >> et_sum' % (calo, iEta), cut )
+            if nvtx >= 150 : 
                 t200.Draw( 'f_%s_hits_%s >> et_sum' % (calo, iEta), cut )
+
+            #FIXME remove this
+            if nvtx_low == 0 :
+                #for eta_bin in range( len(eta_map.keys())+1 ) :
+                #    h.SetBinContent( eta_bin, 1, 1e-5 )
+                h_ET_sum.SetBinContent( 1, 1e-5 )
 
             if h_ET_sum.Integral() > 0. :
                 # Total energy / nTowers = Energy per Tower to subtract
@@ -303,7 +317,12 @@ def plot_hists( c, var, hists, set_logy=False, append='' ) :
     if 'TH2' in str(type(hists)) :
         hists.Draw('hist colz')
         ROOT.gPad.SetLeftMargin(.15)
+
+        # We are missing the PU0 samples in 10_4_X MTD, so force y intercept through zero.
+        # This would have been a pretty save assumption with the 93X samples, but wasn't needed.
         f = ROOT.TF1('f1_'+append,'[0] + [1] * x', hists.GetXaxis().GetBinLowEdge(1), hists.GetXaxis().GetBinUpEdge( hists.GetNbinsX() ) )
+        #f = ROOT.TF1('f1_'+append,'[0] * x', hists.GetXaxis().GetBinLowEdge(1), hists.GetXaxis().GetBinUpEdge( hists.GetNbinsX() ) )
+        f.SetParameter( 1, 0.2 )
         hists.Fit( f )
         f.Draw('l same')
         ROOT.gPad.SetLogz()
@@ -312,7 +331,7 @@ def plot_hists( c, var, hists, set_logy=False, append='' ) :
         for h in hists :
             if h.GetMaximum() > maxi : maxi = h.GetMaximum()
             if var == 'ecal_hits_et' : h.Rebin( 4 ) 
-            if var == 'hcal_hits_et' : h.Rebin( 4 )
+            if var == 'hcal_hits_et' : h.Rebin( 8 )
             if var == 'l1eg_hits_et' : h.Rebin( 4 )
             if var == 'hgcalEM_hits_et' : h.Rebin( 1 ) 
             if var == 'hgcalHad_hits_et' : h.Rebin( 1 ) 
@@ -324,6 +343,9 @@ def plot_hists( c, var, hists, set_logy=False, append='' ) :
         hists[0].SetMaximum( maxi * 10 )
         if 'hits_et' in var :
             ROOT.gPad.SetLogy()
+            ROOT.gPad.SetGrid()
+            if 'hf_' in var :
+                hists[0].SetMaximum( maxi * 10000 )
         else :
             ROOT.gPad.SetLogy(0)
         ROOT.gPad.Update()
@@ -345,6 +367,9 @@ def plot_hists( c, var, hists, set_logy=False, append='' ) :
     c.SaveAs( saveDir+append+'_'+var.replace(':','_')+'.png' )
     if 'TH2' in str(type(hists)) :
         #return
+        # We are missing the PU0 samples in 10_4_X MTD, so force y intercept through zero.
+        # This would have been a pretty save assumption with the 93X samples, but wasn't needed.
+        #return [hists.GetFunction('f1_'+append).GetParameter(0), -99., \
         return [hists.GetFunction('f1_'+append).GetParameter(0), hists.GetFunction('f1_'+append).GetParameter(1), \
             hists.GetXaxis().GetBinLowEdge(1), hists.GetXaxis().GetBinUpEdge( hists.GetNbinsX() )]
         
@@ -358,18 +383,18 @@ def to_add( hists ) :
 
     
 if '__main__' in __name__ :
-    date = '20190123v8'
-    saveDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/puTest_'+date+'vXY/'
+    date = '20190306v2'
+    saveDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/puTest_'+date+'v1/'
     trigHelpers.checkDir( saveDir )
-    base = '/data/truggles/l1CaloJets_'+date+'/'
+    base = '/data/truggles/l1Towers_'+date+'/'
     c = ROOT.TCanvas('c','c',800,800)
     names = [
-        'minBias_PU0.root',
+        #'minBias_PU0.root',
         'minBias_PU200.root',
-        'ttbar_PU0.root',
-        'ttbar_PU200.root',
+        #'ttbar_PU0.root',
+        #'ttbar_PU200.root',
         #'qcd_PU0.root',
-        #'qcd_PU200.root'
+        'qcd_PU200.root'
         ]
     scan=[0,10]
     hist_max=10
@@ -388,9 +413,6 @@ if '__main__' in __name__ :
         'hgcalHad_hits_et' : ([0, 50], 50),
         'hf_hits_et' : ([0, 50], 50),
     }
-    #for k, v in var_map.iteritems() :
-    #    hists = make_comp_hist( base,names,k,v[0],v[1] )
-    #    plot_hists( c, k, hists, True )
     
     draw_map = {
         ##'i_total_hits:nvtx_init' : [100, 0, 300, 60, 0, 3000],
@@ -418,11 +440,11 @@ if '__main__' in __name__ :
         ##'f_l1eg_hits_gtr_threshold:nvtx_init' : [100, 0, 300, 60, 0, 1500],
         ##'i_l1eg_hits_leq_threshold:nvtx_init' : [100, 0, 300, 60, 0, 100],
         ##'f_l1eg_hits_leq_threshold:nvtx_init' : [100, 0, 300, 60, 0, 1500],
-        'nvtx_init:i_ecal_hits_leq_threshold' : [60, 0, 600, 100, 0, 300], # good
+        'nvtx_init:i_ecal_hits_leq_threshold' : [60, 0, 250, 100, 0, 300], # good
         'nvtx_init:i_hcal_hits_leq_threshold' : [60, 0, 300, 100, 0, 300], # decent
         'nvtx_init:i_hgcalEM_hits_leq_threshold' : [60, 0, 1000, 100, 0, 300], # decent, needs zero PU for minB
-        'nvtx_init:i_hgcalHad_hits_leq_threshold' : [60, 0, 1000, 100, 0, 300], # okay
-        'nvtx_init:i_hf_hits_leq_threshold' : [60, 0, 1000, 100, 0, 300], # not so good...
+        'nvtx_init:i_hgcalHad_hits_leq_threshold' : [60, 0, 600, 100, 0, 300], # okay
+        'nvtx_init:i_hf_hits_leq_threshold' : [60, 0, 600, 100, 0, 300], # not so good...
         #'nvtx_init:f_hf_hits_leq_threshold' : [60, 0, 3000, 100, 0, 300],
 
         #'nvtx_init:i_ecal_hits_gtr_threshold' : [60, 0, 600, 100, 0, 300],
@@ -441,21 +463,31 @@ if '__main__' in __name__ :
     }
 
     namesMB = [
-        'minBias_PU0.root',
+        #'minBias_PU0.root',
         'minBias_PU200.root',
     ]
     namesTT = [
-        'ttbar_PU0.root',
+        #'ttbar_PU0.root',
         'ttbar_PU200.root',
     ]
     namesQCD = [
-        'qcd_PU0.root',
+        #'qcd_PU0.root',
         'qcd_PU200.root'
     ]
 
+
+    # Start with the simple alignment comparisons between MB and real events
+    make_initial_comp = True
+    make_initial_comp = False
+    if make_initial_comp :
+        for k, v in var_map.iteritems() :
+            hists = make_comp_hist( base,names,k,v[0],v[1] )
+            plot_hists( c, k, hists, True )
+
+
     # To make the nHits to nvtx fit functions
     make_nHits_to_nvtx_fits = True
-    make_nHits_to_nvtx_fits = False
+    #make_nHits_to_nvtx_fits = False
     if make_nHits_to_nvtx_fits :
         fit_functions = OrderedDict()
         for k, v in draw_map.iteritems() :
@@ -463,21 +495,22 @@ if '__main__' in __name__ :
             hists = draw_comp_hist( base,namesMB,k,v )
             h = to_add( hists )
             fits.append( plot_hists( c, k, h, False, namesMB[0].split('_')[0] ) )
-            hists = draw_comp_hist( base,namesTT,k,v )
-            h = to_add( hists )
-            fits.append( plot_hists( c, k, h, False, namesTT[0].split('_')[0] ) )
-            #hists = draw_comp_hist( base,namesQCD,k,v )
+            #hists = draw_comp_hist( base,namesTT,k,v )
             #h = to_add( hists )
-            #fits.append( plot_hists( c, k, h, False, namesQCD[0].split('_')[0] ) )
+            #fits.append( plot_hists( c, k, h, False, namesTT[0].split('_')[0] ) )
+            hists = draw_comp_hist( base,namesQCD,k,v )
+            h = to_add( hists )
+            fits.append( plot_hists( c, k, h, False, namesQCD[0].split('_')[0] ) )
 
             fit_functions[ k ] = plot_fit_params( c, k, v, fits )
 
-        prepare_nvtx_calibration_py_cfg( fit_functions )
+        #prepare_nvtx_calibration_py_cfg( fit_functions )
+        prepare_nvtx_calibration_py_cfg( fit_functions, True )
     
 
     # To make the nvtx to energy subtraction fits
     make_nvtx_to_PU_sub_fits = True
-    #make_nvtx_to_PU_sub_fits = False
+    make_nvtx_to_PU_sub_fits = False
     if make_nvtx_to_PU_sub_fits :
         pu_maps = OrderedDict()
         name = 'minBias_PU200.root'
