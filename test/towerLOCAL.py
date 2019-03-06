@@ -2,42 +2,34 @@ import FWCore.ParameterSet.Config as cms
 
 from Configuration.StandardSequences.Eras import eras
 
-process = cms.Process("L1AlgoTest",eras.Phase2_trigger)
-
-#from CalibCalorimetry.CaloTPG.CaloTPGTranscoder_cfi import *
-
+process = cms.Process('REPR',eras.Phase2C4_trigger)
+ 
+# import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
-process.load("FWCore.MessageService.MessageLogger_cfi")
+process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
+process.load('FWCore.MessageService.MessageLogger_cfi')
 process.load('Configuration.EventContent.EventContent_cff')
-process.MessageLogger.categories = cms.untracked.vstring('L1EGRateStudies', 'FwkReport')
+process.load('SimGeneral.MixingModule.mixNoPU_cfi')
+process.load('Configuration.Geometry.GeometryExtended2023D35Reco_cff')
+process.load('Configuration.Geometry.GeometryExtended2023D35_cff')
+process.load('Configuration.StandardSequences.MagneticField_cff')
+process.load('Configuration.StandardSequences.SimL1Emulator_cff')
+process.load('Configuration.StandardSequences.EndOfProcess_cff')
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+
+process.MessageLogger.categories = cms.untracked.vstring('L1CaloJets', 'FwkReport')
 process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
-   reportEvery = cms.untracked.int32(100)
+   reportEvery = cms.untracked.int32(1)
 )
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(50) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5) )
 
 process.source = cms.Source("PoolSource",
-    # Set to do test run on official Phase-2 L1T Ntuples
-    #/GluGluHToTauTau_M125_14TeV_powheg_pythia8/PhaseIIFall17D-L1TnoPU_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW
-    #/store/mc/PhaseIIFall17D/GluGluHToTauTau_M125_14TeV_powheg_pythia8/GEN-SIM-DIGI-RAW/L1TnoPU_93X_upgrade2023_realistic_v5-v1/00000/00C160E6-6A39-E811-B904-008CFA152144.root
-    #
-    #/QCD_Pt-0to1000_Tune4C_14TeV_pythia8/PhaseIIFall17D-L1TnoPU_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW
-    #/store/mc/PhaseIIFall17D/QCD_Pt-0to1000_Tune4C_14TeV_pythia8/GEN-SIM-DIGI-RAW/L1TnoPU_93X_upgrade2023_realistic_v5-v1/00000/02AE7A07-2339-E811-B98B-E0071B7AC750.root
-    #
-    #/WJetsToLNu_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/PhaseIIFall17D-L1TnoPU_93X_upgrade2023_realistic_v5-v3/GEN-SIM-DIGI-RAW
-    #/store/mc/PhaseIIFall17D/WJetsToLNu_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/GEN-SIM-DIGI-RAW/L1TnoPU_93X_upgrade2023_realistic_v5-v3/30000/162DC63A-C458-E811-92E1-B083FED42FAF.root
-
-    #fileNames = cms.untracked.vstring('file:root://cms-xrd-global.cern.ch//store/mc/PhaseIIFall17D/SingleE_FlatPt-2to100/GEN-SIM-DIGI-RAW/L1TPU200_93X_upgrade2023_realistic_v5-v1/80000/C0F55AFC-1638-E811-9A14-EC0D9A8221EE.root'),
-    #fileNames = cms.untracked.vstring('file:root://cms-xrd-global.cern.ch//store/mc/PhaseIIFall17D/QCD_Pt-0to1000_Tune4C_14TeV_pythia8/GEN-SIM-DIGI-RAW/L1TnoPU_93X_upgrade2023_realistic_v5-v1/00000/02AE7A07-2339-E811-B98B-E0071B7AC750.root'),
-    #fileNames = cms.untracked.vstring('file:root://cms-xrd-global.cern.ch//store/mc/PhaseIIFall17D/GluGluHToTauTau_M125_14TeV_powheg_pythia8/GEN-SIM-DIGI-RAW/L1TnoPU_93X_upgrade2023_realistic_v5-v1/00000/00C160E6-6A39-E811-B904-008CFA152144.root'),
-    #fileNames = cms.untracked.vstring('file:root://cms-xrd-global.cern.ch//store/mc/PhaseIIFall17D/QCD_Pt-0to1000_Tune4C_14TeV_pythia8/GEN-SIM-DIGI-RAW/L1TPU200_93X_upgrade2023_realistic_v5-v1/00000/EEC3EC7E-C537-E811-9954-E0071B73C650.root'),
-
-    fileNames = cms.untracked.vstring('file:/eos/cms/store/group/dpg_trigger/comm_trigger/L1Trigger/bundocka/ttbarPU200/ttbarPU200_10_5_0_rep.root'),
-    #fileNames = cms.untracked.vstring('file:root://cms-xrd-global.cern.ch//store/mc/PhaseIIFall17D/QCD_Pt-0to1000_Tune4C_14TeV_pythia8/GEN-SIM-DIGI-RAW/L1TPU200_93X_upgrade2023_realistic_v5-v1/00000/C072C4FC-DF37-E811-8A20-E0071B6C9DD0.root'),
-
-    #fileNames = cms.untracked.vstring('file:/hdfs/store/mc/PhaseIIFall17D/QCD_Pt-0to1000_Tune4C_14TeV_pythia8/GEN-SIM-DIGI-RAW/L1TnoPU_93X_upgrade2023_realistic_v5-v1/00000/9C33F8F2-5D39-E811-8987-0025904C7FC2.root'),
-    #fileNames = cms.untracked.vstring('file:root://cms-xrd-global.cern.ch//store/mc/PhaseIIFall17D/SingleNeutrino/GEN-SIM-DIGI-RAW/L1TPU200_93X_upgrade2023_realistic_v5-v1/80000/C2AEC8C0-695C-E811-ABAD-0CC47AF9B496.root'),
+   #fileNames = cms.untracked.vstring(),
+    # dasgoclient --query="dataset dataset=/*/*PhaseIIMTDTDRAutumn18DR*/FEVT"
+    fileNames = cms.untracked.vstring('root://cms-xrd-global.cern.ch//store/mc/PhaseIIMTDTDRAutumn18DR/VBFHToTauTau_M125_14TeV_powheg_pythia8/FEVT/PU200_103X_upgrade2023_realistic_v2-v1/280000/EFC8271A-8026-6A43-AF18-4CB7609B3348.root'),
+   #fileNames = cms.untracked.vstring('/store/mc/PhaseIIMTDTDRAutumn18DR/NeutrinoGun_E_10GeV/FEVT/PU200_103X_upgrade2023_realistic_v2-v1/40000/DA20A045-9075-4240-BC0E-FBFAB6F65484.root'),
    dropDescendantsOfDroppedBranches=cms.untracked.bool(False),
    inputCommands = cms.untracked.vstring(
                     "keep *",
@@ -51,29 +43,65 @@ process.source = cms.Source("PoolSource",
                     "drop l1tEMTFTrack2016s_simEmtfDigis__HLT",
                     "drop l1tHGCalTowerMapBXVector_hgcalTriggerPrimitiveDigiProducer_towerMap_HLT",
                     "drop PCaloHits_g4SimHits_EcalHitsEB_SIM",
-                    "drop EBDigiCollection_simEcalUnsuppressedDigis__HLT",
                     "drop PCaloHits_g4SimHits_HGCHitsEE_SIM",
                     "drop HGCalDetIdHGCSampleHGCDataFramesSorted_mix_HGCDigisEE_HLT",
 
    )
 )
 
-# All this stuff just runs the various EG algorithms that we are studying
-                         
 # ---- Global Tag :
-process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
-#process.GlobalTag = GlobalTag(process.GlobalTag, '100X_upgrade2023_realistic_v1', '')
-process.GlobalTag = GlobalTag(process.GlobalTag, '93X_upgrade2023_realistic_v5', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, '103X_upgrade2023_realistic_v2', '') 
 
-# Choose a 2030 geometry!
-process.load('Configuration.Geometry.GeometryExtended2023D17Reco_cff')
-process.load('Configuration.StandardSequences.MagneticField_cff')
 
 # Add HCAL Transcoder
 process.load('SimCalorimetry.HcalTrigPrimProducers.hcaltpdigi_cff')
 process.load('CalibCalorimetry.CaloTPG.CaloTPGTranscoder_cfi')
 
+
+process.L1simulation_step = cms.Path(process.SimL1Emulator)
+# Delete processes with tracks to avoid making them
+del process.l1TkMuonStubEndCap
+del process.L1TkPrimaryVertex
+del process.L1TkElectrons
+del process.L1TkIsoElectrons
+del process.L1TkPhotons
+del process.L1TkCaloJets
+del process.L1TrackerJets
+del process.L1TrackerEtMiss
+del process.L1TkCaloHTMissVtx
+del process.L1TrackerHTMiss
+del process.L1TkMuons
+del process.L1TkGlbMuons
+del process.L1TkTauFromCalo
+del process.l1ParticleFlow
+del process.l1PFMets
+del process.l1PFJets
+del process.l1pfTauProducer
+del process.L1TkMuonStub
+del process.VertexProducer
+del process.l1KBmtfStubMatchedMuons
+del process.l1StubMatchedMuons
+del process.pfTracksFromL1Tracks
+del process.l1pfProducer
+del process.ak4L1Calo
+del process.ak4L1TK
+del process.ak4L1TKV
+del process.ak4L1PF
+del process.ak4L1Puppi
+del process.ak4L1TightTK
+del process.ak4L1TightTKV
+del process.pfClustersFromL1EGClusters
+del process.pfClustersFromCombinedCalo
+del process.l1pfProducerForMET
+del process.l1pfProducerTightTK
+del process.l1MetCalo
+del process.l1MetTK
+del process.l1MetTKV
+del process.l1MetPF
+del process.l1MetPuppi
+del process.l1MetTightTK
+del process.l1MetTightTKV
 
 
 
@@ -83,6 +111,7 @@ process.load('CalibCalorimetry.CaloTPG.CaloTPGTranscoder_cfi')
 # ----    Produce the L1EGCrystal clusters using Emulator
 
 process.load('L1Trigger.L1CaloTrigger.L1EGammaCrystalsEmulatorProducer_cfi')
+process.L1EGammaClusterEmuProducer.ecalTPEB = cms.InputTag("simEcalEBTriggerPrimitiveDigis","","REPR")
 
 
 # ----------------------------------------------------------------------------------------------
@@ -91,29 +120,30 @@ process.load('L1Trigger.L1CaloTrigger.L1EGammaCrystalsEmulatorProducer_cfi')
 
 
 process.analyzer = cms.EDAnalyzer("L1TowerAnalyzer",
-    # Choosen settings (v8 24 Jan 2019)
-    HcalTpEtMin = cms.double(0.0), # Default is 0.5 GeV
-    EcalTpEtMin = cms.double(0.0), # Default is 0.5 GeV
-    HGCalHadTpEtMin = cms.double(0.25),
-    HGCalEmTpEtMin = cms.double(0.25),
-    HFTpEtMin = cms.double(0.5),
+    HcalTpEtMin = cms.double(0.5), # Default is 0.5 GeV
+    EcalTpEtMin = cms.double(0.5), # Default is 0.5 GeV
+    HGCalHadTpEtMin = cms.double(0.25), # Default is 0.5 GeV
+    HGCalEmTpEtMin = cms.double(0.25), # Default is 0.5 GeV
+    HFTpEtMin = cms.double(0.5), # Default is 0.5 GeV
     puThreshold = cms.double(5.0), # Default is 5 GeV
-    puThresholdEcal = cms.double(2.0), # Default is 5 GeV
-    puThresholdHcal = cms.double(3.0), # Default is 5 GeV
-    puThresholdL1eg = cms.double(4.0), # Default is 5 GeV
-    puThresholdHGCalEMMin = cms.double(1.0), # Default is 5 GeV
-    puThresholdHGCalEMMax = cms.double(1.5), # Default is 5 GeV
-    puThresholdHGCalHadMin = cms.double(0.5), # Default is 5 GeV
-    puThresholdHGCalHadMax = cms.double(1.0), # Default is 5 GeV
-    puThresholdHFMin = cms.double(4.0), # Default is 5 GeV
-    puThresholdHFMax = cms.double(10.0), # Default is 5 GeV
+    puThresholdL1eg = cms.double(2.0), # Default is 4 GeV
+    puThresholdHcalMin = cms.double(1.0), # Default is 3 GeV
+    puThresholdHcalMax = cms.double(2.0), # Default is 3 GeV
+    puThresholdEcalMin = cms.double(0.75), # Default is 2 GeV
+    puThresholdEcalMax = cms.double(1.5), # Default is 2 GeV
+    puThresholdHGCalEMMin = cms.double(1.25), # Default is 1 GeV
+    puThresholdHGCalEMMax = cms.double(1.75), # Default is 1.5 GeV
+    puThresholdHGCalHadMin = cms.double(0.75), # Default is 0.5 GeV
+    puThresholdHGCalHadMax = cms.double(1.25), # Default is 1 GeV
+    puThresholdHFMin = cms.double(10.0), # Default is 4 GeV
+    puThresholdHFMax = cms.double(15.0), # Default is 10.0 GeV
     debug = cms.bool(False),
-    #debug = cms.bool(True),
+    #debug = cms.untracked.bool(True),
     vertexTag = cms.InputTag("g4SimHits","","SIM"),
     trackingVertexInitTag = cms.InputTag("mix","InitialVertices","HLT"),
-    l1CaloTowers = cms.InputTag("L1EGammaClusterEmuProducer","L1CaloTowerCollection","L1AlgoTest"),
-    L1CrystalClustersInputTag = cms.InputTag("L1EGammaClusterEmuProducer", "L1EGXtalClusterEmulator", "L1AlgoTest"),
-    L1HgcalTowersInputTag = cms.InputTag("hgcalTriggerPrimitiveDigiProducer","tower"),
+    l1CaloTowers = cms.InputTag("L1EGammaClusterEmuProducer","L1CaloTowerCollection","REPR"),
+    L1CrystalClustersInputTag = cms.InputTag("L1EGammaClusterEmuProducer", "L1EGXtalClusterEmulator", "REPR"),
+    L1HgcalTowersInputTag = cms.InputTag("hgcalTowerProducer","HGCalTowerProcessor","REPR"),
     hcalDigis = cms.InputTag("simHcalTriggerPrimitiveDigis"),
 )
 
@@ -125,7 +155,7 @@ process.pL1Objs = cms.Path(
 
 
 process.TFileService = cms.Service("TFileService", 
-   fileName = cms.string("_towerOutputFileName.root"), 
+   fileName = cms.string( "output.root" ), 
    closeFileFast = cms.untracked.bool(True)
 )
 

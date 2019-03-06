@@ -52,13 +52,13 @@ if __name__ == '__main__':
     for k in dataMap.keys() :
 
         # Tower sum Pu analysis
-        config.General.requestName = '20190306_%s_TowerSums_v1' % k
+        config.General.requestName = '20190306_%s_TowerSums_v2' % k
         config.Data.outputDatasetTag   = config.General.requestName
         config.JobType.psetName        = 'tower_analyzer_crab.py'
         config.Data.inputDataset = dataMap[ k ][ 'das' ]
 
-        config.Data.unitsPerJob        = 7 # events / job when using EventAwareLumiBased
-        config.Data.totalUnits      = 4000 # for tests
+        config.Data.unitsPerJob        = 4 # events / job when using EventAwareLumiBased
+        config.Data.totalUnits      = 1000 # for tests
 
         config.Data.outputDatasetTag   = config.General.requestName
 
