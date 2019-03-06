@@ -77,9 +77,11 @@ class L1TowerAnalyzer : public edm::EDAnalyzer {
         double HGCalEmTpEtMin;
         double HFTpEtMin;
         double puThreshold;
-        double puThresholdEcal;
-        double puThresholdHcal;
         double puThresholdL1eg;
+        double puThresholdEcalMin;
+        double puThresholdEcalMax;
+        double puThresholdHcalMin;
+        double puThresholdHcalMax;
         double puThresholdHGCalEMMin;
         double puThresholdHGCalEMMax;
         double puThresholdHGCalHadMin;
@@ -321,9 +323,11 @@ L1TowerAnalyzer::L1TowerAnalyzer(const edm::ParameterSet& iConfig) :
     HGCalEmTpEtMin(iConfig.getParameter<double>("HGCalEmTpEtMin")), // Should default to 0 MeV
     HFTpEtMin(iConfig.getParameter<double>("HFTpEtMin")), // Should default to 0 MeV
     puThreshold(iConfig.getParameter<double>("puThreshold")), // Should default to 5.0 GeV
-    puThresholdEcal(iConfig.getParameter<double>("puThresholdEcal")), // Should default to 5.0 GeV
-    puThresholdHcal(iConfig.getParameter<double>("puThresholdHcal")), // Should default to 5.0 GeV
     puThresholdL1eg(iConfig.getParameter<double>("puThresholdL1eg")), // Should default to 5.0 GeV
+    puThresholdEcalMin(iConfig.getParameter<double>("puThresholdEcalMin")), // Should default to 5.0 GeV
+    puThresholdEcalMax(iConfig.getParameter<double>("puThresholdEcalMax")), // Should default to 5.0 GeV
+    puThresholdHcalMin(iConfig.getParameter<double>("puThresholdHcalMin")), // Should default to 5.0 GeV
+    puThresholdHcalMax(iConfig.getParameter<double>("puThresholdHcalMax")), // Should default to 5.0 GeV
     puThresholdHGCalEMMin(iConfig.getParameter<double>("puThresholdHGCalEMMin")), // Should default to 5.0 GeV
     puThresholdHGCalEMMax(iConfig.getParameter<double>("puThresholdHGCalEMMax")), // Should default to 5.0 GeV
     puThresholdHGCalHadMin(iConfig.getParameter<double>("puThresholdHGCalHadMin")), // Should default to 5.0 GeV
@@ -810,12 +814,12 @@ void L1TowerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
             treeinfo.i_ecal_hits++;
             ecal_hits_et->Fill( l1CaloTower.ecal_tower_et );
             treeinfo.f_ecal_hits += l1CaloTower.ecal_tower_et;
-            if(l1CaloTower.ecal_tower_et > puThresholdEcal) 
+            if(l1CaloTower.ecal_tower_et > puThresholdEcalMax) 
             {
                 treeinfo.i_ecal_hits_gtr_threshold++;
                 treeinfo.f_ecal_hits_gtr_threshold += l1CaloTower.ecal_tower_et;
             }
-            if(l1CaloTower.ecal_tower_et <= puThresholdEcal) 
+            if(l1CaloTower.ecal_tower_et <= puThresholdEcalMax && l1CaloTower.ecal_tower_et >= puThresholdEcalMin) 
             {
                 treeinfo.i_ecal_hits_leq_threshold++;
                 treeinfo.f_ecal_hits_leq_threshold += l1CaloTower.ecal_tower_et;
@@ -906,12 +910,12 @@ void L1TowerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
             treeinfo.i_hcal_hits++;
             hcal_hits_et->Fill( l1CaloTower.hcal_tower_et );
             treeinfo.f_hcal_hits += l1CaloTower.hcal_tower_et;
-            if(l1CaloTower.hcal_tower_et > puThresholdHcal) 
+            if(l1CaloTower.hcal_tower_et > puThresholdHcalMax) 
             {
                 treeinfo.i_hcal_hits_gtr_threshold++;
                 treeinfo.f_hcal_hits_gtr_threshold += l1CaloTower.hcal_tower_et;
             }
-            if(l1CaloTower.hcal_tower_et <= puThresholdHcal)
+            if(l1CaloTower.hcal_tower_et <= puThresholdHcalMax && l1CaloTower.hcal_tower_et >= puThresholdHcalMin)
             {
                 treeinfo.i_hcal_hits_leq_threshold++;
                 treeinfo.f_hcal_hits_leq_threshold += l1CaloTower.hcal_tower_et;
