@@ -4,42 +4,21 @@ from Configuration.StandardSequences.Eras import eras
 
 process = cms.Process("L1AlgoTest",eras.Phase2_trigger)
 
-#from CalibCalorimetry.CaloTPG.CaloTPGTranscoder_cfi import *
-
 process.load('Configuration.StandardSequences.Services_cff')
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.load('Configuration.EventContent.EventContent_cff')
 process.MessageLogger.categories = cms.untracked.vstring('L1EGRateStudies', 'FwkReport')
 process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
-   #reportEvery = cms.untracked.int32(100)
-   reportEvery = cms.untracked.int32(1)
+   reportEvery = cms.untracked.int32(100)
 )
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(50) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(500) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 process.source = cms.Source("PoolSource",
-    # Set to do test run on official Phase-2 L1T Ntuples
-    #/GluGluHToTauTau_M125_14TeV_powheg_pythia8/PhaseIIFall17D-L1TnoPU_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW
-    #/store/mc/PhaseIIFall17D/GluGluHToTauTau_M125_14TeV_powheg_pythia8/GEN-SIM-DIGI-RAW/L1TnoPU_93X_upgrade2023_realistic_v5-v1/00000/00C160E6-6A39-E811-B904-008CFA152144.root
-    #
-    #/QCD_Pt-0to1000_Tune4C_14TeV_pythia8/PhaseIIFall17D-L1TnoPU_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW
-    #/store/mc/PhaseIIFall17D/QCD_Pt-0to1000_Tune4C_14TeV_pythia8/GEN-SIM-DIGI-RAW/L1TnoPU_93X_upgrade2023_realistic_v5-v1/00000/02AE7A07-2339-E811-B98B-E0071B7AC750.root
-    #
-    #/WJetsToLNu_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/PhaseIIFall17D-L1TnoPU_93X_upgrade2023_realistic_v5-v3/GEN-SIM-DIGI-RAW
-    #/store/mc/PhaseIIFall17D/WJetsToLNu_TuneCUETP8M1_14TeV-madgraphMLM-pythia8/GEN-SIM-DIGI-RAW/L1TnoPU_93X_upgrade2023_realistic_v5-v3/30000/162DC63A-C458-E811-92E1-B083FED42FAF.root
-
-    #fileNames = cms.untracked.vstring('file:root://cms-xrd-global.cern.ch//store/mc/PhaseIIFall17D/SingleE_FlatPt-2to100/GEN-SIM-DIGI-RAW/L1TPU200_93X_upgrade2023_realistic_v5-v1/80000/C0F55AFC-1638-E811-9A14-EC0D9A8221EE.root'),
-    #fileNames = cms.untracked.vstring('file:root://cms-xrd-global.cern.ch//store/mc/PhaseIIFall17D/QCD_Pt-0to1000_Tune4C_14TeV_pythia8/GEN-SIM-DIGI-RAW/L1TnoPU_93X_upgrade2023_realistic_v5-v1/00000/02AE7A07-2339-E811-B98B-E0071B7AC750.root'),
-    #fileNames = cms.untracked.vstring('file:root://cms-xrd-global.cern.ch//store/mc/PhaseIIFall17D/GluGluHToTauTau_M125_14TeV_powheg_pythia8/GEN-SIM-DIGI-RAW/L1TnoPU_93X_upgrade2023_realistic_v5-v1/00000/00C160E6-6A39-E811-B904-008CFA152144.root'),
-    #fileNames = cms.untracked.vstring('file:root://cms-xrd-global.cern.ch//store/mc/PhaseIIFall17D/QCD_Pt-0to1000_Tune4C_14TeV_pythia8/GEN-SIM-DIGI-RAW/L1TPU200_93X_upgrade2023_realistic_v5-v1/00000/EEC3EC7E-C537-E811-9954-E0071B73C650.root'),
-    #fileNames = cms.untracked.vstring('file:/hdfs/store/mc/PhaseIIFall17D/QCD_Pt-0to1000_Tune4C_14TeV_pythia8/GEN-SIM-DIGI-RAW/L1TnoPU_93X_upgrade2023_realistic_v5-v1/00000/9C33F8F2-5D39-E811-8987-0025904C7FC2.root'),
-    #fileNames = cms.untracked.vstring('file:root://cms-xrd-global.cern.ch//store/mc/PhaseIIFall17D/SingleNeutrino/GEN-SIM-DIGI-RAW/L1TPU200_93X_upgrade2023_realistic_v5-v1/80000/C2AEC8C0-695C-E811-ABAD-0CC47AF9B496.root'),
-
-    #fileNames = cms.untracked.vstring('file:root://cms-xrd-global.cern.ch//store/mc/PhaseIIFall17D/QCD_Pt-0to1000_Tune4C_14TeV_pythia8/GEN-SIM-DIGI-RAW/L1TPU200_93X_upgrade2023_realistic_v5-v1/00000/C072C4FC-DF37-E811-8A20-E0071B6C9DD0.root'),
-    fileNames = cms.untracked.vstring(
-        'file:root://cms-xrd-global.cern.ch//store/mc/PhaseIIFall17D/TT_TuneCUETP8M2T4_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/L1TPU200_93X_upgrade2023_realistic_v5-v2/30000/564C271B-9654-E811-9338-90B11C2AA16C.root',
+   #fileNames = cms.untracked.vstring(),
+   fileNames = cms.untracked.vstring(
+        '/store/mc/PhaseIIFall17D/GluGluHToTauTau_M125_14TeV_powheg_pythia8/GEN-SIM-DIGI-RAW/L1TnoPU_93X_upgrade2023_realistic_v5-v1/00000/00C160E6-6A39-E811-B904-008CFA152144.root',
     ),
    dropDescendantsOfDroppedBranches=cms.untracked.bool(False),
    inputCommands = cms.untracked.vstring(
@@ -57,7 +36,6 @@ process.source = cms.Source("PoolSource",
                     "drop EBDigiCollection_simEcalUnsuppressedDigis__HLT",
                     "drop PCaloHits_g4SimHits_HGCHitsEE_SIM",
                     "drop HGCalDetIdHGCSampleHGCDataFramesSorted_mix_HGCDigisEE_HLT",
-                    "drop l1tL1PF*_l1pf*Producer_*_L1",
 
    )
 )
@@ -77,7 +55,6 @@ process.load('Configuration.StandardSequences.MagneticField_cff')
 # Add HCAL Transcoder
 process.load('SimCalorimetry.HcalTrigPrimProducers.hcaltpdigi_cff')
 process.load('CalibCalorimetry.CaloTPG.CaloTPGTranscoder_cfi')
-
 
 
 
@@ -125,11 +102,6 @@ process.tauGenJetsSelectorMuons = cms.EDFilter("TauGenJetDecayModeSelector",
 
 
 
-
-
-
-
-
 # --------------------------------------------------------------------------------------------
 #
 # ----    Produce the L1EGCrystal clusters using Emulator
@@ -143,6 +115,10 @@ process.load('L1Trigger.L1CaloTrigger.L1EGammaCrystalsEmulatorProducer_cfi')
 # ----    Produce the calibrated tower collection combining Barrel, HGCal, HF
 
 process.load('L1Trigger/L1CaloTrigger/L1TowerCalibrationProducer_cfi')
+process.L1TowerCalibrationProducer.barrelSF = cms.double(4.0)
+process.L1TowerCalibrationProducer.hgcalSF = cms.double(1.45)
+process.L1TowerCalibrationProducer.hfSF = cms.double(1.2)
+#process.L1TowerCalibrationProducer.skipCalibrations = cms.bool(True)
 
 
 
@@ -151,6 +127,7 @@ process.load('L1Trigger/L1CaloTrigger/L1TowerCalibrationProducer_cfi')
 # ----    Produce the L1CaloJets with the L1EG clusters as ECAL seeds
 
 process.load('L1Trigger/L1CaloTrigger/L1CaloJetProducer_cfi')
+
 
 
 process.pL1Objs = cms.Path( 
@@ -173,10 +150,11 @@ process.analyzer = cms.EDAnalyzer('L1CaloJetStudies',
     L1CaloJetsInputTag = cms.InputTag("L1CaloJetProducer","L1CaloJetsNoCuts"),
     genJets = cms.InputTag("ak4GenJetsNoNu", "", "HLT"),
     genHadronicTauSrc = cms.InputTag("tauGenJetsSelectorAllHadrons"),
-    genMatchDeltaRcut = cms.untracked.double(0.25),
+    genMatchDeltaRcut = cms.untracked.double(0.4),
     genMatchRelPtcut = cms.untracked.double(0.5),
     debug = cms.untracked.bool(False),
-    doRate = cms.untracked.bool(False),
+    doRate = cms.untracked.bool(False), # TEMPORARY FIXME
+    use_gen_taus = cms.untracked.bool(True),
     Stage2JetTag = cms.InputTag("simCaloStage2Digis", "MP", "HLT"),
     Stage2TauTag = cms.InputTag("simCaloStage2Digis", "MP", "HLT"),
     puSrc = cms.InputTag("addPileupInfo")
@@ -187,9 +165,8 @@ process.panalyzer = cms.Path(process.analyzer)
 
 
 process.TFileService = cms.Service("TFileService", 
-   fileName = cms.string("_jetOutputFile.root"), 
-   #closeFileFast = cms.untracked.bool(True)
-   closeFileFast = cms.untracked.bool(False)
+   fileName = cms.string( "_tauOutput.root" ), 
+   closeFileFast = cms.untracked.bool(True)
 )
 
 
