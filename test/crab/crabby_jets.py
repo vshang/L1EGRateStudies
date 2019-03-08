@@ -149,48 +149,20 @@ process.tauGenJetsSelectorMuons = cms.EDFilter("TauGenJetDecayModeSelector",
 
 
 
-
 # --------------------------------------------------------------------------------------------
 #
-# ----    Produce the L1EGCrystal clusters using Emulator
+# ----    Load the L1CaloJet sequence designed to accompany process named "REPR"
 
-process.load('L1Trigger.L1CaloTrigger.L1EGammaCrystalsEmulatorProducer_cfi')
-process.L1EGammaClusterEmuProducer.ecalTPEB = cms.InputTag("simEcalEBTriggerPrimitiveDigis","","REPR")
-
-
-
-# --------------------------------------------------------------------------------------------
-#
-# ----    Produce the calibrated tower collection combining Barrel, HGCal, HF
-
-process.load('L1Trigger/L1CaloTrigger/L1TowerCalibrationProducer_cfi')
-#process.L1TowerCalibrationProducer.barrelSF = cms.double(4.0)
-#process.L1TowerCalibrationProducer.hgcalSF = cms.double(1.45)
-#process.L1TowerCalibrationProducer.hfSF = cms.double(1.2)
-#process.L1TowerCalibrationProducer.skipCalibrations = cms.bool(True)
-process.L1TowerCalibrationProducer.l1CaloTowers = cms.InputTag("L1EGammaClusterEmuProducer","L1CaloTowerCollection","REPR")
-process.L1TowerCalibrationProducer.L1HgcalTowersInputTag = cms.InputTag("hgcalTowerProducer","HGCalTowerProcessor","REPR")
+process.load('L1Trigger.L1CaloTrigger.L1CaloJets_cff')
 
 
 
-# --------------------------------------------------------------------------------------------
-#
-# ----    Produce the L1CaloJets with the L1EG clusters as ECAL seeds
 
-process.load('L1Trigger/L1CaloTrigger/L1CaloJetProducer_cfi')
-process.L1CaloJetProducer.l1CaloTowers = cms.InputTag("L1TowerCalibrationProducer","L1CaloTowerCalibratedCollection","REPR")
-process.L1CaloJetProducer.L1CrystalClustersInputTag = cms.InputTag("L1EGammaClusterEmuProducer", "L1EGXtalClusterEmulator","REPR")
-
-
-
-process.pL1Objs = cms.Path( 
+process.pGetTaus = cms.Path( 
     process.tauGenJets *
     process.tauGenJetsSelectorAllHadrons *
     process.tauGenJetsSelectorElectrons *
-    process.tauGenJetsSelectorMuons *
-    process.L1EGammaClusterEmuProducer *
-    process.L1TowerCalibrationProducer *
-    process.L1CaloJetProducer
+    process.tauGenJetsSelectorMuons
 )
 
 

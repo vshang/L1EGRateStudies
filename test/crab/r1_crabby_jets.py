@@ -23,9 +23,10 @@ process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
 )
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 
 process.source = cms.Source("PoolSource",
-   fileNames = cms.untracked.vstring(),
+   #fileNames = cms.untracked.vstring(),
    # dasgoclient --query="dataset dataset=/*/*PhaseIIMTDTDRAutumn18DR*/FEVT"
    #fileNames = cms.untracked.vstring('root://cms-xrd-global.cern.ch//store/mc/PhaseIIMTDTDRAutumn18DR/VBFHToTauTau_M125_14TeV_powheg_pythia8/FEVT/PU200_103X_upgrade2023_realistic_v2-v1/280000/EFC8271A-8026-6A43-AF18-4CB7609B3348.root'),
    dropDescendantsOfDroppedBranches=cms.untracked.bool(False),
@@ -107,39 +108,46 @@ del process.l1MetTightTKV
 
 # --------------------------------------------------------------------------------------------
 #
-# ----    Produce the L1EGCrystal clusters using Emulator
+# ----   Produce Gen Taus
 
-process.load('L1Trigger.L1CaloTrigger.L1EGammaCrystalsEmulatorProducer_cfi')
-process.L1EGammaClusterEmuProducer.ecalTPEB = cms.InputTag("simEcalEBTriggerPrimitiveDigis","","REPR")
-
-
-
-# --------------------------------------------------------------------------------------------
-#
-# ----    Produce the calibrated tower collection combining Barrel, HGCal, HF
-
-process.load('L1Trigger/L1CaloTrigger/L1TowerCalibrationProducer_cfi')
-process.L1TowerCalibrationProducer.barrelSF = cms.double(4.0)
-process.L1TowerCalibrationProducer.hgcalSF = cms.double(1.45)
-process.L1TowerCalibrationProducer.hfSF = cms.double(1.2)
-#process.L1TowerCalibrationProducer.skipCalibrations = cms.bool(True)
-process.L1TowerCalibrationProducer.L1HgcalTowersInputTag = cms.InputTag("hgcalTowerProducer","HGCalTowerProcessor","REPR")
-
-
-
-# --------------------------------------------------------------------------------------------
-#
-# ----    Produce the L1CaloJets with the L1EG clusters as ECAL seeds
-
-process.load('L1Trigger/L1CaloTrigger/L1CaloJetProducer_cfi')
-process.L1CaloJetProducer.EtMinForCollection = cms.double(20)
-
-
-process.pL1Objs = cms.Path( 
-    process.L1EGammaClusterEmuProducer *
-    process.L1TowerCalibrationProducer *
-    process.L1CaloJetProducer
+process.tauGenJets = cms.EDProducer(
+    "TauGenJetProducer",
+    GenParticles =  cms.InputTag('genParticles'),
+    includeNeutrinos = cms.bool( False ),
+    verbose = cms.untracked.bool( False )
 )
+
+
+
+process.tauGenJetsSelectorAllHadrons = cms.EDFilter("TauGenJetDecayModeSelector",
+     src = cms.InputTag("tauGenJets"),
+     select = cms.vstring('oneProng0Pi0', 
+                          'oneProng1Pi0', 
+                          'oneProng2Pi0', 
+                          'oneProngOther',
+                          'threeProng0Pi0', 
+                          'threeProng1Pi0', 
+                          'threeProngOther', 
+                          'rare'),
+     filter = cms.bool(False)
+)
+
+
+process.pGetTaus = cms.Path( 
+    process.tauGenJets *
+    process.tauGenJetsSelectorAllHadrons
+)
+
+
+
+# --------------------------------------------------------------------------------------------
+#
+# ----    Load the L1CaloJet sequence designed to accompany process named "REPR"
+
+process.load('L1Trigger.L1CaloTrigger.L1CaloJets_cff')
+
+
+
 
 
 
@@ -155,6 +163,7 @@ process.Out = cms.OutputModule( "PoolOutputModule",
                           "keep *_simCaloStage2Digis_MP_HLT",
                           "keep *_addPileupInfo_*_*",
                           "keep *_ak4GenJetsNoNu__HLT",
+                          "keep *_tauGenJetsSelectorAllHadrons_*_*",
                           )
 )
 
