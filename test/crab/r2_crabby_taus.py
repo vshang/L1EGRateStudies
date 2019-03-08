@@ -91,6 +91,7 @@ process.analyzer = cms.EDAnalyzer('L1CaloJetStudies',
     genMatchRelPtcut = cms.untracked.double(0.5),
     debug = cms.untracked.bool(False),
     doRate = cms.untracked.bool(False), # TEMPORARY FIXME
+    use_gen_taus = cms.untracked.bool(True),
     Stage2JetTag = cms.InputTag("simCaloStage2Digis", "MP", "HLT"),
     Stage2TauTag = cms.InputTag("simCaloStage2Digis", "MP", "HLT"),
     puSrc = cms.InputTag("addPileupInfo")

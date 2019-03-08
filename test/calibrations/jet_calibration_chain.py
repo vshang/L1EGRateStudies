@@ -142,9 +142,18 @@ def get_quantile_map( calib_fName ) :
         f_high = float(info[5].replace('p','.'))
         eta_low = float(info[7].replace('p','.'))
         eta_high = float(info[9].replace('p','.'))
-        quantile_map[ key ] = [ f_low, f_high, eta_low, eta_high, f.Get( key ) ]
+        #quantile_map[ key ] = [ f_low, f_high, eta_low, eta_high, f.Get( key ) ]
+        # FIXME - what happened to ROOT in 10_5_X?
+        new_f1 = ROOT.TF1( key, '([0] + [1]*x + [2]*TMath::Exp(-[3]*x))')
+        new_f1.SetParameter( 0, f.Get( key ).GetParameter( 0 ) )
+        new_f1.SetParameter( 1, f.Get( key ).GetParameter( 1 ) )
+        new_f1.SetParameter( 2, f.Get( key ).GetParameter( 2 ) )
+        new_f1.SetParameter( 3, f.Get( key ).GetParameter( 3 ) )
+        quantile_map[ key ] = [ f_low, f_high, eta_low, eta_high, new_f1 ]
     #for k, v in quantile_map.iteritems() :
     #    print k, v
+
+    print "\n\n\nFIXME - what happened to ROOT in 10_5_X\nWhy are these errors here?\nThe code appears to work with my fix\n"
 
     return quantile_map
 
@@ -234,7 +243,7 @@ def find_binned_pt( jet_pt, jet_pt_binning ) :
     while True :
         # return bin center
         if jet_pt < jet_pt_binning[ index ] :
-            print "jet_pt bin", index
+            #print "jet_pt bin", index
             return ( jet_pt_binning[ index ] + jet_pt_binning[ index - 1 ] ) / 2.
         index += 1
         
@@ -285,6 +294,10 @@ if '__main__' in __name__ :
     base= '/data/truggles/l1CaloJets_20190306v1TestJets/'
     base= '/data/truggles/l1CaloJets_20190306v1TestTaus/'
     base= '/data/truggles/l1CaloJets_20190306v2TestTaus/'
+    base= '/data/truggles/l1CaloJets_20190307_PUSub_v1/'
+    base= '/data/truggles/l1CaloJets_20190307_PUSub_v2/'
+    #base= '/data/truggles/l1CaloJets_20190308_PUSub_v1/'
+    base = '/data/truggles/l1CaloJets_20190308_r2/'
 
     for shape in [
         #'ttbar_PU200', # testing
@@ -293,8 +306,15 @@ if '__main__' in __name__ :
         #'minBias_PU200',
         #'vbfhtt_v1',
         #'output_round2_eff_hists_qcd_v1',
-        'ggHTauTau_PU0',
-        'ggHTauTau_PU200',
+
+        # Taus
+        #'ggHTauTau_PU0',
+        #'ggHTauTau_PU200',
+        #'VBFHTauTau_PU200',
+        #'qcd_PU200',
+
+        # R2
+        'output_round2_HiggsTauTau',
     ] :
         
         #jetsF0 = 'merged_QCD-PU%s.root' % shape
@@ -302,7 +322,7 @@ if '__main__' in __name__ :
         jetsF0 = '%s.root' % shape
         date = jetsF0.replace('merged_','').replace('.root','')
         date = base.split('/')[-2].replace('l1CaloJets__','')+shape
-        plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/20190306/'+date+''
+        plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/20190308/'+date+''
         if not os.path.exists( plotDir ) : os.makedirs( plotDir )
 
         jetFile = ROOT.TFile( base+jetsF0, 'r' )
@@ -319,18 +339,17 @@ if '__main__' in __name__ :
         # Only make for QCD sample, for other samples, pick up the
         # results of QCD
         cut = "" # Do all Eta now
-        #if 'ttbar' in shape :
+        #if 'qcd' in shape :
         #    make_em_fraction_calibrations( c, base+jetsF0, cut, plotDir )
         jetFile.Close()
 
         """ Add new calibrations to TTree """
-        #version = shape.split('_')[-1]
-        version = 'v7'
+        version = shape.split('_')[-1]
+        ###version = 'v7'
         #quantile_map = get_quantile_map( 'jet_em_calibrations_'+version+'.root' )
-        ##prepare_calibration_py_cfg( quantile_map )
+        #prepare_calibration_py_cfg( quantile_map )
         ####check_calibration_py_cfg( quantile_map )
-        ##FIXME add_calibration( base+jetsF0, quantile_map )
-        #add_calibration( '../../../_jetOutputFileName0GeV3.root', quantile_map )
+        #add_calibration( base+jetsF0, quantile_map )
         """ Add Stage-2 Calibrations which do a good job up to 50 GeV """
         #add_stage2_calibration( base+jetsF0, 'stage-2_calib_stage2_genOverReco_by_reco.root' )
 
@@ -437,19 +456,23 @@ if '__main__' in __name__ :
                 to_plot = '(jet_pt)/genJet_pt:genJet_pt'
                 h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
                 to_plot = '(jet_pt_calibration)/genJet_pt:genJet_pt'
+                #to_plot = '( calibPtAA )/genJet_pt:genJet_pt'
                 h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
                 if 'Tau' in jetsF0 :
                     to_plot = '(stage2tau_pt)/genJet_pt:genJet_pt'
                     h3 = getTH2( tree, 's2', to_plot, cut, x_and_y_bins )
-                    title3 = "Phase-I CaloTau"
+                    title1 = "Phase-II CaloTau, raw "+k
+                    title2 = "Phase-II CaloTau, EM Frac Calib "+k
+                    title3 = "Phase-I CaloTau "+k
                 else :
                     to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
+                    to_plot = '(stage2jet_pt_calib)/genJet_pt:genJet_pt'
                     h3 = getTH2( tree, 's2', to_plot, cut, x_and_y_bins )
-                    title3 = "Phase-I CaloJet"
+                    title1 = "Phase-II CaloJet, raw "+k
+                    title2 = "Phase-II CaloJet, EM Frac Calib "+k
+                    title3 = "Phase-I CaloJet "+k
                 xaxis = "Gen Jet P_{T} (GeV)"
                 yaxis = "Relative Error in P_{T} reco/gen"
-                title1 = "Phase-II CaloTau, raw"
-                title2 = "Phase-II CaloTau, EM Frac Calib"
                 c.SetTitle("genJetPt_Tau_"+k)
                 areaNorm = True
                 drawPointsHists3(c.GetTitle(), h1, h2, h3, title1, title2, title3, xaxis, yaxis, areaNorm, plotDir)
