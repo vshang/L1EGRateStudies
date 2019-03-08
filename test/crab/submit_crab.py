@@ -47,6 +47,9 @@ dataMap = OrderedDict()
 # 10_3_X MTD Samples
 ########################
 dataMap['QCD-PU200'] = {'das' : '/QCD_Pt-15To7000_TuneCP5_Flat_14TeV-pythia8/PhaseIIMTDTDRAutumn18DR-PU200_103X_upgrade2023_realistic_v2-v1/FEVT'}
+#dataMap['minBias-PU200'] = {'das' : '/NeutrinoGun_E_10GeV/PhaseIIMTDTDRAutumn18DR-PU200_103X_upgrade2023_realistic_v2-v1/FEVT'}
+#dataMap['ggHTauTau-PU200'] = {'das' : '/GluGluHToTauTau_M125_14TeV_powheg_pythia8/PhaseIIMTDTDRAutumn18DR-PU200_103X_upgrade2023_realistic_v2-v1/FEVT'}
+#dataMap['VBFHTauTau-PU200'] = {'das' : '/VBFHToTauTau_M125_14TeV_powheg_pythia8/PhaseIIMTDTDRAutumn18DR-PU200_103X_upgrade2023_realistic_v2-v1/FEVT'}
 
 # dasgoclient --query="dataset=/SingleNeutrino/PhaseIIFall17D-L1T*_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW"
 # dasgoclient --query="dataset=/QCD_Pt-0to1000_Tune4C_14TeV_pythia8/PhaseIIFall17D-L1T*_93X_upgrade2023_realistic_v5-v1/GEN-SIM-DIGI-RAW"
@@ -72,11 +75,10 @@ if __name__ == '__main__':
     for k in dataMap.keys() :
 
         # Normal eff and rate analysis
-        config.General.requestName = '20190307_%s_withPUSub_v1' % k
+        config.General.requestName = '20190308_%s_withPUSub_v1' % k
         config.JobType.psetName        = 'crabby_jets.py'
-        #config.JobType.psetName        = 'crabby_jets_93X_samples.py'
-        #if 'Tau' in k :
-        #    config.JobType.psetName    = 'crabby_jets_93X_samples_with_taus.py'
+        if 'Tau' in k :
+            config.JobType.psetName    = 'crabby_jets_with_taus.py'
         if 'minBias' in k :
             config.JobType.psetName        = 'rate_crabby_jets.py'
             #config.Data.totalUnits      = 30 # FIXME - for test
@@ -85,7 +87,7 @@ if __name__ == '__main__':
             config.Data.unitsPerJob        = 3 # events / job when using EventAwareLumiBased
             config.Data.unitsPerJob        = 10 # For QCD Calibration file
             #config.Data.unitsPerJob        = 5 # events / job when using EventAwareLumiBased
-            #config.Data.totalUnits      = 100 # for tests
+            config.Data.totalUnits      = 400 # for tests
         else :
             config.Data.unitsPerJob        = 1 # events / job when using EventAwareLumiBased
             #config.Data.totalUnits      = 30 # for tests

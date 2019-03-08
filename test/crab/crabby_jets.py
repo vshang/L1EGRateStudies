@@ -146,6 +146,15 @@ process.tauGenJetsSelectorMuons = cms.EDFilter("TauGenJetDecayModeSelector",
 )
 
 
+process.pGetTaus = cms.Path( 
+    process.tauGenJets *
+    process.tauGenJetsSelectorAllHadrons *
+    process.tauGenJetsSelectorElectrons *
+    process.tauGenJetsSelectorMuons
+)
+
+
+
 
 
 
@@ -155,15 +164,6 @@ process.tauGenJetsSelectorMuons = cms.EDFilter("TauGenJetDecayModeSelector",
 
 process.load('L1Trigger.L1CaloTrigger.L1CaloJets_cff')
 
-
-
-
-process.pGetTaus = cms.Path( 
-    process.tauGenJets *
-    process.tauGenJetsSelectorAllHadrons *
-    process.tauGenJetsSelectorElectrons *
-    process.tauGenJetsSelectorMuons
-)
 
 
 

@@ -26,9 +26,9 @@ config.Site.ignoreGlobalBlacklist = True # Needed to add this to process the VBF
 config.User.voGroup            = 'uscms'
 
 dataMap = OrderedDict()
-dataMap['minBias-PU200'] = {'das' : '/NeutrinoGun_E_10GeV/PhaseIIMTDTDRAutumn18DR-PU200_103X_upgrade2023_realistic_v2-v1/FEVT'}
-dataMap['QCD-PU200'] = {'das' : '/QCD_Pt-15To7000_TuneCP5_Flat_14TeV-pythia8/PhaseIIMTDTDRAutumn18DR-PU200_103X_upgrade2023_realistic_v2-v1/FEVT'}
-#dataMap['ggHTT-PU200'] = {'das' : '/GluGluHToTauTau_M125_14TeV_powheg_pythia8/PhaseIIMTDTDRAutumn18DR-PU200_103X_upgrade2023_realistic_v2-v1/FEVT'}
+#dataMap['minBias-PU200'] = {'das' : '/NeutrinoGun_E_10GeV/PhaseIIMTDTDRAutumn18DR-PU200_103X_upgrade2023_realistic_v2-v1/FEVT'}
+#dataMap['QCD-PU200'] = {'das' : '/QCD_Pt-15To7000_TuneCP5_Flat_14TeV-pythia8/PhaseIIMTDTDRAutumn18DR-PU200_103X_upgrade2023_realistic_v2-v1/FEVT'}
+dataMap['ggHTT-PU200'] = {'das' : '/GluGluHToTauTau_M125_14TeV_powheg_pythia8/PhaseIIMTDTDRAutumn18DR-PU200_103X_upgrade2023_realistic_v2-v1/FEVT'}
 dataMap['VBFHTT-PU200'] = {'das' : '/VBFHToTauTau_M125_14TeV_powheg_pythia8/PhaseIIMTDTDRAutumn18DR-PU200_103X_upgrade2023_realistic_v2-v1/FEVT'}
 
 # dasgoclient --query="dataset dataset=/*/*PhaseIIMTDTDRAutumn18DR*/FEVT"
@@ -55,13 +55,14 @@ if __name__ == '__main__':
     for k in dataMap.keys() :
 
         # Normal eff and rate analysis
-        config.General.requestName = '20190221_%s_r1_v1' % k
+        config.General.requestName = '20190308_%s_r1_forTaus_v1' % k
         config.JobType.psetName        = 'r1_crabby_jets.py'
         config.Data.inputDataset = dataMap[ k ][ 'das' ]
         if 'PU200' in k or 'PU140' in k :
             #config.Data.unitsPerJob        = 3 # events / job when using EventAwareLumiBased
-            config.Data.unitsPerJob        = 5 # events / job when using EventAwareLumiBased
-            config.Data.totalUnits      = 100 # for tests
+            config.Data.unitsPerJob        = 5 # files / job, takes ~ 60min based on 10_5_X MTD samples, 90m for QCD PU200
+            config.Data.unitsPerJob        = 10
+            #config.Data.totalUnits      = 100 # for tests
         else :
             config.Data.unitsPerJob        = 3 # events / job when using EventAwareLumiBased
             #config.Data.totalUnits      = 30 # for tests

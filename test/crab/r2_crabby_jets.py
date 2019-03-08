@@ -36,37 +36,37 @@ process.GlobalTag = GlobalTag(process.GlobalTag, '103X_upgrade2023_realistic_v2'
 
 
 
-# --------------------------------------------------------------------------------------------
+## --------------------------------------------------------------------------------------------
+##
+## ----   Produce Gen Taus
 #
-# ----   Produce Gen Taus
-
-process.tauGenJets = cms.EDProducer(
-    "TauGenJetProducer",
-    GenParticles =  cms.InputTag('genParticles'),
-    includeNeutrinos = cms.bool( False ),
-    verbose = cms.untracked.bool( False )
-)
-
-
-
-process.tauGenJetsSelectorAllHadrons = cms.EDFilter("TauGenJetDecayModeSelector",
-     src = cms.InputTag("tauGenJets"),
-     select = cms.vstring('oneProng0Pi0', 
-                          'oneProng1Pi0', 
-                          'oneProng2Pi0', 
-                          'oneProngOther',
-                          'threeProng0Pi0', 
-                          'threeProng1Pi0', 
-                          'threeProngOther', 
-                          'rare'),
-     filter = cms.bool(False)
-)
-
-
-process.pL1Objs = cms.Path( 
-    process.tauGenJets *
-    process.tauGenJetsSelectorAllHadrons
-)
+#process.tauGenJets = cms.EDProducer(
+#    "TauGenJetProducer",
+#    GenParticles =  cms.InputTag('genParticles'),
+#    includeNeutrinos = cms.bool( False ),
+#    verbose = cms.untracked.bool( False )
+#)
+#
+#
+#
+#process.tauGenJetsSelectorAllHadrons = cms.EDFilter("TauGenJetDecayModeSelector",
+#     src = cms.InputTag("tauGenJets"),
+#     select = cms.vstring('oneProng0Pi0', 
+#                          'oneProng1Pi0', 
+#                          'oneProng2Pi0', 
+#                          'oneProngOther',
+#                          'threeProng0Pi0', 
+#                          'threeProng1Pi0', 
+#                          'threeProngOther', 
+#                          'rare'),
+#     filter = cms.bool(False)
+#)
+#
+#
+#process.pL1Objs = cms.Path( 
+#    process.tauGenJets *
+#    process.tauGenJetsSelectorAllHadrons
+#)
 
 
 
