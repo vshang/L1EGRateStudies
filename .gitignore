@@ -2,3 +2,4 @@
 *.so
 *.pyc
 test/dump_file.py
+test/calibrations/*_cfi.py

@@ -32,7 +32,7 @@ name = 'vbfhtt_v1'
 name = "HiggsTauTau"
 #name = 'qcd_v1'
 # Load samples from external files here:
-from L1Trigger.L1EGRateStudies.loadRound2Files import getSampleFiles
+from L1Trigger.L1EGRateStudies.trigHelpers import getSampleFiles
 process.source.fileNames = getSampleFiles( name )
 
 
@@ -102,7 +102,7 @@ process.panalyzer = cms.Path(process.analyzer)
 
 
 process.TFileService = cms.Service("TFileService", 
-    fileName = cms.string( out_path+"output_round2_"+name+".root" ), 
+    fileName = cms.string( out_path+"output_round2_"+name+"v4.root" ), 
     closeFileFast = cms.untracked.bool(True)
 )
 
