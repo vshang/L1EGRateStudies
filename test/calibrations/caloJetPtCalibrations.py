@@ -534,12 +534,15 @@ def get_quantile_em_fraction_list( fName, calo_region, nBins=10 ) :
 
     return rtn_list
         
-def get_x_binning() :
+def get_x_binning(fName='') :
     #xBinning = array('f', [0.,15,17.5,20,22.5,25,27.5,30, \
     # Worked xBinning = array('f', [0.,20,22.5,25,27.5,30, \
     xBinning = array('f', [0.,5.,7.5,10.,12.5,15.,17.5,20,22.5,25,27.5,30, \
         35,40,45,50,55,60,65,70,75,80,85,90,95,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300, \
         325,400,500]) # x binning
+    if 'Tau' in fName :
+        xBinning = array('f', [0.,5.,7.5,10.,12.5,15.,17.5,20,22.5,25,27.5,30, \
+            35,40,45,50,55,60,65,70,75,80,85,90,95,100,110,120,130,140,150,175,200,250,300]) # x binning
     #xBinningAlt = array('f', [0.,30, \
     #    35,40,45,50,55,60,65,70,75,80,85,90,95,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300, \
     #    325,400,500]) # x binning
@@ -564,7 +567,7 @@ def make_em_fraction_calibrations( c, fName, cut, plotBase ) :
     version = fName.strip('.root').split('_')[-1]
     f_out = ROOT.TFile('jet_em_calibrations_'+version+'.root','RECREATE')
     #x_and_y_bins = [100,0,500, 200,0,20]
-    xBinning = get_x_binning()
+    xBinning = get_x_binning(fName)
     yBinning = array('f', [i*0.1 for i in range(201)])
     for eta in [['0.0', '0.3'], ['0.3', '0.6'], ['0.6', '1.0'], ['1.0', '1.5'], # Barrel
                 #['1.3', '1.8'], # Barrel --> HGCal transition

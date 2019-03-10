@@ -314,14 +314,14 @@ if '__main__' in __name__ :
         #'qcd_PU200',
 
         # R2
-        'output_round2_HiggsTauTau',
+        'output_round2_HiggsTauTau_vTau1',
     ] :
         
         #jetsF0 = 'merged_QCD-PU%s.root' % shape
         #date = jetsF0.replace('merged_QCD-','').replace('.root','')
         jetsF0 = '%s.root' % shape
         date = jetsF0.replace('merged_','').replace('.root','')
-        date = base.split('/')[-2].replace('l1CaloJets__','')+shape
+        date = base.split('/')[-2].replace('l1CaloJets_','')+shape
         plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/20190308/'+date+''
         if not os.path.exists( plotDir ) : os.makedirs( plotDir )
 
@@ -339,7 +339,7 @@ if '__main__' in __name__ :
         # Only make for QCD sample, for other samples, pick up the
         # results of QCD
         cut = "" # Do all Eta now
-        #if 'qcd' in shape :
+        #if 'qcd' in shape or 'Higgs' in shape :
         #    make_em_fraction_calibrations( c, base+jetsF0, cut, plotDir )
         jetFile.Close()
 
@@ -456,7 +456,7 @@ if '__main__' in __name__ :
                 to_plot = '(jet_pt)/genJet_pt:genJet_pt'
                 h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
                 to_plot = '(jet_pt_calibration)/genJet_pt:genJet_pt'
-                #to_plot = '( calibPtAA )/genJet_pt:genJet_pt'
+                to_plot = '( calibPtAA )/genJet_pt:genJet_pt'
                 h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
                 if 'Tau' in jetsF0 :
                     to_plot = '(stage2tau_pt)/genJet_pt:genJet_pt'
@@ -476,7 +476,41 @@ if '__main__' in __name__ :
                 c.SetTitle("genJetPt_Tau_"+k)
                 areaNorm = True
                 drawPointsHists3(c.GetTitle(), h1, h2, h3, title1, title2, title3, xaxis, yaxis, areaNorm, plotDir)
-
+            """
+                ("ecal_nL1EGs");
+                ("ecal_nL1EGs_standaloneSS");
+                ("ecal_nL1EGs_standaloneIso");
+                ("ecal_nL1EGs_trkMatchSS");
+                ("ecal_nL1EGs_trkMatchIso");
+            """
+            gen_dms = {
+            'reco_L1EG_nL1EG_0' : '(ecal_nL1EGs == 0)',
+            'reco_L1EG_nL1EG_1' : '(ecal_nL1EGs == 1)',
+            'reco_L1EG_nL1EG_2' : '(ecal_nL1EGs == 2)',
+            'reco_L1EG_nL1EG_3plus' : '(ecal_nL1EGs >= 3)',
+            'reco_L1EG_nL1EGtrkMatchSS_0' : '(ecal_nL1EGs_trkMatchSS == 0)',
+            'reco_L1EG_nL1EGtrkMatchSS_1' : '(ecal_nL1EGs_trkMatchSS == 1)',
+            'reco_L1EG_nL1EGtrkMatchSS_2' : '(ecal_nL1EGs_trkMatchSS == 2)',
+            'reco_L1EG_nL1EGtrkMatchSS_3plus' : '(ecal_nL1EGs_trkMatchSS >= 3)',
+            }
+            if 'Tau' in jetsF0 :
+                for k, cut in gen_dms.iteritems() :
+                    cutX = cut+'*( abs(jet_eta) < 3.0 )'
+                    to_plot = '(jet_pt)/genJet_pt:genJet_pt'
+                    h1 = getTH2( tree, 'qcd1', to_plot, cutX, x_and_y_bins )
+                    to_plot = '(jet_pt_calibration)/genJet_pt:genJet_pt'
+                    to_plot = '( calibPtAA )/genJet_pt:genJet_pt'
+                    h2 = getTH2( tree, 'qcd2', to_plot, cutX, x_and_y_bins )
+                    to_plot = '(stage2tau_pt)/genJet_pt:genJet_pt'
+                    h3 = getTH2( tree, 's2', to_plot, cutX, x_and_y_bins )
+                    title1 = "Phase-II CaloTau, raw "+k
+                    title2 = "Phase-II CaloTau, EM Frac Calib "+k
+                    title3 = "Phase-I CaloTau "+k
+                    xaxis = "Gen Jet P_{T} (GeV)"
+                    yaxis = "Relative Error in P_{T} reco/gen"
+                    c.SetTitle("genJetPt_Tau_"+k)
+                    areaNorm = True
+                    drawPointsHists3(c.GetTitle(), h1, h2, h3, title1, title2, title3, xaxis, yaxis, areaNorm, plotDir)
 
             c.SetCanvasSize(600,600)
             c.Divide(1)
