@@ -1,5 +1,5 @@
 import ROOT
-import trigHelpers
+import L1Trigger.L1EGRateStudies.trigHelpers
 from array import array
 from ROOT import gStyle, gPad
 import CMS_lumi, tdrstyle
@@ -8,20 +8,21 @@ import os
 
 qcd = 'qcd_pu0.root'
 qcd200 = 'qcd_pu200.root'
-ggH = 'ggH.root'
-version = '20181101_jets_EDProd_Calibs_V1'
+ggH = 'output_round2_HiggsTauTau_vTau1.root'
+ggH = 'output_round2_HiggsTauTauv2.root'
+version = 'l1CaloJets_20190308_r2_taus_v1'
 #version = '20181023_jets_final_shape_comp_v1'
 #qcd = 'qcd1.root'
 #ggH = 'ggH1.root'
 #version = '93X_ResolutionsV2'
 
-base = '/data/truggles/p2/20180927_QCD_diff_jet_shapes_calib/'
-universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"/"
+base = '/data/truggles/l1CaloJets_20190308_r2/'
+universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"_lessDetail/"
 if not os.path.exists( universalSaveDir ) : os.makedirs( universalSaveDir )
 
 qcd0File = ROOT.TFile( base+qcd, 'r' )
 qcd200File = ROOT.TFile( base+qcd200, 'r' )
-#ggHHTTFile = ROOT.TFile( base+ggH, 'r' )
+ggHHTTFile = ROOT.TFile( base+ggH, 'r' )
 
 def loadHists( file_, histMap = {}, eff=False ) :
     hists = {}
@@ -497,8 +498,8 @@ def drawDRHists(hists, c, ymax, doFit = False ) :
         #cmsString = drawCMSString("CMS Simulation, <PU>=200 bx=25, Min-Bias")
                 
     c.Print(universalSaveDir+c.GetName()+".png")
-    c.Print(universalSaveDir+c.GetName()+".pdf")
-    c.Print(universalSaveDir+c.GetName()+".C")
+    #c.Print(universalSaveDir+c.GetName()+".pdf")
+    #c.Print(universalSaveDir+c.GetName()+".C")
 
     # Don't produce CDFs at the moment
     #del markers
@@ -596,7 +597,7 @@ if __name__ == '__main__' :
     
     tree_qcd0 = qcd0File.Get("analyzer/tree")
     tree_qcd200 = qcd200File.Get("analyzer/tree")
-    #tree_ggH = ggHHTTFile.Get("analyzer/tree")
+    tree_ggH = ggHHTTFile.Get("analyzer/tree")
     tdrstyle.setTDRStyle()
     gStyle.SetOptStat(0)
 
@@ -669,16 +670,31 @@ if __name__ == '__main__' :
     #    hists0[-1].GetXaxis().SetTitle('HCAL Energy / Gen Energy')
     #c.SetName("hcal_dimensions_check")
     #drawDRHists(hists0, c, 0., False ) # no Fit
-    #hists0 = []
-    #max_ = 1.
-    #tmpAry=[25,min_,max_]
-    ##for dr in ['leading_energy', 'dR0p1', 'dR0p2', 'dR0p3', 'dR0p4', 'dR0p5'] :
-    #for dr in ['dR0p05', 'dR0p1', 'dR0p2', 'dR0p3', 'dR0p4', 'dR0p5'] :
-    #    hists0.append( simple1D( 'QCD Jet '+dr, tree_qcd0, cnt, '(ecal_'+dr+')/genJet_energy', tmpAry, baseline_cuts ) )
-    #    hists0[-1].SetTitle('QCD Jets '+dr)
-    #    hists0[-1].GetXaxis().SetTitle('ECAL Energy / Gen Energy')
-    #c.SetName("ecal_dimensions_check")
-    #drawDRHists(hists0, c, 0., False ) # no Fit
+    hists200 = []
+    max_ = 3.
+    tmpAry=[75,min_,max_]
+    #for dr in ['leading_energy', 'dR0p1', 'dR0p2', 'dR0p3', 'dR0p4', 'dR0p5'] :
+    
+    dr_map = OrderedDict()
+    #dr_map['dR0p05'] = 'seed_pt'
+    dr_map['dR0p3b'] = 'ecal_dR0p3 + ecal_7x7 + hcal_7x7'
+    dr_map['dR0p3'] = 'jet_pt'
+    dr_map['dR0p1'] = 'ecal_dR0p1 + ecal_2x2 + hcal_2x2'
+    dr_map['dR0p15'] = 'ecal_dR0p15 + ecal_3x3 + hcal_3x3'
+    dr_map['dR0p2'] = 'ecal_dR0p2 + ecal_5x5 + hcal_5x5'
+    
+    for n_prongs in [1, 3] :
+        for n_photons in ['0', 'gtrZero'] :
+            for pt in [20, 30, 50, 100] :
+                hists200 = []
+                photon_cut = 'genTau_n_photons == 0' if n_photons == '0' else 'genTau_n_photons > 0'
+                baseline_cuts = 'abs(jet_eta) < 1.5 && jet_pt > 0 && genJet_pt > %i && genTau_n_prongs == %i && %s' % (pt, n_prongs, photon_cut )
+                for dr, string in dr_map.iteritems() :
+                    hists200.append( simple1D( 'HTT '+dr, tree_ggH, cnt, '('+string+')/genJet_pt', tmpAry, baseline_cuts ) )
+                    hists200[-1].SetTitle('HTT '+dr)
+                    hists200[-1].GetXaxis().SetTitle('ET in tau within DR / Gen ET')
+                c.SetName("tau_dimensions_check_ptGtr%i_nProngs%i_%sPhotons" % (pt, n_prongs, n_photons) )
+                drawDRHists(hists200, c, 0., False ) # no Fit
 
 
     hists = []
@@ -850,29 +866,29 @@ if __name__ == '__main__' :
 
 
 
-    base = '/data/truggles/l1CaloJets_20181101/'
-    baseline_cuts = "(genJet_pt > 100 && abs(genJet_eta) < 1.1)"
-    baseline_cuts = "(genJet_pt > 100 && genJet_pt < 150 && abs(genJet_eta) < 1.1)"
-    baseline_cuts = "(genJet_pt > 100 && genJet_pt < 150 && abs(genJet_eta) < 1.5)"
-    #baseline_cuts = "(genJet_pt > 50 && genJet_pt < 90 && abs(genJet_eta) < 1.1)"
-    pt_name = '_pt100-150_absEta1p5'
-    #pt_name = '_pt50-90'
-    hists = []
-    to_plot = '(ecal_L1EG_jet_pt + ecal_pt + (hcal_pt_calibration) )/genJet_pt'
-    title = 'Reco Jet p_{T} / Gen Jet p_{T}' if 'calib' not in to_plot else 'Reco Jet p_{T} / Gen Jet p_{T}'
+    #base = '/data/truggles/l1CaloJets_20181101/'
+    #baseline_cuts = "(genJet_pt > 100 && abs(genJet_eta) < 1.1)"
+    #baseline_cuts = "(genJet_pt > 100 && genJet_pt < 150 && abs(genJet_eta) < 1.1)"
+    #baseline_cuts = "(genJet_pt > 100 && genJet_pt < 150 && abs(genJet_eta) < 1.5)"
+    ##baseline_cuts = "(genJet_pt > 50 && genJet_pt < 90 && abs(genJet_eta) < 1.1)"
+    #pt_name = '_pt100-150_absEta1p5'
+    ##pt_name = '_pt50-90'
+    #hists = []
+    #to_plot = '(ecal_L1EG_jet_pt + ecal_pt + (hcal_pt_calibration) )/genJet_pt'
+    #title = 'Reco Jet p_{T} / Gen Jet p_{T}' if 'calib' not in to_plot else 'Reco Jet p_{T} / Gen Jet p_{T}'
 
-    # Stage-2 first
-    pu = '<PU> 200'
-    f = ROOT.TFile( base+'merged_QCD-PU200_Calibrated_v5.root', 'r' )
-    tree = f.Get('analyzer/tree')
-    hists.append( simple1D( pu+'_stage-2', tree, cnt, 'stage2jet_pt/genJet_pt', tmpAry, baseline_cuts ) )
-    hists[-1].SetTitle( 'Stage-2 CaloJet' )
-    hists[-1].GetXaxis().SetTitle('Reco Jet p_{T} / Gen Jet p_{T}')
-    hists.append( simple1D( pu+'_L1CaloJet', tree, cnt, to_plot, tmpAry, baseline_cuts ) )
-    hists[-1].SetTitle( 'L1CaloJet ' + title)
-    hists[-1].GetXaxis().SetTitle('Reco Jet p_{T} / Gen Jet p_{T}')
-    c.SetName("shapes_PU_200_comparison"+pt_name)
-    drawDRHists(hists, c, 0., True ) # no Fit
+    ## Stage-2 first
+    #pu = '<PU> 200'
+    #f = ROOT.TFile( base+'merged_QCD-PU200_Calibrated_v5.root', 'r' )
+    #tree = f.Get('analyzer/tree')
+    #hists.append( simple1D( pu+'_stage-2', tree, cnt, 'stage2jet_pt/genJet_pt', tmpAry, baseline_cuts ) )
+    #hists[-1].SetTitle( 'Stage-2 CaloJet' )
+    #hists[-1].GetXaxis().SetTitle('Reco Jet p_{T} / Gen Jet p_{T}')
+    #hists.append( simple1D( pu+'_L1CaloJet', tree, cnt, to_plot, tmpAry, baseline_cuts ) )
+    #hists[-1].SetTitle( 'L1CaloJet ' + title)
+    #hists[-1].GetXaxis().SetTitle('Reco Jet p_{T} / Gen Jet p_{T}')
+    #c.SetName("shapes_PU_200_comparison"+pt_name)
+    #drawDRHists(hists, c, 0., True ) # no Fit
     
 
 
