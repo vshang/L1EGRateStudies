@@ -218,6 +218,10 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
             float hcal_5x5;
             float hcal_7x7;
             float hcal_2x2;
+            float ecal_3x3;
+            float ecal_5x5;
+            float ecal_7x7;
+            float ecal_2x2;
             float seed_pt;
             float seed_iEta;
             float seed_iPhi;
@@ -390,6 +394,10 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("hcal_5x5", &treeinfo.hcal_5x5);
     tree->Branch("hcal_7x7", &treeinfo.hcal_7x7);
     tree->Branch("hcal_2x2", &treeinfo.hcal_2x2);
+    tree->Branch("ecal_3x3", &treeinfo.ecal_3x3);
+    tree->Branch("ecal_5x5", &treeinfo.ecal_5x5);
+    tree->Branch("ecal_7x7", &treeinfo.ecal_7x7);
+    tree->Branch("ecal_2x2", &treeinfo.ecal_2x2);
     tree->Branch("seed_pt", &treeinfo.seed_pt);
     tree->Branch("seed_iEta", &treeinfo.seed_iEta);
     tree->Branch("seed_iPhi", &treeinfo.seed_iPhi);
@@ -1076,6 +1084,10 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
     treeinfo.hcal_5x5 = caloJet.GetExperimentalParam("hcal_5x5");
     treeinfo.hcal_7x7 = caloJet.GetExperimentalParam("hcal_7x7");
     treeinfo.hcal_2x2 = caloJet.GetExperimentalParam("hcal_2x2");
+    treeinfo.ecal_3x3 = caloJet.GetExperimentalParam("ecal_3x3");
+    treeinfo.ecal_5x5 = caloJet.GetExperimentalParam("ecal_5x5");
+    treeinfo.ecal_7x7 = caloJet.GetExperimentalParam("ecal_7x7");
+    treeinfo.ecal_2x2 = caloJet.GetExperimentalParam("ecal_2x2");
     treeinfo.ecal_nHits = caloJet.GetExperimentalParam("ecal_nHits");
     treeinfo.ecal_leading_pt = caloJet.GetExperimentalParam("ecal_leading_pt");
     treeinfo.ecal_leading_eta = caloJet.GetExperimentalParam("ecal_leading_eta");
@@ -1148,6 +1160,10 @@ L1CaloJetStudies::fill_tree_null() {
     treeinfo.hcal_5x5 = -9;
     treeinfo.hcal_7x7 = -9;
     treeinfo.hcal_2x2 = -9;
+    treeinfo.ecal_3x3 = -9;
+    treeinfo.ecal_5x5 = -9;
+    treeinfo.ecal_7x7 = -9;
+    treeinfo.ecal_2x2 = -9;
     treeinfo.ecal_nHits = -9;
     treeinfo.ecal_leading_pt = -9;
     treeinfo.ecal_leading_eta = -9;
