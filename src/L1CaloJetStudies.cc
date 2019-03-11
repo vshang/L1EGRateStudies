@@ -188,18 +188,21 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
             double event;
             float nTruePU;
             float total_et;
-            float total_nTowers;
+            //float total_nTowers;
             float ecal_pt;
+            float ecal_seed;
+            float l1eg_pt;
+            float l1eg_seed;
             //float ecal_eta;
             //float ecal_phi;
             //float ecal_mass;
             //float ecal_energy;
-            float ecal_L1EG_jet_pt;
             //float ecal_L1EG_jet_eta;
             //float ecal_L1EG_jet_phi;
             //float ecal_L1EG_jet_mass;
             //float ecal_L1EG_jet_energy;
             float hcal_pt;
+            float hcal_seed;
             float hcal_calibration;
             float hcal_pt_calibration;
             //float hcal_eta;
@@ -222,6 +225,10 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
             float ecal_5x5;
             float ecal_7x7;
             float ecal_2x2;
+            float l1eg_3x3;
+            float l1eg_5x5;
+            float l1eg_7x7;
+            float l1eg_2x2;
             float seed_pt;
             float seed_iEta;
             float seed_iPhi;
@@ -230,24 +237,25 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
             float seed_energy;
             float hcal_nHits;
             float ecal_nHits;
-            float ecal_leading_pt;
-            float ecal_leading_eta;
-            float ecal_leading_phi;
-            float ecal_leading_energy;
-            float ecal_dR0p05;
-            float ecal_dR0p075;
-            float ecal_dR0p1;
-            float ecal_dR0p125;
-            float ecal_dR0p15;
-            float ecal_dR0p2;
-            float ecal_dR0p3;
-            float ecal_dR0p4;
-            float ecal_dR0p1_leading;
-            float ecal_nL1EGs;
-            float ecal_nL1EGs_standaloneSS;
-            float ecal_nL1EGs_standaloneIso;
-            float ecal_nL1EGs_trkMatchSS;
-            float ecal_nL1EGs_trkMatchIso;
+            float l1eg_nHits;
+            //float ecal_leading_pt;
+            //float ecal_leading_eta;
+            //float ecal_leading_phi;
+            //float ecal_leading_energy;
+            //float ecal_dR0p05;
+            //float ecal_dR0p075;
+            //float ecal_dR0p1;
+            //float ecal_dR0p125;
+            //float ecal_dR0p15;
+            //float ecal_dR0p2;
+            //float ecal_dR0p3;
+            //float ecal_dR0p4;
+            //float ecal_dR0p1_leading;
+            float l1eg_nL1EGs;
+            float l1eg_nL1EGs_standaloneSS;
+            float l1eg_nL1EGs_standaloneIso;
+            float l1eg_nL1EGs_trkMatchSS;
+            float l1eg_nL1EGs_trkMatchIso;
             float deltaR_ecal_vs_jet;
             float deltaR_hcal_vs_jet;
             float deltaR_L1EGjet_vs_jet;
@@ -257,6 +265,7 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
             float deltaR_ecal_lead_vs_jet;
             float deltaR_ecal_lead_vs_ecal;
             float deltaR;
+            float deltaR_phase2_stage2;
             float deltaPhi;
             float deltaEta;
             float genJet;
@@ -364,18 +373,21 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("event", &treeinfo.event);
     tree->Branch("nTruePU", &treeinfo.nTruePU);
     tree->Branch("total_et", &treeinfo.total_et);
-    tree->Branch("total_nTowers", &treeinfo.total_nTowers);
+    //tree->Branch("total_nTowers", &treeinfo.total_nTowers);
     tree->Branch("ecal_pt", &treeinfo.ecal_pt);
+    tree->Branch("ecal_seed", &treeinfo.ecal_seed);
+    tree->Branch("l1eg_pt", &treeinfo.l1eg_pt);
+    tree->Branch("l1eg_seed", &treeinfo.l1eg_seed);
     //tree->Branch("ecal_eta", &treeinfo.ecal_eta);
     //tree->Branch("ecal_phi", &treeinfo.ecal_phi);
     //tree->Branch("ecal_mass", &treeinfo.ecal_mass);
     //tree->Branch("ecal_energy", &treeinfo.ecal_energy);
-    tree->Branch("ecal_L1EG_jet_pt", &treeinfo.ecal_L1EG_jet_pt);
     //tree->Branch("ecal_L1EG_jet_eta", &treeinfo.ecal_L1EG_jet_eta);
     //tree->Branch("ecal_L1EG_jet_phi", &treeinfo.ecal_L1EG_jet_phi);
     //tree->Branch("ecal_L1EG_jet_mass", &treeinfo.ecal_L1EG_jet_mass);
     //tree->Branch("ecal_L1EG_jet_energy", &treeinfo.ecal_L1EG_jet_energy);
     tree->Branch("hcal_pt", &treeinfo.hcal_pt);
+    tree->Branch("hcal_seed", &treeinfo.hcal_seed);
     tree->Branch("hcal_calibration", &treeinfo.hcal_calibration);
     tree->Branch("hcal_pt_calibration", &treeinfo.hcal_pt_calibration);
     //tree->Branch("hcal_eta", &treeinfo.hcal_eta);
@@ -398,6 +410,10 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("ecal_5x5", &treeinfo.ecal_5x5);
     tree->Branch("ecal_7x7", &treeinfo.ecal_7x7);
     tree->Branch("ecal_2x2", &treeinfo.ecal_2x2);
+    tree->Branch("l1eg_3x3", &treeinfo.l1eg_3x3);
+    tree->Branch("l1eg_5x5", &treeinfo.l1eg_5x5);
+    tree->Branch("l1eg_7x7", &treeinfo.l1eg_7x7);
+    tree->Branch("l1eg_2x2", &treeinfo.l1eg_2x2);
     tree->Branch("seed_pt", &treeinfo.seed_pt);
     tree->Branch("seed_iEta", &treeinfo.seed_iEta);
     tree->Branch("seed_iPhi", &treeinfo.seed_iPhi);
@@ -406,24 +422,25 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("seed_energy", &treeinfo.seed_energy);
     tree->Branch("hcal_nHits", &treeinfo.hcal_nHits);
     tree->Branch("ecal_nHits", &treeinfo.ecal_nHits);
-    tree->Branch("ecal_leading_pt", &treeinfo.ecal_leading_pt);
-    tree->Branch("ecal_leading_eta", &treeinfo.ecal_leading_eta);
-    tree->Branch("ecal_leading_phi", &treeinfo.ecal_leading_phi);
-    tree->Branch("ecal_leading_energy", &treeinfo.ecal_leading_energy);
-    tree->Branch("ecal_dR0p05", &treeinfo.ecal_dR0p05);
-    tree->Branch("ecal_dR0p075", &treeinfo.ecal_dR0p075);
-    tree->Branch("ecal_dR0p1", &treeinfo.ecal_dR0p1);
-    tree->Branch("ecal_dR0p125", &treeinfo.ecal_dR0p125);
-    tree->Branch("ecal_dR0p15", &treeinfo.ecal_dR0p15);
-    tree->Branch("ecal_dR0p2", &treeinfo.ecal_dR0p2);
-    tree->Branch("ecal_dR0p3", &treeinfo.ecal_dR0p3);
-    tree->Branch("ecal_dR0p4", &treeinfo.ecal_dR0p4);
-    tree->Branch("ecal_dR0p1_leading", &treeinfo.ecal_dR0p1_leading);
-    tree->Branch("ecal_nL1EGs", &treeinfo.ecal_nL1EGs);
-    tree->Branch("ecal_nL1EGs_standaloneSS", &treeinfo.ecal_nL1EGs_standaloneSS);
-    tree->Branch("ecal_nL1EGs_standaloneIso", &treeinfo.ecal_nL1EGs_standaloneIso);
-    tree->Branch("ecal_nL1EGs_trkMatchSS", &treeinfo.ecal_nL1EGs_trkMatchSS);
-    tree->Branch("ecal_nL1EGs_trkMatchIso", &treeinfo.ecal_nL1EGs_trkMatchIso);
+    tree->Branch("l1eg_nHits", &treeinfo.l1eg_nHits);
+    //tree->Branch("ecal_leading_pt", &treeinfo.ecal_leading_pt);
+    //tree->Branch("ecal_leading_eta", &treeinfo.ecal_leading_eta);
+    //tree->Branch("ecal_leading_phi", &treeinfo.ecal_leading_phi);
+    //tree->Branch("ecal_leading_energy", &treeinfo.ecal_leading_energy);
+    //tree->Branch("ecal_dR0p05", &treeinfo.ecal_dR0p05);
+    //tree->Branch("ecal_dR0p075", &treeinfo.ecal_dR0p075);
+    //tree->Branch("ecal_dR0p1", &treeinfo.ecal_dR0p1);
+    //tree->Branch("ecal_dR0p125", &treeinfo.ecal_dR0p125);
+    //tree->Branch("ecal_dR0p15", &treeinfo.ecal_dR0p15);
+    //tree->Branch("ecal_dR0p2", &treeinfo.ecal_dR0p2);
+    //tree->Branch("ecal_dR0p3", &treeinfo.ecal_dR0p3);
+    //tree->Branch("ecal_dR0p4", &treeinfo.ecal_dR0p4);
+    //tree->Branch("ecal_dR0p1_leading", &treeinfo.ecal_dR0p1_leading);
+    tree->Branch("l1eg_nL1EGs", &treeinfo.l1eg_nL1EGs);
+    tree->Branch("l1eg_nL1EGs_standaloneSS", &treeinfo.l1eg_nL1EGs_standaloneSS);
+    tree->Branch("l1eg_nL1EGs_standaloneIso", &treeinfo.l1eg_nL1EGs_standaloneIso);
+    tree->Branch("l1eg_nL1EGs_trkMatchSS", &treeinfo.l1eg_nL1EGs_trkMatchSS);
+    tree->Branch("l1eg_nL1EGs_trkMatchIso", &treeinfo.l1eg_nL1EGs_trkMatchIso);
     tree->Branch("deltaR_ecal_vs_jet", &treeinfo.deltaR_ecal_vs_jet);
     tree->Branch("deltaR_hcal_vs_jet", &treeinfo.deltaR_hcal_vs_jet);
     tree->Branch("deltaR_L1EGjet_vs_jet", &treeinfo.deltaR_L1EGjet_vs_jet);
@@ -434,6 +451,7 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("deltaR_ecal_lead_vs_ecal", &treeinfo.deltaR_ecal_lead_vs_ecal);
     // Gen
     tree->Branch("deltaR_gen", &treeinfo.deltaR);
+    tree->Branch("deltaR_phase2_stage2", &treeinfo.deltaR_phase2_stage2);
     tree->Branch("deltaPhi_gen", &treeinfo.deltaPhi);
     tree->Branch("deltaEta_gen", &treeinfo.deltaEta);
     tree->Branch("genJet", &treeinfo.genJet);
@@ -744,7 +762,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         {
 
 
-            // Find stage2 within dR 0.3, beginning with higest pt cand
+            // Find stage2, beginning with higest pt cand
             for (auto& s2_jet : stage2Jets)
             {
                 if ( reco::deltaR( s2_jet.p4(), genJetP4 ) < genMatchDeltaRcut )
@@ -916,7 +934,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
             for(const auto& caloJet : caloJets)
             {
                 total_et_f = caloJet.GetExperimentalParam("total_et");
-                nTT_f = caloJet.GetExperimentalParam("total_nTowers");
+                //nTT_f = caloJet.GetExperimentalParam("total_nTowers");
 
                 if ( reco::deltaR(caloJet, genJetP4) < genMatchDeltaRcut )
                       //&& fabs(caloJet.pt()-genJetP4.pt())/genJetP4.pt() < genMatchRelPtcut )
@@ -926,6 +944,10 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
                     treeinfo.deltaR = reco::deltaR(caloJet, genJetP4);
                     treeinfo.deltaPhi = reco::deltaPhi(caloJet, genJetP4);
                     treeinfo.deltaEta = genJetP4.eta()-caloJet.eta();
+                    if (treeinfo.stage2tau_eta != -9)
+                    {
+                        treeinfo.deltaR_phase2_stage2 = reco::deltaR( treeinfo.stage2tau_eta, treeinfo.stage2tau_phi, caloJet.eta(), caloJet.phi() );
+                    }
                     
                     fill_tree(caloJet);
 
@@ -1045,19 +1067,22 @@ void
 L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
     // PU Vars
     treeinfo.total_et = caloJet.GetExperimentalParam("total_et");
-    treeinfo.total_nTowers = caloJet.GetExperimentalParam("total_nTowers");
+    //treeinfo.total_nTowers = caloJet.GetExperimentalParam("total_nTowers");
 
     // As of 28 May 2018 caloJet_pt is post-calibration
     treeinfo.ecal_pt = caloJet.GetExperimentalParam("ecal_pt");
+    treeinfo.ecal_seed = caloJet.GetExperimentalParam("ecal_seed");
+    treeinfo.l1eg_pt = caloJet.GetExperimentalParam("l1eg_pt");
+    treeinfo.l1eg_seed = caloJet.GetExperimentalParam("l1eg_seed");
     //treeinfo.ecal_eta = caloJet.GetExperimentalParam("ecal_eta");
     //treeinfo.ecal_phi = caloJet.GetExperimentalParam("ecal_phi");
     //treeinfo.ecal_mass = caloJet.GetExperimentalParam("ecal_mass");
     //treeinfo.ecal_energy = caloJet.GetExperimentalParam("ecal_energy");
-    treeinfo.ecal_L1EG_jet_pt = caloJet.GetExperimentalParam("ecal_L1EG_jet_pt");
     //treeinfo.ecal_L1EG_jet_eta = caloJet.GetExperimentalParam("ecal_L1EG_jet_eta");
     //treeinfo.ecal_L1EG_jet_phi = caloJet.GetExperimentalParam("ecal_L1EG_jet_phi");
     //treeinfo.ecal_L1EG_jet_energy = caloJet.GetExperimentalParam("ecal_L1EG_jet_energy");
     treeinfo.hcal_pt = caloJet.GetExperimentalParam("hcal_pt");
+    treeinfo.hcal_seed = caloJet.GetExperimentalParam("hcal_seed");
     treeinfo.hcal_calibration = caloJet.GetExperimentalParam("hcal_calibration");
     treeinfo.hcal_pt_calibration = caloJet.GetExperimentalParam("hcal_pt_calibration");
     //treeinfo.hcal_eta = caloJet.GetExperimentalParam("hcal_eta");
@@ -1088,25 +1113,30 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
     treeinfo.ecal_5x5 = caloJet.GetExperimentalParam("ecal_5x5");
     treeinfo.ecal_7x7 = caloJet.GetExperimentalParam("ecal_7x7");
     treeinfo.ecal_2x2 = caloJet.GetExperimentalParam("ecal_2x2");
+    treeinfo.l1eg_3x3 = caloJet.GetExperimentalParam("l1eg_3x3");
+    treeinfo.l1eg_5x5 = caloJet.GetExperimentalParam("l1eg_5x5");
+    treeinfo.l1eg_7x7 = caloJet.GetExperimentalParam("l1eg_7x7");
+    treeinfo.l1eg_2x2 = caloJet.GetExperimentalParam("l1eg_2x2");
     treeinfo.ecal_nHits = caloJet.GetExperimentalParam("ecal_nHits");
-    treeinfo.ecal_leading_pt = caloJet.GetExperimentalParam("ecal_leading_pt");
-    treeinfo.ecal_leading_eta = caloJet.GetExperimentalParam("ecal_leading_eta");
-    treeinfo.ecal_leading_phi = caloJet.GetExperimentalParam("ecal_leading_phi");
-    treeinfo.ecal_leading_energy = caloJet.GetExperimentalParam("ecal_leading_energy");
-    treeinfo.ecal_dR0p05 = caloJet.GetExperimentalParam("ecal_dR0p05");
-    treeinfo.ecal_dR0p075 = caloJet.GetExperimentalParam("ecal_dR0p075");
-    treeinfo.ecal_dR0p1 = caloJet.GetExperimentalParam("ecal_dR0p1");
-    treeinfo.ecal_dR0p125 = caloJet.GetExperimentalParam("ecal_dR0p125");
-    treeinfo.ecal_dR0p15 = caloJet.GetExperimentalParam("ecal_dR0p15");
-    treeinfo.ecal_dR0p2 = caloJet.GetExperimentalParam("ecal_dR0p2");
-    treeinfo.ecal_dR0p3 = caloJet.GetExperimentalParam("ecal_dR0p3");
-    treeinfo.ecal_dR0p4 = caloJet.GetExperimentalParam("ecal_dR0p4");
-    treeinfo.ecal_dR0p1_leading = caloJet.GetExperimentalParam("ecal_dR0p1_leading");
-    treeinfo.ecal_nL1EGs = caloJet.GetExperimentalParam("ecal_nL1EGs");
-    treeinfo.ecal_nL1EGs_standaloneSS = caloJet.GetExperimentalParam("ecal_nL1EGs_standaloneSS");
-    treeinfo.ecal_nL1EGs_standaloneIso = caloJet.GetExperimentalParam("ecal_nL1EGs_standaloneIso");
-    treeinfo.ecal_nL1EGs_trkMatchSS = caloJet.GetExperimentalParam("ecal_nL1EGs_trkMatchSS");
-    treeinfo.ecal_nL1EGs_trkMatchIso = caloJet.GetExperimentalParam("ecal_nL1EGs_trkMatchIso");
+    treeinfo.l1eg_nHits = caloJet.GetExperimentalParam("l1eg_nHits");
+    //treeinfo.ecal_leading_pt = caloJet.GetExperimentalParam("ecal_leading_pt");
+    //treeinfo.ecal_leading_eta = caloJet.GetExperimentalParam("ecal_leading_eta");
+    //treeinfo.ecal_leading_phi = caloJet.GetExperimentalParam("ecal_leading_phi");
+    //treeinfo.ecal_leading_energy = caloJet.GetExperimentalParam("ecal_leading_energy");
+    //treeinfo.ecal_dR0p05 = caloJet.GetExperimentalParam("ecal_dR0p05");
+    //treeinfo.ecal_dR0p075 = caloJet.GetExperimentalParam("ecal_dR0p075");
+    //treeinfo.ecal_dR0p1 = caloJet.GetExperimentalParam("ecal_dR0p1");
+    //treeinfo.ecal_dR0p125 = caloJet.GetExperimentalParam("ecal_dR0p125");
+    //treeinfo.ecal_dR0p15 = caloJet.GetExperimentalParam("ecal_dR0p15");
+    //treeinfo.ecal_dR0p2 = caloJet.GetExperimentalParam("ecal_dR0p2");
+    //treeinfo.ecal_dR0p3 = caloJet.GetExperimentalParam("ecal_dR0p3");
+    //treeinfo.ecal_dR0p4 = caloJet.GetExperimentalParam("ecal_dR0p4");
+    //treeinfo.ecal_dR0p1_leading = caloJet.GetExperimentalParam("ecal_dR0p1_leading");
+    treeinfo.l1eg_nL1EGs = caloJet.GetExperimentalParam("l1eg_nL1EGs");
+    treeinfo.l1eg_nL1EGs_standaloneSS = caloJet.GetExperimentalParam("l1eg_nL1EGs_standaloneSS");
+    treeinfo.l1eg_nL1EGs_standaloneIso = caloJet.GetExperimentalParam("l1eg_nL1EGs_standaloneIso");
+    treeinfo.l1eg_nL1EGs_trkMatchSS = caloJet.GetExperimentalParam("l1eg_nL1EGs_trkMatchSS");
+    treeinfo.l1eg_nL1EGs_trkMatchIso = caloJet.GetExperimentalParam("l1eg_nL1EGs_trkMatchIso");
     //treeinfo.deltaR_ecal_vs_jet = caloJet.GetExperimentalParam("deltaR_ecal_vs_jet");
     //treeinfo.deltaR_hcal_vs_jet = caloJet.GetExperimentalParam("deltaR_hcal_vs_jet");
     //treeinfo.deltaR_L1EGjet_vs_jet = caloJet.GetExperimentalParam("deltaR_L1EGjet_vs_jet");
@@ -1123,18 +1153,21 @@ void
 L1CaloJetStudies::fill_tree_null() {
     // Fill with -9 with no CaloJet fround
     treeinfo.total_et = -9;
-    treeinfo.total_nTowers = -9;
+    //treeinfo.total_nTowers = -9;
 
     treeinfo.ecal_pt = -9;
+    treeinfo.ecal_seed = -9;
+    treeinfo.l1eg_pt = -9;
+    treeinfo.l1eg_seed = -9;
     //treeinfo.ecal_eta = -9;
     //treeinfo.ecal_phi = -9;
     //treeinfo.ecal_mass = -9;
     //treeinfo.ecal_energy = -9;
-    treeinfo.ecal_L1EG_jet_pt = -9;
     //treeinfo.ecal_L1EG_jet_eta = -9;
     //treeinfo.ecal_L1EG_jet_phi = -9;
     //treeinfo.ecal_L1EG_jet_energy = -9;
     treeinfo.hcal_pt = -9;
+    treeinfo.hcal_seed = -9;
     treeinfo.hcal_calibration = -9;
     treeinfo.hcal_pt_calibration = -9;
     //treeinfo.hcal_eta = -9;
@@ -1164,25 +1197,30 @@ L1CaloJetStudies::fill_tree_null() {
     treeinfo.ecal_5x5 = -9;
     treeinfo.ecal_7x7 = -9;
     treeinfo.ecal_2x2 = -9;
+    treeinfo.l1eg_3x3 = -9;
+    treeinfo.l1eg_5x5 = -9;
+    treeinfo.l1eg_7x7 = -9;
+    treeinfo.l1eg_2x2 = -9;
     treeinfo.ecal_nHits = -9;
-    treeinfo.ecal_leading_pt = -9;
-    treeinfo.ecal_leading_eta = -9;
-    treeinfo.ecal_leading_phi = -9;
-    treeinfo.ecal_leading_energy = -9;
-    treeinfo.ecal_dR0p05 = -9;
-    treeinfo.ecal_dR0p075 = -9;
-    treeinfo.ecal_dR0p1 = -9;
-    treeinfo.ecal_dR0p125 = -9;
-    treeinfo.ecal_dR0p15 = -9;
-    treeinfo.ecal_dR0p2 = -9;
-    treeinfo.ecal_dR0p3 = -9;
-    treeinfo.ecal_dR0p4 = -9;
-    treeinfo.ecal_dR0p1_leading = -9;
-    treeinfo.ecal_nL1EGs = -9;
-    treeinfo.ecal_nL1EGs_standaloneSS = -9;
-    treeinfo.ecal_nL1EGs_standaloneIso = -9;
-    treeinfo.ecal_nL1EGs_trkMatchSS = -9;
-    treeinfo.ecal_nL1EGs_trkMatchIso = -9;
+    treeinfo.l1eg_nHits = -9;
+    //treeinfo.ecal_leading_pt = -9;
+    //treeinfo.ecal_leading_eta = -9;
+    //treeinfo.ecal_leading_phi = -9;
+    //treeinfo.ecal_leading_energy = -9;
+    //treeinfo.ecal_dR0p05 = -9;
+    //treeinfo.ecal_dR0p075 = -9;
+    //treeinfo.ecal_dR0p1 = -9;
+    //treeinfo.ecal_dR0p125 = -9;
+    //treeinfo.ecal_dR0p15 = -9;
+    //treeinfo.ecal_dR0p2 = -9;
+    //treeinfo.ecal_dR0p3 = -9;
+    //treeinfo.ecal_dR0p4 = -9;
+    //treeinfo.ecal_dR0p1_leading = -9;
+    treeinfo.l1eg_nL1EGs = -9;
+    treeinfo.l1eg_nL1EGs_standaloneSS = -9;
+    treeinfo.l1eg_nL1EGs_standaloneIso = -9;
+    treeinfo.l1eg_nL1EGs_trkMatchSS = -9;
+    treeinfo.l1eg_nL1EGs_trkMatchIso = -9;
     treeinfo.deltaR_ecal_vs_jet = -9;
     treeinfo.deltaR_hcal_vs_jet = -9;
     treeinfo.deltaR_L1EGjet_vs_jet = -9;
