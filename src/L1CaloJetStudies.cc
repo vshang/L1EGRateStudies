@@ -218,17 +218,26 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
             float jet_energy;
             float hovere;
             float hcal_3x3;
+            float hcal_3x5;
             float hcal_5x5;
+            float hcal_5x7;
             float hcal_7x7;
             float hcal_2x2;
+            float hcal_2x3;
             float ecal_3x3;
+            float ecal_3x5;
             float ecal_5x5;
+            float ecal_5x7;
             float ecal_7x7;
             float ecal_2x2;
+            float ecal_2x3;
             float l1eg_3x3;
+            float l1eg_3x5;
             float l1eg_5x5;
+            float l1eg_5x7;
             float l1eg_7x7;
             float l1eg_2x2;
+            float l1eg_2x3;
             float seed_pt;
             float seed_iEta;
             float seed_iPhi;
@@ -403,17 +412,26 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("jet_energy", &treeinfo.jet_energy);
     tree->Branch("hovere", &treeinfo.hovere);
     tree->Branch("hcal_3x3", &treeinfo.hcal_3x3);
+    tree->Branch("hcal_3x5", &treeinfo.hcal_3x5);
     tree->Branch("hcal_5x5", &treeinfo.hcal_5x5);
+    tree->Branch("hcal_5x7", &treeinfo.hcal_5x7);
     tree->Branch("hcal_7x7", &treeinfo.hcal_7x7);
     tree->Branch("hcal_2x2", &treeinfo.hcal_2x2);
+    tree->Branch("hcal_2x3", &treeinfo.hcal_2x3);
     tree->Branch("ecal_3x3", &treeinfo.ecal_3x3);
+    tree->Branch("ecal_3x5", &treeinfo.ecal_3x5);
     tree->Branch("ecal_5x5", &treeinfo.ecal_5x5);
+    tree->Branch("ecal_5x7", &treeinfo.ecal_5x7);
     tree->Branch("ecal_7x7", &treeinfo.ecal_7x7);
     tree->Branch("ecal_2x2", &treeinfo.ecal_2x2);
+    tree->Branch("ecal_2x3", &treeinfo.ecal_2x3);
     tree->Branch("l1eg_3x3", &treeinfo.l1eg_3x3);
+    tree->Branch("l1eg_3x5", &treeinfo.l1eg_3x5);
     tree->Branch("l1eg_5x5", &treeinfo.l1eg_5x5);
+    tree->Branch("l1eg_5x7", &treeinfo.l1eg_5x7);
     tree->Branch("l1eg_7x7", &treeinfo.l1eg_7x7);
     tree->Branch("l1eg_2x2", &treeinfo.l1eg_2x2);
+    tree->Branch("l1eg_2x3", &treeinfo.l1eg_2x3);
     tree->Branch("seed_pt", &treeinfo.seed_pt);
     tree->Branch("seed_iEta", &treeinfo.seed_iEta);
     tree->Branch("seed_iPhi", &treeinfo.seed_iPhi);
@@ -931,14 +949,22 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
             // Storing full event info
             float total_et_f = 0.0;
             float nTT_f = 0.0;
+            //printf("-----\n");
             for(const auto& caloJet : caloJets)
             {
+
                 total_et_f = caloJet.GetExperimentalParam("total_et");
                 //nTT_f = caloJet.GetExperimentalParam("total_nTowers");
 
                 if ( reco::deltaR(caloJet, genJetP4) < genMatchDeltaRcut )
                       //&& fabs(caloJet.pt()-genJetP4.pt())/genJetP4.pt() < genMatchRelPtcut )
                 {
+
+                    //for (auto info : caloJet.associated_l1EGs)
+                    //{
+                    //    printf("l1eg pt %f, HCAL ET %f, ECAL ET %f, dEta %i, dPhi %i, trkSS %i, trkIso %i, standaloneSS %i, standaloneIso %i\n",
+                    //        info[0], info[1], info[2], int(info[3]), int(info[4]), int(info[5]), int(info[6]), int(info[7]), int(info[8]));
+                    //}
 
                     if ( debug ) std::cout << "using caloJet dr = " << reco::deltaR(caloJet, genJetP4) << std::endl;
                     treeinfo.deltaR = reco::deltaR(caloJet, genJetP4);
@@ -1106,17 +1132,26 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
     treeinfo.seed_energy = caloJet.GetExperimentalParam("seed_energy");
     treeinfo.hcal_nHits = caloJet.GetExperimentalParam("hcal_nHits");
     treeinfo.hcal_3x3 = caloJet.GetExperimentalParam("hcal_3x3");
+    treeinfo.hcal_3x5 = caloJet.GetExperimentalParam("hcal_3x5");
     treeinfo.hcal_5x5 = caloJet.GetExperimentalParam("hcal_5x5");
+    treeinfo.hcal_5x7 = caloJet.GetExperimentalParam("hcal_5x7");
     treeinfo.hcal_7x7 = caloJet.GetExperimentalParam("hcal_7x7");
     treeinfo.hcal_2x2 = caloJet.GetExperimentalParam("hcal_2x2");
+    treeinfo.hcal_2x3 = caloJet.GetExperimentalParam("hcal_2x3");
     treeinfo.ecal_3x3 = caloJet.GetExperimentalParam("ecal_3x3");
+    treeinfo.ecal_3x5 = caloJet.GetExperimentalParam("ecal_3x5");
     treeinfo.ecal_5x5 = caloJet.GetExperimentalParam("ecal_5x5");
+    treeinfo.ecal_5x7 = caloJet.GetExperimentalParam("ecal_5x7");
     treeinfo.ecal_7x7 = caloJet.GetExperimentalParam("ecal_7x7");
     treeinfo.ecal_2x2 = caloJet.GetExperimentalParam("ecal_2x2");
+    treeinfo.ecal_2x3 = caloJet.GetExperimentalParam("ecal_2x3");
     treeinfo.l1eg_3x3 = caloJet.GetExperimentalParam("l1eg_3x3");
+    treeinfo.l1eg_3x5 = caloJet.GetExperimentalParam("l1eg_3x5");
     treeinfo.l1eg_5x5 = caloJet.GetExperimentalParam("l1eg_5x5");
+    treeinfo.l1eg_5x7 = caloJet.GetExperimentalParam("l1eg_5x7");
     treeinfo.l1eg_7x7 = caloJet.GetExperimentalParam("l1eg_7x7");
     treeinfo.l1eg_2x2 = caloJet.GetExperimentalParam("l1eg_2x2");
+    treeinfo.l1eg_2x3 = caloJet.GetExperimentalParam("l1eg_2x3");
     treeinfo.ecal_nHits = caloJet.GetExperimentalParam("ecal_nHits");
     treeinfo.l1eg_nHits = caloJet.GetExperimentalParam("l1eg_nHits");
     //treeinfo.ecal_leading_pt = caloJet.GetExperimentalParam("ecal_leading_pt");
@@ -1190,17 +1225,26 @@ L1CaloJetStudies::fill_tree_null() {
     treeinfo.seed_energy = -9;
     treeinfo.hcal_nHits = -9;
     treeinfo.hcal_3x3 = -9;
+    treeinfo.hcal_3x5 = -9;
     treeinfo.hcal_5x5 = -9;
+    treeinfo.hcal_5x7 = -9;
     treeinfo.hcal_7x7 = -9;
     treeinfo.hcal_2x2 = -9;
+    treeinfo.hcal_2x3 = -9;
     treeinfo.ecal_3x3 = -9;
+    treeinfo.ecal_3x5 = -9;
     treeinfo.ecal_5x5 = -9;
+    treeinfo.ecal_5x7 = -9;
     treeinfo.ecal_7x7 = -9;
     treeinfo.ecal_2x2 = -9;
+    treeinfo.ecal_2x3 = -9;
     treeinfo.l1eg_3x3 = -9;
+    treeinfo.l1eg_3x5 = -9;
     treeinfo.l1eg_5x5 = -9;
+    treeinfo.l1eg_5x7 = -9;
     treeinfo.l1eg_7x7 = -9;
     treeinfo.l1eg_2x2 = -9;
+    treeinfo.l1eg_2x3 = -9;
     treeinfo.ecal_nHits = -9;
     treeinfo.l1eg_nHits = -9;
     //treeinfo.ecal_leading_pt = -9;
