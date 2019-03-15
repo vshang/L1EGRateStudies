@@ -9,13 +9,13 @@ ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
 
 doEff = True
-doEff = False
+#doEff = False
 
 doPtEff = True
-doPtEff = False
+#doPtEff = False
 
 doRate = True
-#doRate = False
+doRate = False
 
 c = ROOT.TCanvas('c', 'c', 900, 900)
 p = ROOT.TPad('p','p', 0, 0, 1, 1)
@@ -24,9 +24,10 @@ p.cd()
 
 
 if doEff :
-    fName = 'ttbar_PU200_v7'
-    date = '20190210v7'
-    base = '/data/truggles/l1CaloJets_%s/' % date
+    fName = 'output_round2_QCDMar14v1'
+    fName = 'output_round2_TTbarMar14v1'
+    date = '20190308'
+    base = '/data/truggles/l1CaloJets_'+date+'_r2/'
     universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/efficiencies/"+date+"/"+fName+"/"
     checkDir( universalSaveDir )
     checkDir( universalSaveDir )
@@ -36,8 +37,9 @@ if doEff :
     
 
     # Threshold cuts for passing region
-    #pt_cut = 100
-    pt_cut = 80
+    pt_cut = 100
+    pt_cut = 40
+    #pt_cut = 80
     #pt_cut = 150
     #pt_cut = 200
     #pt_cut = 400
@@ -49,8 +51,10 @@ if doEff :
         # Use eta cuts to restrict when doing pT efficiencies
         denom_cut = 'abs(genJet_eta)<1.2'
         axis = [160, 0, 400]
-        gP2 = make_efficiency_graph( t, denom_cut, 'calibPtAA > %i' % pt_cut, 'genJet_pt', axis )
-        gS2 = make_efficiency_graph( t, denom_cut, '(stage2jet_pt_calibration3) > %i' % pt_cut, 'genJet_pt', axis )
+        #gP2 = make_efficiency_graph( t, denom_cut, 'calibPtAA > %i' % pt_cut, 'genJet_pt', axis )
+        #gS2 = make_efficiency_graph( t, denom_cut, '(stage2jet_pt_calibration3) > %i' % pt_cut, 'genJet_pt', axis )
+        gP2 = make_efficiency_graph( t, denom_cut, 'jet_pt_calibration > %i' % pt_cut, 'genJet_pt', axis )
+        gS2 = make_efficiency_graph( t, denom_cut, '(stage2jet_pt) > %i' % pt_cut, 'genJet_pt', axis )
 
     """ Eta Eff """
     if not doPtEff :

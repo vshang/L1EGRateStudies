@@ -28,9 +28,8 @@ process.source = cms.Source("PoolSource",
 
 
 out_path = '/data/truggles/l1CaloJets_20190308_r2/'
-name = 'vbfhtt_v1'
-name = "HiggsTauTau"
-#name = 'qcd_v1'
+name = "QCD"
+name = "TTbar"
 # Load samples from external files here:
 from L1Trigger.L1EGRateStudies.loadRound2Files import getSampleFiles
 process.source.fileNames = getSampleFiles( name )
@@ -87,7 +86,7 @@ process.analyzer = cms.EDAnalyzer('L1CaloJetStudies',
     L1CaloJetsInputTag = cms.InputTag("L1CaloJetProducer","L1CaloJetsNoCuts"),
     genJets = cms.InputTag("ak4GenJetsNoNu", "", "HLT"),
     genHadronicTauSrc = cms.InputTag("tauGenJetsSelectorAllHadrons"),
-    genMatchDeltaRcut = cms.untracked.double(0.4),
+    genMatchDeltaRcut = cms.untracked.double(0.3),
     genMatchRelPtcut = cms.untracked.double(0.5),
     debug = cms.untracked.bool(False),
     doRate = cms.untracked.bool(False), # TEMPORARY FIXME
@@ -101,7 +100,7 @@ process.panalyzer = cms.Path(process.analyzer)
 
 
 process.TFileService = cms.Service("TFileService", 
-    fileName = cms.string( out_path+"output_round2_"+name+".root" ), 
+    fileName = cms.string( out_path+"output_round2_"+name+"Mar14v1.root" ), 
     closeFileFast = cms.untracked.bool(True)
 )
 
