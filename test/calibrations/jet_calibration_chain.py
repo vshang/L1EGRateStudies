@@ -178,7 +178,7 @@ def add_calibration( name_in, quantile_map ) :
         cnt += 1
         if cnt % 10000 == 0 : print cnt
 
-        ecal_L1EG_jet_pt = row.ecal_L1EG_jet_pt
+        l1eg_pt = row.l1eg_pt
         ecal_pt = row.ecal_pt
         hcal_pt = row.hcal_pt
         jet_pt = row.jet_pt
@@ -188,9 +188,9 @@ def add_calibration( name_in, quantile_map ) :
             calib[0] = -9.
             calibPt[0] = -9.
         else :
-            val = calibrate( quantile_map, abs_jet_eta, ecal_L1EG_jet_pt, ecal_pt, jet_pt, jet_pt_binning, useBinnedPt )
+            val = calibrate( quantile_map, abs_jet_eta, l1eg_pt, ecal_pt, jet_pt, jet_pt_binning, useBinnedPt )
             calib[0] = val
-            calibPt[0] = ecal_L1EG_jet_pt + ecal_pt + (val * hcal_pt)
+            calibPt[0] = l1eg_pt + ecal_pt + (val * hcal_pt)
 
         calibB.Fill()
         calibPtB.Fill()
@@ -251,8 +251,8 @@ def find_binned_pt( jet_pt, jet_pt_binning ) :
 
 
 
-def calibrate( quantile_map, abs_jet_eta, ecal_L1EG_jet_pt, ecal_pt, jet_pt, jet_pt_binning, useBins=False ) :
-    em_frac = (ecal_L1EG_jet_pt + ecal_pt) / jet_pt
+def calibrate( quantile_map, abs_jet_eta, l1eg_pt, ecal_pt, jet_pt, jet_pt_binning, useBins=False ) :
+    em_frac = (l1eg_pt + ecal_pt) / jet_pt
     #print "EM Frac: ",em_frac
     if em_frac == 2 : return 1.0 # These are non-recoed jets
     if em_frac > 1.0 : em_frac = 1.0 # These are some corner case problems which will be fixed and only range up to 1.05
@@ -381,7 +381,7 @@ if '__main__' in __name__ :
 
                 #to_plot = '(jet_pt)/genJet_pt:genJet_pt'
                 #h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
-                ##to_plot = '(ecal_L1EG_jet_pt + ecal_pt + (hcal_pt_calibration) )/genJet_pt:genJet_pt' # For EDProducer check
+                ##to_plot = '(l1eg_pt + ecal_pt + (hcal_pt_calibration) )/genJet_pt:genJet_pt' # For EDProducer check
                 #to_plot = '( calibPtAA )/genJet_pt:genJet_pt'
                 #h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
                 ##to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
@@ -400,7 +400,7 @@ if '__main__' in __name__ :
 
                 #to_plot = '(jet_pt)/genJet_pt:genJet_pt'
                 #h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
-                ##to_plot = '(ecal_L1EG_jet_pt + ecal_pt + (hcal_pt_calibration) )/genJet_pt:genJet_pt' # For EDProducer check
+                ##to_plot = '(l1eg_pt + ecal_pt + (hcal_pt_calibration) )/genJet_pt:genJet_pt' # For EDProducer check
                 #to_plot = '( calibPtAA )/genJet_pt:genJet_pt'
                 #h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
                 ##to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
@@ -414,7 +414,7 @@ if '__main__' in __name__ :
 
                 #to_plot = '(jet_pt)/genJet_pt:genJet_pt'
                 #h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
-                ##to_plot = '(ecal_L1EG_jet_pt + ecal_pt + (hcal_pt_calibration) )/genJet_pt:genJet_pt' # For EDProducer check
+                ##to_plot = '(l1eg_pt + ecal_pt + (hcal_pt_calibration) )/genJet_pt:genJet_pt' # For EDProducer check
                 #to_plot = '( calibPtBB )/genJet_pt:genJet_pt'
                 #h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
                 ##to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
@@ -428,7 +428,7 @@ if '__main__' in __name__ :
 
                 #to_plot = '(jet_pt)/genJet_pt:genJet_pt'
                 #h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
-                ##to_plot = '(ecal_L1EG_jet_pt + ecal_pt + (hcal_pt_calibration) )/genJet_pt:genJet_pt' # For EDProducer check
+                ##to_plot = '(l1eg_pt + ecal_pt + (hcal_pt_calibration) )/genJet_pt:genJet_pt' # For EDProducer check
                 #to_plot = '( calibPtCC )/genJet_pt:genJet_pt'
                 #h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
                 ##to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
@@ -477,21 +477,21 @@ if '__main__' in __name__ :
                 areaNorm = True
                 drawPointsHists3(c.GetTitle(), h1, h2, h3, title1, title2, title3, xaxis, yaxis, areaNorm, plotDir)
             """
-                ("ecal_nL1EGs");
-                ("ecal_nL1EGs_standaloneSS");
-                ("ecal_nL1EGs_standaloneIso");
-                ("ecal_nL1EGs_trkMatchSS");
-                ("ecal_nL1EGs_trkMatchIso");
+                ("l1eg_nL1EGs");
+                ("l1eg_nL1EGs_standaloneSS");
+                ("l1eg_nL1EGs_standaloneIso");
+                ("l1eg_nL1EGs_trkMatchSS");
+                ("l1eg_nL1EGs_trkMatchIso");
             """
             gen_dms = {
-            'reco_L1EG_nL1EG_0' : '(ecal_nL1EGs == 0)',
-            'reco_L1EG_nL1EG_1' : '(ecal_nL1EGs == 1)',
-            'reco_L1EG_nL1EG_2' : '(ecal_nL1EGs == 2)',
-            'reco_L1EG_nL1EG_3plus' : '(ecal_nL1EGs >= 3)',
-            'reco_L1EG_nL1EGtrkMatchSS_0' : '(ecal_nL1EGs_trkMatchSS == 0)',
-            'reco_L1EG_nL1EGtrkMatchSS_1' : '(ecal_nL1EGs_trkMatchSS == 1)',
-            'reco_L1EG_nL1EGtrkMatchSS_2' : '(ecal_nL1EGs_trkMatchSS == 2)',
-            'reco_L1EG_nL1EGtrkMatchSS_3plus' : '(ecal_nL1EGs_trkMatchSS >= 3)',
+            'reco_L1EG_nL1EG_0' : '(l1eg_nL1EGs == 0)',
+            'reco_L1EG_nL1EG_1' : '(l1eg_nL1EGs == 1)',
+            'reco_L1EG_nL1EG_2' : '(l1eg_nL1EGs == 2)',
+            'reco_L1EG_nL1EG_3plus' : '(l1eg_nL1EGs >= 3)',
+            'reco_L1EG_nL1EGtrkMatchSS_0' : '(l1eg_nL1EGs_trkMatchSS == 0)',
+            'reco_L1EG_nL1EGtrkMatchSS_1' : '(l1eg_nL1EGs_trkMatchSS == 1)',
+            'reco_L1EG_nL1EGtrkMatchSS_2' : '(l1eg_nL1EGs_trkMatchSS == 2)',
+            'reco_L1EG_nL1EGtrkMatchSS_3plus' : '(l1eg_nL1EGs_trkMatchSS >= 3)',
             }
             if 'Tau' in jetsF0 :
                 for k, cut in gen_dms.iteritems() :
@@ -580,8 +580,8 @@ if '__main__' in __name__ :
             #print jetFileX
             #treeX = jetFileX.Get("analyzer/tree")
             ## To check potential PU Jet ID vars
-            #to_check = ['ecal_nL1EGs', '(hcal_3x3*calibAA + ecal_dR0p15)', '(max(max(max(hcal_2x2_1, hcal_2x2_2), hcal_2x2_3), hcal_2x2_4)*calibAA + ecal_dR0p1)', 'hcal_nHits', 'ecal_nHits', 'seed_pt', '(hcal_nHits+ecal_nHits+ecal_nL1EGs)']
-            #to_check = ['(ecal_L1EG_jet_pt + ecal_pt)', '(hcal_pt*calibAA)']
+            #to_check = ['l1eg_nL1EGs', '(hcal_3x3*calibAA + ecal_dR0p15)', '(max(max(max(hcal_2x2_1, hcal_2x2_2), hcal_2x2_3), hcal_2x2_4)*calibAA + ecal_dR0p1)', 'hcal_nHits', 'ecal_nHits', 'seed_pt', '(hcal_nHits+ecal_nHits+l1eg_nL1EGs)']
+            #to_check = ['(l1eg_pt + ecal_pt)', '(hcal_pt*calibAA)']
             #c.SetCanvasSize(900,600)
             #c.Divide(2)
             #x_and_y_bins = [20,20,60, 30,0,0.75]
@@ -590,7 +590,7 @@ if '__main__' in __name__ :
             #for var in to_check :
             #    x_and_y_bins_here = list(x_and_y_bins)
             #    set_title = var
-            #    if '(hcal_nHits+ecal_nHits+ecal_nL1EGs)' == var : set_title = 'hcal_plus_ecal_plus_L1EG_nHits'
+            #    if '(hcal_nHits+ecal_nHits+l1eg_nL1EGs)' == var : set_title = 'hcal_plus_ecal_plus_L1EG_nHits'
             #    elif 'hcal_3x3' in var : set_title = 'towers3x3'
             #    elif 'hcal_2x2' in var : set_title = 'towers2x2'
 

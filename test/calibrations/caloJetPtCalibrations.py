@@ -502,7 +502,7 @@ def get_quantile_em_fraction_list( fName, calo_region, nBins=10 ) :
     }
     
     h = ROOT.TH1D('h','h',10000,0,1.1)
-    t.Draw( '(ecal_L1EG_jet_pt + ecal_pt)/jet_pt >> h', 'jet_pt >= 0 && '+calo_map[ calo_region ] )
+    t.Draw( '(l1eg_pt + ecal_pt)/jet_pt >> h', 'jet_pt >= 0 && '+calo_map[ calo_region ] )
 
     # To keep track of total so we can compute relative fractions
     total = h.Integral()
@@ -591,12 +591,12 @@ def make_em_fraction_calibrations( c, fName, cut, plotBase ) :
             x_and_y_bins = [ xBinning, yBinning ]
             #if f_low > 0.0 and f_low < 0.1 and f_high > 0.0 and f_high < 0.1 :
             #    x_and_y_bins = [ xBinningAlt, yBinning ]
-            frac_cut = cut+"abs(jet_eta)>=%s && abs(jet_eta)<=%s && (((ecal_L1EG_jet_pt + ecal_pt)/jet_pt) >= %f && ((ecal_L1EG_jet_pt + ecal_pt)/jet_pt) < %f)" % (eta[0], eta[1], f_low, f_high)
+            frac_cut = cut+"abs(jet_eta)>=%s && abs(jet_eta)<=%s && (((l1eg_pt + ecal_pt)/jet_pt) >= %f && ((l1eg_pt + ecal_pt)/jet_pt) < %f)" % (eta[0], eta[1], f_low, f_high)
             print frac_cut
             to_plot = '(hcal_pt)/genJet_pt:jet_pt'
             #h1 = getTH2( tree, 'qcd1', to_plot, frac_cut, x_and_y_bins )
             h1 = getTH2VarBin( tree, 'qcd1', to_plot, frac_cut, x_and_y_bins )
-            to_plot = '(genJet_pt - (ecal_L1EG_jet_pt + ecal_pt))/(hcal_pt):jet_pt'
+            to_plot = '(genJet_pt - (l1eg_pt + ecal_pt))/(hcal_pt):jet_pt'
             #h2 = getTH2( tree, 'qcd3', to_plot, frac_cut, x_and_y_bins )
             h2 = getTH2VarBin( tree, 'qcd3', to_plot, frac_cut, x_and_y_bins )
             xaxis = "Jet P_{T} (GeV)"
@@ -699,7 +699,7 @@ if __name__ == '__main__' :
             c.SetTitle("trip_genJetPt_ttbar_PU200_"+k+"_"+ver)
             drawPointsHists3(c.GetTitle(), h1, h2, h3, title1, title2, title3, xaxis, yaxis, False, plotDir)
 
-    #to_plot = '(ecal_L1EG_jet_pt + ecal_pt)/genJet_pt:genJet_pt'
+    #to_plot = '(l1eg_pt + ecal_pt)/genJet_pt:genJet_pt'
     #h1 = getTH2( tree, 'qcd', to_plot, cut, x_and_y_bins )
     #to_plot = '(hcal_pt)/genJet_pt:genJet_pt'
     #h2 = getTH2( tree, 'stage-2', to_plot, cut, x_and_y_bins )
@@ -710,7 +710,7 @@ if __name__ == '__main__' :
     #c.SetTitle("genJetPt_Ecal_vs_Hcal_PU0")
     #drawPointsHists(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis)
 
-    #to_plot = '(ecal_L1EG_jet_pt)/genJet_pt:genJet_pt'
+    #to_plot = '(l1eg_pt)/genJet_pt:genJet_pt'
     #h1 = getTH2( tree, 'qcd', to_plot, cut, x_and_y_bins )
     #to_plot = '(ecal_pt)/genJet_pt:genJet_pt'
     #h2 = getTH2( tree, 'stage-2', to_plot, cut, x_and_y_bins )
@@ -723,9 +723,9 @@ if __name__ == '__main__' :
 
     #to_plot = '(jet_pt)/genJet_pt:genJet_pt'
     #h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
-    #to_plot = '(ecal_L1EG_jet_pt + ecal_pt + hcal_pt )/genJet_pt:genJet_pt'
+    #to_plot = '(l1eg_pt + ecal_pt + hcal_pt )/genJet_pt:genJet_pt'
     #h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
-    #to_plot = '(ecal_L1EG_jet_pt + ecal_pt + (hcal_pt*calib) )/genJet_pt:genJet_pt'
+    #to_plot = '(l1eg_pt + ecal_pt + (hcal_pt*calib) )/genJet_pt:genJet_pt'
     #h3 = getTH2( tree, 'qcd3', to_plot, cut, x_and_y_bins )
     #xaxis = "Gen Jet P_{T} (GeV)"
     #yaxis = "Relative Error in P_{T} reco/gen"
@@ -740,7 +740,7 @@ if __name__ == '__main__' :
     if plot_calibrated_results :
         to_plot = '(jet_pt)/genJet_pt:genJet_pt'
         h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
-        to_plot = '(ecal_L1EG_jet_pt + ecal_pt + (hcal_pt*calib) )/genJet_pt:genJet_pt'
+        to_plot = '(l1eg_pt + ecal_pt + (hcal_pt*calib) )/genJet_pt:genJet_pt'
         h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
         to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
         h3 = getTH2( tree, 's2', to_plot, cut, x_and_y_bins )
@@ -769,10 +769,10 @@ if __name__ == '__main__' :
     #drawPointsHists(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis)
 
     #cut = "abs(genJet_eta)<1.1"
-    #to_plot = '(ecal_L1EG_jet_pt)/genJet_pt:genJet_pt'
+    #to_plot = '(l1eg_pt)/genJet_pt:genJet_pt'
     #h1 = getTH2( tree, 'qcd', to_plot, cut, x_and_y_bins )
-    #cut = "abs(genJet_eta)<1.1 && ecal_L1EG_jet_pt > 0"
-    #to_plot = '(ecal_L1EG_jet_pt)/genJet_pt:genJet_pt'
+    #cut = "abs(genJet_eta)<1.1 && l1eg_pt > 0"
+    #to_plot = '(l1eg_pt)/genJet_pt:genJet_pt'
     #h2 = getTH2( tree, 'stage-2', to_plot, cut, x_and_y_bins )
     #xaxis = "Gen Jet P_{T} (GeV)"
     #yaxis = "Relative Error in P_{T} reco/gen"
