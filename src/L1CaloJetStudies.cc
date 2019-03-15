@@ -265,6 +265,18 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
             float l1eg_nL1EGs_standaloneIso;
             float l1eg_nL1EGs_trkMatchSS;
             float l1eg_nL1EGs_trkMatchIso;
+
+            float n_l1eg_HoverE_Less0p25;
+            float n_l1eg_HoverE_Less0p25_trkSS;
+            float n_l1eg_HoverE_Less0p25_saSS;
+            float n_l1eg_HoverE_0p5to1p0;
+            float n_l1eg_HoverE_0p5to1p0_trkSS;
+            float n_l1eg_HoverE_0p5to1p0_saSS;
+            float n_l1eg_HoverE_Gtr0p25;
+            float n_l1eg_HoverE_Gtr0p25_trkSS;
+            float n_l1eg_HoverE_Gtr0p25_saSS;
+            float n_l1eg_avgHoverE;
+
             float deltaR_ecal_vs_jet;
             float deltaR_hcal_vs_jet;
             float deltaR_L1EGjet_vs_jet;
@@ -459,6 +471,18 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("l1eg_nL1EGs_standaloneIso", &treeinfo.l1eg_nL1EGs_standaloneIso);
     tree->Branch("l1eg_nL1EGs_trkMatchSS", &treeinfo.l1eg_nL1EGs_trkMatchSS);
     tree->Branch("l1eg_nL1EGs_trkMatchIso", &treeinfo.l1eg_nL1EGs_trkMatchIso);
+
+    tree->Branch("n_l1eg_HoverE_Less0p25",         &treeinfo.n_l1eg_HoverE_Less0p25);
+    tree->Branch("n_l1eg_HoverE_Less0p25_trkSS",   &treeinfo.n_l1eg_HoverE_Less0p25_trkSS);
+    tree->Branch("n_l1eg_HoverE_Less0p25_saSS",    &treeinfo.n_l1eg_HoverE_Less0p25_saSS);
+    tree->Branch("n_l1eg_HoverE_0p5to1p0",        &treeinfo.n_l1eg_HoverE_0p5to1p0);
+    tree->Branch("n_l1eg_HoverE_0p5to1p0_trkSS",  &treeinfo.n_l1eg_HoverE_0p5to1p0_trkSS);
+    tree->Branch("n_l1eg_HoverE_0p5to1p0_saSS",   &treeinfo.n_l1eg_HoverE_0p5to1p0_saSS);
+    tree->Branch("n_l1eg_HoverE_Gtr0p25",          &treeinfo.n_l1eg_HoverE_Gtr0p25);
+    tree->Branch("n_l1eg_HoverE_Gtr0p25_trkSS",    &treeinfo.n_l1eg_HoverE_Gtr0p25_trkSS);
+    tree->Branch("n_l1eg_HoverE_Gtr0p25_saSS",     &treeinfo.n_l1eg_HoverE_Gtr0p25_saSS);
+    tree->Branch("n_l1eg_avgHoverE",     &treeinfo.n_l1eg_avgHoverE);
+
     tree->Branch("deltaR_ecal_vs_jet", &treeinfo.deltaR_ecal_vs_jet);
     tree->Branch("deltaR_hcal_vs_jet", &treeinfo.deltaR_hcal_vs_jet);
     tree->Branch("deltaR_L1EGjet_vs_jet", &treeinfo.deltaR_L1EGjet_vs_jet);
@@ -939,8 +963,17 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
 
 
-
-
+        // Start at zero for these.  They are not filled normally as the others.
+        treeinfo.n_l1eg_HoverE_Less0p25 = -9.;
+        treeinfo.n_l1eg_HoverE_Less0p25_trkSS = -9.;
+        treeinfo.n_l1eg_HoverE_Less0p25_saSS = -9.;
+        treeinfo.n_l1eg_HoverE_0p5to1p0 = -9.;
+        treeinfo.n_l1eg_HoverE_0p5to1p0_trkSS = -9.;
+        treeinfo.n_l1eg_HoverE_0p5to1p0_saSS = -9.;
+        treeinfo.n_l1eg_HoverE_Gtr0p25 = -9.;
+        treeinfo.n_l1eg_HoverE_Gtr0p25_trkSS = -9.;
+        treeinfo.n_l1eg_HoverE_Gtr0p25_saSS = -9.;
+        treeinfo.n_l1eg_avgHoverE = -9.;
     
         //std::cout << "    ---!!!--- L1EG Size: " << caloJets.size() << std::endl;
         bool found_caloJet = false;
@@ -960,11 +993,41 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
                       //&& fabs(caloJet.pt()-genJetP4.pt())/genJetP4.pt() < genMatchRelPtcut )
                 {
 
-                    //for (auto info : caloJet.associated_l1EGs)
-                    //{
-                    //    printf("l1eg pt %f, HCAL ET %f, ECAL ET %f, dEta %i, dPhi %i, trkSS %i, trkIso %i, standaloneSS %i, standaloneIso %i\n",
-                    //        info[0], info[1], info[2], int(info[3]), int(info[4]), int(info[5]), int(info[6]), int(info[7]), int(info[8]));
-                    //}
+                    treeinfo.n_l1eg_HoverE_Less0p25 = 0.;
+                    treeinfo.n_l1eg_HoverE_Less0p25_trkSS = 0.;
+                    treeinfo.n_l1eg_HoverE_Less0p25_saSS = 0.;
+                    treeinfo.n_l1eg_HoverE_0p5to1p0 = 0.;
+                    treeinfo.n_l1eg_HoverE_0p5to1p0_trkSS = 0.;
+                    treeinfo.n_l1eg_HoverE_0p5to1p0_saSS = 0.;
+                    treeinfo.n_l1eg_HoverE_Gtr0p25 = 0.;
+                    treeinfo.n_l1eg_HoverE_Gtr0p25_trkSS = 0.;
+                    treeinfo.n_l1eg_HoverE_Gtr0p25_saSS = 0.;
+                    treeinfo.n_l1eg_avgHoverE = 0.;
+                    for (auto info : caloJet.associated_l1EGs)
+                    {
+                        //printf("l1eg pt %f, HCAL ET %f, ECAL ET %f, dEta %i, dPhi %i, trkSS %i, trkIso %i, standaloneSS %i, standaloneIso %i\n",
+                        //    info[0], info[1], info[2], int(info[3]), int(info[4]), int(info[5]), int(info[6]), int(info[7]), int(info[8]));
+                        float HoverE = info[1] / (info[0] + info[2]);
+                        treeinfo.n_l1eg_avgHoverE += HoverE / caloJet.associated_l1EGs.size();
+                        if (HoverE < 0.25)
+                        {
+                            treeinfo.n_l1eg_HoverE_Less0p25 += 1.;
+                            if (int(info[5]) > 0.5) treeinfo.n_l1eg_HoverE_Less0p25_trkSS += 1.;
+                            if (int(info[7]) > 0.5) treeinfo.n_l1eg_HoverE_Less0p25_saSS += 1.;
+                        }
+                        //else if (HoverE < 1.0)
+                        //{
+                        //    treeinfo.n_l1eg_HoverE_0p5to1p0 += 1.;
+                        //    if (int(info[5]) > 0.5) treeinfo.n_l1eg_HoverE_0p5to1p0_trkSS += 1.;
+                        //    if (int(info[7]) > 0.5) treeinfo.n_l1eg_HoverE_0p5to1p0_saSS += 1.;
+                        //}
+                        else if (HoverE >= 0.25)
+                        {
+                            treeinfo.n_l1eg_HoverE_Gtr0p25 += 1.;
+                            if (int(info[5]) > 0.5) treeinfo.n_l1eg_HoverE_Gtr0p25_trkSS += 1.;
+                            if (int(info[7]) > 0.5) treeinfo.n_l1eg_HoverE_Gtr0p25_saSS += 1.;
+                        }
+                    }
 
                     if ( debug ) std::cout << "using caloJet dr = " << reco::deltaR(caloJet, genJetP4) << std::endl;
                     treeinfo.deltaR = reco::deltaR(caloJet, genJetP4);
