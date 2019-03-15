@@ -623,6 +623,41 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     if (doRate)
     {
 
+        // Reset these to defauls -9
+        treeinfo.stage2jet_pt = -9;
+        treeinfo.stage2jet_pt_calib = -9;
+        treeinfo.stage2jet_eta = -9;
+        treeinfo.stage2jet_phi = -9;
+        treeinfo.stage2jet_energy = -9;
+        treeinfo.stage2jet_mass = -9;
+        treeinfo.stage2jet_charge = -9;
+        treeinfo.stage2jet_puEt = -9;
+        treeinfo.stage2jet_deltaRGen = -9;
+
+        treeinfo.stage2tau_pt = -9;
+        treeinfo.stage2tau_eta = -9;
+        treeinfo.stage2tau_phi = -9;
+        treeinfo.stage2tau_energy = -9;
+        treeinfo.stage2tau_mass = -9;
+        treeinfo.stage2tau_charge = -9;
+        treeinfo.stage2tau_hasEM = -9;
+        treeinfo.stage2tau_isMerged = -9;
+        treeinfo.stage2tau_isoEt = -9;
+        treeinfo.stage2tau_nTT = -9;
+        treeinfo.stage2tau_rawEt = -9;
+        treeinfo.stage2tau_isoBit = -9;
+
+        treeinfo.n_l1eg_HoverE_Less0p25 = -9;
+        treeinfo.n_l1eg_HoverE_Less0p25_trkSS = -9;
+        treeinfo.n_l1eg_HoverE_Less0p25_saSS = -9;
+        treeinfo.n_l1eg_HoverE_0p5to1p0 = -9;
+        treeinfo.n_l1eg_HoverE_0p5to1p0_trkSS = -9;
+        treeinfo.n_l1eg_HoverE_0p5to1p0_saSS = -9;
+        treeinfo.n_l1eg_HoverE_Gtr0p25 = -9;
+        treeinfo.n_l1eg_HoverE_Gtr0p25_trkSS = -9;
+        treeinfo.n_l1eg_HoverE_Gtr0p25_saSS = -9;
+        treeinfo.n_l1eg_avgHoverE = -9;
+
         bool stage2_all_filled = false;
         bool phase2_all_filled = false;
         bool stage2_noHGCal_filled = false;
@@ -630,7 +665,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         bool stage2_barrel_filled = false;
         bool phase2_barrel_filled = false;
         // Stage-2 Jets
-        if ( stage2JetHandle.isValid() )
+        if ( stage2JetHandle.isValid() && !use_gen_taus ) // use_gen_taus is a stand in for "Do Tau Analysis"
         {
 
 
@@ -656,7 +691,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
                     stage2_rate_barrel_eta_hist->Fill( s2_jet.eta() );
                     stage2_barrel_filled = true;
                 }
-                if (s2_jet.pt() < 50) continue;
+                if (s2_jet.pt() < 10) continue;
                 treeinfo.stage2jet_pt = s2_jet.pt();
                 treeinfo.stage2jet_pt_calib = calib_pt;
                 treeinfo.stage2jet_eta = s2_jet.eta();
@@ -670,7 +705,76 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
                 fill_tree_null();
             }
 
+            treeinfo.stage2jet_pt = -9;
+            treeinfo.stage2jet_pt_calib = -9;
+            treeinfo.stage2jet_eta = -9;
+            treeinfo.stage2jet_phi = -9;
+            treeinfo.stage2jet_energy = -9;
+            treeinfo.stage2jet_mass = -9;
+            treeinfo.stage2jet_charge = -9;
+            treeinfo.stage2jet_puEt = -9;
+            treeinfo.stage2jet_deltaRGen = -9;
+
         }
+        // Stage-2 Taus
+        if ( stage2TauHandle.isValid() && use_gen_taus ) // use_gen_taus is a stand in for "Do Tau Analysis"
+        {
+
+
+            // Find stage2 within dR 0.3, beginning with higest pt cand
+            for (auto& s2_tau : stage2Taus)
+            {
+                //float calib_pt = s2_tau.pt() * ptAdjustStage2.Eval( s2_tau.pt() );
+                //float abs_eta = fabs(s2_tau.eta());
+                //if ( abs_eta < 6.0 && !stage2_all_filled )
+                //{
+                //    stage2_rate_all_hist->Fill( calib_pt );
+                //    stage2_rate_all_eta_hist->Fill( s2_tau.eta() );
+                //    stage2_all_filled = true;
+                //}
+                //if (( abs_eta < 1.5 || (abs_eta < 6.0 && abs_eta > 3.0)) && !stage2_noHGCal_filled )
+                //{
+                //    stage2_rate_noHGCal_hist->Fill( calib_pt );
+                //    stage2_noHGCal_filled = true;
+                //}
+                //if ( abs_eta < 1.5 && !stage2_barrel_filled )
+                //{
+                //    stage2_rate_barrel_hist->Fill( calib_pt );
+                //    stage2_rate_barrel_eta_hist->Fill( s2_tau.eta() );
+                //    stage2_barrel_filled = true;
+                //}
+                if (s2_tau.pt() < 10) continue;
+                treeinfo.stage2tau_pt = s2_tau.pt();
+                treeinfo.stage2tau_eta = s2_tau.eta();
+                treeinfo.stage2tau_phi = s2_tau.phi();
+                treeinfo.stage2tau_energy = s2_tau.energy();
+                treeinfo.stage2tau_mass = s2_tau.mass();
+                treeinfo.stage2tau_charge = s2_tau.charge();
+                treeinfo.stage2tau_hasEM = s2_tau.hasEM();
+                treeinfo.stage2tau_isMerged = s2_tau.isMerged();
+                treeinfo.stage2tau_isoEt = s2_tau.isoEt();
+                treeinfo.stage2tau_nTT = s2_tau.nTT();
+                treeinfo.stage2tau_rawEt = s2_tau.rawEt();
+                treeinfo.stage2tau_isoBit = s2_tau.hwIso();
+                // Fill Phase-2 CaloJet with dummy values
+                fill_tree_null();
+            }
+
+            treeinfo.stage2tau_pt = -9;
+            treeinfo.stage2tau_eta = -9;
+            treeinfo.stage2tau_phi = -9;
+            treeinfo.stage2tau_energy = -9;
+            treeinfo.stage2tau_mass = -9;
+            treeinfo.stage2tau_charge = -9;
+            treeinfo.stage2tau_hasEM = -9;
+            treeinfo.stage2tau_isMerged = -9;
+            treeinfo.stage2tau_isoEt = -9;
+            treeinfo.stage2tau_nTT = -9;
+            treeinfo.stage2tau_rawEt = -9;
+            treeinfo.stage2tau_isoBit = -9;
+
+        }
+        // CaloJets/Taus
         if ( caloJets.size() > 0 )
         {
             for(const auto& caloJet : caloJets)
@@ -693,17 +797,44 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
                     phase2_rate_barrel_eta_hist->Fill( caloJet.GetExperimentalParam("jet_eta") );
                     phase2_barrel_filled = true;
                 }
-                if (caloJet.pt() < 50) continue;
-                // Set Stage-2 to dummy values
-                treeinfo.stage2jet_pt = -9; 
-                treeinfo.stage2jet_pt_calib = -9; 
-                treeinfo.stage2jet_eta = -9;
-                treeinfo.stage2jet_phi = -9;
-                treeinfo.stage2jet_energy = -9;
-                treeinfo.stage2jet_mass = -9;
-                treeinfo.stage2jet_charge = -9;
-                treeinfo.stage2jet_puEt = -9;
-                treeinfo.stage2jet_deltaRGen = -9;
+                if (caloJet.pt() < 10) continue;
+
+                // CaloTau L1EG Info
+                treeinfo.n_l1eg_HoverE_Less0p25 = 0.;
+                treeinfo.n_l1eg_HoverE_Less0p25_trkSS = 0.;
+                treeinfo.n_l1eg_HoverE_Less0p25_saSS = 0.;
+                treeinfo.n_l1eg_HoverE_0p5to1p0 = 0.;
+                treeinfo.n_l1eg_HoverE_0p5to1p0_trkSS = 0.;
+                treeinfo.n_l1eg_HoverE_0p5to1p0_saSS = 0.;
+                treeinfo.n_l1eg_HoverE_Gtr0p25 = 0.;
+                treeinfo.n_l1eg_HoverE_Gtr0p25_trkSS = 0.;
+                treeinfo.n_l1eg_HoverE_Gtr0p25_saSS = 0.;
+                treeinfo.n_l1eg_avgHoverE = 0.;
+                for (auto info : caloJet.associated_l1EGs)
+                {
+                    //printf("l1eg pt %f, HCAL ET %f, ECAL ET %f, dEta %i, dPhi %i, trkSS %i, trkIso %i, standaloneSS %i, standaloneIso %i\n",
+                    //    info[0], info[1], info[2], int(info[3]), int(info[4]), int(info[5]), int(info[6]), int(info[7]), int(info[8]));
+                    float HoverE = info[1] / (info[0] + info[2]);
+                    treeinfo.n_l1eg_avgHoverE += HoverE / caloJet.associated_l1EGs.size();
+                    if (HoverE < 0.25)
+                    {
+                        treeinfo.n_l1eg_HoverE_Less0p25 += 1.;
+                        if (int(info[5]) > 0.5) treeinfo.n_l1eg_HoverE_Less0p25_trkSS += 1.;
+                        if (int(info[7]) > 0.5) treeinfo.n_l1eg_HoverE_Less0p25_saSS += 1.;
+                    }
+                    //else if (HoverE < 1.0)
+                    //{
+                    //    treeinfo.n_l1eg_HoverE_0p5to1p0 += 1.;
+                    //    if (int(info[5]) > 0.5) treeinfo.n_l1eg_HoverE_0p5to1p0_trkSS += 1.;
+                    //    if (int(info[7]) > 0.5) treeinfo.n_l1eg_HoverE_0p5to1p0_saSS += 1.;
+                    //}
+                    else if (HoverE >= 0.25)
+                    {
+                        treeinfo.n_l1eg_HoverE_Gtr0p25 += 1.;
+                        if (int(info[5]) > 0.5) treeinfo.n_l1eg_HoverE_Gtr0p25_trkSS += 1.;
+                        if (int(info[7]) > 0.5) treeinfo.n_l1eg_HoverE_Gtr0p25_saSS += 1.;
+                    }
+                }
                 fill_tree(caloJet);
             } // end Calo Jets loop
         } // have CaloJets
