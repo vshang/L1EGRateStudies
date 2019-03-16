@@ -407,10 +407,10 @@ if '__main__' in __name__ :
     plot_calibrated_results = False
 
     #make_calibrations = True
-    apply_phase2_calibrations = True
+    #apply_phase2_calibrations = True
     #apply_stage2_calibrations = True
     #prepare_calibration_cfg = True
-    #plot_calibrated_results = True
+    plot_calibrated_results = True
 
     base= '/data/truggles/l1CaloJets_20190210v7/'
     #base= '/data/truggles/l1CaloJets_20190206/'
@@ -594,17 +594,16 @@ if '__main__' in __name__ :
                 #areaNorm = True
                 #drawPointsHists(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis, areaNorm, plotDir)
 
-
                 to_plot = '(jet_pt)/genJet_pt:genJet_pt'
                 h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
                 to_plot = '(jet_pt_calibration)/genJet_pt:genJet_pt'
-                to_plot = '( calibPtAA )/genJet_pt:genJet_pt'
+                to_plot = '( calibPtGG )/genJet_pt:genJet_pt'
                 h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
                 if 'Tau' in jetsF0 :
                     to_plot = '(stage2tau_pt)/genJet_pt:genJet_pt'
                     h3 = getTH2( tree, 's2', to_plot, cut, x_and_y_bins )
                     title1 = "Phase-II CaloTau, raw "+k
-                    title2 = "Phase-II CaloTau, EM Frac Calib "+k
+                    title2 = "Phase-II CaloTau, Calib "+k
                     title3 = "Phase-I CaloTau "+k
                 else :
                     to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
@@ -617,6 +616,7 @@ if '__main__' in __name__ :
                 yaxis = "Relative Error in P_{T} reco/gen"
                 c.SetTitle("genJetPt_Tau_"+k)
                 areaNorm = True
+                areaNorm = False
                 drawPointsHists3(c.GetTitle(), h1, h2, h3, title1, title2, title3, xaxis, yaxis, areaNorm, plotDir)
             """
                 ("l1eg_nL1EGs");
@@ -635,24 +635,24 @@ if '__main__' in __name__ :
             'reco_L1EG_nL1EGtrkMatchSS_2' : '(l1eg_nL1EGs_trkMatchSS == 2)',
             'reco_L1EG_nL1EGtrkMatchSS_3plus' : '(l1eg_nL1EGs_trkMatchSS >= 3)',
             }
-            if 'Tau' in jetsF0 :
-                for k, cut in gen_dms.iteritems() :
-                    cutX = cut+'*( abs(jet_eta) < 3.0 )'
-                    to_plot = '(jet_pt)/genJet_pt:genJet_pt'
-                    h1 = getTH2( tree, 'qcd1', to_plot, cutX, x_and_y_bins )
-                    to_plot = '(jet_pt_calibration)/genJet_pt:genJet_pt'
-                    to_plot = '( calibPtAA )/genJet_pt:genJet_pt'
-                    h2 = getTH2( tree, 'qcd2', to_plot, cutX, x_and_y_bins )
-                    to_plot = '(stage2tau_pt)/genJet_pt:genJet_pt'
-                    h3 = getTH2( tree, 's2', to_plot, cutX, x_and_y_bins )
-                    title1 = "Phase-II CaloTau, raw "+k
-                    title2 = "Phase-II CaloTau, EM Frac Calib "+k
-                    title3 = "Phase-I CaloTau "+k
-                    xaxis = "Gen Jet P_{T} (GeV)"
-                    yaxis = "Relative Error in P_{T} reco/gen"
-                    c.SetTitle("genJetPt_Tau_"+k)
-                    areaNorm = True
-                    drawPointsHists3(c.GetTitle(), h1, h2, h3, title1, title2, title3, xaxis, yaxis, areaNorm, plotDir)
+            #if 'Tau' in jetsF0 :
+            #    for k, cut in gen_dms.iteritems() :
+            #        cutX = cut+'*( abs(jet_eta) < 3.0 )'
+            #        to_plot = '(jet_pt)/genJet_pt:genJet_pt'
+            #        h1 = getTH2( tree, 'qcd1', to_plot, cutX, x_and_y_bins )
+            #        to_plot = '(jet_pt_calibration)/genJet_pt:genJet_pt'
+            #        to_plot = '( calibPtAA )/genJet_pt:genJet_pt'
+            #        h2 = getTH2( tree, 'qcd2', to_plot, cutX, x_and_y_bins )
+            #        to_plot = '(stage2tau_pt)/genJet_pt:genJet_pt'
+            #        h3 = getTH2( tree, 's2', to_plot, cutX, x_and_y_bins )
+            #        title1 = "Phase-II CaloTau, raw "+k
+            #        title2 = "Phase-II CaloTau, EM Frac Calib "+k
+            #        title3 = "Phase-I CaloTau "+k
+            #        xaxis = "Gen Jet P_{T} (GeV)"
+            #        yaxis = "Relative Error in P_{T} reco/gen"
+            #        c.SetTitle("genJetPt_Tau_"+k)
+            #        areaNorm = True
+            #        drawPointsHists3(c.GetTitle(), h1, h2, h3, title1, title2, title3, xaxis, yaxis, areaNorm, plotDir)
 
             c.SetCanvasSize(600,600)
             c.Divide(1)

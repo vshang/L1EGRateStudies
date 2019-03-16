@@ -20,7 +20,7 @@ version = ggH.replace('.root','')
 
 base = '/data/truggles/l1CaloJets_20190308_r2/'
 universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"_GenTauInHGCalV4/"
-#universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"_GenTauInBarrelV4/"
+universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"_GenTauInBarrelV4/"
 if not os.path.exists( universalSaveDir ) : os.makedirs( universalSaveDir )
 
 qcd0File = ROOT.TFile( base+qcd, 'r' )
@@ -480,7 +480,7 @@ def drawDRHists(hists, c, ymax, doFit = False ) :
     #leg = setLegStyle(0.53,0.78,0.95,0.92)
     #leg = setLegStyle(0.5,0.7,0.9,0.9)
     #XXX leg = setLegStyle(0.5,0.5,0.9,0.9)
-    leg = setLegStyle(0.15,0.55,0.45,0.93)
+    leg = setLegStyle(0.2,0.55,0.5,0.93)
     #leg = setLegStyle(0.55,0.55,0.93,0.93)
     for hist in hists :
         leg.AddEntry(hist, hist.GetTitle(),"elp")
@@ -692,9 +692,9 @@ if __name__ == '__main__' :
     #dr_map['2x2 Tau'] = 'l1eg_2x2 + ecal_2x2 + hcal_2x2'
     #dr_map['2x3 Tau'] = 'l1eg_2x3 + ecal_2x3 + hcal_2x3'
     #dr_map['3x3 Tau'] = 'l1eg_3x3 + ecal_3x3 + hcal_3x3'
-    dr_map['3x5 Tau Calib'] = 'calibPtDD'
-    dr_map['3x5 Tau Calib2'] = 'calibPtEE'
-    dr_map['3x5 Tau Calib3'] = 'calibPtFF'
+    #dr_map['3x5 Tau Calib'] = 'calibPtDD'
+    #dr_map['3x5 Tau Calib2'] = 'calibPtEE'
+    #dr_map['3x5 Tau Calib3'] = 'calibPtFF'
     dr_map['3x5 Tau Calib4'] = 'calibPtGG'
     dr_map['3x5 Tau'] = 'l1eg_3x5 + ecal_3x5 + hcal_3x5'
     #dr_map['5x5 Tau'] = 'l1eg_5x5 + ecal_5x5 + hcal_5x5'

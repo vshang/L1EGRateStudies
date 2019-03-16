@@ -8,6 +8,9 @@ if not os.path.exists( 'eff_and_rate_roots/' ) : os.makedirs( 'eff_and_rate_root
 ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
 
+doTau = True
+#doTau = False
+
 doEff = True
 #doEff = False
 
@@ -26,6 +29,7 @@ p.cd()
 if doEff :
     fName = 'output_round2_QCDMar14v1'
     fName = 'output_round2_TTbarMar14v1'
+    fName = 'output_round2_HiggsTauTauvL1EGsv2'
     date = '20190308'
     base = '/data/truggles/l1CaloJets_'+date+'_r2/'
     universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/efficiencies/"+date+"/"+fName+"/"
@@ -38,7 +42,9 @@ if doEff :
 
     # Threshold cuts for passing region
     pt_cut = 100
-    pt_cut = 40
+    #pt_cut = 40
+    #pt_cut = 20
+    #pt_cut = 30
     #pt_cut = 80
     #pt_cut = 150
     #pt_cut = 200
@@ -46,15 +52,23 @@ if doEff :
     #pt_cut = 100
     #pt_cut = 0
 
+    p2Obj = 'jet_pt_calibration'
+    s2Obj = 'stage2jet_pt'
+    #s2Obj = 'stage2jet_pt_calibration3'
+    if doTau :
+        p2Obj = 'calibPtGG'
+        s2Obj = 'stage2tau_pt'
+    
     """ Pt Eff """
     if doPtEff :
         # Use eta cuts to restrict when doing pT efficiencies
         denom_cut = 'abs(genJet_eta)<1.2'
         axis = [160, 0, 400]
-        #gP2 = make_efficiency_graph( t, denom_cut, 'calibPtAA > %i' % pt_cut, 'genJet_pt', axis )
-        #gS2 = make_efficiency_graph( t, denom_cut, '(stage2jet_pt_calibration3) > %i' % pt_cut, 'genJet_pt', axis )
-        gP2 = make_efficiency_graph( t, denom_cut, 'jet_pt_calibration > %i' % pt_cut, 'genJet_pt', axis )
-        gS2 = make_efficiency_graph( t, denom_cut, '(stage2jet_pt) > %i' % pt_cut, 'genJet_pt', axis )
+        if doTau :
+            axis = [150, 0, 150]
+
+        gP2 = make_efficiency_graph( t, denom_cut, p2Obj+' > %i' % pt_cut, 'genJet_pt', axis )
+        gS2 = make_efficiency_graph( t, denom_cut, s2Obj+' > %i' % pt_cut, 'genJet_pt', axis )
 
     """ Eta Eff """
     if not doPtEff :
@@ -62,8 +76,8 @@ if doEff :
         denom_pt = 100
         denom_cut = '(genJet_pt > %i)' % denom_pt
         axis = [100, -5, 5]
-        gP2 = make_efficiency_graph( t, denom_cut, 'calibPtAA > %i' % pt_cut, 'genJet_eta', axis )
-        gS2 = make_efficiency_graph( t, denom_cut, '(stage2jet_pt_calibration3) > %i' % pt_cut, 'genJet_eta', axis )
+        gP2 = make_efficiency_graph( t, denom_cut, p2Obj+' > %i' % pt_cut, 'genJet_eta', axis )
+        gS2 = make_efficiency_graph( t, denom_cut, s2Obj+' > %i' % pt_cut, 'genJet_eta', axis )
     
     gP2.SetMinimum( 0. )
     gP2.SetLineColor(ROOT.kRed)
