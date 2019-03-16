@@ -354,17 +354,26 @@ def drawPointsHists(saveName, h1, h2, title1, title2, xaxis, yaxis, new=False, p
     g1.Draw('SAME')
     if doFit :
         #mini = points[0]
-        mini = 11.
+        mini = 9.
         maxi = points[-1]
-        f1 = ROOT.TF1( 'f1', '([0] + [1]*x + [2]*TMath::Exp(-[3]*x))', mini, maxi)
-        f1.SetParName( 0, "y rise" )
-        f1.SetParName( 1, "linear" )
-        f1.SetParName( 2, "scale" )
-        f1.SetParName( 3, "decay" )
-        f1.SetParameter( 0, .5 )
-        f1.SetParameter( 1, .01 )
-        f1.SetParameter( 2, 2.5 )
-        f1.SetParameter( 3, .15 )
+        if 'tau' in saveName or 'Tau' in saveName :
+            f1 = ROOT.TF1( 'f1', '([0] + [1]*TMath::Exp(-[2]*x))', mini, maxi)
+            f1.SetParName( 0, "y rise" )
+            f1.SetParName( 1, "scale" )
+            f1.SetParName( 2, "decay" )
+            f1.SetParameter( 0, .5 )
+            f1.SetParameter( 1, 2.5 )
+            f1.SetParameter( 2, .15 )
+        else : # probably for CaloJets
+            f1 = ROOT.TF1( 'f1', '([0] + [1]*x + [2]*TMath::Exp(-[3]*x))', mini, maxi)
+            f1.SetParName( 0, "y rise" )
+            f1.SetParName( 1, "linear" )
+            f1.SetParName( 2, "scale" )
+            f1.SetParName( 3, "decay" )
+            f1.SetParameter( 0, .5 )
+            f1.SetParameter( 1, .01 )
+            f1.SetParameter( 2, 2.5 )
+            f1.SetParameter( 3, .15 )
         fit1 = g1.Fit('f1', 'R S')
     
     c2.cd(2)
@@ -388,15 +397,24 @@ def drawPointsHists(saveName, h1, h2, title1, title2, xaxis, yaxis, new=False, p
     g2.SetLineWidth(2)
     g2.Draw('SAME')
     if doFit :
-        f2 = ROOT.TF1( 'f2', '([0] + [1]*x + [2]*TMath::Exp(-[3]*x))', mini, maxi)
-        f2.SetParName( 0, "y rise" )
-        f2.SetParName( 1, "linear" )
-        f2.SetParName( 2, "scale" )
-        f2.SetParName( 3, "decay" )
-        f2.SetParameter( 0, .5 )
-        f2.SetParameter( 1, .01 )
-        f2.SetParameter( 2, 2.5 )
-        f2.SetParameter( 3, .15 )
+        if 'tau' in saveName or 'Tau' in saveName :
+            f2 = ROOT.TF1( 'f2', '([0] + [1]*TMath::Exp(-[2]*x))', mini, maxi)
+            f2.SetParName( 0, "y rise" )
+            f2.SetParName( 1, "scale" )
+            f2.SetParName( 2, "decay" )
+            f2.SetParameter( 0, .5 )
+            f2.SetParameter( 1, 2.5 )
+            f2.SetParameter( 2, .15 )
+        else : # probably for CaloJets
+            f2 = ROOT.TF1( 'f2', '([0] + [1]*x + [2]*TMath::Exp(-[3]*x))', mini, maxi)
+            f2.SetParName( 0, "y rise" )
+            f2.SetParName( 1, "linear" )
+            f2.SetParName( 2, "scale" )
+            f2.SetParName( 3, "decay" )
+            f2.SetParameter( 0, .5 )
+            f2.SetParameter( 1, .01 )
+            f2.SetParameter( 2, 2.5 )
+            f2.SetParameter( 3, .15 )
         fit2 = g2.Fit('f2', 'R S')
 
     # Just to show the resulting fit
@@ -571,7 +589,7 @@ def make_em_fraction_calibrations( c, fName, cut, plotBase ) :
     f_out = ROOT.TFile('jet_em_calibrations_'+version+'.root','RECREATE')
     #x_and_y_bins = [100,0,500, 200,0,20]
     xBinning = get_x_binning(fName)
-    yBinning = array('f', [i*0.1 for i in range(201)])
+    yBinning = array('f', [-2+i*0.1 for i in range(241)])
     for eta in [['0.0', '0.3'], ['0.3', '0.6'], ['0.6', '1.0'], ['1.0', '1.5'], # Barrel
                 #['1.3', '1.8'], # Barrel --> HGCal transition
                 ['1.5', '1.9'], ['1.9', '2.4'], ['2.4', '3.0'], # HGCal
@@ -634,11 +652,11 @@ def make_tau_calibrations( c, fName, cut, plotBase ) :
     tau_pt = '(l1eg_3x5 + ecal_3x5 + hcal_3x5)'
     tau_var = '(l1eg_3x5 + ecal_3x5)/'+tau_pt
     barrel_quantile_map = OrderedDict()
-    barrel_quantile_map['0L1EG'] = get_quantile_em_fraction_list( fName, 'barrel', 2, tau_var, ' && n_l1eg_HoverE_Less0p25 == 0' )
-    barrel_quantile_map['1L1EG'] = get_quantile_em_fraction_list( fName, 'barrel', 2, tau_var, ' && n_l1eg_HoverE_Less0p25 == 1' )
-    barrel_quantile_map['Gtr1L1EG'] = get_quantile_em_fraction_list( fName, 'barrel', 2, tau_var, ' && n_l1eg_HoverE_Less0p25 > 1' )
+    barrel_quantile_map['0L1EG'] = get_quantile_em_fraction_list( fName, 'barrel', 3, tau_var, ' && n_l1eg_HoverE_Less0p25 == 0' )
+    barrel_quantile_map['1L1EG'] = get_quantile_em_fraction_list( fName, 'barrel', 3, tau_var, ' && n_l1eg_HoverE_Less0p25 == 1' )
+    barrel_quantile_map['Gtr1L1EG'] = get_quantile_em_fraction_list( fName, 'barrel', 3, tau_var, ' && n_l1eg_HoverE_Less0p25 > 1' )
     hgcal_quantile_map = OrderedDict()
-    hgcal_quantile_map['All'] = get_quantile_em_fraction_list( fName, 'hgcal', 2, tau_var )
+    hgcal_quantile_map['All'] = get_quantile_em_fraction_list( fName, 'hgcal', 4, tau_var )
     print "Quantile Lists:"
     for k, v in barrel_quantile_map.iteritems() :
         print k, v
@@ -653,7 +671,8 @@ def make_tau_calibrations( c, fName, cut, plotBase ) :
     f_out = ROOT.TFile('tau_pt_calibrations_'+version+'.root','RECREATE')
     xBinning = get_x_binning(fName)
     #yBinning = array('f', [i*0.1 for i in range(201)])
-    yBinning = array('f', [-1.5+i*0.05 for i in range(141)])
+    yBinning = array('f', [-1.5+i*0.01 for i in range(701)])
+    #yBinning = array('f', [i*0.01 for i in range(401)])
     for eta in [['0.0', '0.3'], ['0.3', '0.6'], ['0.6', '1.0'], ['1.0', '1.5'], # Barrel
                 #['1.3', '1.8'], # Barrel --> HGCal transition
                 ['1.5', '1.9'], ['1.9', '2.4'], ['2.4', '3.0']] : # HGCal
@@ -679,18 +698,14 @@ def make_tau_calibrations( c, fName, cut, plotBase ) :
                 if k == 'Gtr1L1EG' : frac_cut += ' && n_l1eg_HoverE_Less0p25 > 1'
                 #if k == 'All' : # nothing required
                 print frac_cut
-                to_plot = 'genJet_pt/'+tau_pt+':'+tau_pt
-                #h1 = getTH2( tree, 'qcd1', to_plot, frac_cut, x_and_y_bins )
-                h1 = getTH2VarBin( tree, 'taus1', to_plot, frac_cut, x_and_y_bins )
                 to_plot = '(genJet_pt - (l1eg_3x5 + ecal_3x5))/hcal_3x5:'+tau_pt
-                #h2 = getTH2( tree, 'qcd3', to_plot, frac_cut, x_and_y_bins )
+                h1 = getTH2VarBin( tree, 'taus1', to_plot, frac_cut, x_and_y_bins )
+                to_plot = 'genJet_pt/'+tau_pt+':'+tau_pt
                 h2 = getTH2VarBin( tree, 'taus2', to_plot, frac_cut, x_and_y_bins )
                 xaxis = "Tau 3x5 P_{T} (GeV)"
-                #yaxis = "Relative Error in P_{T} reco/gen"
                 yaxis = "Gen Jet pT - (ECAL+L1EG) / [ HCAL ]"
-                title1 = "L1CaloJets HCAL1 - EM %.2f to %.2f" % (f_low, f_high)
-                #title2 = "L1CaloJets HCAL2 - EM %.2f to %.2f" % (f_low, f_high)
-                title2 = "HCAL Calibration vs. Reco Jet P_{T}"
+                title1 = "(genJet_pt - (l1eg_3x5 + ecal_3x5))/hcal_3x5"# - EM %.2f to %.2f" % (f_low, f_high)
+                title2 = "genJet_pt/tau_pt"
                 c.SetTitle("tauPt_HTT_%s_absEta%s_to_%s_EM_frac_%s_to_%s" % (k, eta[0].replace('.','p'), eta[1].replace('.','p'), str(f_low).replace('.','p'), str(f_high).replace('.','p')))
                 g_and_fit = drawPointsHists(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis, False, plotBase, True)
                 g = g_and_fit[0]

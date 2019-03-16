@@ -162,11 +162,10 @@ def get_quantile_map( calib_fName ) :
             eta_high = float(info[10].replace('p','.'))
             #quantile_map[ key ] = [ f_low, f_high, eta_low, eta_high, f.Get( key ) ]
             # FIXME - what happened to ROOT in 10_5_X?
-            new_f1 = ROOT.TF1( key, '([0] + [1]*x + [2]*TMath::Exp(-[3]*x))')
+            new_f1 = ROOT.TF1( key, '([0] + [1]*TMath::Exp(-[2]*x))')
             new_f1.SetParameter( 0, f.Get( key ).GetParameter( 0 ) )
             new_f1.SetParameter( 1, f.Get( key ).GetParameter( 1 ) )
             new_f1.SetParameter( 2, f.Get( key ).GetParameter( 2 ) )
-            new_f1.SetParameter( 3, f.Get( key ).GetParameter( 3 ) )
             quantile_map[ key ] = [ l1eg, f_low, f_high, eta_low, eta_high, new_f1 ]
 
     else :
@@ -258,7 +257,8 @@ def add_tau_calibration( name_in, quantile_map ) :
         else :
             val = calibrate_tau( quantile_map, abs_tau_eta, n_L1EGs, l1eg_pt, ecal_pt, tau_pt, tau_pt_binning, useBinnedPt )
             calib[0] = val
-            calibPt[0] = l1eg_pt + ecal_pt + (val * hcal_pt)
+            #calibPt[0] = l1eg_pt + ecal_pt + (val * hcal_pt)
+            calibPt[0] = tau_pt * val
 
         calibB.Fill()
         calibPtB.Fill()
@@ -571,7 +571,7 @@ if '__main__' in __name__ :
                 #to_plot = '(jet_pt)/genJet_pt:genJet_pt'
                 #h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
                 ##to_plot = '(l1eg_pt + ecal_pt + (hcal_pt_calibration) )/genJet_pt:genJet_pt' # For EDProducer check
-                #to_plot = '( calibPtCC )/genJet_pt:genJet_pt'
+                #to_plot = '( calibPtAA )/genJet_pt:genJet_pt'
                 #h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
                 ##to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
                 #xaxis = "Gen Jet P_{T} (GeV)"

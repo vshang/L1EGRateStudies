@@ -8,13 +8,10 @@ import os
 
 qcd = 'qcd_pu0.root'
 qcd200 = 'qcd_pu200.root'
-ggH = 'output_round2_HiggsTauTau2v5.root'
-ggH = 'output_round2_HiggsTauTau3_shortv5.root'
-ggH = 'output_round2_HiggsTauTau13v1v5.root'
 ggH = 'output_round2_HiggsTauTau4v5.root'
-version = 'l1CaloJets_20190308_r2_taus_v1'
-version = 'l1CaloJets_20190311_r2_taus_v1'
-version = 'l1CaloJets_20190312_r2_taus_v4'
+ggH = 'output_round2_HiggsTauTauvL1EGsv1.root'
+ggH = 'output_round2_HiggsTauTauvL1EGsv3.root'
+ggH = 'output_round2_HiggsTauTauvL1EGsv2.root'
 version = ggH.replace('.root','')
 #version = '20181023_jets_final_shape_comp_v1'
 #qcd = 'qcd1.root'
@@ -22,8 +19,8 @@ version = ggH.replace('.root','')
 #version = '93X_ResolutionsV2'
 
 base = '/data/truggles/l1CaloJets_20190308_r2/'
-universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"_GenTauInHGCal/"
-universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"_GenTauInBarrel/"
+universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"_GenTauInHGCalV4/"
+#universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"_GenTauInBarrelV4/"
 if not os.path.exists( universalSaveDir ) : os.makedirs( universalSaveDir )
 
 qcd0File = ROOT.TFile( base+qcd, 'r' )
@@ -483,7 +480,7 @@ def drawDRHists(hists, c, ymax, doFit = False ) :
     #leg = setLegStyle(0.53,0.78,0.95,0.92)
     #leg = setLegStyle(0.5,0.7,0.9,0.9)
     #XXX leg = setLegStyle(0.5,0.5,0.9,0.9)
-    leg = setLegStyle(0.2,0.5,0.55,0.9)
+    leg = setLegStyle(0.15,0.55,0.45,0.93)
     #leg = setLegStyle(0.55,0.55,0.93,0.93)
     for hist in hists :
         leg.AddEntry(hist, hist.GetTitle(),"elp")
@@ -678,8 +675,8 @@ if __name__ == '__main__' :
     #c.SetName("hcal_dimensions_check")
     #drawDRHists(hists0, c, 0., False ) # no Fit
     hists200 = []
-    max_ = 3.
-    min_=-2
+    max_ = 2.
+    min_=-0.5
     tmpAry=[75,min_,max_]
     #tmpAry=[75,0,.5]
     #for dr in ['leading_energy', 'dR0p1', 'dR0p2', 'dR0p3', 'dR0p4', 'dR0p5'] :
@@ -692,17 +689,23 @@ if __name__ == '__main__' :
     #XXX dr_map['dR0p2'] = 'ecal_dR0p2 + ecal_5x5 + hcal_5x5'
     #XXX dr_map['dR0p2Cal_L1EG0p3'] = 'ecal_dR0p3 + ecal_5x5 + hcal_5x5'
     #XXX dr_map['dR0p3'] = 'jet_pt'
-    #dr_map['2x2 Tau'] = 'ecal_2x2 + ecal_2x2 + hcal_2x2'
-    dr_map['3x3 Tau'] = 'l1eg_3x3 + ecal_3x3 + hcal_3x3'
-    dr_map['5x5 Tau'] = 'l1eg_5x5 + ecal_5x5 + hcal_5x5'
-    dr_map['5x5 + 7x7 L1EGs'] = 'l1eg_7x7 + ecal_5x5 + hcal_5x5'
-    dr_map['7x7 Taus'] = 'l1eg_7x7 + ecal_7x7 + hcal_7x7'
+    #dr_map['2x2 Tau'] = 'l1eg_2x2 + ecal_2x2 + hcal_2x2'
+    #dr_map['2x3 Tau'] = 'l1eg_2x3 + ecal_2x3 + hcal_2x3'
+    #dr_map['3x3 Tau'] = 'l1eg_3x3 + ecal_3x3 + hcal_3x3'
+    dr_map['3x5 Tau Calib'] = 'calibPtDD'
+    dr_map['3x5 Tau Calib2'] = 'calibPtEE'
+    dr_map['3x5 Tau Calib3'] = 'calibPtFF'
+    dr_map['3x5 Tau Calib4'] = 'calibPtGG'
+    dr_map['3x5 Tau'] = 'l1eg_3x5 + ecal_3x5 + hcal_3x5'
+    #dr_map['5x5 Tau'] = 'l1eg_5x5 + ecal_5x5 + hcal_5x5'
+    #dr_map['5x7 Tau'] = 'l1eg_5x7 + ecal_5x7 + hcal_5x7'
+    #dr_map['7x7 Taus'] = 'l1eg_7x7 + ecal_7x7 + hcal_7x7'
     #dr_map['7x7 TausB'] = 'jet_pt'
     
     # HERE
-    for n_prongs in [1, 3] :
-        for n_photons in ['0', 'gtrZero'] :
-            for pt in [10, 20, 30, 50, 100] :
+    for pt in [10, 20, 30, 50, 100] :
+        for n_prongs in [1, 3] :
+            for n_photons in ['0', 'gtrZero'] :
                 hists200 = []
                 photon_cut = 'genTau_n_photons == 0' if n_photons == '0' else 'genTau_n_photons > 0'
                 baseline_cuts = 'abs(genJet_eta) < 1.3 && genJet_pt > %i && genTau_n_prongs == %i && %s' % (pt, n_prongs, photon_cut )
@@ -725,6 +728,27 @@ if __name__ == '__main__' :
                 #c.SetName("tau_dR_ptGtr%i_nProngs%i_%sPhotons" % (pt, n_prongs, n_photons) )
                 drawDRHists(hists200, c, 0., False ) # no Fit
 
+        hists200 = []
+        photon_cut = '(1)'
+        baseline_cuts = 'abs(genJet_eta) < 1.3 && genJet_pt > %i && genTau_n_prongs == %i && %s' % (pt, n_prongs, photon_cut )
+        if 'HGCal' in universalSaveDir :
+            baseline_cuts = 'abs(genJet_eta) < 3.0 && abs(genJet_eta) > 1.5 && genJet_pt > %i && genTau_n_prongs == %i && %s' % (pt, n_prongs, photon_cut )
+        if 'Barrel' in universalSaveDir :
+            if pt == 10 : continue
+            hists200.append( simple1D( 'HTT Stage-2', tree_ggH, cnt, '(stage2tau_pt)/genJet_pt', tmpAry, baseline_cuts ) )
+            #hists200.append( simple1D( 'HTT Stage-2', tree_ggH, cnt, '(stage2jet_deltaRGen)', tmpAry, baseline_cuts ) )
+            hists200[-1].SetTitle('Stage-2 Tau p_{T}')
+            hists200[-1].GetXaxis().SetTitle('Tau E_{T} within DR / Total Gen E_{T}')
+            #hists200[-1].GetXaxis().SetTitle('DR( L1, Gen)')
+        for dr, string in dr_map.iteritems() :
+            hists200.append( simple1D( 'HTT '+dr, tree_ggH, cnt, '('+string+')/genJet_pt', tmpAry, baseline_cuts ) )
+            #hists200.append( simple1D( 'HTT '+dr, tree_ggH, cnt, '(deltaR_gen)', tmpAry, baseline_cuts ) )
+            hists200[-1].SetTitle('HTT '+dr)
+            hists200[-1].GetXaxis().SetTitle('Tau E_{T} within DR / Total Gen E_{T}')
+            #hists200[-1].GetXaxis().SetTitle('DR( L1, Gen)')
+        c.SetName("tau_dimensions_check_ptGtr%i_Inclusive" % pt )
+        #c.SetName("tau_dR_ptGtr%i_nProngs%i_%sPhotons" % (pt, n_prongs, n_photons) )
+        drawDRHists(hists200, c, 0., False ) # no Fit
 
     hists = []
     max_ = 0.5
