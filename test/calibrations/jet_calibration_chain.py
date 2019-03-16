@@ -5,7 +5,7 @@ from collections import OrderedDict
 import L1Trigger.L1EGRateStudies.trigHelpers as trigHelpers
 from caloJetPtCalibrations import getTH1, getTH2, getTH2VarBin, \
     drawPointsHists, drawPointsHists3, make_em_fraction_calibrations, \
-    get_x_binning, drawPointsSingleHist
+    get_x_binning, drawPointsSingleHist, make_tau_calibrations
 
 
 def check_calibration_py_cfg( quantile_map ) :
@@ -136,20 +136,42 @@ def get_quantile_map( calib_fName ) :
     # Dict to store TGraph name as key and lower and upper thresholds as value
     quantile_map = OrderedDict()
 
-    for key in keys :
-        info = key.split('_')
-        f_low = float(info[3].replace('p','.'))
-        f_high = float(info[5].replace('p','.'))
-        eta_low = float(info[7].replace('p','.'))
-        eta_high = float(info[9].replace('p','.'))
-        #quantile_map[ key ] = [ f_low, f_high, eta_low, eta_high, f.Get( key ) ]
-        # FIXME - what happened to ROOT in 10_5_X?
-        new_f1 = ROOT.TF1( key, '([0] + [1]*x + [2]*TMath::Exp(-[3]*x))')
-        new_f1.SetParameter( 0, f.Get( key ).GetParameter( 0 ) )
-        new_f1.SetParameter( 1, f.Get( key ).GetParameter( 1 ) )
-        new_f1.SetParameter( 2, f.Get( key ).GetParameter( 2 ) )
-        new_f1.SetParameter( 3, f.Get( key ).GetParameter( 3 ) )
-        quantile_map[ key ] = [ f_low, f_high, eta_low, eta_high, new_f1 ]
+    if 'jet_em_calibrations' in calib_fName :
+        for key in keys :
+            info = key.split('_')
+            f_low = float(info[3].replace('p','.'))
+            f_high = float(info[5].replace('p','.'))
+            eta_low = float(info[7].replace('p','.'))
+            eta_high = float(info[9].replace('p','.'))
+            #quantile_map[ key ] = [ f_low, f_high, eta_low, eta_high, f.Get( key ) ]
+            # FIXME - what happened to ROOT in 10_5_X?
+            new_f1 = ROOT.TF1( key, '([0] + [1]*x + [2]*TMath::Exp(-[3]*x))')
+            new_f1.SetParameter( 0, f.Get( key ).GetParameter( 0 ) )
+            new_f1.SetParameter( 1, f.Get( key ).GetParameter( 1 ) )
+            new_f1.SetParameter( 2, f.Get( key ).GetParameter( 2 ) )
+            new_f1.SetParameter( 3, f.Get( key ).GetParameter( 3 ) )
+            quantile_map[ key ] = [ f_low, f_high, eta_low, eta_high, new_f1 ]
+
+    elif 'tau_pt_calibrations' in calib_fName :
+        for key in keys :
+            info = key.split('_')
+            l1eg = str(info[1].replace('p','.'))
+            f_low = float(info[4].replace('p','.'))
+            f_high = float(info[6].replace('p','.'))
+            eta_low = float(info[8].replace('p','.'))
+            eta_high = float(info[10].replace('p','.'))
+            #quantile_map[ key ] = [ f_low, f_high, eta_low, eta_high, f.Get( key ) ]
+            # FIXME - what happened to ROOT in 10_5_X?
+            new_f1 = ROOT.TF1( key, '([0] + [1]*x + [2]*TMath::Exp(-[3]*x))')
+            new_f1.SetParameter( 0, f.Get( key ).GetParameter( 0 ) )
+            new_f1.SetParameter( 1, f.Get( key ).GetParameter( 1 ) )
+            new_f1.SetParameter( 2, f.Get( key ).GetParameter( 2 ) )
+            new_f1.SetParameter( 3, f.Get( key ).GetParameter( 3 ) )
+            quantile_map[ key ] = [ l1eg, f_low, f_high, eta_low, eta_high, new_f1 ]
+
+    else :
+        print "File name %s does not match format of 'jet_em_calibrations_X' or 'tau_pt_calibrations_X'" % calib_fName
+        return
     #for k, v in quantile_map.iteritems() :
     #    print k, v
 
@@ -159,9 +181,8 @@ def get_quantile_map( calib_fName ) :
 
     
 
-
-def add_calibration( name_in, quantile_map ) :
-    jet_pt_binning = get_x_binning()
+def add_jet_calibration( name_in, quantile_map ) :
+    jet_pt_binning = get_x_binning(name_in)
     useBinnedPt = True
     print "Adding Phase-2 calibration branch to ttree. UseBinnedPt = %s" % useBinnedPt
     f_in = ROOT.TFile( name_in, 'UPDATE')
@@ -189,6 +210,53 @@ def add_calibration( name_in, quantile_map ) :
             calibPt[0] = -9.
         else :
             val = calibrate( quantile_map, abs_jet_eta, l1eg_pt, ecal_pt, jet_pt, jet_pt_binning, useBinnedPt )
+            calib[0] = val
+            calibPt[0] = l1eg_pt + ecal_pt + (val * hcal_pt)
+
+        calibB.Fill()
+        calibPtB.Fill()
+    d = f_in.Get('analyzer')
+    d.cd()
+    t.Write('', ROOT.TObject.kOverwrite)
+    f_in.Close()
+
+
+    
+
+def add_tau_calibration( name_in, quantile_map ) :
+    tau_pt_binning = get_x_binning('Tau')
+    useBinnedPt = True
+    print "Adding Phase-2 calibration branch to ttree. UseBinnedPt = %s" % useBinnedPt
+    f_in = ROOT.TFile( name_in, 'UPDATE')
+    t = f_in.Get( 'analyzer/tree' )
+
+    # new calibrations
+    calib = array('f', [ 0 ] )
+    calibB = t.Branch('calibAA', calib, 'calibAA/F')
+    calibPt = array('f', [ 0 ] )
+    calibPtB = t.Branch('calibPtAA', calibPt, 'calibPtAA/F')
+
+    for k, v in quantile_map.iteritems() :
+        print k, v
+
+    cnt = 0
+    for row in t :
+        cnt += 1
+        if cnt % 10000 == 0 : print cnt
+
+        size = '3x5'
+        l1eg_pt = getattr( row, 'l1eg_'+size )
+        ecal_pt = getattr( row, 'ecal_'+size )
+        hcal_pt = getattr( row, 'hcal_'+size )
+        tau_pt = l1eg_pt + ecal_pt + hcal_pt
+        abs_tau_eta = abs(row.jet_eta)
+        n_L1EGs = getattr( row, 'n_l1eg_HoverE_Less0p25' )
+        if tau_pt < 0 or abs_tau_eta > 3.0 :
+            val = -9.
+            calib[0] = -9.
+            calibPt[0] = -9.
+        else :
+            val = calibrate_tau( quantile_map, abs_tau_eta, n_L1EGs, l1eg_pt, ecal_pt, tau_pt, tau_pt_binning, useBinnedPt )
             calib[0] = val
             calibPt[0] = l1eg_pt + ecal_pt + (val * hcal_pt)
 
@@ -283,7 +351,66 @@ def calibrate( quantile_map, abs_jet_eta, l1eg_pt, ecal_pt, jet_pt, jet_pt_binni
     print "Shouldn't get here, em_frac ",em_frac
     return 1.0
 
+
+
+def calibrate_tau( quantile_map, abs_jet_eta, n_L1EGs, l1eg_pt, ecal_pt, jet_pt, jet_pt_binning, useBins=False ) :
+    em_frac = (l1eg_pt + ecal_pt) / jet_pt
+    #print "EM Frac: ",em_frac
+    if em_frac == 2 : return 1.0 # These are non-recoed jets
+    if em_frac > 1.0 : em_frac = 1.0 # These are some corner case problems which will be fixed and only range up to 1.05
+
+    for k, v in quantile_map.iteritems() :
+
+        # Choose dict for correct nL1EGs
+        if v[0] == '0L1EG' and not n_L1EGs == 0 : continue
+        if v[0] == '1L1EG' and not n_L1EGs == 1 : continue
+        if v[0] == 'Gtr1L1EG' and not n_L1EGs > 1 : continue
+        # HGCal v[0] == 'All' and has no L1EG selection
+
+        if em_frac >= v[1] and em_frac <= v[2] :
+            if abs_jet_eta >= v[3] and abs_jet_eta <= v[4] :
+                #return v[2].Eval( jet_pt )
+                tmp_pt = jet_pt
+                if jet_pt > 500 : tmp_pt = 500 # Straight line extension
+                if not useBins :
+                    rtn = v[-1].Eval( tmp_pt )
+                # This is to simulate FW LUTs
+                if useBins :
+                    binned_pt_val = find_binned_pt( tmp_pt, jet_pt_binning )
+                    rtn = v[-1].Eval( binned_pt_val )
+
+                # Ensure not returning a negative value because of
+                # unpopulated low pT bins
+                while (rtn < 0) :
+                    jet_pt += 2
+                    rtn = v[-1].Eval( jet_pt )
+                    if jet_pt > 500 : break
+                #assert(rtn >= 0), "The calibration result is less than zero for range name %s for \
+                if (rtn < 0) : print "The calibration result is less than zero for range name %s for \
+                        EM fraction %.2f and Jet pT %.2f, resulting calibration %.2f" % (k, em_frac, jet_pt, rtn)
+
+                return rtn
+    print "Shouldn't get here, em_frac ",em_frac
+    return 1.0
+
 if '__main__' in __name__ :
+
+
+    # Commands
+    doJets = False
+    doTaus = True
+
+    make_calibrations = False
+    apply_phase2_calibrations = False
+    apply_stage2_calibrations = False
+    prepare_calibration_cfg = False
+    plot_calibrated_results = False
+
+    #make_calibrations = True
+    apply_phase2_calibrations = True
+    #apply_stage2_calibrations = True
+    #prepare_calibration_cfg = True
+    #plot_calibrated_results = True
 
     base= '/data/truggles/l1CaloJets_20190210v7/'
     #base= '/data/truggles/l1CaloJets_20190206/'
@@ -314,7 +441,7 @@ if '__main__' in __name__ :
         #'qcd_PU200',
 
         # R2
-        'output_round2_HiggsTauTau_vTau1',
+        'output_round2_HiggsTauTauvL1EGsv2',
     ] :
         
         #jetsF0 = 'merged_QCD-PU%s.root' % shape
@@ -324,10 +451,6 @@ if '__main__' in __name__ :
         date = base.split('/')[-2].replace('l1CaloJets_','')+shape
         plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/20190308/'+date+''
         if not os.path.exists( plotDir ) : os.makedirs( plotDir )
-
-        jetFile = ROOT.TFile( base+jetsF0, 'r' )
-        print jetFile
-        tree = jetFile.Get("analyzer/tree")
 
         c = ROOT.TCanvas('c', '', 800, 700)
         ''' Track to cluster reco resolution '''
@@ -339,26 +462,45 @@ if '__main__' in __name__ :
         # Only make for QCD sample, for other samples, pick up the
         # results of QCD
         cut = "" # Do all Eta now
-        #if 'qcd' in shape or 'Higgs' in shape :
-        #    make_em_fraction_calibrations( c, base+jetsF0, cut, plotDir )
-        jetFile.Close()
+        if make_calibrations :
+            jetFile = ROOT.TFile( base+jetsF0, 'r' )
+            print jetFile
+            tree = jetFile.Get("analyzer/tree")
+
+            if 'qcd' in shape and doJets :
+                make_em_fraction_calibrations( c, base+jetsF0, cut, plotDir )
+            if 'Tau' in shape and doTaus :
+                make_tau_calibrations( c, base+jetsF0, cut, plotDir )
+            jetFile.Close()
 
         """ Add new calibrations to TTree """
-        version = shape.split('_')[-1]
-        ###version = 'v7'
-        #quantile_map = get_quantile_map( 'jet_em_calibrations_'+version+'.root' )
-        #prepare_calibration_py_cfg( quantile_map )
-        ####check_calibration_py_cfg( quantile_map )
-        #add_calibration( base+jetsF0, quantile_map )
+        if apply_phase2_calibrations :
+            version = shape.split('_')[-1]
+            ###version = 'v7'
+            if doJets :
+                quantile_map = get_quantile_map( 'jet_em_calibrations_'+version+'.root' )
+                add_jet_calibration( base+jetsF0, quantile_map )
+            if doTaus :
+                quantile_map = get_quantile_map( 'tau_pt_calibrations_'+version+'.root ')
+                add_tau_calibration( base+jetsF0, quantile_map )
+        """ Prepare cfg calibration code snippet """
+        if prepare_calibration_cfg :
+            version = shape.split('_')[-1]
+            ###version = 'v7'
+            if doJets :
+                quantile_map = get_quantile_map( 'jet_em_calibrations_'+version+'.root' )
+            if doTaus :
+                quantile_map = get_quantile_map( 'tau_pt_calibrations_'+version+'.root ')
+            ####check_calibration_py_cfg( quantile_map )
+            prepare_calibration_py_cfg( quantile_map )
         """ Add Stage-2 Calibrations which do a good job up to 50 GeV """
-        #add_stage2_calibration( base+jetsF0, 'stage-2_calib_stage2_genOverReco_by_reco.root' )
+        if apply_stage2_calibrations :
+            add_stage2_calibration( base+jetsF0, 'stage-2_calib_stage2_genOverReco_by_reco.root' )
 
         """ Plot Results """
         jetFile = ROOT.TFile( base+jetsF0, 'r' )
         tree = jetFile.Get("analyzer/tree")
 
-        plot_calibrated_results = True
-        #plot_calibrated_results = False
         # Can't plot for minBias b/c no gen
         #if 'minBias' in shape : 
         #    plot_calibrated_results = False
@@ -415,7 +557,7 @@ if '__main__' in __name__ :
                 #to_plot = '(jet_pt)/genJet_pt:genJet_pt'
                 #h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
                 ##to_plot = '(l1eg_pt + ecal_pt + (hcal_pt_calibration) )/genJet_pt:genJet_pt' # For EDProducer check
-                #to_plot = '( calibPtBB )/genJet_pt:genJet_pt'
+                #to_plot = '( calibPtAA )/genJet_pt:genJet_pt'
                 #h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
                 ##to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
                 #xaxis = "Gen Jet P_{T} (GeV)"

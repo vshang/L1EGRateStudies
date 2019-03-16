@@ -1,6 +1,7 @@
 import ROOT
 from array import array
 from ROOT import gStyle
+from collections import OrderedDict
 
 ROOT.gROOT.SetBatch(True)
 gStyle.SetOptStat(0)
@@ -337,7 +338,7 @@ def drawPointsHists(saveName, h1, h2, title1, title2, xaxis, yaxis, new=False, p
     # was originally using 10 GeV spacing for calibrations here
     # Switch to using the same binning as the TH2
     #for i in range(min_, 505, 10) : points.append( i )
-    points = get_x_binning()
+    points = get_x_binning(saveName)
     for i in range(len(points)-1) :
         # if empty column, don't appent to points
         point = (points[i]+points[i+1])/2.
@@ -490,7 +491,7 @@ def getAverage( h, xVal ) :
 
 # create a list with the output delinimations splitting the calo jets
 # into nBins based on EM fraction
-def get_quantile_em_fraction_list( fName, calo_region, nBins=10 ) :
+def get_quantile_em_fraction_list( fName, calo_region, nBins=10, var='(l1eg_pt + ecal_pt)/jet_pt', additional_cut='' ) :
     f = ROOT.TFile( fName, 'r')
     t = f.Get('analyzer/tree')
 
@@ -502,7 +503,7 @@ def get_quantile_em_fraction_list( fName, calo_region, nBins=10 ) :
     }
     
     h = ROOT.TH1D('h','h',10000,0,1.1)
-    t.Draw( '(l1eg_pt + ecal_pt)/jet_pt >> h', 'jet_pt >= 0 && '+calo_map[ calo_region ] )
+    t.Draw( var+' >> h', 'jet_pt >= 0 && '+calo_map[ calo_region ]+additional_cut )
 
     # To keep track of total so we can compute relative fractions
     total = h.Integral()
@@ -533,16 +534,18 @@ def get_quantile_em_fraction_list( fName, calo_region, nBins=10 ) :
     del c, h
 
     return rtn_list
-        
+    
+
+    
 def get_x_binning(fName='') :
     #xBinning = array('f', [0.,15,17.5,20,22.5,25,27.5,30, \
     # Worked xBinning = array('f', [0.,20,22.5,25,27.5,30, \
     xBinning = array('f', [0.,5.,7.5,10.,12.5,15.,17.5,20,22.5,25,27.5,30, \
         35,40,45,50,55,60,65,70,75,80,85,90,95,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300, \
         325,400,500]) # x binning
-    if 'Tau' in fName :
-        xBinning = array('f', [0.,5.,7.5,10.,12.5,15.,17.5,20,22.5,25,27.5,30, \
-            35,40,45,50,55,60,65,70,75,80,85,90,95,100,110,120,130,140,150,175,200,250,300]) # x binning
+    if 'Tau' in fName or 'tau' in fName :
+        xBinning = array('f', [0.,5.,7.5,10.,12.5,15.,20,25,30, \
+            35,40,45,50,55,60,70,80,100,150,200]) # x binning
     #xBinningAlt = array('f', [0.,30, \
     #    35,40,45,50,55,60,65,70,75,80,85,90,95,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300, \
     #    325,400,500]) # x binning
@@ -621,6 +624,89 @@ def make_em_fraction_calibrations( c, fName, cut, plotBase ) :
             #for p in range( g.GetN() ) :
             #    g.GetPoint(p, x, y)
             #    print p, x, y
+    f_out.Close()
+
+
+
+def make_tau_calibrations( c, fName, cut, plotBase ) :
+
+    ### Shifting EM fraction plots ###
+    tau_pt = '(l1eg_3x5 + ecal_3x5 + hcal_3x5)'
+    tau_var = '(l1eg_3x5 + ecal_3x5)/'+tau_pt
+    barrel_quantile_map = OrderedDict()
+    barrel_quantile_map['0L1EG'] = get_quantile_em_fraction_list( fName, 'barrel', 2, tau_var, ' && n_l1eg_HoverE_Less0p25 == 0' )
+    barrel_quantile_map['1L1EG'] = get_quantile_em_fraction_list( fName, 'barrel', 2, tau_var, ' && n_l1eg_HoverE_Less0p25 == 1' )
+    barrel_quantile_map['Gtr1L1EG'] = get_quantile_em_fraction_list( fName, 'barrel', 2, tau_var, ' && n_l1eg_HoverE_Less0p25 > 1' )
+    hgcal_quantile_map = OrderedDict()
+    hgcal_quantile_map['All'] = get_quantile_em_fraction_list( fName, 'hgcal', 2, tau_var )
+    print "Quantile Lists:"
+    for k, v in barrel_quantile_map.iteritems() :
+        print k, v
+    for k, v in hgcal_quantile_map.iteritems() :
+        print k, v
+
+    # Get same file again
+    jetFile = ROOT.TFile( fName, 'r' )
+    tree = jetFile.Get("analyzer/tree")
+
+    version = fName.strip('.root').split('_')[-1]
+    f_out = ROOT.TFile('tau_pt_calibrations_'+version+'.root','RECREATE')
+    xBinning = get_x_binning(fName)
+    #yBinning = array('f', [i*0.1 for i in range(201)])
+    yBinning = array('f', [-1.5+i*0.05 for i in range(141)])
+    for eta in [['0.0', '0.3'], ['0.3', '0.6'], ['0.6', '1.0'], ['1.0', '1.5'], # Barrel
+                #['1.3', '1.8'], # Barrel --> HGCal transition
+                ['1.5', '1.9'], ['1.9', '2.4'], ['2.4', '3.0']] : # HGCal
+
+        # Use appropriate calo region quantile map
+        if float( eta[1] ) <= 1.5 :
+            quantile_list = barrel_quantile_map
+        else :
+            quantile_list = hgcal_quantile_map
+
+        for k, v in quantile_list.iteritems() :
+            for i in range(len(v)-1) :
+
+
+                f_low = v[i]
+                f_high = v[i+1]
+                x_and_y_bins = [ xBinning, yBinning ]
+                #if f_low > 0.0 and f_low < 0.1 and f_high > 0.0 and f_high < 0.1 :
+                #    x_and_y_bins = [ xBinningAlt, yBinning ]
+                frac_cut = cut+"abs(jet_eta)>=%s && abs(jet_eta)<=%s && (%s >= %f && %s < %f)" % (eta[0], eta[1], tau_var, f_low, tau_var, f_high)
+                if k == '0L1EG' : frac_cut += ' && n_l1eg_HoverE_Less0p25 == 0'
+                if k == '1L1EG' : frac_cut += ' && n_l1eg_HoverE_Less0p25 == 1'
+                if k == 'Gtr1L1EG' : frac_cut += ' && n_l1eg_HoverE_Less0p25 > 1'
+                #if k == 'All' : # nothing required
+                print frac_cut
+                to_plot = 'genJet_pt/'+tau_pt+':'+tau_pt
+                #h1 = getTH2( tree, 'qcd1', to_plot, frac_cut, x_and_y_bins )
+                h1 = getTH2VarBin( tree, 'taus1', to_plot, frac_cut, x_and_y_bins )
+                to_plot = '(genJet_pt - (l1eg_3x5 + ecal_3x5))/hcal_3x5:'+tau_pt
+                #h2 = getTH2( tree, 'qcd3', to_plot, frac_cut, x_and_y_bins )
+                h2 = getTH2VarBin( tree, 'taus2', to_plot, frac_cut, x_and_y_bins )
+                xaxis = "Tau 3x5 P_{T} (GeV)"
+                #yaxis = "Relative Error in P_{T} reco/gen"
+                yaxis = "Gen Jet pT - (ECAL+L1EG) / [ HCAL ]"
+                title1 = "L1CaloJets HCAL1 - EM %.2f to %.2f" % (f_low, f_high)
+                #title2 = "L1CaloJets HCAL2 - EM %.2f to %.2f" % (f_low, f_high)
+                title2 = "HCAL Calibration vs. Reco Jet P_{T}"
+                c.SetTitle("tauPt_HTT_%s_absEta%s_to_%s_EM_frac_%s_to_%s" % (k, eta[0].replace('.','p'), eta[1].replace('.','p'), str(f_low).replace('.','p'), str(f_high).replace('.','p')))
+                g_and_fit = drawPointsHists(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis, False, plotBase, True)
+                g = g_and_fit[0]
+                f = g_and_fit[1]
+                g.SetTitle('%i_%s_EM_frac_%s_to_%s_absEta_%s_to_%s' % (i, k, str(f_low).replace('.','p'), str(f_high).replace('.','p'), eta[0].replace('.','p'), eta[1].replace('.','p') ) )
+                g.SetName('%i_%s_EM_frac_%s_to_%s_absEta_%s_to_%s' % (i, k, str(f_low).replace('.','p'), str(f_high).replace('.','p'), eta[0].replace('.','p'), eta[1].replace('.','p') ) )
+                f.SetTitle('%i_%s_EM_frac_%s_to_%s_absEta_%s_to_%s_fit' % (i, k, str(f_low).replace('.','p'), str(f_high).replace('.','p'), eta[0].replace('.','p'), eta[1].replace('.','p') ) )
+                f.SetName('%i_%s_EM_frac_%s_to_%s_absEta_%s_to_%s_fit' % (i, k, str(f_low).replace('.','p'), str(f_high).replace('.','p'), eta[0].replace('.','p'), eta[1].replace('.','p') ) )
+                print g
+                g.Write()
+                f.Write()
+                #x = ROOT.Double(0.)
+                #y = ROOT.Double(0.)
+                #for p in range( g.GetN() ) :
+                #    g.GetPoint(p, x, y)
+                #    print p, x, y
     f_out.Close()
 
 
