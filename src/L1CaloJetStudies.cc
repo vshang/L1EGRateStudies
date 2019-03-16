@@ -724,6 +724,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
             // Find stage2 within dR 0.3, beginning with higest pt cand
             for (auto& s2_tau : stage2Taus)
             {
+                if (fabs(s2_tau.eta()) > 3.0) continue;
                 //float calib_pt = s2_tau.pt() * ptAdjustStage2.Eval( s2_tau.pt() );
                 //float abs_eta = fabs(s2_tau.eta());
                 //if ( abs_eta < 6.0 && !stage2_all_filled )
@@ -779,6 +780,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         {
             for(const auto& caloJet : caloJets)
             {
+                if (use_gen_taus && fabs(caloJet.eta()) > 3.0) continue;
                 float abs_eta = fabs( caloJet.GetExperimentalParam("jet_eta") );
                 if ( abs_eta < 6.0 && !phase2_all_filled )
                 {
@@ -879,6 +881,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     {
         // Skip lowest pT Jets, don't skip for low pT taus
         if (!use_gen_taus && genJet.pt() < 10) break;  // no need for continue as we sorted by pT so we're done
+        if (use_gen_taus && fabs(genJet.eta()) > 3.5) continue; // HGCal ends at 3.0, so go a little further
         // HGCal detector stops at abs(eta)=3.0, keep gen jets up to 3.5
         //if ( fabs(genJet.eta())  > 3.5) continue;
         ++cnt;
