@@ -17,7 +17,7 @@ process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
 )
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
@@ -29,6 +29,8 @@ process.source = cms.Source("PoolSource",
 
 out_path = '/data/truggles/l1CaloJets_20190308_r2/'
 name = "HiggsTauTau"
+name = "HiggsTauTauvL1EGs"
+name = "minBias"
 # Load samples from external files here:
 from L1Trigger.L1EGRateStudies.loadRound2Files import getSampleFiles
 process.source.fileNames = getSampleFiles( name )
@@ -85,22 +87,25 @@ process.analyzer = cms.EDAnalyzer('L1CaloJetStudies',
     L1CaloJetsInputTag = cms.InputTag("L1CaloJetProducer","L1CaloJetsNoCuts"),
     genJets = cms.InputTag("ak4GenJetsNoNu", "", "HLT"),
     genHadronicTauSrc = cms.InputTag("tauGenJetsSelectorAllHadrons"),
-    genMatchDeltaRcut = cms.untracked.double(0.5),
+    genMatchDeltaRcut = cms.untracked.double(0.3),
     genMatchRelPtcut = cms.untracked.double(0.5),
     debug = cms.untracked.bool(False),
-    doRate = cms.untracked.bool(False), # TEMPORARY FIXME
+    doRate = cms.untracked.bool(False),
     use_gen_taus = cms.untracked.bool(True),
     Stage2JetTag = cms.InputTag("simCaloStage2Digis", "MP", "HLT"),
     Stage2TauTag = cms.InputTag("simCaloStage2Digis", "MP", "HLT"),
     puSrc = cms.InputTag("addPileupInfo")
 )
 
+if name == "minBias" :
+    process.analyzer.doRate = cms.untracked.bool(True)
+
 process.panalyzer = cms.Path(process.analyzer)
 
 
 
 process.TFileService = cms.Service("TFileService", 
-    fileName = cms.string( out_path+"output_round2_"+name+"v1.root" ), 
+    fileName = cms.string( out_path+"output_round2_"+name+"v1.root" ),
     closeFileFast = cms.untracked.bool(True)
 )
 
