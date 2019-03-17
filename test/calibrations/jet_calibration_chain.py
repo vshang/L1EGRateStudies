@@ -189,9 +189,9 @@ def add_jet_calibration( name_in, quantile_map ) :
 
     # new calibrations
     calib = array('f', [ 0 ] )
-    calibB = t.Branch('calibAA', calib, 'calibAA/F')
+    calibB = t.Branch('calibGG', calib, 'calibGG/F')
     calibPt = array('f', [ 0 ] )
-    calibPtB = t.Branch('calibPtAA', calibPt, 'calibPtAA/F')
+    calibPtB = t.Branch('calibPtGG', calibPt, 'calibPtGG/F')
 
     cnt = 0
     for row in t :
@@ -231,9 +231,9 @@ def add_tau_calibration( name_in, quantile_map ) :
 
     # new calibrations
     calib = array('f', [ 0 ] )
-    calibB = t.Branch('calibAA', calib, 'calibAA/F')
+    calibB = t.Branch('calibGG', calib, 'calibGG/F')
     calibPt = array('f', [ 0 ] )
-    calibPtB = t.Branch('calibPtAA', calibPt, 'calibPtAA/F')
+    calibPtB = t.Branch('calibPtGG', calibPt, 'calibPtGG/F')
 
     for k, v in quantile_map.iteritems() :
         print k, v
@@ -268,8 +268,8 @@ def add_tau_calibration( name_in, quantile_map ) :
     f_in.Close()
 
 
-def add_stage2_calibration( name_in, stage2_calib_file ) :
-    print "Adding Stage-2 calibration branch to ttree"
+def add_stage2_calibration( name_in, stage2_calib_file, doTaus=False ) :
+    print "Adding Stage-2 calibration branch to ttree, doTaus = %s, with file %s" % (doTaus, stage2_calib_file)
     f_in = ROOT.TFile( name_in, 'UPDATE')
     t = f_in.Get( 'analyzer/tree' )
 
@@ -277,17 +277,26 @@ def add_stage2_calibration( name_in, stage2_calib_file ) :
     g_calib = f_calib.Get( 'Graph' )
 
     # new calibrations
+    stage2_name = 'stage2jet_pt_calibration3'
+    if doTaus :
+        stage2_name = stage2_name.replace('jet', 'tau')
+        
     stage2CalibPt = array('f', [ 0 ] )
-    stage2CalibPtB = t.Branch('stage2jet_pt_calibration3', stage2CalibPt, 'stage2jet_pt_calibration3/F')
+    stage2CalibPtB = t.Branch(stage2_name, stage2CalibPt, stage2_name+'/F')
 
     cnt = 0
     for row in t :
         cnt += 1
         if cnt % 10000 == 0 : print cnt
 
-        pt = row.stage2jet_pt
-        eval_pt = row.stage2jet_pt
-        if eval_pt > 450 : eval_pt = 450
+        if not doTaus : # doJets
+            pt = row.stage2jet_pt
+            eval_pt = row.stage2jet_pt
+            if eval_pt > 450 : eval_pt = 450
+        else : # doTaus
+            pt = row.stage2tau_pt
+            eval_pt = row.stage2tau_pt
+            if eval_pt > 200 : eval_pt = 200
         stage2CalibPt[0] = pt * g_calib.Eval( eval_pt )
 
         stage2CalibPtB.Fill()
@@ -408,9 +417,9 @@ if '__main__' in __name__ :
 
     #make_calibrations = True
     #apply_phase2_calibrations = True
-    #apply_stage2_calibrations = True
+    apply_stage2_calibrations = True
     #prepare_calibration_cfg = True
-    plot_calibrated_results = True
+    #plot_calibrated_results = True
 
     base= '/data/truggles/l1CaloJets_20190210v7/'
     #base= '/data/truggles/l1CaloJets_20190206/'
@@ -442,6 +451,7 @@ if '__main__' in __name__ :
 
         # R2
         'output_round2_HiggsTauTauvL1EGsv2',
+        #'output_round2_minBiasv2',
     ] :
         
         #jetsF0 = 'merged_QCD-PU%s.root' % shape
@@ -481,6 +491,7 @@ if '__main__' in __name__ :
                 quantile_map = get_quantile_map( 'jet_em_calibrations_'+version+'.root' )
                 add_jet_calibration( base+jetsF0, quantile_map )
             if doTaus :
+                version = 'HiggsTauTauvL1EGsv2'
                 quantile_map = get_quantile_map( 'tau_pt_calibrations_'+version+'.root ')
                 add_tau_calibration( base+jetsF0, quantile_map )
         """ Prepare cfg calibration code snippet """
@@ -495,7 +506,10 @@ if '__main__' in __name__ :
             prepare_calibration_py_cfg( quantile_map )
         """ Add Stage-2 Calibrations which do a good job up to 50 GeV """
         if apply_stage2_calibrations :
-            add_stage2_calibration( base+jetsF0, 'stage-2_calib_stage2_genOverReco_by_reco.root' )
+            if doJets :
+                add_stage2_calibration( base+jetsF0, 'stage-2_jet_calib_stage2_genOverReco_by_reco.root' )
+            if doTaus :
+                add_stage2_calibration( base+jetsF0, 'stage-2_tau_calib_stage2_genOverReco_by_reco.root', doTaus )
 
         """ Plot Results """
         jetFile = ROOT.TFile( base+jetsF0, 'r' )
