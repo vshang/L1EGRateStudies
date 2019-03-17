@@ -18,7 +18,7 @@ def drawPoints(c, tree1, tree2, var, cut, xaxis, xinfo, yaxis, yinfo, points, li
     if type(xinfo) == type([]) :
         h1 = ROOT.TH2F("h1", title1, xinfo[0], xinfo[1], xinfo[2], yinfo[0], yinfo[1], yinfo[2])
         h2 = ROOT.TH2F("h2", title2, xinfo[0], xinfo[1], xinfo[2], yinfo[0], yinfo[1], yinfo[2])
-    if type(array) == type(array) :
+    elif type(xinfo) == type(array('f', [])) :
         h1 = ROOT.TH2F("h1", title1, len(xinfo)-1, xinfo, len(yinfo)-1, yinfo)
         h2 = ROOT.TH2F("h2", title2, len(xinfo)-1, xinfo, len(yinfo)-1, yinfo)
     tree1.Draw( var + " >> h1", cut )
@@ -27,6 +27,8 @@ def drawPoints(c, tree1, tree2, var, cut, xaxis, xinfo, yaxis, yinfo, points, li
     h1.Draw("colz")
     if doLog :
         ROOT.gPad.SetLogz()
+        if 'tauPtVsRelIso' in c.GetTitle() :
+            ROOT.gPad.SetLogy()
     xVals1 = array('f', [])
     yVals1 = array('f', [])
     for point in points :
@@ -92,6 +94,8 @@ def drawPoints(c, tree1, tree2, var, cut, xaxis, xinfo, yaxis, yinfo, points, li
     h2.Draw("colz")
     if doLog :
         ROOT.gPad.SetLogz()
+        if 'tauPtVsRelIso' in c.GetTitle() :
+            ROOT.gPad.SetLogy()
     if includeLine : 
         g1.Draw('SAME')
     if doFit :
@@ -179,8 +183,8 @@ if __name__ == '__main__' :
     
     base = '/data/truggles/l1CaloJets_20190308_r2/'
     
-    #universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"_GenTauInHGCalV3/"
-    universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"_GenTauInBarrelV3/"
+    #universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"_GenTauInHGCalV5/"
+    universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"_GenTauInBarrelV5/"
     if not os.path.exists( universalSaveDir ) : os.makedirs( universalSaveDir )
     
     ggHHTTFile = ROOT.TFile( base+ggH, 'r' )
@@ -267,17 +271,27 @@ if __name__ == '__main__' :
     #        drawPoints(c, ggH_tree, rate_tree, var, cutX, xaxis, xinfo, yaxis, yinfo, points, isoLinear, doFit, includeGraph)
 
 
-    #var = "(calibPtGG / ((ecal_7x7 + l1eg_7x7 + hcal_7x7) * calibGG)):calibPtGG"
-    #xaxis = "Tau 3x5 P_{T} Calibrated (GeV)"
-    #yaxis = "Rel. Iso."
-    #xinfo = [30, 0., 150.]
-    #yinfo = [100, 0., 5.]
-    #c.SetTitle("tauPtVsRelIso")
-    #isoLinear = False
-    ##isoLinear = True
-    #doFit = True
-    #includeGraph = True
-    #drawPoints(c, ggH_tree, rate_tree, var, cutX, xaxis, xinfo, yaxis, yinfo, points, isoLinear, doFit, includeGraph)
+    points = [ [i, .99] for i in range(20, 200, 2)]
+    cut = "(jet_pt>0 && abs(jet_eta)<=3.0)"
+    var = "(calibPtGG / ((jet_pt_calibrate) - calibPtGG)):calibPtGG"
+    var = "(((ecal_7x7 + l1eg_7x7 + hcal_7x7)*calibGG - calibPtGG) / calibPtGG):calibPtGG"
+    xaxis = "Tau 3x5 P_{T} Calibrated (GeV)"
+    yaxis = "Rel. Iso."
+    xinfo = [40, 0., 200.]
+    xinfo = [36, 20., 200.]
+    yinfo = [100, 0., 5.]
+    c.SetTitle("tauPtVsRelIso99")
+    isoLinear = False
+    #isoLinear = True
+    doFit = True
+    includeGraph = True
+    drawPoints(c, ggH_tree, rate_tree, var, cut, xaxis, xinfo, yaxis, yinfo, points, isoLinear, doFit, includeGraph)
+    points = [ [i, .95] for i in range(20, 200, 2)]
+    c.SetTitle("tauPtVsRelIso95")
+    drawPoints(c, ggH_tree, rate_tree, var, cut, xaxis, xinfo, yaxis, yinfo, points, isoLinear, doFit, includeGraph)
+    points = [ [i, .9] for i in range(20, 200, 2)]
+    c.SetTitle("tauPtVsRelIso90")
+    drawPoints(c, ggH_tree, rate_tree, var, cut, xaxis, xinfo, yaxis, yinfo, points, isoLinear, doFit, includeGraph)
 
 
 
