@@ -456,7 +456,7 @@ if '__main__' in __name__ :
     plot_calibrated_results = False
 
     #make_calibrations = True
-    apply_phase2_calibrations = True
+    #apply_phase2_calibrations = True
     #apply_stage2_calibrations = True
     #prepare_calibration_cfg = True
     #plot_calibrated_results = True

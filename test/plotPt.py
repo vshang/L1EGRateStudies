@@ -19,8 +19,8 @@ version = ggH.replace('.root','')
 #version = '93X_ResolutionsV2'
 
 base = '/data/truggles/l1CaloJets_20190308_r2/'
-universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"_GenTauInHGCalV4/"
-universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"_GenTauInBarrelV4/"
+universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"_GenTauInHGCalVx1/"
+universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/"+version+"_GenTauInBarrelVx1/"
 if not os.path.exists( universalSaveDir ) : os.makedirs( universalSaveDir )
 
 qcd0File = ROOT.TFile( base+qcd, 'r' )
@@ -689,18 +689,18 @@ if __name__ == '__main__' :
     #XXX dr_map['dR0p2'] = 'ecal_dR0p2 + ecal_5x5 + hcal_5x5'
     #XXX dr_map['dR0p2Cal_L1EG0p3'] = 'ecal_dR0p3 + ecal_5x5 + hcal_5x5'
     #XXX dr_map['dR0p3'] = 'jet_pt'
-    #dr_map['2x2 Tau'] = 'l1eg_2x2 + ecal_2x2 + hcal_2x2'
-    #dr_map['2x3 Tau'] = 'l1eg_2x3 + ecal_2x3 + hcal_2x3'
-    #dr_map['3x3 Tau'] = 'l1eg_3x3 + ecal_3x3 + hcal_3x3'
-    #dr_map['3x5 Tau Calib'] = 'calibPtDD'
-    #dr_map['3x5 Tau Calib2'] = 'calibPtEE'
-    #dr_map['3x5 Tau Calib3'] = 'calibPtFF'
-    dr_map['3x5 Tau Calib4'] = 'calibPtGG'
-    dr_map['3x5 Tau'] = 'l1eg_3x5 + ecal_3x5 + hcal_3x5'
-    #dr_map['5x5 Tau'] = 'l1eg_5x5 + ecal_5x5 + hcal_5x5'
-    #dr_map['5x7 Tau'] = 'l1eg_5x7 + ecal_5x7 + hcal_5x7'
-    #dr_map['7x7 Taus'] = 'l1eg_7x7 + ecal_7x7 + hcal_7x7'
-    #dr_map['7x7 TausB'] = 'jet_pt'
+    #dr_map['2x2 TTs'] = 'l1eg_2x2 + ecal_2x2 + hcal_2x2'
+    dr_map['2x3 TTs'] = 'l1eg_2x3 + ecal_2x3 + hcal_2x3'
+    #dr_map['3x3 TTs'] = 'l1eg_3x3 + ecal_3x3 + hcal_3x3'
+    #dr_map['3x5 TTs Calib'] = 'calibPtDD'
+    #dr_map['3x5 TTs Calib2'] = 'calibPtEE'
+    #dr_map['3x5 TTs Calib3'] = 'calibPtFF'
+    #dr_map['3x5 TTs Calib4'] = 'calibPtGG'
+    dr_map['3x5 TTs'] = 'l1eg_3x5 + ecal_3x5 + hcal_3x5'
+    #dr_map['5x5 TTs'] = 'l1eg_5x5 + ecal_5x5 + hcal_5x5'
+    dr_map['5x7 TTs'] = 'l1eg_5x7 + ecal_5x7 + hcal_5x7'
+    #dr_map['7x7 TTss'] = 'l1eg_7x7 + ecal_7x7 + hcal_7x7'
+    #dr_map['7x7 TTssB'] = 'jet_pt'
     
     # HERE
     for pt in [10, 20, 30, 50, 100] :

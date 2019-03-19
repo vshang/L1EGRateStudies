@@ -285,13 +285,57 @@ if __name__ == '__main__' :
     #isoLinear = True
     doFit = True
     includeGraph = True
-    drawPoints(c, ggH_tree, rate_tree, var, cut, xaxis, xinfo, yaxis, yinfo, points, isoLinear, doFit, includeGraph)
-    points = [ [i, .95] for i in range(20, 200, 2)]
-    c.SetTitle("tauPtVsRelIso95")
-    drawPoints(c, ggH_tree, rate_tree, var, cut, xaxis, xinfo, yaxis, yinfo, points, isoLinear, doFit, includeGraph)
-    points = [ [i, .9] for i in range(20, 200, 2)]
-    c.SetTitle("tauPtVsRelIso90")
-    drawPoints(c, ggH_tree, rate_tree, var, cut, xaxis, xinfo, yaxis, yinfo, points, isoLinear, doFit, includeGraph)
+    #drawPoints(c, ggH_tree, rate_tree, var, cut, xaxis, xinfo, yaxis, yinfo, points, isoLinear, doFit, includeGraph)
+    #points = [ [i, .95] for i in range(20, 200, 2)]
+    #c.SetTitle("tauPtVsRelIso95")
+    #drawPoints(c, ggH_tree, rate_tree, var, cut, xaxis, xinfo, yaxis, yinfo, points, isoLinear, doFit, includeGraph)
+    #points = [ [i, .9] for i in range(20, 200, 2)]
+    #c.SetTitle("tauPtVsRelIso90")
+    #drawPoints(c, ggH_tree, rate_tree, var, cut, xaxis, xinfo, yaxis, yinfo, points, isoLinear, doFit, includeGraph)
+
+    #points = [ [i, .8] for i in range(20, 30, 2)]
+    #for i in range(30, 40, 2) : points.append( [i, 0.9] )
+    #for i in range(40, 50, 2) : points.append( [i, 0.95] )
+    #for i in range(50, 70, 2) : points.append( [i, 0.98] )
+    #for i in range(70, 100, 2) : points.append( [i, 0.99] )
+    #c.SetTitle("tauPtVsRelIsoMixed")
+    #drawPoints(c, ggH_tree, rate_tree, var, cut, xaxis, xinfo, yaxis, yinfo, points, isoLinear, doFit, includeGraph)
+
+    points = [ # pt, percentile # Used for cut11
+        [ 20, .5 ],
+        [ 25, .57 ],
+        [ 30, .67 ],
+        [ 35, .75 ],
+        [ 40, .8 ],
+        [ 45, .84 ],
+        [ 50, .89 ],
+        [ 60, .92 ],
+        [ 70, .96 ],
+        [ 80, .98 ],
+        [ 100, .99 ],
+        ]
+    cutBarrel = "(jet_pt>0 && abs(jet_eta)<=1.5)"
+    cutHGCal = "(jet_pt>0 && abs(jet_eta)>=1.5 && abs(jet_eta)<=3.0)"
+    c.SetTitle("tauPtVsRelIsoRunIIMatchBarrel")
+    drawPoints(c, ggH_tree, rate_tree, var, cutBarrel, xaxis, xinfo, yaxis, yinfo, points, isoLinear, doFit, includeGraph)
+    c.SetTitle("tauPtVsRelIsoRunIIMatchHGCal")
+    drawPoints(c, ggH_tree, rate_tree, var, cutHGCal, xaxis, xinfo, yaxis, yinfo, points, isoLinear, doFit, includeGraph)
+
+
+    #points = [ # pt, percentile # Used for cut11
+    #    [ 32.5, .03 ],
+    #    [ 35.0, .05 ],
+    #    [ 40.0, .1 ],
+    #    [ 45.0, .2 ],
+    #    [ 50, .3 ],
+    #    [ 60, .5 ],
+    #    [ 70, .7 ],
+    #    [ 80, .85 ],
+    #    [ 90, .95 ],
+    #    [ 100, .99 ],
+    #    ]
+    #c.SetTitle("tauPtVsRelIsoS2Matched")
+    #drawPoints(c, ggH_tree, rate_tree, var, cut, xaxis, xinfo, yaxis, yinfo, points, isoLinear, doFit, includeGraph)
 
 
 
