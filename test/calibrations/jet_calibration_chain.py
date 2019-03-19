@@ -231,12 +231,33 @@ def add_tau_calibration( name_in, quantile_map ) :
 
     # new calibrations
     calib = array('f', [ 0 ] )
-    calibB = t.Branch('calibGG', calib, 'calibGG/F')
+    calibB = t.Branch('calibHH', calib, 'calibHH/F')
     calibPt = array('f', [ 0 ] )
-    calibPtB = t.Branch('calibPtGG', calibPt, 'calibPtGG/F')
+    calibPtB = t.Branch('calibPtHH', calibPt, 'calibPtHH/F')
+    calibIsoRegionPt = array('f', [ 0 ] )
+    calibIsoRegionPtB = t.Branch('calibIsoRegionPtHH', calibIsoRegionPt, 'calibIsoRegionPtHH/F')
+    isoTau = array('f', [ 0 ] )
+    isoTauB = t.Branch('isoTauHH', isoTau, 'isoTauHH/F')
 
     for k, v in quantile_map.iteritems() :
         print k, v
+
+    # Add isolation WP similar to Run-II IsoTau
+    f1Barrel = ROOT.TF1( 'isoTauBarrel', '([0] + [1]*TMath::Exp(-[2]*x))')
+    f1Barrel.SetParName( 0, "y rise" )
+    f1Barrel.SetParName( 1, "scale" )
+    f1Barrel.SetParName( 2, "decay" )
+    f1Barrel.SetParameter( 0, 0.25 )
+    f1Barrel.SetParameter( 1, 0.85 )
+    f1Barrel.SetParameter( 2, 0.094 )
+    
+    f1HGCal = ROOT.TF1( 'isoTauHGCal', '([0] + [1]*TMath::Exp(-[2]*x))')
+    f1HGCal.SetParName( 0, "y rise" )
+    f1HGCal.SetParName( 1, "scale" )
+    f1HGCal.SetParName( 2, "decay" )
+    f1HGCal.SetParameter( 0, 0.34 )
+    f1HGCal.SetParameter( 1, 0.35 )
+    f1HGCal.SetParameter( 2, 0.051 )
 
     cnt = 0
     for row in t :
@@ -254,14 +275,33 @@ def add_tau_calibration( name_in, quantile_map ) :
             val = -9.
             calib[0] = -9.
             calibPt[0] = -9.
+            calibIsoRegionPt[0] = -9.
+            isoTau[0] = -9.
         else :
             val = calibrate_tau( quantile_map, abs_tau_eta, n_L1EGs, l1eg_pt, ecal_pt, tau_pt, tau_pt_binning, useBinnedPt )
             calib[0] = val
-            #calibPt[0] = l1eg_pt + ecal_pt + (val * hcal_pt)
             calibPt[0] = tau_pt * val
+
+            l1eg_7x7 = getattr( row, 'l1eg_7x7' )
+            ecal_7x7 = getattr( row, 'ecal_7x7' )
+            hcal_7x7 = getattr( row, 'hcal_7x7' )
+            tau_7x7 = l1eg_7x7 + ecal_7x7 + hcal_7x7
+            calibIsoRegionPt[0] = tau_7x7 * val
+            # Iso WP is split by barrel and endcap
+            # And, remove iso for taus > 100 GeV pT
+            abs_tau_eta = abs( getattr( row, 'jet_eta' ) )
+            if calibPt[0] > 100 :
+                isoTau[0] = 1.
+            elif abs_tau_eta <= 1.5 :
+                isoTau[0] = 1. if f1Barrel.Eval( calibPt[0] ) >= ((calibIsoRegionPt[0] - calibPt[0]) / calibPt[0]) else 0.
+            elif abs_tau_eta <= 3.0 :
+                isoTau[0] = 1. if f1HGCal.Eval( calibPt[0] ) >= ((calibIsoRegionPt[0] - calibPt[0]) / calibPt[0]) else 0.
+            else : isoTau[0] = 0.
 
         calibB.Fill()
         calibPtB.Fill()
+        calibIsoRegionPtB.Fill()
+        isoTauB.Fill()
     d = f_in.Get('analyzer')
     d.cd()
     t.Write('', ROOT.TObject.kOverwrite)
@@ -416,8 +456,8 @@ if '__main__' in __name__ :
     plot_calibrated_results = False
 
     #make_calibrations = True
-    #apply_phase2_calibrations = True
-    apply_stage2_calibrations = True
+    apply_phase2_calibrations = True
+    #apply_stage2_calibrations = True
     #prepare_calibration_cfg = True
     #plot_calibrated_results = True
 
@@ -459,7 +499,7 @@ if '__main__' in __name__ :
         jetsF0 = '%s.root' % shape
         date = jetsF0.replace('merged_','').replace('.root','')
         date = base.split('/')[-2].replace('l1CaloJets_','')+shape
-        plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/20190308/'+date+''
+        plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/20190308/'+date+'Vxy1'
         if not os.path.exists( plotDir ) : os.makedirs( plotDir )
 
         c = ROOT.TCanvas('c', '', 800, 700)
@@ -608,18 +648,24 @@ if '__main__' in __name__ :
                 #areaNorm = True
                 #drawPointsHists(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis, areaNorm, plotDir)
 
-                to_plot = '(jet_pt)/genJet_pt:genJet_pt'
-                h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
-                to_plot = '(jet_pt_calibration)/genJet_pt:genJet_pt'
-                to_plot = '( calibPtGG )/genJet_pt:genJet_pt'
-                h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
+                tau_pt = "(ecal_3x5 + l1eg_3x5 + hcal_3x5)"
                 if 'Tau' in jetsF0 :
-                    to_plot = '(stage2tau_pt)/genJet_pt:genJet_pt'
+                    to_plot = tau_pt+'/genJet_pt:genJet_pt'
+                    h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
+                    to_plot = '( calibPtGG )/genJet_pt:genJet_pt'
+                    h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
+                    #to_plot = '(stage2tau_pt)/genJet_pt:genJet_pt'
+                    to_plot = '(stage2tau_pt_calibration3)/genJet_pt:genJet_pt'
                     h3 = getTH2( tree, 's2', to_plot, cut, x_and_y_bins )
                     title1 = "Phase-II CaloTau, raw "+k
                     title2 = "Phase-II CaloTau, Calib "+k
-                    title3 = "Phase-I CaloTau "+k
+                    title3 = "Phase-I CaloTau, Calib "+k
                 else :
+                    to_plot = '(jet_pt)/genJet_pt:genJet_pt'
+                    h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
+                    to_plot = '(jet_pt_calibration)/genJet_pt:genJet_pt'
+                    to_plot = '( calibPtGG )/genJet_pt:genJet_pt'
+                    h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
                     to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
                     to_plot = '(stage2jet_pt_calib)/genJet_pt:genJet_pt'
                     h3 = getTH2( tree, 's2', to_plot, cut, x_and_y_bins )
