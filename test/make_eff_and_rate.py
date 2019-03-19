@@ -44,7 +44,7 @@ if doEff :
     pt_cut = 100
     #pt_cut = 40
     #pt_cut = 20
-    #pt_cut = 30
+    pt_cut = 32
     #pt_cut = 80
     #pt_cut = 150
     #pt_cut = 200
@@ -57,40 +57,54 @@ if doEff :
     #s2Obj = 'stage2jet_pt_calibration3'
     if doTau :
         p2Obj = 'calibPtGG'
-        s2Obj = 'stage2tau_pt'
+        #s2Obj = 'stage2tau_pt'
+        s2Obj = 'stage2tau_pt_calibration3'
     
     """ Pt Eff """
     if doPtEff :
         # Use eta cuts to restrict when doing pT efficiencies
-        denom_cut = 'abs(genJet_eta)<1.2'
+        denom_cut = 'abs(genJet_eta)<1.4'
         axis = [160, 0, 400]
         if doTau :
             axis = [150, 0, 150]
+            #axis = [40, 0, 200]
 
         gP2 = make_efficiency_graph( t, denom_cut, p2Obj+' > %i' % pt_cut, 'genJet_pt', axis )
+        gP22 = make_efficiency_graph( t, denom_cut, p2Obj+' > %i && isoTauHH > 0.5' % pt_cut, 'genJet_pt', axis )
         gS2 = make_efficiency_graph( t, denom_cut, s2Obj+' > %i' % pt_cut, 'genJet_pt', axis )
+        gS22 = make_efficiency_graph( t, denom_cut, s2Obj+' > %i && stage2tau_isoBit > 0.5' % pt_cut, 'genJet_pt', axis )
 
     """ Eta Eff """
     if not doPtEff :
         # Use pt cuts to restrict included objects when doing eta efficiencies
-        denom_pt = 100
+        denom_pt = 40
         denom_cut = '(genJet_pt > %i)' % denom_pt
         axis = [100, -5, 5]
         gP2 = make_efficiency_graph( t, denom_cut, p2Obj+' > %i' % pt_cut, 'genJet_eta', axis )
+        gP22 = make_efficiency_graph( t, denom_cut, p2Obj+' > %i && isoTauHH > 0.5' % pt_cut, 'genJet_eta', axis )
         gS2 = make_efficiency_graph( t, denom_cut, s2Obj+' > %i' % pt_cut, 'genJet_eta', axis )
+        gS22 = make_efficiency_graph( t, denom_cut, s2Obj+' > %i && stage2tau_isoBit > 0.5' % pt_cut, 'genJet_eta', axis )
     
     gP2.SetMinimum( 0. )
     gP2.SetLineColor(ROOT.kRed)
     gP2.SetLineWidth(2)
+    gP22.SetLineColor(ROOT.kGreen+3)
+    gP22.SetLineWidth(2)
     gS2.SetLineColor(ROOT.kBlack)
     gS2.SetLineWidth(2)
+    gS22.SetLineColor(ROOT.kBlue)
+    gS22.SetLineWidth(2)
     
-    mg = ROOT.TMultiGraph("mg", "L1 Jet Efficiency")
+    text = 'Jet' if not doTau else 'Tau'
+
+    mg = ROOT.TMultiGraph("mg", "L1 %s Efficiency" % text)
     mg.Add( gP2 )
+    mg.Add( gP22 )
     mg.Add( gS2 )
+    mg.Add( gS22 )
     mg.SetMinimum( 0. )
     mg.Draw("aplez")
-    mg.GetXaxis().SetTitle("Gen Jet p_{T}")
+    mg.GetXaxis().SetTitle("Gen %s p_{T}" % text)
     mg.GetYaxis().SetTitle("L1 Algo. Efficiency w.r.t. Gen")
     mg.SetMaximum(1.3)
     p.SetGrid()
@@ -103,8 +117,10 @@ if doEff :
     
     #leg = setLegStyle(0.5,0.3,0.9,0.7)
     leg = setLegStyle(0.5,0.72,0.9,0.88)
-    leg.AddEntry(gS2, "Phase-I Jet Algo.","lpe")
-    leg.AddEntry(gP2, "Phase-II Jet Algo.","lpe")
+    leg.AddEntry(gS2, "Phase-I %s" % text,"lpe")
+    leg.AddEntry(gS22, "Phase-I Iso %s" % text,"lpe")
+    leg.AddEntry(gP2, "Phase-II %s" % text,"lpe")
+    leg.AddEntry(gP22, "Phase-II Iso %s" % text,"lpe")
     leg.Draw("same")
     c.Update()
     
