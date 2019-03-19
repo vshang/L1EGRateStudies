@@ -12,19 +12,31 @@ doTau = True
 #doTau = False
 
 doEff = True
-#doEff = False
+doEff = False
 
 doPtEff = True
 #doPtEff = False
 
 doRate = True
-doRate = False
+#doRate = False
 
 c = ROOT.TCanvas('c', 'c', 900, 900)
 p = ROOT.TPad('p','p', 0, 0, 1, 1)
 p.Draw()
 p.cd()
 
+p2Obj = 'jet_pt_calibration'
+s2Obj = 'stage2jet_pt'
+#s2Obj = 'stage2jet_pt_calibration3'
+s2ObjEta = 'stage2jet_eta'
+if doTau :
+    p2Obj = 'calibPtGG'
+    #s2Obj = 'stage2tau_pt'
+    s2Obj = 'stage2tau_pt_calibration3'
+    s2ObjEta = 'stage2tau_eta'
+
+text = 'Jet' if not doTau else 'Tau'
+    
 
 if doEff :
     fName = 'output_round2_QCDMar14v1'
@@ -33,7 +45,6 @@ if doEff :
     date = '20190308'
     base = '/data/truggles/l1CaloJets_'+date+'_r2/'
     universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/efficiencies/"+date+"/"+fName+"/"
-    checkDir( universalSaveDir )
     checkDir( universalSaveDir )
 
     f = ROOT.TFile( base+fName+'.root', 'r' )
@@ -52,14 +63,6 @@ if doEff :
     #pt_cut = 100
     #pt_cut = 0
 
-    p2Obj = 'jet_pt_calibration'
-    s2Obj = 'stage2jet_pt'
-    #s2Obj = 'stage2jet_pt_calibration3'
-    if doTau :
-        p2Obj = 'calibPtGG'
-        #s2Obj = 'stage2tau_pt'
-        s2Obj = 'stage2tau_pt_calibration3'
-    
     """ Pt Eff """
     if doPtEff :
         # Use eta cuts to restrict when doing pT efficiencies
@@ -95,7 +98,6 @@ if doEff :
     gS22.SetLineColor(ROOT.kBlue)
     gS22.SetLineWidth(2)
     
-    text = 'Jet' if not doTau else 'Tau'
 
     mg = ROOT.TMultiGraph("mg", "L1 %s Efficiency" % text)
     mg.Add( gP2 )
@@ -130,18 +132,15 @@ if doEff :
 
 """ MAKE RATES """
 if doRate :
-    fName = 'minBias_PU200_withCuts_v7'
-    date = '20190210v7'
-    base = '/data/truggles/l1CaloJets_%s/' % date
+
+    fName = 'output_round2_minBiasv2'
+    fName = 'output_round2_minBiasv2_withCuts'
+    date = '20190308'
+    base = '/data/truggles/l1CaloJets_'+date+'_r2/'
     universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/rates/"+date+"/"+fName+"/"
-    # Stage-2
-    fName = 'minBias_PU200_v8'
-    date = '20190210v8'
-    base = '/data/truggles/l1CaloJets_%s/' % date
-    #fName = 'merged_minBias-PU200_Calibrated_withCuts_v5'
-    #base = '/data/truggles/l1CaloJets_20181101/'
-    universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/rates/"
     checkDir( universalSaveDir )
+
+
 
     f = ROOT.TFile( base+fName+'.root', 'r' )
     print f
@@ -150,96 +149,106 @@ if doRate :
     # We used cuts to make a slimmed ttree for looping, so need to get nEvents from the
     # original file
 
-    #fEvents = ROOT.TFile( base+fName.replace('_withCuts','')+'.root', 'r' )
-    #print fEvents
-    #nEvents = fEvents.Get('analyzer/nEvents').Integral()
-    nEvents = f.Get('analyzer/nEvents').Integral()
+    fEvents = ROOT.TFile( base+fName.replace('_withCuts','')+'.root', 'r' )
+    print fEvents
+    nEvents = fEvents.Get('analyzer/nEvents').Integral()
+    #nEvents = f.Get('analyzer/nEvents').Integral()
 
     # Min and Max eta thresholds for barrel, HGCal, HF rates
     eta_thresholds = OrderedDict()
-    eta_thresholds['all']    = [0., 6.0]
-    eta_thresholds['barrel'] = [0., 1.5]
-    eta_thresholds['hgcal']  = [1.5, 3.0]
-    eta_thresholds['hf']     = [3.0, 6.0]
+    if doTau :
+        eta_thresholds['all']    = [0., 3.0, ROOT.kBlack]
+    else :
+        eta_thresholds['all']    = [0., 6.0, ROOT.kBlack]
+    eta_thresholds['barrel'] = [0., 1.5, ROOT.kRed]
+    eta_thresholds['hgcal']  = [1.5, 3.0, ROOT.kBlue]
+    if not doTau :
+        eta_thresholds['hf']     = [3.0, 6.0, ROOT.kGreen+3]
 
     # nBins, min, max
-    x_info = [54, 30, 300]
+    x_info = [100, 0, 200]
     
     #for name, thresholds in eta_thresholds.iteritems() :
-    #    #hP2 = make_rate_hist( nEvents, t, 'jet_pt_calibration', 1.0, 'jet_eta', thresholds[0], thresholds[1], x_info ) 
-    #    #hP2.SaveAs( 'eff_and_rate_roots/'+fName+'_'+name+'_Phase-2.root' )
-    #    #del hP2
-    #    hS2 = make_rate_hist( nEvents, t, 'stage2jet_pt_calibration3', 1.0, 'stage2jet_eta', thresholds[0], thresholds[1], x_info )
+    #    hP2 = make_rate_hist( nEvents, t, p2Obj, 1.0, 'jet_eta', thresholds[0], thresholds[1], x_info ) 
+    #    hP2.SaveAs( 'eff_and_rate_roots/'+fName+'_'+name+'_Phase-2.root' )
+    #    del hP2
+    #    hP22 = make_rate_hist( nEvents, t, p2Obj, 1.0, 'jet_eta', thresholds[0], thresholds[1], x_info, 'isoTauHH' ) 
+    #    hP22.SaveAs( 'eff_and_rate_roots/'+fName+'_'+name+'_Phase-2_iso.root' )
+    #    del hP22
+    #    hS2 = make_rate_hist( nEvents, t, s2Obj, 1.0, s2ObjEta, thresholds[0], thresholds[1], x_info )
     #    hS2.SaveAs( 'eff_and_rate_roots/'+fName+'_'+name+'_Stage-2.root' )
     #    del hS2
+    #    hS22 = make_rate_hist( nEvents, t, s2Obj, 1.0, s2ObjEta, thresholds[0], thresholds[1], x_info, 'stage2tau_isoBit' )
+    #    hS22.SaveAs( 'eff_and_rate_roots/'+fName+'_'+name+'_Stage-2_iso.root' )
+    #    del hS22
 
     #assert(0)
 
     
-    rates = []
     colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray+2]
-    cnt = 0
-    p2name = 'minBias_PU200_withCuts_v7'
-    s2name = 'minBias_PU200_v8'
-    for name, thresholds in eta_thresholds.iteritems() :
-        f1 = ROOT.TFile( 'eff_and_rate_roots/'+p2name+'_'+name+'_Phase-2.root', 'r')
-        print f1
-        rates.append( f1.Get('cumul') )
-        rates[-1].SetDirectory( 0 )
-        rates[-1].SetTitle( 'Phase2 - %s' % name )
-        rates[-1].SetName( 'Phase2 - %s' %name )
-        rates[-1].SetLineColor( colors[cnt] )
-        rates[-1].SetMarkerColor( colors[cnt] )
-        rates[-1].SetLineWidth( 2 )
-        if name == 'all' :
-            rates[-1].SetLineWidth( 4 )
-        rates[-1].GetXaxis().SetRangeUser(x_info[1], x_info[2])
-        cnt += 1
-    cnt = 0
-    for name, thresholds in eta_thresholds.iteritems() :
-        f1 = ROOT.TFile( 'eff_and_rate_roots/'+s2name+'_'+name+'_Stage-2.root', 'r')
-        print f1
-        rates.append( f1.Get('cumul') )
-        rates[-1].SetDirectory( 0 )
-        rates[-1].SetTitle( 'Stage2 - %s' % name )
-        rates[-1].SetName( 'Stage2 - %s' % name )
-        rates[-1].SetLineColor( colors[cnt]+2 )
-        rates[-1].SetMarkerColor( colors[cnt]+2 )
-        rates[-1].SetLineWidth( 2 )
-        rates[-1].GetXaxis().SetRangeUser(x_info[1], x_info[2])
-        cnt += 1
-    
-    print rates[0]
-    rates[0].SetTitle("L1 Algo. Rates")
-    rates[0].GetXaxis().SetTitle("Reco Jet p_{T}")
-    rates[0].GetYaxis().SetTitle("L1 Algo. Rate (kHz)")
-    rates[0].Draw()
-    cnt = 0
-    for rate in rates :
-        cnt += 1
-        if cnt == 1 : continue
-        if rate.GetTitle() == 'Stage2 - hgcal' : continue
-        if rate.GetTitle() == 'Stage2 - all' : continue
-        rate.Draw('SAME')
-    
-    
-    p.SetGrid()
-    p.SetLogy()
-    p.SetLeftMargin( .13 )
-    p.SetBottomMargin( .1 )
-    
-    
-    leg = setLegStyle(0.5,0.55,0.9,0.85)
-    for rate in rates :
-        if rate.GetTitle() == 'Stage2 - hgcal' : continue
-        if rate.GetTitle() == 'Stage2 - all' : continue
-        title = rate.GetTitle() if not rate.GetTitle() == "L1 Algo. Rates" else "Phase2 - All"
-        leg.AddEntry(rate, title,"lpe")
-    leg.Draw("same")
-    c.Update()
-    
-    
-    c.SaveAs( universalSaveDir + fName +  '_Calib_rate.png' )
+    saveName = 'output_round2_minBiasv2_withCuts'
+    x_info_rebin = [100, 0, 160]
+
+    plot_map = OrderedDict()
+    plot_map['nominal'] = OrderedDict()
+    plot_map['nominal']['Phase-2'] = ['Tau', 0]
+    plot_map['nominal']['Stage-2'] = ['Tau', 2]
+    plot_map['phase2_All'] = OrderedDict()
+    plot_map['phase2_All']['Phase-2'] = ['Tau', 0]
+    plot_map['phase2_All']['Phase-2_iso'] = ['IsoTau', 2]
+
+    for plot, samples in plot_map.iteritems() :
+        rates = []
+        for sample, info in samples.iteritems() :
+            cnt = 0
+            for name, thresholds in eta_thresholds.iteritems() :
+                f1 = ROOT.TFile( 'eff_and_rate_roots/'+saveName+'_'+name+'_'+sample+'.root', 'r')
+                print f1
+                rates.append( f1.Get('cumul') )
+                rates[-1].SetDirectory( 0 )
+                rates[-1].SetTitle( '%s %s - %s' % (sample.replace('_iso',''), info[0], name) )
+                rates[-1].SetName( '%s %s - %s' % (sample.replace('_iso',''), info[0], name) )
+                rates[-1].SetLineColor( thresholds[2]+info[1] )
+                rates[-1].SetMarkerColor( thresholds[2]+info[1] )
+                rates[-1].SetLineWidth( 2 )
+                if name == 'all' :
+                    rates[-1].SetLineWidth( 4 )
+                rates[-1].GetXaxis().SetRangeUser(x_info_rebin[1], x_info_rebin[2])
+                cnt += 1
+        
+        print rates[0]
+        rates[0].SetTitle("L1 Algo. Rates")
+        rates[0].GetXaxis().SetTitle("Reco %s p_{T}" % text )
+        rates[0].GetYaxis().SetTitle("L1 Algo. Rate (kHz)")
+        rates[0].SetMaximum( 40000 ) 
+        rates[0].SetMinimum( 5 ) 
+        rates[0].Draw()
+        cnt = 0
+        for rate in rates :
+            cnt += 1
+            if cnt == 1 : continue
+            if 'Stage-2' in rate.GetTitle() and 'hgcal' in rate.GetTitle() : continue
+            if 'Stage-2' in rate.GetTitle() and 'all' in rate.GetTitle() : continue
+            rate.Draw('SAME')
+        
+        
+        p.SetGrid()
+        p.SetLogy()
+        p.SetLeftMargin( .13 )
+        p.SetBottomMargin( .1 )
+        
+        
+        leg = setLegStyle(0.5,0.55,0.9,0.85)
+        for rate in rates :
+            if 'Stage-2' in rate.GetTitle() and 'hgcal' in rate.GetTitle() : continue
+            if 'Stage-2' in rate.GetTitle() and 'all' in rate.GetTitle() : continue
+            title = rate.GetTitle() if not rate.GetTitle() == "L1 Algo. Rates" else "Phase2 - All"
+            leg.AddEntry(rate, title,"lpe")
+        leg.Draw("same")
+        c.Update()
+        
+        
+        c.SaveAs( universalSaveDir + fName +  '_Calib_rate_'+plot+'_.png' )
 
 
 

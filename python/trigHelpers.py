@@ -77,7 +77,8 @@ def make_efficiency_graph( tree, base_cut, threshold_cut, x_var, x_info ) :
     #g.SaveAs('tmp.root')
     return g
 
-def make_rate_hist( nEvents, tree, x_var, x_var_calib, eta_var, eta_min, eta_max, x_info ) : 
+def make_rate_hist( nEvents, tree, x_var, x_var_calib, eta_var, eta_min, eta_max, x_info, wp='' ) : 
+    print "Making rate for x_var %s,\n x_var_calib %f,\n eta_var %s,\n eta_min %.2f,\n eta_max %.2f,\n wp %s" % (x_var, x_var_calib, eta_var, eta_min, eta_max, wp)
     h1 = ROOT.TH1F('hist', 'hist', x_info[0], x_info[1], x_info[2])
 
     previous_event = -1
@@ -86,7 +87,7 @@ def make_rate_hist( nEvents, tree, x_var, x_var_calib, eta_var, eta_min, eta_max
     cnt = 0
     for row in tree :
         cnt += 1
-        if cnt % 1000000 == 0 : print cnt
+        if cnt % 100000 == 0 : print cnt
         evt = row.event
         # Initial row
         if previous_event == -1 : previous_event = evt
@@ -101,6 +102,11 @@ def make_rate_hist( nEvents, tree, x_var, x_var_calib, eta_var, eta_min, eta_max
         eta = getattr( row, eta_var )
         if abs(eta) >= eta_max : continue
         if abs(eta) < eta_min : continue
+
+        # Add other selections based on defined WPs
+        # where < 0.5 is fail and 1.0 is pass
+        if wp != '' :
+            if getattr( row, wp ) < 0.5 : continue
 
         pt = getattr( row, x_var ) * x_var_calib
         if pt > max_pt : max_pt = pt
