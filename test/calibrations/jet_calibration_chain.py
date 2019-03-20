@@ -189,9 +189,9 @@ def add_jet_calibration( name_in, quantile_map ) :
 
     # new calibrations
     calib = array('f', [ 0 ] )
-    calibB = t.Branch('calibGG', calib, 'calibGG/F')
+    calibB = t.Branch('calibHH', calib, 'calibHH/F')
     calibPt = array('f', [ 0 ] )
-    calibPtB = t.Branch('calibPtGG', calibPt, 'calibPtGG/F')
+    calibPtB = t.Branch('calibPtHH', calibPt, 'calibPtHH/F')
 
     cnt = 0
     for row in t :
@@ -455,27 +455,16 @@ if '__main__' in __name__ :
     prepare_calibration_cfg = False
     plot_calibrated_results = False
 
+    # Uncomment to run!
     #make_calibrations = True
     #apply_phase2_calibrations = True
     #apply_stage2_calibrations = True
     #prepare_calibration_cfg = True
     #plot_calibrated_results = True
 
-    base= '/data/truggles/l1CaloJets_20190210v7/'
-    #base= '/data/truggles/l1CaloJets_20190206/'
-    base= '/data/truggles/l1CaloJets_20190219v3/'
-    base= '/data/truggles/l1CaloJets_20190301/'
-    #base= '/data/truggles/l1CaloJets_20190304v1/'
-    #base= '/data/truggles/l1CaloJets_20190305v2/'
-    base= '/data/truggles/l1CaloJets_20190306v1TestJets/'
-    base= '/data/truggles/l1CaloJets_20190306v1TestTaus/'
-    base= '/data/truggles/l1CaloJets_20190306v2TestTaus/'
-    base= '/data/truggles/l1CaloJets_20190307_PUSub_v1/'
-    base= '/data/truggles/l1CaloJets_20190307_PUSub_v2/'
-    #base= '/data/truggles/l1CaloJets_20190308_PUSub_v1/'
-    base = '/data/truggles/l1CaloJets_20190308_r2/'
+    base = '/data/truggles/l1CaloJets_20190319_r2/'
 
-    for shape in [
+    shapes = [
         #'ttbar_PU200', # testing
         #'tau_PU200',
         #'tau_PU0',
@@ -490,9 +479,11 @@ if '__main__' in __name__ :
         #'qcd_PU200',
 
         # R2
-        'output_round2_HiggsTauTauvL1EGsv2',
-        #'output_round2_minBiasv2',
-    ] :
+        'output_round2_HiggsTauTauv1',
+        #'output_round2_minBiasv1',
+    ]
+
+    for shape in shapes :
         
         #jetsF0 = 'merged_QCD-PU%s.root' % shape
         #date = jetsF0.replace('merged_QCD-','').replace('.root','')
@@ -526,12 +517,11 @@ if '__main__' in __name__ :
         """ Add new calibrations to TTree """
         if apply_phase2_calibrations :
             version = shape.split('_')[-1]
-            ###version = 'v7'
             if doJets :
                 quantile_map = get_quantile_map( 'jet_em_calibrations_'+version+'.root' )
                 add_jet_calibration( base+jetsF0, quantile_map )
             if doTaus :
-                version = 'HiggsTauTauvL1EGsv2'
+                version = 'HiggsTauTauv1'
                 quantile_map = get_quantile_map( 'tau_pt_calibrations_'+version+'.root ')
                 add_tau_calibration( base+jetsF0, quantile_map )
         """ Prepare cfg calibration code snippet """
@@ -556,17 +546,18 @@ if '__main__' in __name__ :
         tree = jetFile.Get("analyzer/tree")
 
         # Can't plot for minBias b/c no gen
-        #if 'minBias' in shape : 
-        #    plot_calibrated_results = False
+        if 'minBias' in shape : 
+            plot_calibrated_results = False
         x_and_y_bins = [28,20,300, 60,0,3]
         if 'Tau' in jetsF0 :
             x_and_y_bins = [20,0,100, 60,0,3]
-        #x_and_y_bins = [120,0,400, 300,0,15]
-        """ Resulting Calibrations """
+
+        """ Resulting Calibrations:
+            The eta ranges are cut slightly short of the transition regions
+            to focus on the bulk of the region of interest. """
         if plot_calibrated_results :
             eta_ranges = {
             'all' : '(abs(genJet_eta)<10)',
-            #'golden' : '(abs(genJet_eta)<1.2)',
             'barrel' : '(abs(genJet_eta)<1.4)',
             #'barrel_transition' : '(abs(genJet_eta)<1.8 && abs(genJet_eta)>1.2)',
             'hgcal' : '(abs(genJet_eta)<2.9 && abs(genJet_eta)>1.6)',
@@ -575,84 +566,12 @@ if '__main__' in __name__ :
             for k, cut in eta_ranges.iteritems() :
                 if 'Tau' in jetsF0 and k == 'hf' : continue
 
-                #to_plot = '(jet_pt)/genJet_pt:genJet_pt'
-                #h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
-                ##to_plot = '(l1eg_pt + ecal_pt + (hcal_pt_calibration) )/genJet_pt:genJet_pt' # For EDProducer check
-                #to_plot = '( calibPtAA )/genJet_pt:genJet_pt'
-                #h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
-                ##to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
-                #to_plot = '(stage2jet_pt_calibration3)/genJet_pt:genJet_pt'
-                #h3 = getTH2( tree, 's2', to_plot, cut, x_and_y_bins )
-                #xaxis = "Gen Jet P_{T} (GeV)"
-                #yaxis = "Relative Error in P_{T} reco/gen"
-                #title1 = "Phase-II before HCAL calibrations"
-                #title2 = "Phase-II with HCAL calibrations"
-                #title3 = "Phase-I with calibrations"
-                #c.SetTitle("genJetPt_Calibrated_vs_Stage-2_PU200_"+k)
-                #areaNorm = True
-                #drawPointsHists3(c.GetTitle(), h1, h2, h3, title1, title2, title3, xaxis, yaxis, areaNorm, plotDir)
-
-
-
-                #to_plot = '(jet_pt)/genJet_pt:genJet_pt'
-                #h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
-                ##to_plot = '(l1eg_pt + ecal_pt + (hcal_pt_calibration) )/genJet_pt:genJet_pt' # For EDProducer check
-                #to_plot = '( calibPtAA )/genJet_pt:genJet_pt'
-                #h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
-                ##to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
-                #xaxis = "Gen Jet P_{T} (GeV)"
-                #yaxis = "Relative Error in P_{T} reco/gen"
-                #title1 = "Phase-II before HCAL calibrations"
-                #title2 = "Phase-II with HCAL calibrations"
-                #c.SetTitle("genJetPt_Calibration_"+k)
-                #areaNorm = True
-                #drawPointsHists(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis, areaNorm, plotDir)
-
-                #to_plot = '(jet_pt)/genJet_pt:genJet_pt'
-                #h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
-                ##to_plot = '(l1eg_pt + ecal_pt + (hcal_pt_calibration) )/genJet_pt:genJet_pt' # For EDProducer check
-                #to_plot = '( calibPtAA )/genJet_pt:genJet_pt'
-                #h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
-                ##to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
-                #xaxis = "Gen Jet P_{T} (GeV)"
-                #yaxis = "Relative Error in P_{T} reco/gen"
-                #title1 = "Phase-II before HCAL calibrations"
-                #title2 = "Phase-II with HCAL fit calibrations"
-                #c.SetTitle("genJetPt_Calibration_fit_"+k)
-                #areaNorm = True
-                #drawPointsHists(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis, areaNorm, plotDir)
-
-                #to_plot = '(jet_pt)/genJet_pt:genJet_pt'
-                #h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
-                ##to_plot = '(l1eg_pt + ecal_pt + (hcal_pt_calibration) )/genJet_pt:genJet_pt' # For EDProducer check
-                #to_plot = '( calibPtAA )/genJet_pt:genJet_pt'
-                #h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
-                ##to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
-                #xaxis = "Gen Jet P_{T} (GeV)"
-                #yaxis = "Relative Error in P_{T} reco/gen"
-                #title1 = "Phase-II before HCAL calibrations"
-                #title2 = "Phase-II with HCAL fitBinned calibrations"
-                #c.SetTitle("genJetPt_Calibration_fitBinned_"+k)
-                #areaNorm = True
-                #drawPointsHists(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis, areaNorm, plotDir)
-
-                #to_plot = '(jet_pt_calibration)/genJet_pt:genJet_pt'
-                #h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
-                #to_plot = '(stage2jet_pt_calib)/genJet_pt:genJet_pt'
-                #h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
-                #xaxis = "Gen Jet P_{T} (GeV)"
-                #yaxis = "Relative Error in P_{T} reco/gen"
-                #title1 = "Phase-II "+k
-                #title2 = "Phase-I "+k
-                #c.SetTitle("genJetPt_comparisons_"+k)
-                #areaNorm = True
-                #drawPointsHists(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis, areaNorm, plotDir)
 
                 tau_pt = "(ecal_3x5 + l1eg_3x5 + hcal_3x5)"
                 if 'Tau' in jetsF0 :
                     to_plot = tau_pt+'/genJet_pt:genJet_pt'
                     h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
-                    to_plot = '( calibPtGG )/genJet_pt:genJet_pt'
+                    to_plot = '( calibPtHH )/genJet_pt:genJet_pt'
                     h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
                     #to_plot = '(stage2tau_pt)/genJet_pt:genJet_pt'
                     to_plot = '(stage2tau_pt_calibration3)/genJet_pt:genJet_pt'
@@ -664,7 +583,7 @@ if '__main__' in __name__ :
                     to_plot = '(jet_pt)/genJet_pt:genJet_pt'
                     h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
                     to_plot = '(jet_pt_calibration)/genJet_pt:genJet_pt'
-                    to_plot = '( calibPtGG )/genJet_pt:genJet_pt'
+                    to_plot = '( calibPtHH )/genJet_pt:genJet_pt'
                     h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
                     to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
                     to_plot = '(stage2jet_pt_calib)/genJet_pt:genJet_pt'
@@ -678,169 +597,5 @@ if '__main__' in __name__ :
                 areaNorm = True
                 areaNorm = False
                 drawPointsHists3(c.GetTitle(), h1, h2, h3, title1, title2, title3, xaxis, yaxis, areaNorm, plotDir)
-            """
-                ("l1eg_nL1EGs");
-                ("l1eg_nL1EGs_standaloneSS");
-                ("l1eg_nL1EGs_standaloneIso");
-                ("l1eg_nL1EGs_trkMatchSS");
-                ("l1eg_nL1EGs_trkMatchIso");
-            """
-            gen_dms = {
-            'reco_L1EG_nL1EG_0' : '(l1eg_nL1EGs == 0)',
-            'reco_L1EG_nL1EG_1' : '(l1eg_nL1EGs == 1)',
-            'reco_L1EG_nL1EG_2' : '(l1eg_nL1EGs == 2)',
-            'reco_L1EG_nL1EG_3plus' : '(l1eg_nL1EGs >= 3)',
-            'reco_L1EG_nL1EGtrkMatchSS_0' : '(l1eg_nL1EGs_trkMatchSS == 0)',
-            'reco_L1EG_nL1EGtrkMatchSS_1' : '(l1eg_nL1EGs_trkMatchSS == 1)',
-            'reco_L1EG_nL1EGtrkMatchSS_2' : '(l1eg_nL1EGs_trkMatchSS == 2)',
-            'reco_L1EG_nL1EGtrkMatchSS_3plus' : '(l1eg_nL1EGs_trkMatchSS >= 3)',
-            }
-            #if 'Tau' in jetsF0 :
-            #    for k, cut in gen_dms.iteritems() :
-            #        cutX = cut+'*( abs(jet_eta) < 3.0 )'
-            #        to_plot = '(jet_pt)/genJet_pt:genJet_pt'
-            #        h1 = getTH2( tree, 'qcd1', to_plot, cutX, x_and_y_bins )
-            #        to_plot = '(jet_pt_calibration)/genJet_pt:genJet_pt'
-            #        to_plot = '( calibPtAA )/genJet_pt:genJet_pt'
-            #        h2 = getTH2( tree, 'qcd2', to_plot, cutX, x_and_y_bins )
-            #        to_plot = '(stage2tau_pt)/genJet_pt:genJet_pt'
-            #        h3 = getTH2( tree, 's2', to_plot, cutX, x_and_y_bins )
-            #        title1 = "Phase-II CaloTau, raw "+k
-            #        title2 = "Phase-II CaloTau, EM Frac Calib "+k
-            #        title3 = "Phase-I CaloTau "+k
-            #        xaxis = "Gen Jet P_{T} (GeV)"
-            #        yaxis = "Relative Error in P_{T} reco/gen"
-            #        c.SetTitle("genJetPt_Tau_"+k)
-            #        areaNorm = True
-            #        drawPointsHists3(c.GetTitle(), h1, h2, h3, title1, title2, title3, xaxis, yaxis, areaNorm, plotDir)
-
-            c.SetCanvasSize(600,600)
-            c.Divide(1)
-
-            # PU Zero
-            # Rate file
-            #jetFileX = ROOT.TFile( base+'ttbar_PU0_v1.root', 'r' )
-            jetFileX = ROOT.TFile( base+jetsF0.replace('v1','v2'), 'r' )
-            print jetFileX
-            treeX = jetFileX.Get("analyzer/tree")
-
-            ## Pt resolution
-            #x_bins = [100, -1, 1]
-            #for k, cut in eta_ranges.iteritems() :
-            #    pt_res_hists = []
-            #    #for pt in [20, 50, 100, 200] :
-            #    for pt in [ 50, 100, 200] :
-            #        pt_min = pt-10
-            #        pt_max = pt+10
-            #        if pt == 20 :
-            #            pt_min = pt
-            #            pt_max = pt+10
-            #        if pt == 200 :
-            #            pt_min = pt-20
-            #            pt_max = pt+20
-        
-            #        cutX = '( calibPtAA > %i && calibPtAA < %i )' % (pt_min, pt_max )
-            #        cutX += '*'+cut.replace('genJet_eta', 'jet_eta')
-            #        to_plot = '( calibPtAA - genJet_pt )/genJet_pt'
-            #        pt_res_hists.append( getTH1( treeX, 'ttbar PU 200, pt  [%i,%i]' % (pt_min,pt_max), to_plot, cutX, x_bins ) )
-            #        pt_res_hists[-1].GetXaxis().SetTitle('p_{T} Resolution (reco-gen)/gen')
-            #    c.SetName( 'jet_pt_calib_resolution_'+k )
-            #    trigHelpers.drawDRHists( pt_res_hists, c, -1, plotDir, True ) # True is doFit
-
-            ## Normalizations
-            #norm_200_gen = jetFile.Get('analyzer/nEvents').Integral()
-            #norm_200_all = jetFileX.Get('analyzer/nEvents').Integral()
-            #x_bins = [110, -5.5, 5.5]
-            #c.SetLogy(1) 
-            #for pt in [20, 30, 40, 50] :
-            #    cut = '( calibPtAA > %i )' % pt
-            #    to_plot = '( jet_eta )'
-            #    hx = getTH1( tree, 'minBias PU 200 no PU sub., pt > %i' % pt, to_plot, cut, x_bins )
-            #    hx.Scale( 1. / norm_200_gen )
-            #    cut = '( calibPtAA > %i )' % pt
-            #    hy = getTH1( treeX, 'minBias PU 200 PU sub., pt > %i' % pt, to_plot, cut, x_bins )
-            #    hy.Scale( 1. / norm_200_all )
-            #    c.SetName( 'jet_eta_calib_pt_gtr'+str(pt) )
-            #    hx.GetXaxis().SetTitle('Reco Jet #eta')
-            #    trigHelpers.drawDRHists( [hx, hy], c, 50, plotDir, False, True ) # noFit, skip rescaling
-
-            #to_plot = '( calibPtAA )'
-            #x_bins = [40, 0, 200]
-            #for k, cut in eta_ranges.iteritems() :
-            #    cutX = cut.replace('genJet_eta', 'jet_eta')
-            #    hx = getTH1( tree, 'minBias PU 200 no PU sub. '+k, to_plot, cutX, x_bins )
-            #    hx.Scale( 1. / norm_200_gen )
-            #    hy = getTH1( treeX, 'minBias PU 200 PU sub. '+k, '( calibPtAA )', cutX, x_bins )
-            #    hy.Scale( 1. / norm_200_all )
-            #    c.SaveAs( plotDir+'/jet_pt_calib_'+k+'.png' )
-            #    c.SetName( 'jet_pt_calib_'+k )
-            #    hx.GetXaxis().SetTitle('Reco Jet p_{T} (GeV)')
-            #    trigHelpers.drawDRHists( [hx, hy], c, 50, plotDir, False, True ) # noFit, skip rescaling
-
-            #jetFileX.Close()
-            #jetFileX = ROOT.TFile( base+'minBias_PU200_v2.root', 'r' )
-            #print jetFileX
-            #treeX = jetFileX.Get("analyzer/tree")
-            ## To check potential PU Jet ID vars
-            #to_check = ['l1eg_nL1EGs', '(hcal_3x3*calibAA + ecal_dR0p15)', '(max(max(max(hcal_2x2_1, hcal_2x2_2), hcal_2x2_3), hcal_2x2_4)*calibAA + ecal_dR0p1)', 'hcal_nHits', 'ecal_nHits', 'seed_pt', '(hcal_nHits+ecal_nHits+l1eg_nL1EGs)']
-            #to_check = ['(l1eg_pt + ecal_pt)', '(hcal_pt*calibAA)']
-            #c.SetCanvasSize(900,600)
-            #c.Divide(2)
-            #x_and_y_bins = [20,20,60, 30,0,0.75]
-            #x_and_y_bins = [20,20,100, 30,0,1.1]
-            #cut = '(abs(jet_eta)<1.4 && jet_pt > 20.)'
-            #for var in to_check :
-            #    x_and_y_bins_here = list(x_and_y_bins)
-            #    set_title = var
-            #    if '(hcal_nHits+ecal_nHits+l1eg_nL1EGs)' == var : set_title = 'hcal_plus_ecal_plus_L1EG_nHits'
-            #    elif 'hcal_3x3' in var : set_title = 'towers3x3'
-            #    elif 'hcal_2x2' in var : set_title = 'towers2x2'
-
-            #    if 'seed_pt' == var : x_and_y_bins_here[-1] = 0.75
-            #    if 'hcal_2x2' in var : x_and_y_bins_here[-1] = 1
-            #    if 'hcal_3x3' in var : x_and_y_bins_here[-1] = 2
-            #    to_plot = var+'/calibPtAA:calibPtAA'
-            #    h1 = getTH2( treeX, 'ttbar all', to_plot, cut, x_and_y_bins_here )
-            #    h2 = getTH2( tree, 'ttbar gen', to_plot, cut, x_and_y_bins_here )
-            #    xaxis = "Jet P_{T} (GeV)"
-            #    yaxis = var+"/reco p_{T}"
-            #    title1 = "MinBias Jets"
-            #    title2 = "ttbar Gen Jets"
-            #    c.SetTitle("pu_ID_checks_"+set_title)
-            #    areaNorm = True
-            #    drawPointsHists(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis, areaNorm, plotDir)
-
-        #x_and_y_bins = [120,0,500, 300,0,15]
-        #to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
-        #xaxis = "Gen Jet P_{T} (GeV)"
-        #yaxis = "Relative Error in P_{T} reco/gen"
-        #title1 = "Phase-I Out-of-box"
-        #c.SetTitle("stage2_recoOverGen_by_gen")
-
-        #x_and_y_bins = [120,0,500, 300,0,5]
-        #to_plot = 'genJet_pt/stage2jet_pt:stage2jet_pt'
-        #xaxis = "Stage-2 Jet P_{T} (GeV)"
-        #yaxis = "Relative Error in P_{T}  gen/reco"
-        #title1 = "Phase-I Out-of-box"
-        #c.SetTitle("stage2_genOverReco_by_reco")
-
-        #x_and_y_bins = [120,0,500, 300,0,15]
-        #to_plot = '(stage2jet_pt_calibration3)/genJet_pt:genJet_pt'
-        #xaxis = "Gen Jet P_{T} (GeV)"
-        #yaxis = "Relative Error in P_{T} reco calib/gen"
-        #title1 = "Phase-I Calibration 1"
-        #c.SetTitle("stage2_recoCalib1OverGen_by_gen")
-
-        #x_and_y_bins = [120,0,500, 300,0,5]
-        #to_plot = 'genJet_pt/stage2jet_pt_calibration3:stage2jet_pt_calibration3'
-        #xaxis = "Stage-2 Calib1 Jet P_{T} (GeV)"
-        #yaxis = "Relative Error in P_{T}  gen/reco calib1"
-        #title1 = "Phase-I Calibration 1"
-        #c.SetTitle("stage2_genOverRecoCalib1_by_recoCalib1")
-
-        #h1 = getTH2( tree, 's2', to_plot, cut, x_and_y_bins )
-        #drawPointsSingleHist(c.GetTitle(), h1, title1, xaxis, yaxis, plotDir)
-
-
 
 

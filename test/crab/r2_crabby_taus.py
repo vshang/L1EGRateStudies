@@ -27,10 +27,10 @@ process.source = cms.Source("PoolSource",
 )
 
 
-out_path = '/data/truggles/l1CaloJets_20190308_r2/'
-name = "HiggsTauTau"
+out_path = '/data/truggles/l1CaloJets_20190319_r2/'
 name = "HiggsTauTauvL1EGs"
-name = "minBias"
+name = "HiggsTauTau"
+#name = "minBias"
 # Load samples from external files here:
 from L1Trigger.L1EGRateStudies.loadRound2Files import getSampleFiles
 process.source.fileNames = getSampleFiles( name )
