@@ -179,6 +179,13 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
         TH1F * stage2_rate_all_eta_hist;
         TH1F * phase2_rate_barrel_eta_hist;
         TH1F * stage2_rate_barrel_eta_hist;
+
+        TH1F * gen_jet_HTT;
+        TH1F * phase2_jet_HTT_300;
+        TH1F * phase2_jet_HTT_400;
+        TH1F * phase2_jet_HTT_500;
+        TH1F * phase2_jet_HTT_600;
+        TH1F * phase2_jet_HTT_rate_hist;
                 
         // Crystal pt stuff
         TTree * tree;
@@ -387,6 +394,13 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     stage2_rate_all_eta_hist = fs->make<TH1F>("stage2_rate_all_eta_hist", "stage2_rate_all_eta_hist", 120, -6, 6);
     phase2_rate_barrel_eta_hist = fs->make<TH1F>("phase2_rate_barrel_eta_hist", "phase2_rate_barrel_eta_hist", 40, -2, 2);
     stage2_rate_barrel_eta_hist = fs->make<TH1F>("stage2_rate_barrel_eta_hist", "stage2_rate_barrel_eta_hist", 40, -2, 2);
+
+    gen_jet_HTT = fs->make<TH1F>("gen_jet_HTT", "gen_jet_HTT;Gen Jet HTT", 100, 0, 1000);
+    phase2_jet_HTT_300 = fs->make<TH1F>("phase2_jet_HTT_300", "phase2_jet_HTT_300;Gen Jet HTT;L1 Efficiency", 100, 0, 1000);
+    phase2_jet_HTT_400 = fs->make<TH1F>("phase2_jet_HTT_400", "phase2_jet_HTT_400;Gen Jet HTT;L1 Efficiency", 100, 0, 1000);
+    phase2_jet_HTT_500 = fs->make<TH1F>("phase2_jet_HTT_500", "phase2_jet_HTT_500;Gen Jet HTT;L1 Efficiency", 100, 0, 1000);
+    phase2_jet_HTT_600 = fs->make<TH1F>("phase2_jet_HTT_600", "phase2_jet_HTT_600;Gen Jet HTT;L1 Efficiency", 100, 0, 1000);
+    phase2_jet_HTT_rate_hist = fs->make<TH1F>("phase2_jet_HTT_rate_hist", "phase2_jet_HTT_rate_hist", 100, 0, 1000);
 
     tree = fs->make<TTree>("tree", "CaloJet values");
     tree->Branch("run", &treeinfo.run);
@@ -776,10 +790,17 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
         }
         // CaloJets/Taus
+        float f_phase2_jet_HTT = 0.;
         if ( caloJets.size() > 0 )
         {
             for(const auto& caloJet : caloJets)
             {
+
+                if ( caloJet.GetExperimentalParam("jet_pt_calibration") > 30 && fabs(caloJet.GetExperimentalParam("jet_eta")) < 2.4 )
+                {
+                    f_phase2_jet_HTT += caloJet.GetExperimentalParam("jet_pt_calibration");
+                }
+
                 if (use_gen_taus && fabs(caloJet.eta()) > 3.0) continue;
                 float abs_eta = fabs( caloJet.GetExperimentalParam("jet_eta") );
                 if ( abs_eta < 6.0 && !phase2_all_filled )
@@ -840,6 +861,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
                 fill_tree(caloJet);
             } // end Calo Jets loop
         } // have CaloJets
+        phase2_jet_HTT_rate_hist->Fill( f_phase2_jet_HTT );
         return;
     } // end doRate
 
@@ -876,9 +898,17 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         genCollection = &genJets;
     }
 
+
+    float f_gen_jet_HTT = 0.;
     int cnt = 0;
     for (auto& genJet : *genCollection ) 
     {
+
+        if (genJet.pt() > 30 && fabs(genJet.eta()) < 2.4)
+        {
+            f_gen_jet_HTT += genJet.pt();
+        }
+
         // Skip lowest pT Jets, don't skip for low pT taus
         if (!use_gen_taus && genJet.pt() < 10) break;  // no need for continue as we sorted by pT so we're done
         if (use_gen_taus && fabs(genJet.eta()) > 3.5) continue; // HGCal ends at 3.0, so go a little further
@@ -1204,8 +1234,51 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         }
 
     } // end GenJets loop
+
+
+
+    // Fill gen Jet HTT hists for all events
+    gen_jet_HTT->Fill( f_gen_jet_HTT );
+
+    // Need to loop over all Phase-2 CaloJets without matching to genJets
+    float f_phase2_jet_HTT = 0.;
+    if ( caloJets.size() > 0 )
+    {
+        for(const auto& caloJet : caloJets)
+        {
+            if (caloJet.GetExperimentalParam("jet_pt_calibration") > 30 && fabs(caloJet.GetExperimentalParam("jet_eta")) < 2.4)
+            {
+                f_phase2_jet_HTT += caloJet.GetExperimentalParam("jet_pt_calibration");
+            }
+        }
+    }
+    // Fill simulating a Jet_HTT_300 threshold
+    if (f_phase2_jet_HTT > 300)
+    {
+        phase2_jet_HTT_300->Fill( f_gen_jet_HTT );
+    }
+    // Fill simulating a Jet_HTT_400 threshold
+    if (f_phase2_jet_HTT > 400)
+    {
+        phase2_jet_HTT_400->Fill( f_gen_jet_HTT );
+    }
+    // Fill simulating a Jet_HTT_500 threshold
+    if (f_phase2_jet_HTT > 500)
+    {
+        phase2_jet_HTT_500->Fill( f_gen_jet_HTT );
+    }
+    // Fill simulating a Jet_HTT_600 threshold
+    if (f_phase2_jet_HTT > 600)
+    {
+        phase2_jet_HTT_600->Fill( f_gen_jet_HTT );
+    }
+
+
+
   } // end if NOT doRate
     if (debug) printf("Ending L1CaloJetStudies Analyzer\n");
+
+
 }
 
 
@@ -1227,7 +1300,12 @@ L1CaloJetStudies::endJob()
         integrateDown( stage2_rate_noHGCal_hist );
         integrateDown( phase2_rate_barrel_hist );
         integrateDown( stage2_rate_barrel_hist );
+        integrateDown( phase2_jet_HTT_rate_hist );
     }
+    phase2_jet_HTT_300->Divide( gen_jet_HTT );
+    phase2_jet_HTT_400->Divide( gen_jet_HTT );
+    phase2_jet_HTT_500->Divide( gen_jet_HTT );
+    phase2_jet_HTT_600->Divide( gen_jet_HTT );
 }
 
 // ------------ method called when starting to processes a run  ------------
