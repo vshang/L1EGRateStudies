@@ -129,7 +129,8 @@ def make_rate_hist( nEvents, tree, x_var, x_var_calib, eta_var, eta_min, eta_max
 
 def drawCMSString( title ) :
     cmsString = ROOT.TLatex(
-        ROOT.gPad.GetAbsXlowNDC()+ROOT.gPad.GetAbsWNDC()-ROOT.gPad.GetLeftMargin(),
+        #ROOT.gPad.GetAbsXlowNDC()+ROOT.gPad.GetAbsWNDC()-ROOT.gPad.GetLeftMargin(),
+        .7,
         ROOT.gPad.GetAbsYlowNDC()+ROOT.gPad.GetAbsHNDC()-ROOT.gPad.GetTopMargin()+0.005,
         title )
     cmsString.SetTextFont(42)
