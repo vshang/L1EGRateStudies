@@ -272,6 +272,7 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
             float l1eg_nL1EGs_standaloneIso;
             float l1eg_nL1EGs_trkMatchSS;
             float l1eg_nL1EGs_trkMatchIso;
+            float n_l1eg_HoverE_LessThreshold;
 
             float n_l1eg_HoverE_Less0p25;
             float n_l1eg_HoverE_Less0p25_trkSS;
@@ -485,6 +486,7 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("l1eg_nL1EGs_standaloneIso", &treeinfo.l1eg_nL1EGs_standaloneIso);
     tree->Branch("l1eg_nL1EGs_trkMatchSS", &treeinfo.l1eg_nL1EGs_trkMatchSS);
     tree->Branch("l1eg_nL1EGs_trkMatchIso", &treeinfo.l1eg_nL1EGs_trkMatchIso);
+    tree->Branch("n_l1eg_HoverE_LessThreshold", &treeinfo.n_l1eg_HoverE_LessThreshold);
 
     tree->Branch("n_l1eg_HoverE_Less0p25",         &treeinfo.n_l1eg_HoverE_Less0p25);
     tree->Branch("n_l1eg_HoverE_Less0p25_trkSS",   &treeinfo.n_l1eg_HoverE_Less0p25_trkSS);
@@ -1447,6 +1449,7 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
     treeinfo.l1eg_nL1EGs_standaloneIso = caloJet.GetExperimentalParam("l1eg_nL1EGs_standaloneIso");
     treeinfo.l1eg_nL1EGs_trkMatchSS = caloJet.GetExperimentalParam("l1eg_nL1EGs_trkMatchSS");
     treeinfo.l1eg_nL1EGs_trkMatchIso = caloJet.GetExperimentalParam("l1eg_nL1EGs_trkMatchIso");
+    treeinfo.n_l1eg_HoverE_LessThreshold = caloJet.GetExperimentalParam("n_l1eg_HoverE_LessThreshold");
     //treeinfo.deltaR_ecal_vs_jet = caloJet.GetExperimentalParam("deltaR_ecal_vs_jet");
     //treeinfo.deltaR_hcal_vs_jet = caloJet.GetExperimentalParam("deltaR_hcal_vs_jet");
     //treeinfo.deltaR_L1EGjet_vs_jet = caloJet.GetExperimentalParam("deltaR_L1EGjet_vs_jet");
@@ -1540,6 +1543,7 @@ L1CaloJetStudies::fill_tree_null() {
     treeinfo.l1eg_nL1EGs_standaloneIso = -9;
     treeinfo.l1eg_nL1EGs_trkMatchSS = -9;
     treeinfo.l1eg_nL1EGs_trkMatchIso = -9;
+    treeinfo.n_l1eg_HoverE_LessThreshold = -9;
     treeinfo.deltaR_ecal_vs_jet = -9;
     treeinfo.deltaR_hcal_vs_jet = -9;
     treeinfo.deltaR_L1EGjet_vs_jet = -9;
