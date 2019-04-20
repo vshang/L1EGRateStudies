@@ -25,17 +25,18 @@ def check_calibration_py_cfg( quantile_map ) :
     
 
 
-def prepare_calibration_py_cfg( quantile_map ) :
+def prepare_calibration_py_cfg( quantile_map, doTaus=False ) :
     o_file = open('L1CaloJetCalibrations_cfi.py', 'w')
     o_file.write( "import FWCore.ParameterSet.Config as cms\n\n" )
-    # Already add zero for EM frac, will add upper val for each loop
     for k, v in quantile_map.iteritems() :
         print k, v
 
+
     # Currently Pt binning is constant for all regions
-    o_file.write( "\tjetPtBins = cms.vdouble([ 0.0" )
+    name_string = 'tau' if doTaus else 'jet'
+    o_file.write( "\t%sPtBins = cms.vdouble([ 0.0" % name_string )
     pt_binning = []
-    pt_binning_array = get_x_binning()
+    pt_binning_array = get_x_binning(name_string)
     for val in pt_binning_array :
         if val == 0.0 : continue # skip to keep commans easy
         pt_binning.append( val )
@@ -43,11 +44,116 @@ def prepare_calibration_py_cfg( quantile_map ) :
     o_file.write( "]),\n" )
     print pt_binning
 
-    prepare_calo_region_calibrations( 'Barrel', 0.0, 1.5, o_file, quantile_map )
-    prepare_calo_region_calibrations( 'HGCal', 1.5, 3.0, o_file, quantile_map )
-    prepare_calo_region_calibrations( 'HF', 3.0, 6.0, o_file, quantile_map )
+    if not doTaus :
+        prepare_calo_region_calibrations( 'Barrel', 0.0, 1.5, o_file, quantile_map )
+        prepare_calo_region_calibrations( 'HGCal', 1.5, 3.0, o_file, quantile_map )
+        prepare_calo_region_calibrations( 'HF', 3.0, 6.0, o_file, quantile_map )
+    if doTaus :
+        prepare_tau_calo_region_calibrations( 'Barrel', 0.0, 1.5, o_file, quantile_map )
+        prepare_tau_calo_region_calibrations( 'HGCal', 1.5, 3.0, o_file, quantile_map )
 
     o_file.close()
+
+def prepare_tau_calo_region_calibrations( calo_region_name, eta_min, eta_max, o_file, quantile_map ) :
+    pt_binning_array = get_x_binning('Tau')
+    # Eta binning
+    o_file.write( "\ttauAbsEtaBins%s = cms.vdouble([ %.2f" % (calo_region_name, eta_min) )
+    abs_eta_list = [eta_min,]
+    for k, v in quantile_map.iteritems() :
+
+        # Check this entry is in the correct eta range
+        if v[3] < eta_min : continue
+        if v[4] > eta_max : continue
+
+        # continue if not increasing value
+        if v[4] <= abs_eta_list[-1] : continue
+        abs_eta_list.append( v[4] )
+        o_file.write( ",%.2f" % v[4] )
+    o_file.write( "]),\n" )
+    print abs_eta_list
+
+    # L1EG binning
+    o_file.write( "\ttauL1egValues%s = cms.vdouble([ " % calo_region_name )
+    l1eg_list = []
+    l1eg_map = {
+        '0L1EG' : 0,
+        '1L1EG' : 1,
+        'Gtr1L1EG' : 2, # This and 'All' will have hard coded switches in the EDProducer
+        'All' : -1,
+    }
+    for k, v in quantile_map.iteritems() :
+
+        # Check this entry is in the correct eta range
+        if v[3] < eta_min : continue
+        if v[4] > eta_max : continue
+
+        # continue if this type is already included
+        if l1eg_map[v[0]] in l1eg_list : continue
+        l1eg_list.append( l1eg_map[v[0]] )
+        if len(l1eg_list) == 1 :
+            o_file.write( "%i" % l1eg_map[v[0]] )
+        else :
+            o_file.write( ", %i" % l1eg_map[v[0]] )
+    o_file.write( "]),\n" )
+    print l1eg_list
+        
+    # EM fraction
+    #o_file.write( "\ttauEmFractionBins%s = cms.vpset([ 0.00" % calo_region_name )
+    o_file.write( "\ttauEmFractionBins%s = cms.vpset(\n" % calo_region_name )
+    em_frac_map = OrderedDict()
+    for k, v in quantile_map.iteritems() :
+
+        # Check this entry is in the correct eta range
+        if v[3] < eta_min : continue
+        if v[4] > eta_max : continue
+
+        # Check that this L1EG scenario has been added to map
+        if v[0] not in em_frac_map.keys() :
+            em_frac_map[ v[0] ] = [0.0,]
+
+        # continue if not increasing value
+        if v[2] <= em_frac_map[v[0]][-1] : continue
+        if v[2] == 1.0 : # Need to go a little higher to catch rounding issues
+            em_frac_map[v[0]].append( 1.05 )
+        else :
+            em_frac_map[v[0]].append( v[2] )
+    for k, v in em_frac_map.iteritems() :
+        print k, v
+        float_to_str = [str(i) for i in v]
+        to_print = ", ".join(float_to_str)
+        o_file.write( "\t\tcms.vdouble = ([ %s]),\n" % to_print )
+    o_file.write( "\t),\n" )
+
+    # Now huge loop of values for each bin
+    o_file.write( "\ttauCalibrations%s = cms.vdouble([\n" % calo_region_name )
+    x = ROOT.Double(0.)
+    y = ROOT.Double(0.)
+    cnt = 1
+    for k, v in quantile_map.iteritems() :
+
+        # Check this entry is in the correct eta range
+        if v[3] < eta_min : continue
+        if v[4] > eta_max : continue
+
+        val_string = ''
+        # Use this version when grabbing the value from the fit TF1
+        for i in range( len(pt_binning_array) ) :
+            if i == len(pt_binning_array) - 1 : continue # don't go over the top
+            val_string += "%.3f, " % v[-1].Eval( (pt_binning_array[i] + pt_binning_array[i+1] )/2. )
+        # Use this version when grabbing the value from the raw TGraph
+        #for point in range( v[-1].GetN() ) :
+        #    v[-1].GetPoint( point, x, y )
+        #    #print x, y
+        #    val_string += "%.3f, " % y
+
+        val_string = val_string.strip(' ')
+        # No comma at end if final one
+        if cnt == len( quantile_map.keys() ) :
+            val_string = val_string.strip(',')
+        o_file.write( "\t\t%s\n" % val_string )
+        #print val_string
+        cnt += 1
+    o_file.write( "\t]),\n" )
 
 def prepare_calo_region_calibrations( calo_region_name, eta_min, eta_max, o_file, quantile_map ) :
     pt_binning_array = get_x_binning()
@@ -448,6 +554,8 @@ if '__main__' in __name__ :
     # Commands
     doJets = False
     doTaus = True
+    #doJets = True
+    #doTaus = False
 
     make_calibrations = False
     apply_phase2_calibrations = False
@@ -459,28 +567,16 @@ if '__main__' in __name__ :
     #make_calibrations = True
     #apply_phase2_calibrations = True
     #apply_stage2_calibrations = True
-    #prepare_calibration_cfg = True
+    prepare_calibration_cfg = True
     #plot_calibrated_results = True
 
     base = '/data/truggles/l1CaloJets_20190319_r2/'
+    #base = '/data/truggles/l1CaloJets_20190417_r2/' # For Jets
 
     shapes = [
-        #'ttbar_PU200', # testing
-        #'tau_PU200',
-        #'tau_PU0',
-        #'minBias_PU200',
-        #'vbfhtt_v1',
-        #'output_round2_eff_hists_qcd_v1',
-
-        # Taus
-        #'ggHTauTau_PU0',
-        #'ggHTauTau_PU200',
-        #'VBFHTauTau_PU200',
-        #'qcd_PU200',
-
         # R2
         'output_round2_HiggsTauTauv1',
-        #'output_round2_minBiasv1',
+        #'output_round2_QCDApril17v1',
     ]
 
     for shape in shapes :
@@ -508,7 +604,7 @@ if '__main__' in __name__ :
             print jetFile
             tree = jetFile.Get("analyzer/tree")
 
-            if 'qcd' in shape and doJets :
+            if ('qcd' in shape or 'QCD' in shape) and doJets :
                 make_em_fraction_calibrations( c, base+jetsF0, cut, plotDir )
             if 'Tau' in shape and doTaus :
                 make_tau_calibrations( c, base+jetsF0, cut, plotDir )
@@ -533,7 +629,7 @@ if '__main__' in __name__ :
             if doTaus :
                 quantile_map = get_quantile_map( 'tau_pt_calibrations_'+version+'.root ')
             ####check_calibration_py_cfg( quantile_map )
-            prepare_calibration_py_cfg( quantile_map )
+            prepare_calibration_py_cfg( quantile_map, doTaus )
         """ Add Stage-2 Calibrations which do a good job up to 50 GeV """
         if apply_stage2_calibrations :
             if doJets :
@@ -582,10 +678,10 @@ if '__main__' in __name__ :
                 else :
                     to_plot = '(jet_pt)/genJet_pt:genJet_pt'
                     h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
-                    to_plot = '(jet_pt_calibration)/genJet_pt:genJet_pt'
+                    #to_plot = '(jet_pt_calibration)/genJet_pt:genJet_pt'
                     to_plot = '( calibPtHH )/genJet_pt:genJet_pt'
                     h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
-                    to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
+                    #to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
                     to_plot = '(stage2jet_pt_calib)/genJet_pt:genJet_pt'
                     h3 = getTH2( tree, 's2', to_plot, cut, x_and_y_bins )
                     title1 = "Phase-II CaloJet, raw "+k
@@ -595,7 +691,7 @@ if '__main__' in __name__ :
                 yaxis = "Relative Error in P_{T} reco/gen"
                 c.SetTitle("genJetPt_Tau_"+k)
                 areaNorm = True
-                areaNorm = False
+                #areaNorm = False
                 drawPointsHists3(c.GetTitle(), h1, h2, h3, title1, title2, title3, xaxis, yaxis, areaNorm, plotDir)
 
 
