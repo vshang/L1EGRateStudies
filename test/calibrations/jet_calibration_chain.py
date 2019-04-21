@@ -73,33 +73,14 @@ def prepare_tau_calo_region_calibrations( calo_region_name, eta_min, eta_max, o_
     print abs_eta_list
 
     # L1EG binning
-    o_file.write( "\ttauL1egValues%s = cms.vdouble([ " % calo_region_name )
-    l1eg_list = []
+    # EM fraction is unique for each L1EG scenario
+    o_file.write( "\ttauL1egInfo%s = cms.VPSet(\n" % calo_region_name )
     l1eg_map = {
         '0L1EG' : 0,
         '1L1EG' : 1,
-        'Gtr1L1EG' : 2, # This and 'All' will have hard coded switches in the EDProducer
-        'All' : -1,
+        'Gtr1L1EG' : 2,
+        'All' : 0,
     }
-    for k, v in quantile_map.iteritems() :
-
-        # Check this entry is in the correct eta range
-        if v[3] < eta_min : continue
-        if v[4] > eta_max : continue
-
-        # continue if this type is already included
-        if l1eg_map[v[0]] in l1eg_list : continue
-        l1eg_list.append( l1eg_map[v[0]] )
-        if len(l1eg_list) == 1 :
-            o_file.write( "%i" % l1eg_map[v[0]] )
-        else :
-            o_file.write( ", %i" % l1eg_map[v[0]] )
-    o_file.write( "]),\n" )
-    print l1eg_list
-        
-    # EM fraction
-    #o_file.write( "\ttauEmFractionBins%s = cms.vpset([ 0.00" % calo_region_name )
-    o_file.write( "\ttauEmFractionBins%s = cms.vpset(\n" % calo_region_name )
     em_frac_map = OrderedDict()
     for k, v in quantile_map.iteritems() :
 
@@ -121,7 +102,10 @@ def prepare_tau_calo_region_calibrations( calo_region_name, eta_min, eta_max, o_
         print k, v
         float_to_str = [str(i) for i in v]
         to_print = ", ".join(float_to_str)
-        o_file.write( "\t\tcms.vdouble = ([ %s]),\n" % to_print )
+        o_file.write( "\t\tcms.PSet(\n" )
+        o_file.write( "\t\t\tl1egCount = cms.double( %.1f ),\n" % l1eg_map[k] )
+        o_file.write( "\t\t\tl1egEmFractions = cms.vdouble([ %s]),\n" % to_print )
+        o_file.write( "\t\t),\n" )
     o_file.write( "\t),\n" )
 
     # Now huge loop of values for each bin
