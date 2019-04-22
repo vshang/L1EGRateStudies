@@ -285,6 +285,12 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
             float n_l1eg_HoverE_Gtr0p25_saSS;
             float n_l1eg_avgHoverE;
 
+            float tau_pt;
+            float tau_pt_calibration_value;
+            float tau_iso_et;
+            float tau_total_iso_et;
+            float loose_iso_tau_wp;
+
             float deltaR_ecal_vs_jet;
             float deltaR_hcal_vs_jet;
             float deltaR_L1EGjet_vs_jet;
@@ -497,7 +503,13 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("n_l1eg_HoverE_Gtr0p25",          &treeinfo.n_l1eg_HoverE_Gtr0p25);
     tree->Branch("n_l1eg_HoverE_Gtr0p25_trkSS",    &treeinfo.n_l1eg_HoverE_Gtr0p25_trkSS);
     tree->Branch("n_l1eg_HoverE_Gtr0p25_saSS",     &treeinfo.n_l1eg_HoverE_Gtr0p25_saSS);
-    tree->Branch("n_l1eg_avgHoverE",     &treeinfo.n_l1eg_avgHoverE);
+    tree->Branch("n_l1eg_avgHoverE",              &treeinfo.n_l1eg_avgHoverE);
+
+    tree->Branch("tau_pt",     &treeinfo.tau_pt);
+    tree->Branch("tau_pt_calibration_value",     &treeinfo.tau_pt_calibration_value);
+    tree->Branch("tau_iso_et",     &treeinfo.tau_iso_et);
+    tree->Branch("tau_total_iso_et",     &treeinfo.tau_total_iso_et);
+    tree->Branch("loose_iso_tau_wp",     &treeinfo.loose_iso_tau_wp);
 
     tree->Branch("deltaR_ecal_vs_jet", &treeinfo.deltaR_ecal_vs_jet);
     tree->Branch("deltaR_hcal_vs_jet", &treeinfo.deltaR_hcal_vs_jet);
@@ -1450,6 +1462,13 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
     treeinfo.l1eg_nL1EGs_trkMatchSS = caloJet.GetExperimentalParam("l1eg_nL1EGs_trkMatchSS");
     treeinfo.l1eg_nL1EGs_trkMatchIso = caloJet.GetExperimentalParam("l1eg_nL1EGs_trkMatchIso");
     treeinfo.n_l1eg_HoverE_LessThreshold = caloJet.GetExperimentalParam("n_l1eg_HoverE_LessThreshold");
+
+    treeinfo.tau_pt = caloJet.GetExperimentalParam("tau_pt");
+    treeinfo.tau_pt_calibration_value = caloJet.GetExperimentalParam("tau_pt_calibration_value");
+    treeinfo.tau_iso_et = caloJet.GetExperimentalParam("tau_iso_et");
+    treeinfo.tau_total_iso_et = caloJet.GetExperimentalParam("tau_total_iso_et");
+    treeinfo.loose_iso_tau_wp = caloJet.GetExperimentalParam("loose_iso_tau_wp");
+
     //treeinfo.deltaR_ecal_vs_jet = caloJet.GetExperimentalParam("deltaR_ecal_vs_jet");
     //treeinfo.deltaR_hcal_vs_jet = caloJet.GetExperimentalParam("deltaR_hcal_vs_jet");
     //treeinfo.deltaR_L1EGjet_vs_jet = caloJet.GetExperimentalParam("deltaR_L1EGjet_vs_jet");
@@ -1544,6 +1563,11 @@ L1CaloJetStudies::fill_tree_null() {
     treeinfo.l1eg_nL1EGs_trkMatchSS = -9;
     treeinfo.l1eg_nL1EGs_trkMatchIso = -9;
     treeinfo.n_l1eg_HoverE_LessThreshold = -9;
+    treeinfo.tau_pt = -9;
+    treeinfo.tau_pt_calibration_value = -9;
+    treeinfo.tau_iso_et = -9;
+    treeinfo.tau_total_iso_et = -9;
+    treeinfo.loose_iso_tau_wp = -9;
     treeinfo.deltaR_ecal_vs_jet = -9;
     treeinfo.deltaR_hcal_vs_jet = -9;
     treeinfo.deltaR_L1EGjet_vs_jet = -9;
