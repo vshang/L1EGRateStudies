@@ -136,16 +136,8 @@ process.pGetTaus = cms.Path(
 # ----    Load the L1CaloJet sequence designed to accompany process named "REPR"
 
 process.load('L1Trigger.L1CaloTrigger.L1CaloJets_cff')
+process.l1CaloJets = cms.Path(process.l1CaloJetsSequence)
 
-
-
-
-# --------------------------------------------------------------------------------------------
-#
-# ----    Produce the L1EGCrystal clusters using Emulator
-
-process.load('L1Trigger.L1CaloTrigger.L1EGammaCrystalsEmulatorProducer_cfi')
-process.L1EGammaClusterEmuProducer.ecalTPEB = cms.InputTag("simEcalEBTriggerPrimitiveDigis","","REPR")
 
 
 
@@ -175,7 +167,7 @@ process.panalyzer = cms.Path(process.analyzer)
 
 
 process.TFileService = cms.Service("TFileService", 
-   fileName = cms.string("_jetOutputFile.root"), 
+   fileName = cms.string("_jetOutputFile2.root"), 
    #closeFileFast = cms.untracked.bool(True)
    closeFileFast = cms.untracked.bool(False)
 )

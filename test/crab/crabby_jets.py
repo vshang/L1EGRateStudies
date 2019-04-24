@@ -131,6 +131,7 @@ process.pGetTaus = cms.Path(
 # ----    Load the L1CaloJet sequence designed to accompany process named "REPR"
 
 process.load('L1Trigger.L1CaloTrigger.L1CaloJets_cff')
+process.l1CaloJets = cms.Path(process.l1CaloJetsSequence)
 
 
 
