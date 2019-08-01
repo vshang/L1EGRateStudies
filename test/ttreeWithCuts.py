@@ -26,9 +26,9 @@ def ttreeWithCuts( oldFile, oldTreePath, fOutName='ttreeWithCut.root', cut='' ) 
 
 
 if __name__ == '__main__' :
-    oldFile = '/data/truggles/l1CaloJets_20190319_r2/output_round2_minBiasv1.root'
+    oldFile = '/afs/cern.ch/user/v/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/testR2sample_Victor/output_round2_testSampleHTauTauv1.root'
     oldTreePath = 'analyzer/tree'
-    fOutName = '/data/truggles/l1CaloJets_20190319_r2/output_round2_minBiasv1_withCuts.root'
+    fOutName = '/afs/cern.ch/user/v/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/testR2sample_Victor/output_round2_testSampleHTauTauv1_withCuts.root'
     cut = '(calibPtHH > 15 || stage2tau_pt_calibration3 > 15)'
     ttreeWithCuts( oldFile, oldTreePath, fOutName, cut )
 

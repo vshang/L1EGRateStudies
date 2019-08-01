@@ -27,10 +27,11 @@ process.source = cms.Source("PoolSource",
 )
 
 
-out_path = '/data/truggles/l1CaloJets_20190319_r2/'
-name = "HiggsTauTauvL1EGs"
-name = "HiggsTauTau"
-#name = "minBias"
+out_path = '/data/vshang/l1CaloJets_20190723_r2/'
+#out_path = '/afs/cern.ch/user/v/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/testR2sample_Victor/'
+#name = "HiggsTauTauvL1EGs"
+#name = "HiggsTauTau"
+name = "minBias"
 # Load samples from external files here:
 from L1Trigger.L1EGRateStudies.loadRound2Files import getSampleFiles
 process.source.fileNames = getSampleFiles( name )

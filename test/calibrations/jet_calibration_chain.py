@@ -536,10 +536,10 @@ if '__main__' in __name__ :
 
 
     # Commands
-    doJets = False
-    doTaus = True
-    #doJets = True
-    #doTaus = False
+    #doJets = False
+    #doTaus = True
+    doJets = True
+    doTaus = False
 
     make_calibrations = False
     apply_phase2_calibrations = False
@@ -550,17 +550,18 @@ if '__main__' in __name__ :
     # Uncomment to run!
     #make_calibrations = True
     #apply_phase2_calibrations = True
-    #apply_stage2_calibrations = True
-    prepare_calibration_cfg = True
+    apply_stage2_calibrations = True
+    #prepare_calibration_cfg = True
     #plot_calibrated_results = True
 
-    base = '/data/truggles/l1CaloJets_20190319_r2/'
+    base = '/data/vshang/l1CaloJets_20190723_r2/'
     #base = '/data/truggles/l1CaloJets_20190417_r2/' # For Jets
 
     shapes = [
         # R2
-        'output_round2_HiggsTauTauv1',
-        #'output_round2_QCDApril17v1',
+        #'output_round2_HiggsTauTauv1',
+        #'output_round2_minBiasv1'
+        'output_round2_QCDv1',
     ]
 
     for shape in shapes :
@@ -570,7 +571,7 @@ if '__main__' in __name__ :
         jetsF0 = '%s.root' % shape
         date = jetsF0.replace('merged_','').replace('.root','')
         date = base.split('/')[-2].replace('l1CaloJets_','')+shape
-        plotDir = '/afs/cern.ch/user/t/truggles/www/Phase-II/20190308/'+date+'Vxy1'
+        plotDir = '/afs/cern.ch/user/v/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/'+date+'Vxy1'
         if not os.path.exists( plotDir ) : os.makedirs( plotDir )
 
         c = ROOT.TCanvas('c', '', 800, 700)

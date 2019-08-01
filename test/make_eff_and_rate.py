@@ -12,16 +12,16 @@ ROOT.gStyle.SetOptStat(0)
 doTau = True
 #doTau = False
 
-doEff = True
-#doEff = False
+#doEff = True
+doEff = False
 
-doPtEff = True
-#doPtEff = False
+#doPtEff = True
+doPtEff = False
 
 doRate = True
-doRate = False
+#doRate = False
 
-doRateFirstHalf = True
+#doRateFirstHalf = True
 doRateFirstHalf = False
 doRateSecondHalf = True
 #doRateSecondHalf = False
@@ -45,10 +45,11 @@ text = 'Jet' if not doTau else 'Tau'
     
 
 if doEff :
-    fName = 'output_round2_HiggsTauTauv1'
-    date = '20190319'
-    base = '/data/truggles/l1CaloJets_'+date+'_r2/'
-    universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/efficiencies/"+date+"/"+fName+"/"
+    fName = 'output_round2_QCDv1'
+    #fName = 'output_round2_HiggsTauTauv1'
+    date = '20190723'
+    base = '/data/vshang/l1CaloJets_20190723_r2/'
+    universalSaveDir = "/afs/cern.ch/user/v/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/efficiencies/"+date+"/"+fName+"/"
     checkDir( universalSaveDir )
 
     f = ROOT.TFile( base+fName+'.root', 'r' )
@@ -154,10 +155,10 @@ if doEff :
 if doRate :
 
     fName = 'output_round2_minBiasv1'
-    fName = 'output_round2_minBiasv1_withCuts'
-    date = '20190319'
-    base = '/data/truggles/l1CaloJets_'+date+'_r2/'
-    universalSaveDir = "/afs/cern.ch/user/t/truggles/www/Phase-II/rates/"+date+"/"+fName+"/"
+    #fName = 'output_round2_minBiasv1_withCuts'
+    date = '20190723'
+    base = '/data/vshang/l1CaloJets_20190723_r2/'
+    universalSaveDir = "/afs/cern.ch/user/v/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/rates/"+date+"/"+fName+"/"
     checkDir( universalSaveDir )
 
 
@@ -210,7 +211,7 @@ if doRate :
         assert(0)
     
     colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray+2]
-    saveName = 'output_round2_minBiasv1_withCuts'
+    saveName = 'output_round2_minBiasv1'
     x_info_rebin = [100, 0, 160]
 
     plot_map = OrderedDict()
