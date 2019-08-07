@@ -254,6 +254,33 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
             float hcal_nHits;
             float ecal_nHits;
             float l1eg_nHits;
+
+	    //Victor's edit: added different tower configuration variables
+	    float hcal_3x3;
+	    float hcal_1x3;
+	    float hcal_3x1;
+	    float hcal_Cross;
+	    float hcal_X;
+
+	    float ecal_3x3;
+	    float ecal_1x3;
+	    float ecal_3x1;
+	    float ecal_Cross;
+	    float ecal_X;
+
+	    float l1eg_3x3;
+	    float l1eg_1x3;
+	    float l1eg_3x1;
+	    float l1eg_Cross;
+	    float l1eg_X;
+
+	    float total_3x3;
+	    float total_1x3;
+	    float total_3x1;
+	    float total_Cross;
+	    float total_X;
+	    //End of Victor's edit
+
             //float ecal_leading_pt;
             //float ecal_leading_eta;
             //float ecal_leading_phi;
@@ -444,6 +471,33 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("jet_mass", &treeinfo.jet_mass);
     tree->Branch("jet_energy", &treeinfo.jet_energy);
     tree->Branch("hovere", &treeinfo.hovere);
+
+    //Victor's edit: added additional tower configurations to tree branches
+    tree->Branch("hcal_3x3", &treeinfo.hcal_3x3);
+    tree->Branch("hcal_1x3", &treeinfo.hcal_1x3);
+    tree->Branch("hcal_3x1", &treeinfo.hcal_3x1);
+    tree->Branch("hcal_Cross", &treeinfo.hcal_Cross);
+    tree->Branch("hcal_X", &treeinfo.hcal_X);
+
+    tree->Branch("ecal_3x3", &treeinfo.ecal_3x3);
+    tree->Branch("ecal_1x3", &treeinfo.ecal_1x3);
+    tree->Branch("ecal_3x1", &treeinfo.ecal_3x1);
+    tree->Branch("ecal_Cross", &treeinfo.ecal_Cross);
+    tree->Branch("ecal_X", &treeinfo.ecal_X);
+
+    tree->Branch("l1eg_3x3", &treeinfo.l1eg_3x3);
+    tree->Branch("l1eg_1x3", &treeinfo.l1eg_1x3);
+    tree->Branch("l1eg_3x1", &treeinfo.l1eg_3x1);
+    tree->Branch("l1eg_Cross", &treeinfo.l1eg_Cross);
+    tree->Branch("l1eg_X", &treeinfo.l1eg_X);
+
+    tree->Branch("total_3x3", &treeinfo.total_3x3);
+    tree->Branch("total_1x3", &treeinfo.total_1x3);
+    tree->Branch("total_3x1", &treeinfo.total_3x1);
+    tree->Branch("total_Cross", &treeinfo.total_Cross);
+    tree->Branch("total_X", &treeinfo.total_X);
+    //End of Victor's edit
+
     //tree->Branch("hcal_3x3", &treeinfo.hcal_3x3);
     tree->Branch("hcal_3x5", &treeinfo.hcal_3x5);
     //tree->Branch("hcal_5x5", &treeinfo.hcal_5x5);
@@ -1420,6 +1474,33 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
     treeinfo.seed_phi = caloJet.GetExperimentalParam("seed_phi");
     treeinfo.seed_energy = caloJet.GetExperimentalParam("seed_energy");
     treeinfo.hcal_nHits = caloJet.GetExperimentalParam("hcal_nHits");
+
+    //Victor's edit: fill tree branches for additional tower congifurations
+    treeinfo.hcal_3x3 = caloJet.GetExperimentalParam("hcal_3x3");
+    treeinfo.hcal_1x3 = caloJet.GetExperimentalParam("hcal_1x3");
+    treeinfo.hcal_3x1 = caloJet.GetExperimentalParam("hcal_3x1");
+    treeinfo.hcal_Cross = caloJet.GetExperimentalParam("hcal_Cross");
+    treeinfo.hcal_X = caloJet.GetExperimentalParam("hcal_X");
+
+    treeinfo.ecal_3x3 = caloJet.GetExperimentalParam("ecal_3x3");
+    treeinfo.ecal_1x3 = caloJet.GetExperimentalParam("ecal_1x3");
+    treeinfo.ecal_3x1 = caloJet.GetExperimentalParam("ecal_3x1");
+    treeinfo.ecal_Cross = caloJet.GetExperimentalParam("ecal_Cross");
+    treeinfo.ecal_X = caloJet.GetExperimentalParam("ecal_X");
+
+    treeinfo.l1eg_3x3 = caloJet.GetExperimentalParam("l1eg_3x3");
+    treeinfo.l1eg_1x3 = caloJet.GetExperimentalParam("l1eg_1x3");
+    treeinfo.l1eg_3x1 = caloJet.GetExperimentalParam("l1eg_3x1");
+    treeinfo.l1eg_Cross = caloJet.GetExperimentalParam("l1eg_Cross");
+    treeinfo.l1eg_X = caloJet.GetExperimentalParam("l1eg_X");
+
+    treeinfo.total_3x3 = caloJet.GetExperimentalParam("total_3x3");
+    treeinfo.total_1x3 = caloJet.GetExperimentalParam("total_1x3");
+    treeinfo.total_3x1 = caloJet.GetExperimentalParam("total_3x1");
+    treeinfo.total_Cross = caloJet.GetExperimentalParam("total_Cross");
+    treeinfo.total_X = caloJet.GetExperimentalParam("total_X");
+    //End of Victor's edit
+
     //treeinfo.hcal_3x3 = caloJet.GetExperimentalParam("hcal_3x3");
     treeinfo.hcal_3x5 = caloJet.GetExperimentalParam("hcal_3x5");
     //treeinfo.hcal_5x5 = caloJet.GetExperimentalParam("hcal_5x5");
@@ -1523,6 +1604,33 @@ L1CaloJetStudies::fill_tree_null() {
     treeinfo.hcal_nHits = -9;
     //treeinfo.hcal_3x3 = -9;
     treeinfo.hcal_3x5 = -9;
+
+    //Victor's edit: fill null tree for additional tower configurations
+    treeinfo.hcal_3x3 = -9;
+    treeinfo.hcal_1x3 = -9;
+    treeinfo.hcal_3x1 = -9;
+    treeinfo.hcal_Cross = -9;
+    treeinfo.hcal_X = -9;
+
+    treeinfo.ecal_3x3 = -9;
+    treeinfo.ecal_1x3 = -9;
+    treeinfo.ecal_3x1 = -9;
+    treeinfo.ecal_Cross = -9;
+    treeinfo.ecal_X = -9;
+
+    treeinfo.l1eg_3x3 = -9;
+    treeinfo.l1eg_1x3 = -9;
+    treeinfo.l1eg_3x1 = -9;
+    treeinfo.l1eg_Cross = -9;
+    treeinfo.l1eg_X = -9;
+
+    treeinfo.total_3x3 = -9; 
+    treeinfo.total_1x3 = -9;
+    treeinfo.total_3x1 = -9;
+    treeinfo.total_Cross = -9;
+    treeinfo.total_X = -9;
+    //End of Victor's edit
+
     //treeinfo.hcal_5x5 = -9;
     //treeinfo.hcal_5x7 = -9;
     treeinfo.hcal_7x7 = -9;
