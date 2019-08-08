@@ -279,6 +279,8 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
 	    float total_3x1;
 	    float total_Cross;
 	    float total_X;
+
+	    float total_7x7;
 	    //End of Victor's edit
 
             //float ecal_leading_pt;
@@ -496,6 +498,8 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("total_3x1", &treeinfo.total_3x1);
     tree->Branch("total_Cross", &treeinfo.total_Cross);
     tree->Branch("total_X", &treeinfo.total_X);
+
+    tree->Branch("total_7x7", &treeinfo.total_7x7);
     //End of Victor's edit
 
     //tree->Branch("hcal_3x3", &treeinfo.hcal_3x3);
@@ -1499,6 +1503,8 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
     treeinfo.total_3x1 = caloJet.GetExperimentalParam("total_3x1");
     treeinfo.total_Cross = caloJet.GetExperimentalParam("total_Cross");
     treeinfo.total_X = caloJet.GetExperimentalParam("total_X");
+
+    treeinfo.total_7x7 = caloJet.GetExperimentalParam("total_7x7");
     //End of Victor's edit
 
     //treeinfo.hcal_3x3 = caloJet.GetExperimentalParam("hcal_3x3");
@@ -1629,6 +1635,8 @@ L1CaloJetStudies::fill_tree_null() {
     treeinfo.total_3x1 = -9;
     treeinfo.total_Cross = -9;
     treeinfo.total_X = -9;
+
+    treeinfo.total_7x7 = -9;
     //End of Victor's edit
 
     //treeinfo.hcal_5x5 = -9;
