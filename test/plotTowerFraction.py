@@ -4,44 +4,49 @@ from ROOT import *
 f_ggHTT = TFile.Open('/data/vshang/l1CaloJets_20190806_r2/output_round2_HiggsTauTau_testv1.root', '')
 f_QCD = TFile.Open('/data/vshang/l1CaloJets_20190806_r2/output_round2_QCD_testv1.root', '')
 
+
 #Set sameCanvas to True for all plots on same Canvas, False if you want seperate plots
-sameCanvas = False
+sameCanvas = True
+
+#Set number of histogram bins and maximum value of y axis here
+nBins = 20
+yMax = 0.2
 
 #Remove stats box from histograms
 gStyle.SetOptStat(0)
 
 #Get event trees
-ggHTT_eventTree = f_ttbarAH.Get('analyzer/tree')
-QCD_eventTree = f_tChanAH.Get('analyzer/tree')
+ggHTT_eventTree = f_ggHTT.Get('analyzer/tree')
+QCD_eventTree = f_QCD.Get('analyzer/tree')
 
 
 ##Create tower E_T fraction distribution plots 
 ##-----------------------------------------------------------------------------------------------
 
 #Define ggHTT and QCD 3x3 tower histograms
-h_ggHTT_3x3 = TH1F('h_ggHTT_3x3', '3x3 Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', 25, 0, 1)
-h_QCD_3x3 = TH1F('h_QCD_3x3', '3x3 Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', 25, 0, 1)
+h_ggHTT_3x3 = TH1F('h_ggHTT_3x3', '3x3 Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
+h_QCD_3x3 = TH1F('h_QCD_3x3', '3x3 Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
 
 #Define ggHTT and QCD 1x3 tower histograms
-h_ggHTT_1x3 = TH1F('h_ggHTT_1x3', '1x3 Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', 25, 0, 1)
-h_QCD_1x3 = TH1F('h_QCD_1x3', '1x3 Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', 25, 0, 1)
+h_ggHTT_1x3 = TH1F('h_ggHTT_1x3', '1x3 Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
+h_QCD_1x3 = TH1F('h_QCD_1x3', '1x3 Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
 
 #Define ggHTT and QCD 3x1 tower histograms
-h_ggHTT_3x1 = TH1F('h_ggHTT_3x1', '3x1 Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', 25, 0, 1)
-h_QCD_3x1 = TH1F('h_QCD_3x1', '3x1 Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', 25, 0, 1)
+h_ggHTT_3x1 = TH1F('h_ggHTT_3x1', '3x1 Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
+h_QCD_3x1 = TH1F('h_QCD_3x1', '3x1 Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
 
 #Define ggHTT and QCD Cross tower histograms
-h_ggHTT_Cross = TH1F('h_ggHTT_Cross', 'Cross Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', 25, 0, 1)
-h_QCD_Cross = TH1F('h_QCD_Cross', 'Cross Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', 25, 0, 1)
+h_ggHTT_Cross = TH1F('h_ggHTT_Cross', 'Cross Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
+h_QCD_Cross = TH1F('h_QCD_Cross', 'Cross Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
 
 #Define ggHTT and QCD X tower histograms
-h_ggHTT_X = TH1F('h_ggHTT_X', 'X Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', 25, 0, 1)
-h_QCD_X = TH1F('h_QCD_X', 'X Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', 25, 0, 1)
+h_ggHTT_X = TH1F('h_ggHTT_X', 'X Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
+h_QCD_X = TH1F('h_QCD_X', 'X Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
 
 #Fill ggHTT histograms
 nEntries_ggHTT = ggHTT_eventTree.GetEntries()
-for i in range(nEntries_ttbarAH):
-    ttbarAH_eventTree.GetEntry(i)
+for i in range(nEntries_ggHTT):
+    ggHTT_eventTree.GetEntry(i)
     if ggHTT_eventTree.total_3x3 >= 0:
         h_ggHTT_3x3.Fill(ggHTT_eventTree.total_3x3/float(ggHTT_eventTree.total_7x7))
     if ggHTT_eventTree.total_1x3 >= 0:
@@ -55,8 +60,8 @@ for i in range(nEntries_ttbarAH):
 
 #Fill QCD histograms
 nEntries_QCD = QCD_eventTree.GetEntries()
-for i in range(nEntries_ttbarAH):
-    ttbarAH_eventTree.GetEntry(i)
+for i in range(nEntries_QCD):
+    QCD_eventTree.GetEntry(i)
     if QCD_eventTree.total_3x3 >= 0:
         h_QCD_3x3.Fill(QCD_eventTree.total_3x3/float(QCD_eventTree.total_7x7))
     if QCD_eventTree.total_1x3 >= 0:
@@ -95,12 +100,12 @@ h_QCD_3x3.Draw('hist same')
 h_ggHTT_3x3.SetLineColor(kRed)
 h_ggHTT_3x3.SetLineWidth(3)
 h_ggHTT_3x3.SetMinimum(0)
-h_ggHTT_3x3.SetMaximum(1)
+h_ggHTT_3x3.SetMaximum(yMax)
 #Set QCD_3x3 histogram options
 h_QCD_3x3.SetLineColor(kBlue)
 h_QCD_3x3.SetLineWidth(3)
 h_QCD_3x3.SetMinimum(0)
-h_QCD_3x3.SetMaximum(1)
+h_QCD_3x3.SetMaximum(yMax)
 #Add legend
 legend_3x3 = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_3x3.AddEntry(h_ggHTT_3x3, 'ggHTT, 3x3', 'l')
@@ -110,7 +115,7 @@ legend_3x3.SetBorderSize(0)
 
 #Draw 1x3 tower E_T fraction distribution plots 
 if sameCanvas:
-    cd.cd(2)
+    c.cd(2)
 else:
     c_1x3 = TCanvas('c_1x3', '1x3 Tower energy fraction distribution')
 h_ggHTT_1x3.Draw('hist')
@@ -119,12 +124,12 @@ h_QCD_1x3.Draw('hist same')
 h_ggHTT_1x3.SetLineColor(kRed)
 h_ggHTT_1x3.SetLineWidth(3)
 h_ggHTT_1x3.SetMinimum(0)
-h_ggHTT_1x3.SetMaximum(1)
+h_ggHTT_1x3.SetMaximum(yMax)
 #Set QCD_1x3 histogram options
 h_QCD_1x3.SetLineColor(kBlue)
 h_QCD_1x3.SetLineWidth(3)
 h_QCD_1x3.SetMinimum(0)
-h_QCD_1x3.SetMaximum(1)
+h_QCD_1x3.SetMaximum(yMax)
 #Add legend
 legend_1x3 = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_1x3.AddEntry(h_ggHTT_1x3, 'ggHTT, 1x3', 'l')
@@ -134,7 +139,7 @@ legend_1x3.SetBorderSize(0)
 
 #Draw 3x1 tower E_T fraction distribution plots 
 if sameCanvas:
-    cd.cd(3)
+    c.cd(3)
 else:
     c_3x1 = TCanvas('c_3x1', '3x1 Tower energy fraction distribution')
 h_ggHTT_3x1.Draw('hist')
@@ -143,12 +148,12 @@ h_QCD_3x1.Draw('hist same')
 h_ggHTT_3x1.SetLineColor(kRed)
 h_ggHTT_3x1.SetLineWidth(3)
 h_ggHTT_3x1.SetMinimum(0)
-h_ggHTT_3x1.SetMaximum(1)
+h_ggHTT_3x1.SetMaximum(yMax)
 #Set QCD_3x1 histogram options
 h_QCD_3x1.SetLineColor(kBlue)
 h_QCD_3x1.SetLineWidth(3)
 h_QCD_3x1.SetMinimum(0)
-h_QCD_3x1.SetMaximum(1)
+h_QCD_3x1.SetMaximum(yMax)
 #Add legend
 legend_3x1 = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_3x1.AddEntry(h_ggHTT_3x1, 'ggHTT, 3x1', 'l')
@@ -158,7 +163,7 @@ legend_3x1.SetBorderSize(0)
 
 #Draw Cross tower E_T fraction distribution plots 
 if sameCanvas:
-    cd.cd(3)
+    c.cd(4)
 else:
     c_Cross = TCanvas('c_Cross', 'Cross Tower energy fraction distribution')
 h_ggHTT_Cross.Draw('hist')
@@ -167,12 +172,12 @@ h_QCD_Cross.Draw('hist same')
 h_ggHTT_Cross.SetLineColor(kRed)
 h_ggHTT_Cross.SetLineWidth(3)
 h_ggHTT_Cross.SetMinimum(0)
-h_ggHTT_Cross.SetMaximum(1)
+h_ggHTT_Cross.SetMaximum(yMax)
 #Set QCD_Cross histogram options
 h_QCD_Cross.SetLineColor(kBlue)
 h_QCD_Cross.SetLineWidth(3)
 h_QCD_Cross.SetMinimum(0)
-h_QCD_Cross.SetMaximum(1)
+h_QCD_Cross.SetMaximum(yMax)
 #Add legend
 legend_Cross = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_Cross.AddEntry(h_ggHTT_Cross, 'ggHTT, Cross', 'l')
@@ -182,7 +187,7 @@ legend_Cross.SetBorderSize(0)
 
 #Draw X tower E_T fraction distribution plots 
 if sameCanvas:
-    cd.cd(3)
+    c.cd(5)
 else:
     c_X = TCanvas('c_X', 'X Tower energy fraction distribution')
 h_ggHTT_X.Draw('hist')
@@ -191,12 +196,12 @@ h_QCD_X.Draw('hist same')
 h_ggHTT_X.SetLineColor(kRed)
 h_ggHTT_X.SetLineWidth(3)
 h_ggHTT_X.SetMinimum(0)
-h_ggHTT_X.SetMaximum(1)
+h_ggHTT_X.SetMaximum(yMax)
 #Set QCD_X histogram options
 h_QCD_X.SetLineColor(kBlue)
 h_QCD_X.SetLineWidth(3)
 h_QCD_X.SetMinimum(0)
-h_QCD_X.SetMaximum(1)
+h_QCD_X.SetMaximum(yMax)
 #Add legend
 legend_X = TLegend(0.46, 0.73, 0.75, 0.87)
 legend_X.AddEntry(h_ggHTT_X, 'ggHTT, X', 'l')
