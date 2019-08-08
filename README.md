@@ -1,3 +1,4 @@
+#Victor's version of Tyler's original code.
 This repo provides some analysis tools for the Phase-II L1CaloJet and L1CaloTau algorithms. You can find detailed information on this code
 and instructions for using it to recalibrate aspects of the algos in the twiki here:
 ```
@@ -14,7 +15,7 @@ https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideL1TPhase2Instructions#CMSS
 Then checkout this analysis code:
 ```
 pushd L1Trigger
-git clone -b 10_5_X_Taus git@github.com:truggles/L1EGRateStudies.git L1EGRateStudies
+git clone -b master git@github.com:vshang/L1EGRateStudies.git L1EGRateStudies
 popd
 scram b -j 8
 ```
