@@ -24,54 +24,54 @@ QCD_eventTree = f_QCD.Get('analyzer/tree')
 ##-----------------------------------------------------------------------------------------------
 
 #Define ggHTT and QCD 3x3 tower histograms
-h_ggHTT_3x3 = TH1F('h_ggHTT_3x3', '3x3 Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
-h_QCD_3x3 = TH1F('h_QCD_3x3', '3x3 Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
+h_ggHTT_3x3 = TH1F('h_ggHTT_3x3', '3x3 Tower Energy fraction distribution; fraction of total 3x5 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
+h_QCD_3x3 = TH1F('h_QCD_3x3', '3x3 Tower Energy fraction distribution; fraction of total 3x5 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
 
 #Define ggHTT and QCD 1x3 tower histograms
-h_ggHTT_1x3 = TH1F('h_ggHTT_1x3', '1x3 Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
-h_QCD_1x3 = TH1F('h_QCD_1x3', '1x3 Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
+h_ggHTT_1x3 = TH1F('h_ggHTT_1x3', '1x3 Tower Energy fraction distribution; fraction of total 3x5 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
+h_QCD_1x3 = TH1F('h_QCD_1x3', '1x3 Tower Energy fraction distribution; fraction of total 3x5 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
 
 #Define ggHTT and QCD 3x1 tower histograms
-h_ggHTT_3x1 = TH1F('h_ggHTT_3x1', '3x1 Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
-h_QCD_3x1 = TH1F('h_QCD_3x1', '3x1 Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
+h_ggHTT_3x1 = TH1F('h_ggHTT_3x1', '3x1 Tower Energy fraction distribution; fraction of total 3x5 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
+h_QCD_3x1 = TH1F('h_QCD_3x1', '3x1 Tower Energy fraction distribution; fraction of total 3x5 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
 
 #Define ggHTT and QCD Cross tower histograms
-h_ggHTT_Cross = TH1F('h_ggHTT_Cross', 'Cross Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
-h_QCD_Cross = TH1F('h_QCD_Cross', 'Cross Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
+h_ggHTT_Cross = TH1F('h_ggHTT_Cross', 'Cross Tower Energy fraction distribution; fraction of total 3x5 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
+h_QCD_Cross = TH1F('h_QCD_Cross', 'Cross Tower Energy fraction distribution; fraction of total 3x5 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
 
 #Define ggHTT and QCD X tower histograms
-h_ggHTT_X = TH1F('h_ggHTT_X', 'X Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
-h_QCD_X = TH1F('h_QCD_X', 'X Tower Energy fraction distribution; fraction of total 7x7 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
+h_ggHTT_X = TH1F('h_ggHTT_X', 'X Tower Energy fraction distribution; fraction of total 3x5 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
+h_QCD_X = TH1F('h_QCD_X', 'X Tower Energy fraction distribution; fraction of total 3x5 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
 
 #Fill ggHTT histograms
 nEntries_ggHTT = ggHTT_eventTree.GetEntries()
 for i in range(nEntries_ggHTT):
     ggHTT_eventTree.GetEntry(i)
     if ggHTT_eventTree.total_3x3 >= 0:
-        h_ggHTT_3x3.Fill(ggHTT_eventTree.total_3x3/float(ggHTT_eventTree.total_7x7))
+        h_ggHTT_3x3.Fill(ggHTT_eventTree.total_3x3/float(ggHTT_eventTree.total_3x5))
     if ggHTT_eventTree.total_1x3 >= 0:
-        h_ggHTT_1x3.Fill(ggHTT_eventTree.total_1x3/float(ggHTT_eventTree.total_7x7))
+        h_ggHTT_1x3.Fill(ggHTT_eventTree.total_1x3/float(ggHTT_eventTree.total_3x5))
     if ggHTT_eventTree.total_3x1 >= 0:
-        h_ggHTT_3x1.Fill(ggHTT_eventTree.total_3x1/float(ggHTT_eventTree.total_7x7))
+        h_ggHTT_3x1.Fill(ggHTT_eventTree.total_3x1/float(ggHTT_eventTree.total_3x5))
     if ggHTT_eventTree.total_Cross >= 0:
-        h_ggHTT_Cross.Fill(ggHTT_eventTree.total_Cross/float(ggHTT_eventTree.total_7x7))
+        h_ggHTT_Cross.Fill(ggHTT_eventTree.total_Cross/float(ggHTT_eventTree.total_3x5))
     if ggHTT_eventTree.total_X >= 0:
-        h_ggHTT_X.Fill(ggHTT_eventTree.total_X/float(ggHTT_eventTree.total_7x7))
+        h_ggHTT_X.Fill(ggHTT_eventTree.total_X/float(ggHTT_eventTree.total_3x5))
 
 #Fill QCD histograms
 nEntries_QCD = QCD_eventTree.GetEntries()
 for i in range(nEntries_QCD):
     QCD_eventTree.GetEntry(i)
     if QCD_eventTree.total_3x3 >= 0:
-        h_QCD_3x3.Fill(QCD_eventTree.total_3x3/float(QCD_eventTree.total_7x7))
+        h_QCD_3x3.Fill(QCD_eventTree.total_3x3/float(QCD_eventTree.total_3x5))
     if QCD_eventTree.total_1x3 >= 0:
-        h_QCD_1x3.Fill(QCD_eventTree.total_1x3/float(QCD_eventTree.total_7x7))
+        h_QCD_1x3.Fill(QCD_eventTree.total_1x3/float(QCD_eventTree.total_3x5))
     if QCD_eventTree.total_3x1 >= 0:
-        h_QCD_3x1.Fill(QCD_eventTree.total_3x1/float(QCD_eventTree.total_7x7))
+        h_QCD_3x1.Fill(QCD_eventTree.total_3x1/float(QCD_eventTree.total_3x5))
     if QCD_eventTree.total_Cross >= 0:
-        h_QCD_Cross.Fill(QCD_eventTree.total_Cross/float(QCD_eventTree.total_7x7))
+        h_QCD_Cross.Fill(QCD_eventTree.total_Cross/float(QCD_eventTree.total_3x5))
     if QCD_eventTree.total_X >= 0:
-        h_QCD_X.Fill(QCD_eventTree.total_X/float(QCD_eventTree.total_7x7))
+        h_QCD_X.Fill(QCD_eventTree.total_X/float(QCD_eventTree.total_3x5))
 
 #Normalize ggHTT histograms to unit area
 h_ggHTT_3x3.Scale(1/h_ggHTT_3x3.Integral())

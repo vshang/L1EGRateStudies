@@ -281,6 +281,73 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
 	    float total_X;
 
 	    float total_7x7;
+	    float total_3x5;
+
+	    //Individual tower energies in 3x5 array. 11 corresponds to lower left corner (least eta, least phi)
+	    float hcal_seed;
+	    float hcal_11;
+	    float hcal_12;
+	    float hcal_13;
+	    float hcal_21;
+	    float hcal_22;
+	    float hcal_23;
+	    float hcal_31;
+	    float hcal_33;
+	    float hcal_41;
+	    float hcal_42;
+	    float hcal_43;
+	    float hcal_51;
+	    float hcal_52;
+	    float hcal_53;
+
+	    float ecal_seed;
+	    float ecal_11;
+	    float ecal_12;
+	    float ecal_13;
+	    float ecal_21;
+	    float ecal_22;
+	    float ecal_23;
+	    float ecal_31;
+	    float ecal_33;
+	    float ecal_41;
+	    float ecal_42;
+	    float ecal_43;
+	    float ecal_51;
+	    float ecal_52;
+	    float ecal_53;
+
+	    float l1eg_seed;
+	    float l1eg_11;
+	    float l1eg_12;
+	    float l1eg_13;
+	    float l1eg_21;
+	    float l1eg_22;
+	    float l1eg_23;
+	    float l1eg_31;
+	    float l1eg_33;
+	    float l1eg_41;
+	    float l1eg_42;
+	    float l1eg_43;
+	    float l1eg_51;
+	    float l1eg_52;
+	    float l1eg_53;
+
+	    float total_seed;
+	    float total_11;
+	    float total_12;
+	    float total_13;
+	    float total_21;
+	    float total_22;
+	    float total_23;
+	    float total_31;
+	    float total_33;
+	    float total_41;
+	    float total_42;
+	    float total_43;
+	    float total_51;
+	    float total_52;
+	    float total_53;
+
 	    //End of Victor's edit
 
             //float ecal_leading_pt;
@@ -500,6 +567,72 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("total_X", &treeinfo.total_X);
 
     tree->Branch("total_7x7", &treeinfo.total_7x7);
+    tree->Branch("total_3x5", &treeinfo.total_3x5);
+
+    //Add individual tower energies in 3x5 array to branches. 11 corresponds to lower left corner (least eta, least phi)
+    tree->Branch("hcal_seed", &treeinfo.hcal_seed);
+    tree->Branch("hcal_11", &treeinfo.hcal_11);
+    tree->Branch("hcal_12", &treeinfo.hcal_12);
+    tree->Branch("hcal_13", &treeinfo.hcal_13);
+    tree->Branch("hcal_21", &treeinfo.hcal_21);
+    tree->Branch("hcal_22", &treeinfo.hcal_22);
+    tree->Branch("hcal_23", &treeinfo.hcal_23);
+    tree->Branch("hcal_31", &treeinfo.hcal_31);
+    tree->Branch("hcal_33", &treeinfo.hcal_33);
+    tree->Branch("hcal_41", &treeinfo.hcal_41);
+    tree->Branch("hcal_42", &treeinfo.hcal_42);
+    tree->Branch("hcal_43", &treeinfo.hcal_43);
+    tree->Branch("hcal_51", &treeinfo.hcal_51);
+    tree->Branch("hcal_52", &treeinfo.hcal_52);
+    tree->Branch("hcal_53", &treeinfo.hcal_53);
+
+    tree->Branch("ecal_seed", &treeinfo.ecal_seed);
+    tree->Branch("ecal_11", &treeinfo.ecal_11);
+    tree->Branch("ecal_12", &treeinfo.ecal_12);
+    tree->Branch("ecal_13", &treeinfo.ecal_13);
+    tree->Branch("ecal_21", &treeinfo.ecal_21);
+    tree->Branch("ecal_22", &treeinfo.ecal_22);
+    tree->Branch("ecal_23", &treeinfo.ecal_23);
+    tree->Branch("ecal_31", &treeinfo.ecal_31);
+    tree->Branch("ecal_33", &treeinfo.ecal_33);
+    tree->Branch("ecal_41", &treeinfo.ecal_41);
+    tree->Branch("ecal_42", &treeinfo.ecal_42);
+    tree->Branch("ecal_43", &treeinfo.ecal_43);
+    tree->Branch("ecal_51", &treeinfo.ecal_51);
+    tree->Branch("ecal_52", &treeinfo.ecal_52);
+    tree->Branch("ecal_53", &treeinfo.ecal_53);
+
+    tree->Branch("l1eg_seed", &treeinfo.l1eg_seed);
+    tree->Branch("l1eg_11", &treeinfo.l1eg_11);
+    tree->Branch("l1eg_12", &treeinfo.l1eg_12);
+    tree->Branch("l1eg_13", &treeinfo.l1eg_13);
+    tree->Branch("l1eg_21", &treeinfo.l1eg_21);
+    tree->Branch("l1eg_22", &treeinfo.l1eg_22);
+    tree->Branch("l1eg_23", &treeinfo.l1eg_23);
+    tree->Branch("l1eg_31", &treeinfo.l1eg_31);
+    tree->Branch("l1eg_33", &treeinfo.l1eg_33);
+    tree->Branch("l1eg_41", &treeinfo.l1eg_41);
+    tree->Branch("l1eg_42", &treeinfo.l1eg_42);
+    tree->Branch("l1eg_43", &treeinfo.l1eg_43);
+    tree->Branch("l1eg_51", &treeinfo.l1eg_51);
+    tree->Branch("l1eg_52", &treeinfo.l1eg_52);
+    tree->Branch("l1eg_53", &treeinfo.l1eg_53);
+
+    tree->Branch("total_seed", &treeinfo.total_seed);
+    tree->Branch("total_11", &treeinfo.total_11);
+    tree->Branch("total_12", &treeinfo.total_12);
+    tree->Branch("total_13", &treeinfo.total_13);
+    tree->Branch("total_21", &treeinfo.total_21);
+    tree->Branch("total_22", &treeinfo.total_22);
+    tree->Branch("total_23", &treeinfo.total_23);
+    tree->Branch("total_31", &treeinfo.total_31);
+    tree->Branch("total_33", &treeinfo.total_33);
+    tree->Branch("total_41", &treeinfo.total_41);
+    tree->Branch("total_42", &treeinfo.total_42);
+    tree->Branch("total_43", &treeinfo.total_43);
+    tree->Branch("total_51", &treeinfo.total_51);
+    tree->Branch("total_52", &treeinfo.total_52);
+    tree->Branch("total_53", &treeinfo.total_53);
     //End of Victor's edit
 
     //tree->Branch("hcal_3x3", &treeinfo.hcal_3x3);
@@ -1505,6 +1638,72 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
     treeinfo.total_X = caloJet.GetExperimentalParam("total_X");
 
     treeinfo.total_7x7 = caloJet.GetExperimentalParam("total_7x7");
+    treeinfo.total_3x5 = caloJet.GetExperimentalParam("total_3x5");
+
+    //Fill branches with individual tower energies in 3x5 array. 11 corresponds to lower left corner (least eta, least phi)
+    treeinfo.hcal_seed = caloJet.GetExperimentalParam("hcal_seed");
+    treeinfo.hcal_11 = caloJet.GetExperimentalParam("hcal_11");
+    treeinfo.hcal_12 = caloJet.GetExperimentalParam("hcal_12");
+    treeinfo.hcal_13 = caloJet.GetExperimentalParam("hcal_13");
+    treeinfo.hcal_21 = caloJet.GetExperimentalParam("hcal_21");
+    treeinfo.hcal_22 = caloJet.GetExperimentalParam("hcal_22");
+    treeinfo.hcal_23 = caloJet.GetExperimentalParam("hcal_23");
+    treeinfo.hcal_31 = caloJet.GetExperimentalParam("hcal_31");
+    treeinfo.hcal_33 = caloJet.GetExperimentalParam("hcal_33");
+    treeinfo.hcal_41 = caloJet.GetExperimentalParam("hcal_41");
+    treeinfo.hcal_42 = caloJet.GetExperimentalParam("hcal_42");
+    treeinfo.hcal_43 = caloJet.GetExperimentalParam("hcal_43");
+    treeinfo.hcal_51 = caloJet.GetExperimentalParam("hcal_51");
+    treeinfo.hcal_52 = caloJet.GetExperimentalParam("hcal_52");
+    treeinfo.hcal_53 = caloJet.GetExperimentalParam("hcal_53");
+
+    treeinfo.ecal_seed = caloJet.GetExperimentalParam("ecal_seed");
+    treeinfo.ecal_11 = caloJet.GetExperimentalParam("ecal_11");
+    treeinfo.ecal_12 = caloJet.GetExperimentalParam("ecal_12");
+    treeinfo.ecal_13 = caloJet.GetExperimentalParam("ecal_13");
+    treeinfo.ecal_21 = caloJet.GetExperimentalParam("ecal_21");
+    treeinfo.ecal_22 = caloJet.GetExperimentalParam("ecal_22");
+    treeinfo.ecal_23 = caloJet.GetExperimentalParam("ecal_23");
+    treeinfo.ecal_31 = caloJet.GetExperimentalParam("ecal_31");
+    treeinfo.ecal_33 = caloJet.GetExperimentalParam("ecal_33");
+    treeinfo.ecal_41 = caloJet.GetExperimentalParam("ecal_41");
+    treeinfo.ecal_42 = caloJet.GetExperimentalParam("ecal_42");
+    treeinfo.ecal_43 = caloJet.GetExperimentalParam("ecal_43");
+    treeinfo.ecal_51 = caloJet.GetExperimentalParam("ecal_51");
+    treeinfo.ecal_52 = caloJet.GetExperimentalParam("ecal_52");
+    treeinfo.ecal_53 = caloJet.GetExperimentalParam("ecal_53");
+
+    treeinfo.l1eg_seed = caloJet.GetExperimentalParam("l1eg_seed");
+    treeinfo.l1eg_11 = caloJet.GetExperimentalParam("l1eg_11");
+    treeinfo.l1eg_12 = caloJet.GetExperimentalParam("l1eg_12");
+    treeinfo.l1eg_13 = caloJet.GetExperimentalParam("l1eg_13");
+    treeinfo.l1eg_21 = caloJet.GetExperimentalParam("l1eg_21");
+    treeinfo.l1eg_22 = caloJet.GetExperimentalParam("l1eg_22");
+    treeinfo.l1eg_23 = caloJet.GetExperimentalParam("l1eg_23");
+    treeinfo.l1eg_31 = caloJet.GetExperimentalParam("l1eg_31");
+    treeinfo.l1eg_33 = caloJet.GetExperimentalParam("l1eg_33");
+    treeinfo.l1eg_41 = caloJet.GetExperimentalParam("l1eg_41");
+    treeinfo.l1eg_42 = caloJet.GetExperimentalParam("l1eg_42");
+    treeinfo.l1eg_43 = caloJet.GetExperimentalParam("l1eg_43");
+    treeinfo.l1eg_51 = caloJet.GetExperimentalParam("l1eg_51");
+    treeinfo.l1eg_52 = caloJet.GetExperimentalParam("l1eg_52");
+    treeinfo.l1eg_53 = caloJet.GetExperimentalParam("l1eg_53");
+
+    treeinfo.total_seed = caloJet.GetExperimentalParam("total_seed");
+    treeinfo.total_11 = caloJet.GetExperimentalParam("total_11");
+    treeinfo.total_12 = caloJet.GetExperimentalParam("total_12");
+    treeinfo.total_13 = caloJet.GetExperimentalParam("total_13");
+    treeinfo.total_21 = caloJet.GetExperimentalParam("total_21");
+    treeinfo.total_22 = caloJet.GetExperimentalParam("total_22");
+    treeinfo.total_23 = caloJet.GetExperimentalParam("total_23");
+    treeinfo.total_31 = caloJet.GetExperimentalParam("total_31");
+    treeinfo.total_33 = caloJet.GetExperimentalParam("total_33");
+    treeinfo.total_41 = caloJet.GetExperimentalParam("total_41");
+    treeinfo.total_42 = caloJet.GetExperimentalParam("total_42");
+    treeinfo.total_43 = caloJet.GetExperimentalParam("total_43");
+    treeinfo.total_51 = caloJet.GetExperimentalParam("total_51");
+    treeinfo.total_52 = caloJet.GetExperimentalParam("total_52");
+    treeinfo.total_53 = caloJet.GetExperimentalParam("total_53");
     //End of Victor's edit
 
     //treeinfo.hcal_3x3 = caloJet.GetExperimentalParam("hcal_3x3");
@@ -1637,6 +1836,72 @@ L1CaloJetStudies::fill_tree_null() {
     treeinfo.total_X = -9;
 
     treeinfo.total_7x7 = -9;
+    treeinfo.total_3x5 = -9;
+
+    //Fill null branches with individual tower energies in 3x5 array. 11 corresponds to lower left corner (least eta, least phi)
+    treeinfo.hcal_seed = -9;
+    treeinfo.hcal_11 = -9;
+    treeinfo.hcal_12 = -9;
+    treeinfo.hcal_13 = -9;
+    treeinfo.hcal_21 = -9;
+    treeinfo.hcal_22 = -9;
+    treeinfo.hcal_23 = -9;
+    treeinfo.hcal_31 = -9;
+    treeinfo.hcal_33 = -9;
+    treeinfo.hcal_41 = -9;
+    treeinfo.hcal_42 = -9;
+    treeinfo.hcal_43 = -9;
+    treeinfo.hcal_51 = -9;
+    treeinfo.hcal_52 = -9;
+    treeinfo.hcal_53 = -9;
+
+    treeinfo.ecal_seed = -9;
+    treeinfo.ecal_11 = -9;
+    treeinfo.ecal_12 = -9;
+    treeinfo.ecal_13 = -9;
+    treeinfo.ecal_21 = -9;
+    treeinfo.ecal_22 = -9;
+    treeinfo.ecal_23 = -9;
+    treeinfo.ecal_31 = -9;
+    treeinfo.ecal_33 = -9;
+    treeinfo.ecal_41 = -9;
+    treeinfo.ecal_42 = -9;
+    treeinfo.ecal_43 = -9;
+    treeinfo.ecal_51 = -9;
+    treeinfo.ecal_52 = -9;
+    treeinfo.ecal_53 = -9;
+
+    treeinfo.l1eg_seed = -9;
+    treeinfo.l1eg_11 = -9;
+    treeinfo.l1eg_12 = -9;
+    treeinfo.l1eg_13 = -9;
+    treeinfo.l1eg_21 = -9;
+    treeinfo.l1eg_22 = -9;
+    treeinfo.l1eg_23 = -9;
+    treeinfo.l1eg_31 = -9;
+    treeinfo.l1eg_33 = -9;
+    treeinfo.l1eg_41 = -9;
+    treeinfo.l1eg_42 = -9;
+    treeinfo.l1eg_43 = -9;
+    treeinfo.l1eg_51 = -9;
+    treeinfo.l1eg_52 = -9;
+    treeinfo.l1eg_53 = -9;
+
+    treeinfo.total_seed = -9;
+    treeinfo.total_11 = -9;
+    treeinfo.total_12 = -9;
+    treeinfo.total_13 = -9;
+    treeinfo.total_21 = -9;
+    treeinfo.total_22 = -9;
+    treeinfo.total_23 = -9;
+    treeinfo.total_31 = -9;
+    treeinfo.total_33 = -9;
+    treeinfo.total_41 = -9;
+    treeinfo.total_42 = -9;
+    treeinfo.total_43 = -9;
+    treeinfo.total_51 = -9;
+    treeinfo.total_52 = -9;
+    treeinfo.total_53 = -9;
     //End of Victor's edit
 
     //treeinfo.hcal_5x5 = -9;

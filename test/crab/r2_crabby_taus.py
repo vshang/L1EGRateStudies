@@ -32,8 +32,8 @@ out_path = '/data/vshang/l1CaloJets_20190806_r2/'
 #name = "HiggsTauTauvL1EGs"
 #name = "HiggsTauTau"
 #name = "minBias"
-#name = "HiggsTauTau_test"
-name = "QCD_test"
+name = "HiggsTauTau_test"
+#name = "QCD_test"
 # Load samples from external files here:
 from L1Trigger.L1EGRateStudies.loadRound2Files import getSampleFiles
 process.source.fileNames = getSampleFiles( name )

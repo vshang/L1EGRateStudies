@@ -26,510 +26,510 @@ cms.untracked.vstring(
 
 
 
-08-Aug-2019 16:38:40 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_10.root
-08-Aug-2019 16:38:40 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_10.root
-Begin processing the 1st record. Run 1, Event 29799, LumiSection 120 on stream 0 at 08-Aug-2019 16:40:48.906 EDT
-Begin processing the 101st record. Run 1, Event 29892, LumiSection 120 on stream 0 at 08-Aug-2019 16:40:49.946 EDT
-Begin processing the 201st record. Run 1, Event 29990, LumiSection 120 on stream 0 at 08-Aug-2019 16:40:50.636 EDT
-Begin processing the 301st record. Run 1, Event 86348, LumiSection 346 on stream 0 at 08-Aug-2019 16:40:51.366 EDT
-Begin processing the 401st record. Run 1, Event 86440, LumiSection 346 on stream 0 at 08-Aug-2019 16:40:52.012 EDT
-Begin processing the 501st record. Run 1, Event 99572, LumiSection 399 on stream 0 at 08-Aug-2019 16:40:52.826 EDT
-Begin processing the 601st record. Run 1, Event 99669, LumiSection 399 on stream 0 at 08-Aug-2019 16:40:53.424 EDT
-Begin processing the 701st record. Run 1, Event 99778, LumiSection 399 on stream 0 at 08-Aug-2019 16:40:54.055 EDT
-Begin processing the 801st record. Run 1, Event 841, LumiSection 4 on stream 0 at 08-Aug-2019 16:40:54.730 EDT
-Begin processing the 901st record. Run 1, Event 943, LumiSection 4 on stream 0 at 08-Aug-2019 16:40:55.409 EDT
-Begin processing the 1001st record. Run 1, Event 2300, LumiSection 10 on stream 0 at 08-Aug-2019 16:40:56.243 EDT
-Begin processing the 1101st record. Run 1, Event 2405, LumiSection 10 on stream 0 at 08-Aug-2019 16:40:56.878 EDT
-Begin processing the 1201st record. Run 1, Event 2501, LumiSection 10 on stream 0 at 08-Aug-2019 16:40:57.531 EDT
-Begin processing the 1301st record. Run 1, Event 64874, LumiSection 260 on stream 0 at 08-Aug-2019 16:40:58.108 EDT
-Begin processing the 1401st record. Run 1, Event 64965, LumiSection 260 on stream 0 at 08-Aug-2019 16:40:58.736 EDT
-Begin processing the 1501st record. Run 1, Event 47827, LumiSection 192 on stream 0 at 08-Aug-2019 16:40:59.543 EDT
-Begin processing the 1601st record. Run 1, Event 47944, LumiSection 192 on stream 0 at 08-Aug-2019 16:41:00.148 EDT
-Begin processing the 1701st record. Run 1, Event 1029, LumiSection 5 on stream 0 at 08-Aug-2019 16:41:00.871 EDT
-Begin processing the 1801st record. Run 1, Event 1127, LumiSection 5 on stream 0 at 08-Aug-2019 16:41:01.526 EDT
-Begin processing the 1901st record. Run 1, Event 1225, LumiSection 5 on stream 0 at 08-Aug-2019 16:41:02.402 EDT
-Begin processing the 2001st record. Run 1, Event 96076, LumiSection 385 on stream 0 at 08-Aug-2019 16:41:03.025 EDT
-Begin processing the 2101st record. Run 1, Event 96177, LumiSection 385 on stream 0 at 08-Aug-2019 16:41:03.648 EDT
-Begin processing the 2201st record. Run 1, Event 28027, LumiSection 113 on stream 0 at 08-Aug-2019 16:41:04.324 EDT
-Begin processing the 2301st record. Run 1, Event 28141, LumiSection 113 on stream 0 at 08-Aug-2019 16:41:04.963 EDT
-Begin processing the 2401st record. Run 1, Event 28235, LumiSection 113 on stream 0 at 08-Aug-2019 16:41:05.830 EDT
-08-Aug-2019 16:41:06 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_10.root
-08-Aug-2019 16:41:06 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_11.root
-08-Aug-2019 16:41:06 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_11.root
-Begin processing the 2501st record. Run 1, Event 83843, LumiSection 336 on stream 0 at 08-Aug-2019 16:41:07.252 EDT
-Begin processing the 2601st record. Run 1, Event 83946, LumiSection 336 on stream 0 at 08-Aug-2019 16:41:08.076 EDT
-Begin processing the 2701st record. Run 1, Event 69036, LumiSection 277 on stream 0 at 08-Aug-2019 16:41:08.862 EDT
-Begin processing the 2801st record. Run 1, Event 69139, LumiSection 277 on stream 0 at 08-Aug-2019 16:41:09.460 EDT
-Begin processing the 2901st record. Run 1, Event 69232, LumiSection 277 on stream 0 at 08-Aug-2019 16:41:10.120 EDT
-Begin processing the 3001st record. Run 1, Event 45062, LumiSection 181 on stream 0 at 08-Aug-2019 16:41:10.894 EDT
-Begin processing the 3101st record. Run 1, Event 45160, LumiSection 181 on stream 0 at 08-Aug-2019 16:41:11.634 EDT
-Begin processing the 3201st record. Run 1, Event 49294, LumiSection 198 on stream 0 at 08-Aug-2019 16:41:12.423 EDT
-Begin processing the 3301st record. Run 1, Event 49387, LumiSection 198 on stream 0 at 08-Aug-2019 16:41:13.060 EDT
-Begin processing the 3401st record. Run 1, Event 49494, LumiSection 198 on stream 0 at 08-Aug-2019 16:41:13.769 EDT
-Begin processing the 3501st record. Run 1, Event 98585, LumiSection 395 on stream 0 at 08-Aug-2019 16:41:14.506 EDT
-Begin processing the 3601st record. Run 1, Event 98675, LumiSection 395 on stream 0 at 08-Aug-2019 16:41:15.142 EDT
-Begin processing the 3701st record. Run 1, Event 72537, LumiSection 291 on stream 0 at 08-Aug-2019 16:41:15.918 EDT
-Begin processing the 3801st record. Run 1, Event 72622, LumiSection 291 on stream 0 at 08-Aug-2019 16:41:16.573 EDT
-Begin processing the 3901st record. Run 1, Event 72725, LumiSection 291 on stream 0 at 08-Aug-2019 16:41:17.335 EDT
-Begin processing the 4001st record. Run 1, Event 22318, LumiSection 90 on stream 0 at 08-Aug-2019 16:41:17.946 EDT
-Begin processing the 4101st record. Run 1, Event 22412, LumiSection 90 on stream 0 at 08-Aug-2019 16:41:18.613 EDT
-Begin processing the 4201st record. Run 1, Event 22519, LumiSection 90 on stream 0 at 08-Aug-2019 16:41:19.417 EDT
-Begin processing the 4301st record. Run 1, Event 51859, LumiSection 208 on stream 0 at 08-Aug-2019 16:41:20.060 EDT
-Begin processing the 4401st record. Run 1, Event 51963, LumiSection 208 on stream 0 at 08-Aug-2019 16:41:20.784 EDT
-Begin processing the 4501st record. Run 1, Event 31305, LumiSection 126 on stream 0 at 08-Aug-2019 16:41:21.425 EDT
-Begin processing the 4601st record. Run 1, Event 31402, LumiSection 126 on stream 0 at 08-Aug-2019 16:41:22.086 EDT
-Begin processing the 4701st record. Run 1, Event 31500, LumiSection 126 on stream 0 at 08-Aug-2019 16:41:22.794 EDT
-Begin processing the 4801st record. Run 1, Event 56607, LumiSection 227 on stream 0 at 08-Aug-2019 16:41:23.443 EDT
-Begin processing the 4901st record. Run 1, Event 56704, LumiSection 227 on stream 0 at 08-Aug-2019 16:41:24.172 EDT
-08-Aug-2019 16:41:24 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_11.root
-08-Aug-2019 16:41:24 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_12.root
-08-Aug-2019 16:41:24 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_12.root
-Begin processing the 5001st record. Run 1, Event 99828, LumiSection 400 on stream 0 at 08-Aug-2019 16:41:25.299 EDT
-Begin processing the 5101st record. Run 1, Event 99925, LumiSection 400 on stream 0 at 08-Aug-2019 16:41:25.997 EDT
-Begin processing the 5201st record. Run 1, Event 89820, LumiSection 360 on stream 0 at 08-Aug-2019 16:41:26.790 EDT
-Begin processing the 5301st record. Run 1, Event 89919, LumiSection 360 on stream 0 at 08-Aug-2019 16:41:27.408 EDT
-Begin processing the 5401st record. Run 1, Event 68291, LumiSection 274 on stream 0 at 08-Aug-2019 16:41:28.038 EDT
-Begin processing the 5501st record. Run 1, Event 68390, LumiSection 274 on stream 0 at 08-Aug-2019 16:41:28.822 EDT
-Begin processing the 5601st record. Run 1, Event 68491, LumiSection 274 on stream 0 at 08-Aug-2019 16:41:29.474 EDT
-Begin processing the 5701st record. Run 1, Event 92579, LumiSection 371 on stream 0 at 08-Aug-2019 16:41:30.168 EDT
-Begin processing the 5801st record. Run 1, Event 92687, LumiSection 371 on stream 0 at 08-Aug-2019 16:41:30.823 EDT
-Begin processing the 5901st record. Run 1, Event 55015, LumiSection 221 on stream 0 at 08-Aug-2019 16:41:31.491 EDT
-Begin processing the 6001st record. Run 1, Event 55113, LumiSection 221 on stream 0 at 08-Aug-2019 16:41:32.352 EDT
-Begin processing the 6101st record. Run 1, Event 55213, LumiSection 221 on stream 0 at 08-Aug-2019 16:41:33.010 EDT
-Begin processing the 6201st record. Run 1, Event 26830, LumiSection 108 on stream 0 at 08-Aug-2019 16:41:33.720 EDT
-Begin processing the 6301st record. Run 1, Event 26921, LumiSection 108 on stream 0 at 08-Aug-2019 16:41:34.376 EDT
-Begin processing the 6401st record. Run 1, Event 37784, LumiSection 152 on stream 0 at 08-Aug-2019 16:41:35.177 EDT
-Begin processing the 6501st record. Run 1, Event 37885, LumiSection 152 on stream 0 at 08-Aug-2019 16:41:35.825 EDT
-Begin processing the 6601st record. Run 1, Event 37983, LumiSection 152 on stream 0 at 08-Aug-2019 16:41:36.458 EDT
-Begin processing the 6701st record. Run 1, Event 87075, LumiSection 349 on stream 0 at 08-Aug-2019 16:41:37.370 EDT
-Begin processing the 6801st record. Run 1, Event 87177, LumiSection 349 on stream 0 at 08-Aug-2019 16:41:38.014 EDT
-Begin processing the 6901st record. Run 1, Event 20512, LumiSection 83 on stream 0 at 08-Aug-2019 16:41:38.720 EDT
-Begin processing the 7001st record. Run 1, Event 20608, LumiSection 83 on stream 0 at 08-Aug-2019 16:41:39.358 EDT
-Begin processing the 7101st record. Run 1, Event 20713, LumiSection 83 on stream 0 at 08-Aug-2019 16:41:40.216 EDT
-Begin processing the 7201st record. Run 1, Event 18076, LumiSection 73 on stream 0 at 08-Aug-2019 16:41:40.853 EDT
-Begin processing the 7301st record. Run 1, Event 18180, LumiSection 73 on stream 0 at 08-Aug-2019 16:41:41.501 EDT
-08-Aug-2019 16:41:42 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_12.root
-08-Aug-2019 16:41:42 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_13.root
-08-Aug-2019 16:41:42 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_13.root
-Begin processing the 7401st record. Run 1, Event 64286, LumiSection 258 on stream 0 at 08-Aug-2019 16:41:42.794 EDT
-Begin processing the 7501st record. Run 1, Event 64378, LumiSection 258 on stream 0 at 08-Aug-2019 16:41:43.855 EDT
-Begin processing the 7601st record. Run 1, Event 64483, LumiSection 258 on stream 0 at 08-Aug-2019 16:41:44.559 EDT
-Begin processing the 7701st record. Run 1, Event 74586, LumiSection 299 on stream 0 at 08-Aug-2019 16:41:45.358 EDT
-Begin processing the 7801st record. Run 1, Event 74691, LumiSection 299 on stream 0 at 08-Aug-2019 16:41:46.003 EDT
-Begin processing the 7901st record. Run 1, Event 74785, LumiSection 299 on stream 0 at 08-Aug-2019 16:41:47.074 EDT
-Begin processing the 8001st record. Run 1, Event 36855, LumiSection 148 on stream 0 at 08-Aug-2019 16:41:47.794 EDT
-Begin processing the 8101st record. Run 1, Event 36947, LumiSection 148 on stream 0 at 08-Aug-2019 16:41:48.432 EDT
-Begin processing the 8201st record. Run 1, Event 14835, LumiSection 60 on stream 0 at 08-Aug-2019 16:41:49.159 EDT
-Begin processing the 8301st record. Run 1, Event 14931, LumiSection 60 on stream 0 at 08-Aug-2019 16:41:49.755 EDT
-Begin processing the 8401st record. Run 1, Event 47558, LumiSection 191 on stream 0 at 08-Aug-2019 16:41:50.617 EDT
-Begin processing the 8501st record. Run 1, Event 47656, LumiSection 191 on stream 0 at 08-Aug-2019 16:41:51.225 EDT
-Begin processing the 8601st record. Run 1, Event 47749, LumiSection 191 on stream 0 at 08-Aug-2019 16:41:51.942 EDT
-Begin processing the 8701st record. Run 1, Event 73612, LumiSection 295 on stream 0 at 08-Aug-2019 16:41:52.575 EDT
-Begin processing the 8801st record. Run 1, Event 73711, LumiSection 295 on stream 0 at 08-Aug-2019 16:41:53.207 EDT
-Begin processing the 8901st record. Run 1, Event 38811, LumiSection 156 on stream 0 at 08-Aug-2019 16:41:54.022 EDT
-Begin processing the 9001st record. Run 1, Event 38905, LumiSection 156 on stream 0 at 08-Aug-2019 16:41:54.643 EDT
-Begin processing the 9101st record. Run 1, Event 39010, LumiSection 156 on stream 0 at 08-Aug-2019 16:41:55.342 EDT
-Begin processing the 9201st record. Run 1, Event 77343, LumiSection 310 on stream 0 at 08-Aug-2019 16:41:55.951 EDT
-Begin processing the 9301st record. Run 1, Event 77449, LumiSection 310 on stream 0 at 08-Aug-2019 16:41:56.753 EDT
-Begin processing the 9401st record. Run 1, Event 29312, LumiSection 118 on stream 0 at 08-Aug-2019 16:41:57.355 EDT
-Begin processing the 9501st record. Run 1, Event 29415, LumiSection 118 on stream 0 at 08-Aug-2019 16:41:58.010 EDT
-Begin processing the 9601st record. Run 1, Event 29505, LumiSection 118 on stream 0 at 08-Aug-2019 16:41:58.730 EDT
-Begin processing the 9701st record. Run 1, Event 82082, LumiSection 329 on stream 0 at 08-Aug-2019 16:41:59.393 EDT
-Begin processing the 9801st record. Run 1, Event 82189, LumiSection 329 on stream 0 at 08-Aug-2019 16:42:00.136 EDT
-08-Aug-2019 16:42:00 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_13.root
-08-Aug-2019 16:42:00 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_14.root
-08-Aug-2019 16:42:00 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_14.root
-Begin processing the 9901st record. Run 1, Event 24811, LumiSection 100 on stream 0 at 08-Aug-2019 16:42:01.225 EDT
-Begin processing the 10001st record. Run 1, Event 24916, LumiSection 100 on stream 0 at 08-Aug-2019 16:42:02.143 EDT
-Begin processing the 10101st record. Run 1, Event 15012, LumiSection 61 on stream 0 at 08-Aug-2019 16:42:02.882 EDT
-Begin processing the 10201st record. Run 1, Event 15111, LumiSection 61 on stream 0 at 08-Aug-2019 16:42:03.600 EDT
-Begin processing the 10301st record. Run 1, Event 15207, LumiSection 61 on stream 0 at 08-Aug-2019 16:42:04.231 EDT
-Begin processing the 10401st record. Run 1, Event 58830, LumiSection 236 on stream 0 at 08-Aug-2019 16:42:05.103 EDT
-Begin processing the 10501st record. Run 1, Event 58943, LumiSection 236 on stream 0 at 08-Aug-2019 16:42:05.742 EDT
-Begin processing the 10601st record. Run 1, Event 60513, LumiSection 243 on stream 0 at 08-Aug-2019 16:42:06.467 EDT
-Begin processing the 10701st record. Run 1, Event 60612, LumiSection 243 on stream 0 at 08-Aug-2019 16:42:07.070 EDT
-Begin processing the 10801st record. Run 1, Event 60712, LumiSection 243 on stream 0 at 08-Aug-2019 16:42:07.667 EDT
-Begin processing the 10901st record. Run 1, Event 35057, LumiSection 141 on stream 0 at 08-Aug-2019 16:42:08.469 EDT
-Begin processing the 11001st record. Run 1, Event 35148, LumiSection 141 on stream 0 at 08-Aug-2019 16:42:09.154 EDT
-Begin processing the 11101st record. Run 1, Event 57275, LumiSection 230 on stream 0 at 08-Aug-2019 16:42:09.878 EDT
-Begin processing the 11201st record. Run 1, Event 57368, LumiSection 230 on stream 0 at 08-Aug-2019 16:42:10.476 EDT
-Begin processing the 11301st record. Run 1, Event 57469, LumiSection 230 on stream 0 at 08-Aug-2019 16:42:11.349 EDT
-Begin processing the 11401st record. Run 1, Event 66061, LumiSection 265 on stream 0 at 08-Aug-2019 16:42:11.967 EDT
-Begin processing the 11501st record. Run 1, Event 66158, LumiSection 265 on stream 0 at 08-Aug-2019 16:42:12.605 EDT
-Begin processing the 11601st record. Run 1, Event 66256, LumiSection 265 on stream 0 at 08-Aug-2019 16:42:13.308 EDT
-Begin processing the 11701st record. Run 1, Event 16601, LumiSection 67 on stream 0 at 08-Aug-2019 16:42:13.935 EDT
-Begin processing the 11801st record. Run 1, Event 16713, LumiSection 67 on stream 0 at 08-Aug-2019 16:42:14.671 EDT
-Begin processing the 11901st record. Run 1, Event 31559, LumiSection 127 on stream 0 at 08-Aug-2019 16:42:15.312 EDT
-Begin processing the 12001st record. Run 1, Event 31655, LumiSection 127 on stream 0 at 08-Aug-2019 16:42:16.232 EDT
-Begin processing the 12101st record. Run 1, Event 31762, LumiSection 127 on stream 0 at 08-Aug-2019 16:42:16.858 EDT
-Begin processing the 12201st record. Run 1, Event 76610, LumiSection 307 on stream 0 at 08-Aug-2019 16:42:17.544 EDT
-Begin processing the 12301st record. Run 1, Event 76705, LumiSection 307 on stream 0 at 08-Aug-2019 16:42:18.272 EDT
-08-Aug-2019 16:42:18 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_14.root
-08-Aug-2019 16:42:18 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_17.root
-08-Aug-2019 16:42:18 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_17.root
-Begin processing the 12401st record. Run 1, Event 76050, LumiSection 305 on stream 0 at 08-Aug-2019 16:42:19.530 EDT
-Begin processing the 12501st record. Run 1, Event 76147, LumiSection 305 on stream 0 at 08-Aug-2019 16:42:20.323 EDT
-Begin processing the 12601st record. Run 1, Event 76254, LumiSection 305 on stream 0 at 08-Aug-2019 16:42:21.162 EDT
-Begin processing the 12701st record. Run 1, Event 11598, LumiSection 47 on stream 0 at 08-Aug-2019 16:42:21.788 EDT
-Begin processing the 12801st record. Run 1, Event 11704, LumiSection 47 on stream 0 at 08-Aug-2019 16:42:22.426 EDT
-Begin processing the 12901st record. Run 1, Event 97562, LumiSection 391 on stream 0 at 08-Aug-2019 16:42:23.288 EDT
-Begin processing the 13001st record. Run 1, Event 97658, LumiSection 391 on stream 0 at 08-Aug-2019 16:42:23.917 EDT
-Begin processing the 13101st record. Run 1, Event 97752, LumiSection 391 on stream 0 at 08-Aug-2019 16:42:24.616 EDT
-Begin processing the 13201st record. Run 1, Event 19625, LumiSection 79 on stream 0 at 08-Aug-2019 16:42:25.246 EDT
-Begin processing the 13301st record. Run 1, Event 19725, LumiSection 79 on stream 0 at 08-Aug-2019 16:42:25.882 EDT
-Begin processing the 13401st record. Run 1, Event 81295, LumiSection 326 on stream 0 at 08-Aug-2019 16:42:26.952 EDT
-Begin processing the 13501st record. Run 1, Event 81398, LumiSection 326 on stream 0 at 08-Aug-2019 16:42:27.597 EDT
-Begin processing the 13601st record. Run 1, Event 81498, LumiSection 326 on stream 0 at 08-Aug-2019 16:42:28.253 EDT
-Begin processing the 13701st record. Run 1, Event 52607, LumiSection 211 on stream 0 at 08-Aug-2019 16:42:28.877 EDT
-Begin processing the 13801st record. Run 1, Event 52706, LumiSection 211 on stream 0 at 08-Aug-2019 16:42:29.692 EDT
-Begin processing the 13901st record. Run 1, Event 63305, LumiSection 254 on stream 0 at 08-Aug-2019 16:42:30.313 EDT
-Begin processing the 14001st record. Run 1, Event 63405, LumiSection 254 on stream 0 at 08-Aug-2019 16:42:30.956 EDT
-Begin processing the 14101st record. Run 1, Event 63508, LumiSection 254 on stream 0 at 08-Aug-2019 16:42:31.650 EDT
-Begin processing the 14201st record. Run 1, Event 67852, LumiSection 272 on stream 0 at 08-Aug-2019 16:42:32.292 EDT
-Begin processing the 14301st record. Run 1, Event 67941, LumiSection 272 on stream 0 at 08-Aug-2019 16:42:33.174 EDT
-Begin processing the 14401st record. Run 1, Event 3049, LumiSection 13 on stream 0 at 08-Aug-2019 16:42:33.814 EDT
-Begin processing the 14501st record. Run 1, Event 3153, LumiSection 13 on stream 0 at 08-Aug-2019 16:42:34.531 EDT
-Begin processing the 14601st record. Run 1, Event 3251, LumiSection 13 on stream 0 at 08-Aug-2019 16:42:35.170 EDT
-Begin processing the 14701st record. Run 1, Event 71588, LumiSection 287 on stream 0 at 08-Aug-2019 16:42:35.779 EDT
-Begin processing the 14801st record. Run 1, Event 71692, LumiSection 287 on stream 0 at 08-Aug-2019 16:42:36.764 EDT
-08-Aug-2019 16:42:37 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_17.root
-08-Aug-2019 16:42:37 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_19.root
-08-Aug-2019 16:42:37 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_19.root
-Begin processing the 14901st record. Run 1, Event 40274, LumiSection 162 on stream 0 at 08-Aug-2019 16:42:37.770 EDT
-Begin processing the 15001st record. Run 1, Event 40375, LumiSection 162 on stream 0 at 08-Aug-2019 16:42:38.553 EDT
-Begin processing the 15101st record. Run 1, Event 40478, LumiSection 162 on stream 0 at 08-Aug-2019 16:42:39.262 EDT
-Begin processing the 15201st record. Run 1, Event 76828, LumiSection 308 on stream 0 at 08-Aug-2019 16:42:40.067 EDT
-Begin processing the 15301st record. Run 1, Event 76935, LumiSection 308 on stream 0 at 08-Aug-2019 16:42:40.788 EDT
-Begin processing the 15401st record. Run 1, Event 94051, LumiSection 377 on stream 0 at 08-Aug-2019 16:42:41.628 EDT
-Begin processing the 15501st record. Run 1, Event 94155, LumiSection 377 on stream 0 at 08-Aug-2019 16:42:42.317 EDT
-Begin processing the 15601st record. Run 1, Event 94255, LumiSection 377 on stream 0 at 08-Aug-2019 16:42:43.089 EDT
-Begin processing the 15701st record. Run 1, Event 83594, LumiSection 335 on stream 0 at 08-Aug-2019 16:42:43.743 EDT
-Begin processing the 15801st record. Run 1, Event 83686, LumiSection 335 on stream 0 at 08-Aug-2019 16:42:44.402 EDT
-Begin processing the 15901st record. Run 1, Event 88036, LumiSection 353 on stream 0 at 08-Aug-2019 16:42:45.197 EDT
-Begin processing the 16001st record. Run 1, Event 88137, LumiSection 353 on stream 0 at 08-Aug-2019 16:42:45.853 EDT
-Begin processing the 16101st record. Run 1, Event 88237, LumiSection 353 on stream 0 at 08-Aug-2019 16:42:46.603 EDT
-Begin processing the 16201st record. Run 1, Event 48586, LumiSection 195 on stream 0 at 08-Aug-2019 16:42:47.243 EDT
-Begin processing the 16301st record. Run 1, Event 48695, LumiSection 195 on stream 0 at 08-Aug-2019 16:42:48.206 EDT
-Begin processing the 16401st record. Run 1, Event 13782, LumiSection 56 on stream 0 at 08-Aug-2019 16:42:48.807 EDT
-Begin processing the 16501st record. Run 1, Event 13893, LumiSection 56 on stream 0 at 08-Aug-2019 16:42:49.453 EDT
-Begin processing the 16601st record. Run 1, Event 13991, LumiSection 56 on stream 0 at 08-Aug-2019 16:42:50.175 EDT
-Begin processing the 16701st record. Run 1, Event 50306, LumiSection 202 on stream 0 at 08-Aug-2019 16:42:50.790 EDT
-Begin processing the 16801st record. Run 1, Event 50408, LumiSection 202 on stream 0 at 08-Aug-2019 16:42:51.528 EDT
-Begin processing the 16901st record. Run 1, Event 67026, LumiSection 269 on stream 0 at 08-Aug-2019 16:42:52.173 EDT
-Begin processing the 17001st record. Run 1, Event 67124, LumiSection 269 on stream 0 at 08-Aug-2019 16:42:52.834 EDT
-Begin processing the 17101st record. Run 1, Event 67224, LumiSection 269 on stream 0 at 08-Aug-2019 16:42:53.641 EDT
-Begin processing the 17201st record. Run 1, Event 62318, LumiSection 250 on stream 0 at 08-Aug-2019 16:42:54.259 EDT
-Begin processing the 17301st record. Run 1, Event 62419, LumiSection 250 on stream 0 at 08-Aug-2019 16:42:54.932 EDT
-08-Aug-2019 16:42:55 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_19.root
-08-Aug-2019 16:42:55 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_2.root
-08-Aug-2019 16:42:55 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_2.root
-Begin processing the 17401st record. Run 1, Event 85506, LumiSection 343 on stream 0 at 08-Aug-2019 16:42:55.935 EDT
-Begin processing the 17501st record. Run 1, Event 85608, LumiSection 343 on stream 0 at 08-Aug-2019 16:42:56.957 EDT
-Begin processing the 17601st record. Run 1, Event 85696, LumiSection 343 on stream 0 at 08-Aug-2019 16:42:57.672 EDT
-Begin processing the 17701st record. Run 1, Event 53071, LumiSection 213 on stream 0 at 08-Aug-2019 16:42:58.398 EDT
-Begin processing the 17801st record. Run 1, Event 53171, LumiSection 213 on stream 0 at 08-Aug-2019 16:42:59.035 EDT
-Begin processing the 17901st record. Run 1, Event 53274, LumiSection 213 on stream 0 at 08-Aug-2019 16:42:59.840 EDT
-Begin processing the 18001st record. Run 1, Event 14380, LumiSection 58 on stream 0 at 08-Aug-2019 16:43:00.465 EDT
-Begin processing the 18101st record. Run 1, Event 14485, LumiSection 58 on stream 0 at 08-Aug-2019 16:43:01.066 EDT
-Begin processing the 18201st record. Run 1, Event 96563, LumiSection 387 on stream 0 at 08-Aug-2019 16:43:01.799 EDT
-Begin processing the 18301st record. Run 1, Event 96658, LumiSection 387 on stream 0 at 08-Aug-2019 16:43:02.432 EDT
-Begin processing the 18401st record. Run 1, Event 96761, LumiSection 387 on stream 0 at 08-Aug-2019 16:43:03.227 EDT
-Begin processing the 18501st record. Run 1, Event 31101, LumiSection 125 on stream 0 at 08-Aug-2019 16:43:03.855 EDT
-Begin processing the 18601st record. Run 1, Event 31200, LumiSection 125 on stream 0 at 08-Aug-2019 16:43:04.546 EDT
-Begin processing the 18701st record. Run 1, Event 13311, LumiSection 54 on stream 0 at 08-Aug-2019 16:43:05.186 EDT
-Begin processing the 18801st record. Run 1, Event 13416, LumiSection 54 on stream 0 at 08-Aug-2019 16:43:05.889 EDT
-Begin processing the 18901st record. Run 1, Event 13520, LumiSection 54 on stream 0 at 08-Aug-2019 16:43:06.591 EDT
-Begin processing the 19001st record. Run 1, Event 60841, LumiSection 244 on stream 0 at 08-Aug-2019 16:43:07.238 EDT
-Begin processing the 19101st record. Run 1, Event 60937, LumiSection 244 on stream 0 at 08-Aug-2019 16:43:08.029 EDT
-Begin processing the 19201st record. Run 1, Event 66288, LumiSection 266 on stream 0 at 08-Aug-2019 16:43:08.648 EDT
-Begin processing the 19301st record. Run 1, Event 66395, LumiSection 266 on stream 0 at 08-Aug-2019 16:43:09.269 EDT
-Begin processing the 19401st record. Run 1, Event 66498, LumiSection 266 on stream 0 at 08-Aug-2019 16:43:09.959 EDT
-Begin processing the 19501st record. Run 1, Event 87358, LumiSection 350 on stream 0 at 08-Aug-2019 16:43:10.589 EDT
-Begin processing the 19601st record. Run 1, Event 87453, LumiSection 350 on stream 0 at 08-Aug-2019 16:43:11.398 EDT
-Begin processing the 19701st record. Run 1, Event 56039, LumiSection 225 on stream 0 at 08-Aug-2019 16:43:12.018 EDT
-Begin processing the 19801st record. Run 1, Event 56145, LumiSection 225 on stream 0 at 08-Aug-2019 16:43:12.781 EDT
-Begin processing the 19901st record. Run 1, Event 56243, LumiSection 225 on stream 0 at 08-Aug-2019 16:43:13.394 EDT
-08-Aug-2019 16:43:13 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_2.root
-08-Aug-2019 16:43:13 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_20.root
-08-Aug-2019 16:43:13 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_20.root
-Begin processing the 20001st record. Run 1, Event 30584, LumiSection 123 on stream 0 at 08-Aug-2019 16:43:14.771 EDT
-Begin processing the 20101st record. Run 1, Event 30682, LumiSection 123 on stream 0 at 08-Aug-2019 16:43:15.479 EDT
-Begin processing the 20201st record. Run 1, Event 40031, LumiSection 161 on stream 0 at 08-Aug-2019 16:43:16.280 EDT
-Begin processing the 20301st record. Run 1, Event 40119, LumiSection 161 on stream 0 at 08-Aug-2019 16:43:16.938 EDT
-Begin processing the 20401st record. Run 1, Event 40233, LumiSection 161 on stream 0 at 08-Aug-2019 16:43:17.812 EDT
-Begin processing the 20501st record. Run 1, Event 38608, LumiSection 155 on stream 0 at 08-Aug-2019 16:43:18.427 EDT
-Begin processing the 20601st record. Run 1, Event 38704, LumiSection 155 on stream 0 at 08-Aug-2019 16:43:19.031 EDT
-Begin processing the 20701st record. Run 1, Event 52046, LumiSection 209 on stream 0 at 08-Aug-2019 16:43:19.716 EDT
-Begin processing the 20801st record. Run 1, Event 52144, LumiSection 209 on stream 0 at 08-Aug-2019 16:43:20.347 EDT
-Begin processing the 20901st record. Run 1, Event 52239, LumiSection 209 on stream 0 at 08-Aug-2019 16:43:21.164 EDT
-Begin processing the 21001st record. Run 1, Event 75070, LumiSection 301 on stream 0 at 08-Aug-2019 16:43:21.806 EDT
-Begin processing the 21101st record. Run 1, Event 75164, LumiSection 301 on stream 0 at 08-Aug-2019 16:43:22.438 EDT
-Begin processing the 21201st record. Run 1, Event 79305, LumiSection 318 on stream 0 at 08-Aug-2019 16:43:23.141 EDT
-Begin processing the 21301st record. Run 1, Event 79408, LumiSection 318 on stream 0 at 08-Aug-2019 16:43:23.757 EDT
-Begin processing the 21401st record. Run 1, Event 79508, LumiSection 318 on stream 0 at 08-Aug-2019 16:43:24.525 EDT
-Begin processing the 21501st record. Run 1, Event 63099, LumiSection 253 on stream 0 at 08-Aug-2019 16:43:25.151 EDT
-Begin processing the 21601st record. Run 1, Event 63190, LumiSection 253 on stream 0 at 08-Aug-2019 16:43:25.871 EDT
-Begin processing the 21701st record. Run 1, Event 2030, LumiSection 9 on stream 0 at 08-Aug-2019 16:43:26.497 EDT
-Begin processing the 21801st record. Run 1, Event 2126, LumiSection 9 on stream 0 at 08-Aug-2019 16:43:27.134 EDT
-Begin processing the 21901st record. Run 1, Event 2228, LumiSection 9 on stream 0 at 08-Aug-2019 16:43:27.994 EDT
-Begin processing the 22001st record. Run 1, Event 87580, LumiSection 351 on stream 0 at 08-Aug-2019 16:43:28.635 EDT
-Begin processing the 22101st record. Run 1, Event 87691, LumiSection 351 on stream 0 at 08-Aug-2019 16:43:29.319 EDT
-Begin processing the 22201st record. Run 1, Event 1773, LumiSection 8 on stream 0 at 08-Aug-2019 16:43:29.951 EDT
-Begin processing the 22301st record. Run 1, Event 1878, LumiSection 8 on stream 0 at 08-Aug-2019 16:43:30.696 EDT
-Begin processing the 22401st record. Run 1, Event 1982, LumiSection 8 on stream 0 at 08-Aug-2019 16:43:31.303 EDT
-08-Aug-2019 16:43:31 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_20.root
-08-Aug-2019 16:43:31 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_24.root
-08-Aug-2019 16:43:31 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_24.root
-Begin processing the 22501st record. Run 1, Event 55562, LumiSection 223 on stream 0 at 08-Aug-2019 16:43:32.656 EDT
-Begin processing the 22601st record. Run 1, Event 55670, LumiSection 223 on stream 0 at 08-Aug-2019 16:43:33.420 EDT
-Begin processing the 22701st record. Run 1, Event 22018, LumiSection 89 on stream 0 at 08-Aug-2019 16:43:34.193 EDT
-Begin processing the 22801st record. Run 1, Event 22123, LumiSection 89 on stream 0 at 08-Aug-2019 16:43:34.815 EDT
-Begin processing the 22901st record. Run 1, Event 22225, LumiSection 89 on stream 0 at 08-Aug-2019 16:43:35.463 EDT
-Begin processing the 23001st record. Run 1, Event 64596, LumiSection 259 on stream 0 at 08-Aug-2019 16:43:36.421 EDT
-Begin processing the 23101st record. Run 1, Event 64694, LumiSection 259 on stream 0 at 08-Aug-2019 16:43:37.121 EDT
-Begin processing the 23201st record. Run 1, Event 97782, LumiSection 392 on stream 0 at 08-Aug-2019 16:43:37.810 EDT
-Begin processing the 23301st record. Run 1, Event 97878, LumiSection 392 on stream 0 at 08-Aug-2019 16:43:38.472 EDT
-Begin processing the 23401st record. Run 1, Event 97974, LumiSection 392 on stream 0 at 08-Aug-2019 16:43:39.409 EDT
-Begin processing the 23501st record. Run 1, Event 88583, LumiSection 355 on stream 0 at 08-Aug-2019 16:43:40.033 EDT
-Begin processing the 23601st record. Run 1, Event 88669, LumiSection 355 on stream 0 at 08-Aug-2019 16:43:40.687 EDT
-Begin processing the 23701st record. Run 1, Event 97278, LumiSection 390 on stream 0 at 08-Aug-2019 16:43:41.405 EDT
-Begin processing the 23801st record. Run 1, Event 97372, LumiSection 390 on stream 0 at 08-Aug-2019 16:43:42.044 EDT
-Begin processing the 23901st record. Run 1, Event 97471, LumiSection 390 on stream 0 at 08-Aug-2019 16:43:42.812 EDT
-Begin processing the 24001st record. Run 1, Event 17816, LumiSection 72 on stream 0 at 08-Aug-2019 16:43:43.433 EDT
-Begin processing the 24101st record. Run 1, Event 17927, LumiSection 72 on stream 0 at 08-Aug-2019 16:43:44.283 EDT
-Begin processing the 24201st record. Run 1, Event 18016, LumiSection 72 on stream 0 at 08-Aug-2019 16:43:44.902 EDT
-Begin processing the 24301st record. Run 1, Event 26105, LumiSection 105 on stream 0 at 08-Aug-2019 16:43:45.545 EDT
-Begin processing the 24401st record. Run 1, Event 26207, LumiSection 105 on stream 0 at 08-Aug-2019 16:43:46.249 EDT
-Begin processing the 24501st record. Run 1, Event 78574, LumiSection 315 on stream 0 at 08-Aug-2019 16:43:46.867 EDT
-Begin processing the 24601st record. Run 1, Event 78674, LumiSection 315 on stream 0 at 08-Aug-2019 16:43:47.708 EDT
-Begin processing the 24701st record. Run 1, Event 78777, LumiSection 315 on stream 0 at 08-Aug-2019 16:43:48.340 EDT
-Begin processing the 24801st record. Run 1, Event 70598, LumiSection 283 on stream 0 at 08-Aug-2019 16:43:48.971 EDT
-Begin processing the 24901st record. Run 1, Event 70701, LumiSection 283 on stream 0 at 08-Aug-2019 16:43:49.647 EDT
-08-Aug-2019 16:43:50 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_24.root
-08-Aug-2019 16:43:50 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_25.root
-08-Aug-2019 16:43:50 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_25.root
-Begin processing the 25001st record. Run 1, Event 94830, LumiSection 380 on stream 0 at 08-Aug-2019 16:43:51.008 EDT
-Begin processing the 25101st record. Run 1, Event 94926, LumiSection 380 on stream 0 at 08-Aug-2019 16:43:51.857 EDT
-Begin processing the 25201st record. Run 1, Event 51294, LumiSection 206 on stream 0 at 08-Aug-2019 16:43:52.552 EDT
-Begin processing the 25301st record. Run 1, Event 51384, LumiSection 206 on stream 0 at 08-Aug-2019 16:43:53.270 EDT
-Begin processing the 25401st record. Run 1, Event 51483, LumiSection 206 on stream 0 at 08-Aug-2019 16:43:53.897 EDT
-Begin processing the 25501st record. Run 1, Event 51079, LumiSection 205 on stream 0 at 08-Aug-2019 16:43:54.688 EDT
-Begin processing the 25601st record. Run 1, Event 51188, LumiSection 205 on stream 0 at 08-Aug-2019 16:43:55.355 EDT
-Begin processing the 25701st record. Run 1, Event 93802, LumiSection 376 on stream 0 at 08-Aug-2019 16:43:56.147 EDT
-Begin processing the 25801st record. Run 1, Event 93902, LumiSection 376 on stream 0 at 08-Aug-2019 16:43:56.794 EDT
-Begin processing the 25901st record. Run 1, Event 94002, LumiSection 376 on stream 0 at 08-Aug-2019 16:43:57.417 EDT
-Begin processing the 26001st record. Run 1, Event 75573, LumiSection 303 on stream 0 at 08-Aug-2019 16:43:58.198 EDT
-Begin processing the 26101st record. Run 1, Event 75675, LumiSection 303 on stream 0 at 08-Aug-2019 16:43:58.819 EDT
-Begin processing the 26201st record. Run 1, Event 2539, LumiSection 11 on stream 0 at 08-Aug-2019 16:43:59.519 EDT
-Begin processing the 26301st record. Run 1, Event 2645, LumiSection 11 on stream 0 at 08-Aug-2019 16:44:00.144 EDT
-Begin processing the 26401st record. Run 1, Event 2745, LumiSection 11 on stream 0 at 08-Aug-2019 16:44:00.848 EDT
-Begin processing the 26501st record. Run 1, Event 12839, LumiSection 52 on stream 0 at 08-Aug-2019 16:44:01.581 EDT
-Begin processing the 26601st record. Run 1, Event 12939, LumiSection 52 on stream 0 at 08-Aug-2019 16:44:02.236 EDT
-Begin processing the 26701st record. Run 1, Event 28794, LumiSection 116 on stream 0 at 08-Aug-2019 16:44:03.058 EDT
-Begin processing the 26801st record. Run 1, Event 28902, LumiSection 116 on stream 0 at 08-Aug-2019 16:44:03.670 EDT
-Begin processing the 26901st record. Run 1, Event 29003, LumiSection 116 on stream 0 at 08-Aug-2019 16:44:04.324 EDT
-Begin processing the 27001st record. Run 1, Event 3590, LumiSection 15 on stream 0 at 08-Aug-2019 16:44:04.971 EDT
-Begin processing the 27101st record. Run 1, Event 3692, LumiSection 15 on stream 0 at 08-Aug-2019 16:44:05.604 EDT
-Begin processing the 27201st record. Run 1, Event 87785, LumiSection 352 on stream 0 at 08-Aug-2019 16:44:06.310 EDT
-Begin processing the 27301st record. Run 1, Event 87886, LumiSection 352 on stream 0 at 08-Aug-2019 16:44:06.960 EDT
-Begin processing the 27401st record. Run 1, Event 87969, LumiSection 352 on stream 0 at 08-Aug-2019 16:44:07.639 EDT
-08-Aug-2019 16:44:07 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_25.root
-08-Aug-2019 16:44:07 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_27.root
-08-Aug-2019 16:44:07 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_27.root
-Begin processing the 27501st record. Run 1, Event 56830, LumiSection 228 on stream 0 at 08-Aug-2019 16:44:08.971 EDT
-Begin processing the 27601st record. Run 1, Event 56930, LumiSection 228 on stream 0 at 08-Aug-2019 16:44:09.761 EDT
-Begin processing the 27701st record. Run 1, Event 24044, LumiSection 97 on stream 0 at 08-Aug-2019 16:44:10.556 EDT
-Begin processing the 27801st record. Run 1, Event 24142, LumiSection 97 on stream 0 at 08-Aug-2019 16:44:11.167 EDT
-Begin processing the 27901st record. Run 1, Event 24242, LumiSection 97 on stream 0 at 08-Aug-2019 16:44:11.801 EDT
-Begin processing the 28001st record. Run 1, Event 83080, LumiSection 333 on stream 0 at 08-Aug-2019 16:44:12.566 EDT
-Begin processing the 28101st record. Run 1, Event 83184, LumiSection 333 on stream 0 at 08-Aug-2019 16:44:13.240 EDT
-Begin processing the 28201st record. Run 1, Event 59549, LumiSection 239 on stream 0 at 08-Aug-2019 16:44:13.934 EDT
-Begin processing the 28301st record. Run 1, Event 59642, LumiSection 239 on stream 0 at 08-Aug-2019 16:44:14.605 EDT
-Begin processing the 28401st record. Run 1, Event 59738, LumiSection 239 on stream 0 at 08-Aug-2019 16:44:15.541 EDT
-Begin processing the 28501st record. Run 1, Event 23582, LumiSection 95 on stream 0 at 08-Aug-2019 16:44:16.142 EDT
-Begin processing the 28601st record. Run 1, Event 23682, LumiSection 95 on stream 0 at 08-Aug-2019 16:44:16.745 EDT
-Begin processing the 28701st record. Run 1, Event 41766, LumiSection 168 on stream 0 at 08-Aug-2019 16:44:17.466 EDT
-Begin processing the 28801st record. Run 1, Event 41856, LumiSection 168 on stream 0 at 08-Aug-2019 16:44:18.081 EDT
-Begin processing the 28901st record. Run 1, Event 41964, LumiSection 168 on stream 0 at 08-Aug-2019 16:44:18.879 EDT
-Begin processing the 29001st record. Run 1, Event 61818, LumiSection 248 on stream 0 at 08-Aug-2019 16:44:19.507 EDT
-Begin processing the 29101st record. Run 1, Event 61912, LumiSection 248 on stream 0 at 08-Aug-2019 16:44:20.214 EDT
-Begin processing the 29201st record. Run 1, Event 62010, LumiSection 248 on stream 0 at 08-Aug-2019 16:44:20.833 EDT
-Begin processing the 29301st record. Run 1, Event 45849, LumiSection 184 on stream 0 at 08-Aug-2019 16:44:21.465 EDT
-Begin processing the 29401st record. Run 1, Event 45946, LumiSection 184 on stream 0 at 08-Aug-2019 16:44:22.257 EDT
-Begin processing the 29501st record. Run 1, Event 75288, LumiSection 302 on stream 0 at 08-Aug-2019 16:44:22.898 EDT
-Begin processing the 29601st record. Run 1, Event 75399, LumiSection 302 on stream 0 at 08-Aug-2019 16:44:23.604 EDT
-Begin processing the 29701st record. Run 1, Event 75491, LumiSection 302 on stream 0 at 08-Aug-2019 16:44:24.237 EDT
-Begin processing the 29801st record. Run 1, Event 71356, LumiSection 286 on stream 0 at 08-Aug-2019 16:44:24.973 EDT
-Begin processing the 29901st record. Run 1, Event 71449, LumiSection 286 on stream 0 at 08-Aug-2019 16:44:25.613 EDT
-08-Aug-2019 16:44:25 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_27.root
-08-Aug-2019 16:44:25 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_3.root
-08-Aug-2019 16:44:26 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_3.root
-Begin processing the 30001st record. Run 1, Event 16298, LumiSection 66 on stream 0 at 08-Aug-2019 16:44:26.881 EDT
-Begin processing the 30101st record. Run 1, Event 16402, LumiSection 66 on stream 0 at 08-Aug-2019 16:44:27.709 EDT
-Begin processing the 30201st record. Run 1, Event 16497, LumiSection 66 on stream 0 at 08-Aug-2019 16:44:28.538 EDT
-Begin processing the 30301st record. Run 1, Event 11100, LumiSection 45 on stream 0 at 08-Aug-2019 16:44:29.176 EDT
-Begin processing the 30401st record. Run 1, Event 11198, LumiSection 45 on stream 0 at 08-Aug-2019 16:44:29.824 EDT
-Begin processing the 30501st record. Run 1, Event 81803, LumiSection 328 on stream 0 at 08-Aug-2019 16:44:30.660 EDT
-Begin processing the 30601st record. Run 1, Event 81891, LumiSection 328 on stream 0 at 08-Aug-2019 16:44:31.296 EDT
-Begin processing the 30701st record. Run 1, Event 81999, LumiSection 328 on stream 0 at 08-Aug-2019 16:44:32.034 EDT
-Begin processing the 30801st record. Run 1, Event 14621, LumiSection 59 on stream 0 at 08-Aug-2019 16:44:32.697 EDT
-Begin processing the 30901st record. Run 1, Event 14713, LumiSection 59 on stream 0 at 08-Aug-2019 16:44:33.569 EDT
-Begin processing the 31001st record. Run 1, Event 39824, LumiSection 160 on stream 0 at 08-Aug-2019 16:44:34.222 EDT
-Begin processing the 31101st record. Run 1, Event 39925, LumiSection 160 on stream 0 at 08-Aug-2019 16:44:34.892 EDT
-Begin processing the 31201st record. Run 1, Event 23300, LumiSection 94 on stream 0 at 08-Aug-2019 16:44:35.606 EDT
-Begin processing the 31301st record. Run 1, Event 23395, LumiSection 94 on stream 0 at 08-Aug-2019 16:44:36.261 EDT
-Begin processing the 31401st record. Run 1, Event 23500, LumiSection 94 on stream 0 at 08-Aug-2019 16:44:37.044 EDT
-Begin processing the 31501st record. Run 1, Event 13088, LumiSection 53 on stream 0 at 08-Aug-2019 16:44:37.658 EDT
-Begin processing the 31601st record. Run 1, Event 13195, LumiSection 53 on stream 0 at 08-Aug-2019 16:44:38.396 EDT
-Begin processing the 31701st record. Run 1, Event 88293, LumiSection 354 on stream 0 at 08-Aug-2019 16:44:39.029 EDT
-Begin processing the 31801st record. Run 1, Event 88399, LumiSection 354 on stream 0 at 08-Aug-2019 16:44:39.644 EDT
-Begin processing the 31901st record. Run 1, Event 88494, LumiSection 354 on stream 0 at 08-Aug-2019 16:44:40.418 EDT
-Begin processing the 32001st record. Run 1, Event 70322, LumiSection 282 on stream 0 at 08-Aug-2019 16:44:41.064 EDT
-Begin processing the 32101st record. Run 1, Event 70409, LumiSection 282 on stream 0 at 08-Aug-2019 16:44:41.756 EDT
-Begin processing the 32201st record. Run 1, Event 44801, LumiSection 180 on stream 0 at 08-Aug-2019 16:44:42.413 EDT
-Begin processing the 32301st record. Run 1, Event 44908, LumiSection 180 on stream 0 at 08-Aug-2019 16:44:43.038 EDT
-08-Aug-2019 16:44:43 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_3.root
-08-Aug-2019 16:44:43 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_30.root
-08-Aug-2019 16:44:43 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_30.root
-Begin processing the 32401st record. Run 1, Event 86009, LumiSection 345 on stream 0 at 08-Aug-2019 16:44:44.078 EDT
-Begin processing the 32501st record. Run 1, Event 86102, LumiSection 345 on stream 0 at 08-Aug-2019 16:44:45.088 EDT
-Begin processing the 32601st record. Run 1, Event 86212, LumiSection 345 on stream 0 at 08-Aug-2019 16:44:45.806 EDT
-Begin processing the 32701st record. Run 1, Event 28583, LumiSection 115 on stream 0 at 08-Aug-2019 16:44:46.516 EDT
-Begin processing the 32801st record. Run 1, Event 28681, LumiSection 115 on stream 0 at 08-Aug-2019 16:44:47.143 EDT
-Begin processing the 32901st record. Run 1, Event 28774, LumiSection 115 on stream 0 at 08-Aug-2019 16:44:47.926 EDT
-Begin processing the 33001st record. Run 1, Event 24621, LumiSection 99 on stream 0 at 08-Aug-2019 16:44:48.527 EDT
-Begin processing the 33101st record. Run 1, Event 24732, LumiSection 99 on stream 0 at 08-Aug-2019 16:44:49.167 EDT
-Begin processing the 33201st record. Run 1, Event 15539, LumiSection 63 on stream 0 at 08-Aug-2019 16:44:49.989 EDT
-Begin processing the 33301st record. Run 1, Event 15649, LumiSection 63 on stream 0 at 08-Aug-2019 16:44:50.818 EDT
-Begin processing the 33401st record. Run 1, Event 15753, LumiSection 63 on stream 0 at 08-Aug-2019 16:44:51.601 EDT
-Begin processing the 33501st record. Run 1, Event 47108, LumiSection 189 on stream 0 at 08-Aug-2019 16:44:52.281 EDT
-Begin processing the 33601st record. Run 1, Event 47212, LumiSection 189 on stream 0 at 08-Aug-2019 16:44:53.360 EDT
-Begin processing the 33701st record. Run 1, Event 20790, LumiSection 84 on stream 0 at 08-Aug-2019 16:44:54.016 EDT
-Begin processing the 33801st record. Run 1, Event 20899, LumiSection 84 on stream 0 at 08-Aug-2019 16:44:54.621 EDT
-Begin processing the 33901st record. Run 1, Event 20996, LumiSection 84 on stream 0 at 08-Aug-2019 16:44:55.322 EDT
-Begin processing the 34001st record. Run 1, Event 90342, LumiSection 362 on stream 0 at 08-Aug-2019 16:44:55.957 EDT
-Begin processing the 34101st record. Run 1, Event 90445, LumiSection 362 on stream 0 at 08-Aug-2019 16:44:56.727 EDT
-Begin processing the 34201st record. Run 1, Event 10545, LumiSection 43 on stream 0 at 08-Aug-2019 16:44:57.365 EDT
-Begin processing the 34301st record. Run 1, Event 10633, LumiSection 43 on stream 0 at 08-Aug-2019 16:44:58.008 EDT
-Begin processing the 34401st record. Run 1, Event 10739, LumiSection 43 on stream 0 at 08-Aug-2019 16:44:58.790 EDT
-Begin processing the 34501st record. Run 1, Event 62859, LumiSection 252 on stream 0 at 08-Aug-2019 16:44:59.423 EDT
-Begin processing the 34601st record. Run 1, Event 62962, LumiSection 252 on stream 0 at 08-Aug-2019 16:45:00.181 EDT
-Begin processing the 34701st record. Run 1, Event 62549, LumiSection 251 on stream 0 at 08-Aug-2019 16:45:00.788 EDT
-Begin processing the 34801st record. Run 1, Event 62645, LumiSection 251 on stream 0 at 08-Aug-2019 16:45:01.472 EDT
-Begin processing the 34901st record. Run 1, Event 62747, LumiSection 251 on stream 0 at 08-Aug-2019 16:45:02.142 EDT
-08-Aug-2019 16:45:02 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_30.root
-08-Aug-2019 16:45:02 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_32.root
-08-Aug-2019 16:45:02 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_32.root
-Begin processing the 35001st record. Run 1, Event 54113, LumiSection 217 on stream 0 at 08-Aug-2019 16:45:03.597 EDT
-Begin processing the 35101st record. Run 1, Event 54209, LumiSection 217 on stream 0 at 08-Aug-2019 16:45:04.367 EDT
-Begin processing the 35201st record. Run 1, Event 80279, LumiSection 322 on stream 0 at 08-Aug-2019 16:45:05.142 EDT
-Begin processing the 35301st record. Run 1, Event 80370, LumiSection 322 on stream 0 at 08-Aug-2019 16:45:05.749 EDT
-Begin processing the 35401st record. Run 1, Event 80475, LumiSection 322 on stream 0 at 08-Aug-2019 16:45:06.510 EDT
-Begin processing the 35501st record. Run 1, Event 36089, LumiSection 145 on stream 0 at 08-Aug-2019 16:45:07.156 EDT
-Begin processing the 35601st record. Run 1, Event 36184, LumiSection 145 on stream 0 at 08-Aug-2019 16:45:07.812 EDT
-Begin processing the 35701st record. Run 1, Event 53299, LumiSection 214 on stream 0 at 08-Aug-2019 16:45:08.523 EDT
-Begin processing the 35801st record. Run 1, Event 53401, LumiSection 214 on stream 0 at 08-Aug-2019 16:45:09.175 EDT
-Begin processing the 35901st record. Run 1, Event 53504, LumiSection 214 on stream 0 at 08-Aug-2019 16:45:09.990 EDT
-Begin processing the 36001st record. Run 1, Event 13597, LumiSection 55 on stream 0 at 08-Aug-2019 16:45:10.610 EDT
-Begin processing the 36101st record. Run 1, Event 13698, LumiSection 55 on stream 0 at 08-Aug-2019 16:45:11.231 EDT
-Begin processing the 36201st record. Run 1, Event 30020, LumiSection 121 on stream 0 at 08-Aug-2019 16:45:11.952 EDT
-Begin processing the 36301st record. Run 1, Event 30120, LumiSection 121 on stream 0 at 08-Aug-2019 16:45:12.610 EDT
-Begin processing the 36401st record. Run 1, Event 30224, LumiSection 121 on stream 0 at 08-Aug-2019 16:45:13.616 EDT
-Begin processing the 36501st record. Run 1, Event 46833, LumiSection 188 on stream 0 at 08-Aug-2019 16:45:14.237 EDT
-Begin processing the 36601st record. Run 1, Event 46928, LumiSection 188 on stream 0 at 08-Aug-2019 16:45:14.947 EDT
-Begin processing the 36701st record. Run 1, Event 49047, LumiSection 197 on stream 0 at 08-Aug-2019 16:45:15.566 EDT
-Begin processing the 36801st record. Run 1, Event 49149, LumiSection 197 on stream 0 at 08-Aug-2019 16:45:16.221 EDT
-Begin processing the 36901st record. Run 1, Event 49241, LumiSection 197 on stream 0 at 08-Aug-2019 16:45:16.979 EDT
-Begin processing the 37001st record. Run 1, Event 73340, LumiSection 294 on stream 0 at 08-Aug-2019 16:45:17.630 EDT
-Begin processing the 37101st record. Run 1, Event 73443, LumiSection 294 on stream 0 at 08-Aug-2019 16:45:18.389 EDT
-Begin processing the 37201st record. Run 1, Event 59053, LumiSection 237 on stream 0 at 08-Aug-2019 16:45:19.031 EDT
-Begin processing the 37301st record. Run 1, Event 59146, LumiSection 237 on stream 0 at 08-Aug-2019 16:45:19.720 EDT
-Begin processing the 37401st record. Run 1, Event 59244, LumiSection 237 on stream 0 at 08-Aug-2019 16:45:20.364 EDT
-08-Aug-2019 16:45:20 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_32.root
-08-Aug-2019 16:45:20 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_37.root
-08-Aug-2019 16:45:20 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_37.root
-Begin processing the 37501st record. Run 1, Event 65820, LumiSection 264 on stream 0 at 08-Aug-2019 16:45:21.560 EDT
-Begin processing the 37601st record. Run 1, Event 65911, LumiSection 264 on stream 0 at 08-Aug-2019 16:45:22.282 EDT
-Begin processing the 37701st record. Run 1, Event 90011, LumiSection 361 on stream 0 at 08-Aug-2019 16:45:23.035 EDT
-Begin processing the 37801st record. Run 1, Event 90110, LumiSection 361 on stream 0 at 08-Aug-2019 16:45:23.671 EDT
-Begin processing the 37901st record. Run 1, Event 90203, LumiSection 361 on stream 0 at 08-Aug-2019 16:45:24.319 EDT
-Begin processing the 38001st record. Run 1, Event 45314, LumiSection 182 on stream 0 at 08-Aug-2019 16:45:25.089 EDT
-Begin processing the 38101st record. Run 1, Event 45405, LumiSection 182 on stream 0 at 08-Aug-2019 16:45:25.716 EDT
-Begin processing the 38201st record. Run 1, Event 41520, LumiSection 167 on stream 0 at 08-Aug-2019 16:45:26.441 EDT
-Begin processing the 38301st record. Run 1, Event 41619, LumiSection 167 on stream 0 at 08-Aug-2019 16:45:27.057 EDT
-Begin processing the 38401st record. Run 1, Event 41715, LumiSection 167 on stream 0 at 08-Aug-2019 16:45:27.941 EDT
-Begin processing the 38501st record. Run 1, Event 47328, LumiSection 190 on stream 0 at 08-Aug-2019 16:45:28.562 EDT
-Begin processing the 38601st record. Run 1, Event 47423, LumiSection 190 on stream 0 at 08-Aug-2019 16:45:29.212 EDT
-Begin processing the 38701st record. Run 1, Event 25506, LumiSection 103 on stream 0 at 08-Aug-2019 16:45:29.943 EDT
-Begin processing the 38801st record. Run 1, Event 25605, LumiSection 103 on stream 0 at 08-Aug-2019 16:45:30.554 EDT
-Begin processing the 38901st record. Run 1, Event 25708, LumiSection 103 on stream 0 at 08-Aug-2019 16:45:31.379 EDT
-Begin processing the 39001st record. Run 1, Event 54836, LumiSection 220 on stream 0 at 08-Aug-2019 16:45:32.062 EDT
-Begin processing the 39101st record. Run 1, Event 54944, LumiSection 220 on stream 0 at 08-Aug-2019 16:45:32.753 EDT
-Begin processing the 39201st record. Run 1, Event 35545, LumiSection 143 on stream 0 at 08-Aug-2019 16:45:33.367 EDT
-Begin processing the 39301st record. Run 1, Event 35644, LumiSection 143 on stream 0 at 08-Aug-2019 16:45:34.009 EDT
-Begin processing the 39401st record. Run 1, Event 35742, LumiSection 143 on stream 0 at 08-Aug-2019 16:45:34.800 EDT
-Begin processing the 39501st record. Run 1, Event 82605, LumiSection 331 on stream 0 at 08-Aug-2019 16:45:35.428 EDT
-Begin processing the 39601st record. Run 1, Event 82711, LumiSection 331 on stream 0 at 08-Aug-2019 16:45:36.149 EDT
-Begin processing the 39701st record. Run 1, Event 70788, LumiSection 284 on stream 0 at 08-Aug-2019 16:45:36.801 EDT
-Begin processing the 39801st record. Run 1, Event 70881, LumiSection 284 on stream 0 at 08-Aug-2019 16:45:37.515 EDT
-Begin processing the 39901st record. Run 1, Event 70989, LumiSection 284 on stream 0 at 08-Aug-2019 16:45:38.128 EDT
-08-Aug-2019 16:45:38 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_37.root
-08-Aug-2019 16:45:38 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_8.root
-08-Aug-2019 16:45:38 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_8.root
-Begin processing the 40001st record. Run 1, Event 37100, LumiSection 149 on stream 0 at 08-Aug-2019 16:45:39.398 EDT
-Begin processing the 40101st record. Run 1, Event 37197, LumiSection 149 on stream 0 at 08-Aug-2019 16:45:40.363 EDT
-Begin processing the 40201st record. Run 1, Event 94558, LumiSection 379 on stream 0 at 08-Aug-2019 16:45:41.187 EDT
-Begin processing the 40301st record. Run 1, Event 94667, LumiSection 379 on stream 0 at 08-Aug-2019 16:45:41.954 EDT
-Begin processing the 40401st record. Run 1, Event 94767, LumiSection 379 on stream 0 at 08-Aug-2019 16:45:42.756 EDT
-Begin processing the 40501st record. Run 1, Event 79107, LumiSection 317 on stream 0 at 08-Aug-2019 16:45:43.720 EDT
-Begin processing the 40601st record. Run 1, Event 79213, LumiSection 317 on stream 0 at 08-Aug-2019 16:45:44.550 EDT
-Begin processing the 40701st record. Run 1, Event 96286, LumiSection 386 on stream 0 at 08-Aug-2019 16:45:45.288 EDT
-Begin processing the 40801st record. Run 1, Event 96385, LumiSection 386 on stream 0 at 08-Aug-2019 16:45:46.004 EDT
-Begin processing the 40901st record. Run 1, Event 96491, LumiSection 386 on stream 0 at 08-Aug-2019 16:45:46.721 EDT
-Begin processing the 41001st record. Run 1, Event 61335, LumiSection 246 on stream 0 at 08-Aug-2019 16:45:47.574 EDT
-Begin processing the 41101st record. Run 1, Event 61437, LumiSection 246 on stream 0 at 08-Aug-2019 16:45:48.436 EDT
-Begin processing the 41201st record. Run 1, Event 68046, LumiSection 273 on stream 0 at 08-Aug-2019 16:45:49.085 EDT
-Begin processing the 41301st record. Run 1, Event 68138, LumiSection 273 on stream 0 at 08-Aug-2019 16:45:49.854 EDT
-Begin processing the 41401st record. Run 1, Event 68246, LumiSection 273 on stream 0 at 08-Aug-2019 16:45:50.613 EDT
-Begin processing the 41501st record. Run 1, Event 99099, LumiSection 397 on stream 0 at 08-Aug-2019 16:45:51.502 EDT
-Begin processing the 41601st record. Run 1, Event 99205, LumiSection 397 on stream 0 at 08-Aug-2019 16:45:52.117 EDT
-Begin processing the 41701st record. Run 1, Event 25771, LumiSection 104 on stream 0 at 08-Aug-2019 16:45:52.893 EDT
-Begin processing the 41801st record. Run 1, Event 25880, LumiSection 104 on stream 0 at 08-Aug-2019 16:45:53.704 EDT
-Begin processing the 41901st record. Run 1, Event 25978, LumiSection 104 on stream 0 at 08-Aug-2019 16:45:54.537 EDT
-Begin processing the 42001st record. Run 1, Event 26581, LumiSection 107 on stream 0 at 08-Aug-2019 16:45:55.194 EDT
-Begin processing the 42101st record. Run 1, Event 26679, LumiSection 107 on stream 0 at 08-Aug-2019 16:45:55.976 EDT
-Begin processing the 42201st record. Run 1, Event 33031, LumiSection 133 on stream 0 at 08-Aug-2019 16:45:56.911 EDT
-Begin processing the 42301st record. Run 1, Event 33143, LumiSection 133 on stream 0 at 08-Aug-2019 16:45:57.627 EDT
-Begin processing the 42401st record. Run 1, Event 33225, LumiSection 133 on stream 0 at 08-Aug-2019 16:45:58.302 EDT
-08-Aug-2019 16:45:58 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_8.root
-08-Aug-2019 16:45:58 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_9.root
-08-Aug-2019 16:45:58 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_9.root
-Begin processing the 42501st record. Run 1, Event 21574, LumiSection 87 on stream 0 at 08-Aug-2019 16:45:59.648 EDT
-Begin processing the 42601st record. Run 1, Event 21672, LumiSection 87 on stream 0 at 08-Aug-2019 16:46:00.428 EDT
-Begin processing the 42701st record. Run 1, Event 98286, LumiSection 394 on stream 0 at 08-Aug-2019 16:46:01.212 EDT
-Begin processing the 42801st record. Run 1, Event 98386, LumiSection 394 on stream 0 at 08-Aug-2019 16:46:01.871 EDT
-Begin processing the 42901st record. Run 1, Event 98485, LumiSection 394 on stream 0 at 08-Aug-2019 16:46:02.481 EDT
-Begin processing the 43001st record. Run 1, Event 53841, LumiSection 216 on stream 0 at 08-Aug-2019 16:46:03.318 EDT
-Begin processing the 43101st record. Run 1, Event 53937, LumiSection 216 on stream 0 at 08-Aug-2019 16:46:04.002 EDT
-Begin processing the 43201st record. Run 1, Event 79790, LumiSection 320 on stream 0 at 08-Aug-2019 16:46:04.753 EDT
-Begin processing the 43301st record. Run 1, Event 79892, LumiSection 320 on stream 0 at 08-Aug-2019 16:46:05.365 EDT
-Begin processing the 43401st record. Run 1, Event 79996, LumiSection 320 on stream 0 at 08-Aug-2019 16:46:06.028 EDT
-Begin processing the 43501st record. Run 1, Event 48874, LumiSection 196 on stream 0 at 08-Aug-2019 16:46:06.857 EDT
-Begin processing the 43601st record. Run 1, Event 48965, LumiSection 196 on stream 0 at 08-Aug-2019 16:46:07.426 EDT
-Begin processing the 43701st record. Run 1, Event 42312, LumiSection 170 on stream 0 at 08-Aug-2019 16:46:08.117 EDT
-Begin processing the 43801st record. Run 1, Event 42409, LumiSection 170 on stream 0 at 08-Aug-2019 16:46:08.745 EDT
-Begin processing the 43901st record. Run 1, Event 42514, LumiSection 170 on stream 0 at 08-Aug-2019 16:46:09.569 EDT
-Begin processing the 44001st record. Run 1, Event 93612, LumiSection 375 on stream 0 at 08-Aug-2019 16:46:10.239 EDT
-Begin processing the 44101st record. Run 1, Event 93718, LumiSection 375 on stream 0 at 08-Aug-2019 16:46:10.885 EDT
-Begin processing the 44201st record. Run 1, Event 77559, LumiSection 311 on stream 0 at 08-Aug-2019 16:46:11.653 EDT
-Begin processing the 44301st record. Run 1, Event 77659, LumiSection 311 on stream 0 at 08-Aug-2019 16:46:12.294 EDT
-Begin processing the 44401st record. Run 1, Event 77763, LumiSection 311 on stream 0 at 08-Aug-2019 16:46:13.043 EDT
-Begin processing the 44501st record. Run 1, Event 1347, LumiSection 6 on stream 0 at 08-Aug-2019 16:46:13.677 EDT
-Begin processing the 44601st record. Run 1, Event 1446, LumiSection 6 on stream 0 at 08-Aug-2019 16:46:14.317 EDT
-Begin processing the 44701st record. Run 1, Event 65290, LumiSection 262 on stream 0 at 08-Aug-2019 16:46:15.059 EDT
-Begin processing the 44801st record. Run 1, Event 65389, LumiSection 262 on stream 0 at 08-Aug-2019 16:46:15.671 EDT
-Begin processing the 44901st record. Run 1, Event 65483, LumiSection 262 on stream 0 at 08-Aug-2019 16:46:16.328 EDT
-08-Aug-2019 16:46:19 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_9.root
+09-Aug-2019 13:34:52 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_10.root
+09-Aug-2019 13:34:52 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_10.root
+Begin processing the 1st record. Run 1, Event 29799, LumiSection 120 on stream 0 at 09-Aug-2019 13:37:17.171 EDT
+Begin processing the 101st record. Run 1, Event 29892, LumiSection 120 on stream 0 at 09-Aug-2019 13:37:18.193 EDT
+Begin processing the 201st record. Run 1, Event 29990, LumiSection 120 on stream 0 at 09-Aug-2019 13:37:18.914 EDT
+Begin processing the 301st record. Run 1, Event 86348, LumiSection 346 on stream 0 at 09-Aug-2019 13:37:19.688 EDT
+Begin processing the 401st record. Run 1, Event 86440, LumiSection 346 on stream 0 at 09-Aug-2019 13:37:20.363 EDT
+Begin processing the 501st record. Run 1, Event 99572, LumiSection 399 on stream 0 at 09-Aug-2019 13:37:21.097 EDT
+Begin processing the 601st record. Run 1, Event 99669, LumiSection 399 on stream 0 at 09-Aug-2019 13:37:21.807 EDT
+Begin processing the 701st record. Run 1, Event 99778, LumiSection 399 on stream 0 at 09-Aug-2019 13:37:22.640 EDT
+Begin processing the 801st record. Run 1, Event 841, LumiSection 4 on stream 0 at 09-Aug-2019 13:37:23.352 EDT
+Begin processing the 901st record. Run 1, Event 943, LumiSection 4 on stream 0 at 09-Aug-2019 13:37:24.067 EDT
+Begin processing the 1001st record. Run 1, Event 2300, LumiSection 10 on stream 0 at 09-Aug-2019 13:37:24.790 EDT
+Begin processing the 1101st record. Run 1, Event 2405, LumiSection 10 on stream 0 at 09-Aug-2019 13:37:25.454 EDT
+Begin processing the 1201st record. Run 1, Event 2501, LumiSection 10 on stream 0 at 09-Aug-2019 13:37:26.152 EDT
+Begin processing the 1301st record. Run 1, Event 64874, LumiSection 260 on stream 0 at 09-Aug-2019 13:37:26.769 EDT
+Begin processing the 1401st record. Run 1, Event 64965, LumiSection 260 on stream 0 at 09-Aug-2019 13:37:27.432 EDT
+Begin processing the 1501st record. Run 1, Event 47827, LumiSection 192 on stream 0 at 09-Aug-2019 13:37:28.161 EDT
+Begin processing the 1601st record. Run 1, Event 47944, LumiSection 192 on stream 0 at 09-Aug-2019 13:37:28.797 EDT
+Begin processing the 1701st record. Run 1, Event 1029, LumiSection 5 on stream 0 at 09-Aug-2019 13:37:29.543 EDT
+Begin processing the 1801st record. Run 1, Event 1127, LumiSection 5 on stream 0 at 09-Aug-2019 13:37:30.187 EDT
+Begin processing the 1901st record. Run 1, Event 1225, LumiSection 5 on stream 0 at 09-Aug-2019 13:37:30.980 EDT
+Begin processing the 2001st record. Run 1, Event 96076, LumiSection 385 on stream 0 at 09-Aug-2019 13:37:31.635 EDT
+Begin processing the 2101st record. Run 1, Event 96177, LumiSection 385 on stream 0 at 09-Aug-2019 13:37:32.294 EDT
+Begin processing the 2201st record. Run 1, Event 28027, LumiSection 113 on stream 0 at 09-Aug-2019 13:37:33.012 EDT
+Begin processing the 2301st record. Run 1, Event 28141, LumiSection 113 on stream 0 at 09-Aug-2019 13:37:33.692 EDT
+Begin processing the 2401st record. Run 1, Event 28235, LumiSection 113 on stream 0 at 09-Aug-2019 13:37:34.407 EDT
+09-Aug-2019 13:37:34 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_10.root
+09-Aug-2019 13:37:34 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_11.root
+09-Aug-2019 13:37:34 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_11.root
+Begin processing the 2501st record. Run 1, Event 83843, LumiSection 336 on stream 0 at 09-Aug-2019 13:37:35.194 EDT
+Begin processing the 2601st record. Run 1, Event 83946, LumiSection 336 on stream 0 at 09-Aug-2019 13:37:35.892 EDT
+Begin processing the 2701st record. Run 1, Event 69036, LumiSection 277 on stream 0 at 09-Aug-2019 13:37:36.701 EDT
+Begin processing the 2801st record. Run 1, Event 69139, LumiSection 277 on stream 0 at 09-Aug-2019 13:37:37.319 EDT
+Begin processing the 2901st record. Run 1, Event 69232, LumiSection 277 on stream 0 at 09-Aug-2019 13:37:38.007 EDT
+Begin processing the 3001st record. Run 1, Event 45062, LumiSection 181 on stream 0 at 09-Aug-2019 13:37:38.772 EDT
+Begin processing the 3101st record. Run 1, Event 45160, LumiSection 181 on stream 0 at 09-Aug-2019 13:37:39.472 EDT
+Begin processing the 3201st record. Run 1, Event 49294, LumiSection 198 on stream 0 at 09-Aug-2019 13:37:40.248 EDT
+Begin processing the 3301st record. Run 1, Event 49387, LumiSection 198 on stream 0 at 09-Aug-2019 13:37:40.918 EDT
+Begin processing the 3401st record. Run 1, Event 49494, LumiSection 198 on stream 0 at 09-Aug-2019 13:37:41.608 EDT
+Begin processing the 3501st record. Run 1, Event 98585, LumiSection 395 on stream 0 at 09-Aug-2019 13:37:42.360 EDT
+Begin processing the 3601st record. Run 1, Event 98675, LumiSection 395 on stream 0 at 09-Aug-2019 13:37:43.023 EDT
+Begin processing the 3701st record. Run 1, Event 72537, LumiSection 291 on stream 0 at 09-Aug-2019 13:37:43.791 EDT
+Begin processing the 3801st record. Run 1, Event 72622, LumiSection 291 on stream 0 at 09-Aug-2019 13:37:44.477 EDT
+Begin processing the 3901st record. Run 1, Event 72725, LumiSection 291 on stream 0 at 09-Aug-2019 13:37:45.219 EDT
+Begin processing the 4001st record. Run 1, Event 22318, LumiSection 90 on stream 0 at 09-Aug-2019 13:37:45.845 EDT
+Begin processing the 4101st record. Run 1, Event 22412, LumiSection 90 on stream 0 at 09-Aug-2019 13:37:46.541 EDT
+Begin processing the 4201st record. Run 1, Event 22519, LumiSection 90 on stream 0 at 09-Aug-2019 13:37:47.270 EDT
+Begin processing the 4301st record. Run 1, Event 51859, LumiSection 208 on stream 0 at 09-Aug-2019 13:37:47.919 EDT
+Begin processing the 4401st record. Run 1, Event 51963, LumiSection 208 on stream 0 at 09-Aug-2019 13:37:48.654 EDT
+Begin processing the 4501st record. Run 1, Event 31305, LumiSection 126 on stream 0 at 09-Aug-2019 13:37:49.304 EDT
+Begin processing the 4601st record. Run 1, Event 31402, LumiSection 126 on stream 0 at 09-Aug-2019 13:37:49.952 EDT
+Begin processing the 4701st record. Run 1, Event 31500, LumiSection 126 on stream 0 at 09-Aug-2019 13:37:50.684 EDT
+Begin processing the 4801st record. Run 1, Event 56607, LumiSection 227 on stream 0 at 09-Aug-2019 13:37:51.357 EDT
+Begin processing the 4901st record. Run 1, Event 56704, LumiSection 227 on stream 0 at 09-Aug-2019 13:37:52.103 EDT
+09-Aug-2019 13:37:52 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_11.root
+09-Aug-2019 13:37:52 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_12.root
+09-Aug-2019 13:37:52 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_12.root
+Begin processing the 5001st record. Run 1, Event 99828, LumiSection 400 on stream 0 at 09-Aug-2019 13:37:53.026 EDT
+Begin processing the 5101st record. Run 1, Event 99925, LumiSection 400 on stream 0 at 09-Aug-2019 13:37:53.841 EDT
+Begin processing the 5201st record. Run 1, Event 89820, LumiSection 360 on stream 0 at 09-Aug-2019 13:37:54.689 EDT
+Begin processing the 5301st record. Run 1, Event 89919, LumiSection 360 on stream 0 at 09-Aug-2019 13:37:55.337 EDT
+Begin processing the 5401st record. Run 1, Event 68291, LumiSection 274 on stream 0 at 09-Aug-2019 13:37:55.996 EDT
+Begin processing the 5501st record. Run 1, Event 68390, LumiSection 274 on stream 0 at 09-Aug-2019 13:37:56.719 EDT
+Begin processing the 5601st record. Run 1, Event 68491, LumiSection 274 on stream 0 at 09-Aug-2019 13:37:57.399 EDT
+Begin processing the 5701st record. Run 1, Event 92579, LumiSection 371 on stream 0 at 09-Aug-2019 13:37:58.127 EDT
+Begin processing the 5801st record. Run 1, Event 92687, LumiSection 371 on stream 0 at 09-Aug-2019 13:37:58.817 EDT
+Begin processing the 5901st record. Run 1, Event 55015, LumiSection 221 on stream 0 at 09-Aug-2019 13:37:59.542 EDT
+Begin processing the 6001st record. Run 1, Event 55113, LumiSection 221 on stream 0 at 09-Aug-2019 13:38:00.378 EDT
+Begin processing the 6101st record. Run 1, Event 55213, LumiSection 221 on stream 0 at 09-Aug-2019 13:38:01.083 EDT
+Begin processing the 6201st record. Run 1, Event 26830, LumiSection 108 on stream 0 at 09-Aug-2019 13:38:01.844 EDT
+Begin processing the 6301st record. Run 1, Event 26921, LumiSection 108 on stream 0 at 09-Aug-2019 13:38:02.533 EDT
+Begin processing the 6401st record. Run 1, Event 37784, LumiSection 152 on stream 0 at 09-Aug-2019 13:38:03.297 EDT
+Begin processing the 6501st record. Run 1, Event 37885, LumiSection 152 on stream 0 at 09-Aug-2019 13:38:03.973 EDT
+Begin processing the 6601st record. Run 1, Event 37983, LumiSection 152 on stream 0 at 09-Aug-2019 13:38:04.635 EDT
+Begin processing the 6701st record. Run 1, Event 87075, LumiSection 349 on stream 0 at 09-Aug-2019 13:38:05.376 EDT
+Begin processing the 6801st record. Run 1, Event 87177, LumiSection 349 on stream 0 at 09-Aug-2019 13:38:06.043 EDT
+Begin processing the 6901st record. Run 1, Event 20512, LumiSection 83 on stream 0 at 09-Aug-2019 13:38:06.769 EDT
+Begin processing the 7001st record. Run 1, Event 20608, LumiSection 83 on stream 0 at 09-Aug-2019 13:38:07.404 EDT
+Begin processing the 7101st record. Run 1, Event 20713, LumiSection 83 on stream 0 at 09-Aug-2019 13:38:08.201 EDT
+Begin processing the 7201st record. Run 1, Event 18076, LumiSection 73 on stream 0 at 09-Aug-2019 13:38:08.845 EDT
+Begin processing the 7301st record. Run 1, Event 18180, LumiSection 73 on stream 0 at 09-Aug-2019 13:38:09.521 EDT
+09-Aug-2019 13:38:10 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_12.root
+09-Aug-2019 13:38:10 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_13.root
+09-Aug-2019 13:38:10 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_13.root
+Begin processing the 7401st record. Run 1, Event 64286, LumiSection 258 on stream 0 at 09-Aug-2019 13:38:10.292 EDT
+Begin processing the 7501st record. Run 1, Event 64378, LumiSection 258 on stream 0 at 09-Aug-2019 13:38:11.032 EDT
+Begin processing the 7601st record. Run 1, Event 64483, LumiSection 258 on stream 0 at 09-Aug-2019 13:38:11.769 EDT
+Begin processing the 7701st record. Run 1, Event 74586, LumiSection 299 on stream 0 at 09-Aug-2019 13:38:12.593 EDT
+Begin processing the 7801st record. Run 1, Event 74691, LumiSection 299 on stream 0 at 09-Aug-2019 13:38:13.253 EDT
+Begin processing the 7901st record. Run 1, Event 74785, LumiSection 299 on stream 0 at 09-Aug-2019 13:38:13.987 EDT
+Begin processing the 8001st record. Run 1, Event 36855, LumiSection 148 on stream 0 at 09-Aug-2019 13:38:14.647 EDT
+Begin processing the 8101st record. Run 1, Event 36947, LumiSection 148 on stream 0 at 09-Aug-2019 13:38:15.322 EDT
+Begin processing the 8201st record. Run 1, Event 14835, LumiSection 60 on stream 0 at 09-Aug-2019 13:38:16.076 EDT
+Begin processing the 8301st record. Run 1, Event 14931, LumiSection 60 on stream 0 at 09-Aug-2019 13:38:16.696 EDT
+Begin processing the 8401st record. Run 1, Event 47558, LumiSection 191 on stream 0 at 09-Aug-2019 13:38:17.454 EDT
+Begin processing the 8501st record. Run 1, Event 47656, LumiSection 191 on stream 0 at 09-Aug-2019 13:38:18.083 EDT
+Begin processing the 8601st record. Run 1, Event 47749, LumiSection 191 on stream 0 at 09-Aug-2019 13:38:18.846 EDT
+Begin processing the 8701st record. Run 1, Event 73612, LumiSection 295 on stream 0 at 09-Aug-2019 13:38:19.522 EDT
+Begin processing the 8801st record. Run 1, Event 73711, LumiSection 295 on stream 0 at 09-Aug-2019 13:38:20.212 EDT
+Begin processing the 8901st record. Run 1, Event 38811, LumiSection 156 on stream 0 at 09-Aug-2019 13:38:21.002 EDT
+Begin processing the 9001st record. Run 1, Event 38905, LumiSection 156 on stream 0 at 09-Aug-2019 13:38:21.668 EDT
+Begin processing the 9101st record. Run 1, Event 39010, LumiSection 156 on stream 0 at 09-Aug-2019 13:38:22.403 EDT
+Begin processing the 9201st record. Run 1, Event 77343, LumiSection 310 on stream 0 at 09-Aug-2019 13:38:23.048 EDT
+Begin processing the 9301st record. Run 1, Event 77449, LumiSection 310 on stream 0 at 09-Aug-2019 13:38:23.781 EDT
+Begin processing the 9401st record. Run 1, Event 29312, LumiSection 118 on stream 0 at 09-Aug-2019 13:38:24.414 EDT
+Begin processing the 9501st record. Run 1, Event 29415, LumiSection 118 on stream 0 at 09-Aug-2019 13:38:25.101 EDT
+Begin processing the 9601st record. Run 1, Event 29505, LumiSection 118 on stream 0 at 09-Aug-2019 13:38:25.835 EDT
+Begin processing the 9701st record. Run 1, Event 82082, LumiSection 329 on stream 0 at 09-Aug-2019 13:38:26.497 EDT
+Begin processing the 9801st record. Run 1, Event 82189, LumiSection 329 on stream 0 at 09-Aug-2019 13:38:27.217 EDT
+09-Aug-2019 13:38:27 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_13.root
+09-Aug-2019 13:38:27 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_14.root
+09-Aug-2019 13:38:27 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_14.root
+Begin processing the 9901st record. Run 1, Event 24811, LumiSection 100 on stream 0 at 09-Aug-2019 13:38:27.947 EDT
+Begin processing the 10001st record. Run 1, Event 24916, LumiSection 100 on stream 0 at 09-Aug-2019 13:38:28.674 EDT
+Begin processing the 10101st record. Run 1, Event 15012, LumiSection 61 on stream 0 at 09-Aug-2019 13:38:29.441 EDT
+Begin processing the 10201st record. Run 1, Event 15111, LumiSection 61 on stream 0 at 09-Aug-2019 13:38:30.174 EDT
+Begin processing the 10301st record. Run 1, Event 15207, LumiSection 61 on stream 0 at 09-Aug-2019 13:38:30.827 EDT
+Begin processing the 10401st record. Run 1, Event 58830, LumiSection 236 on stream 0 at 09-Aug-2019 13:38:31.629 EDT
+Begin processing the 10501st record. Run 1, Event 58943, LumiSection 236 on stream 0 at 09-Aug-2019 13:38:32.291 EDT
+Begin processing the 10601st record. Run 1, Event 60513, LumiSection 243 on stream 0 at 09-Aug-2019 13:38:33.046 EDT
+Begin processing the 10701st record. Run 1, Event 60612, LumiSection 243 on stream 0 at 09-Aug-2019 13:38:33.679 EDT
+Begin processing the 10801st record. Run 1, Event 60712, LumiSection 243 on stream 0 at 09-Aug-2019 13:38:34.309 EDT
+Begin processing the 10901st record. Run 1, Event 35057, LumiSection 141 on stream 0 at 09-Aug-2019 13:38:35.029 EDT
+Begin processing the 11001st record. Run 1, Event 35148, LumiSection 141 on stream 0 at 09-Aug-2019 13:38:35.734 EDT
+Begin processing the 11101st record. Run 1, Event 57275, LumiSection 230 on stream 0 at 09-Aug-2019 13:38:36.468 EDT
+Begin processing the 11201st record. Run 1, Event 57368, LumiSection 230 on stream 0 at 09-Aug-2019 13:38:37.086 EDT
+Begin processing the 11301st record. Run 1, Event 57469, LumiSection 230 on stream 0 at 09-Aug-2019 13:38:37.830 EDT
+Begin processing the 11401st record. Run 1, Event 66061, LumiSection 265 on stream 0 at 09-Aug-2019 13:38:38.475 EDT
+Begin processing the 11501st record. Run 1, Event 66158, LumiSection 265 on stream 0 at 09-Aug-2019 13:38:39.134 EDT
+Begin processing the 11601st record. Run 1, Event 66256, LumiSection 265 on stream 0 at 09-Aug-2019 13:38:39.875 EDT
+Begin processing the 11701st record. Run 1, Event 16601, LumiSection 67 on stream 0 at 09-Aug-2019 13:38:40.647 EDT
+Begin processing the 11801st record. Run 1, Event 16713, LumiSection 67 on stream 0 at 09-Aug-2019 13:38:41.467 EDT
+Begin processing the 11901st record. Run 1, Event 31559, LumiSection 127 on stream 0 at 09-Aug-2019 13:38:42.166 EDT
+Begin processing the 12001st record. Run 1, Event 31655, LumiSection 127 on stream 0 at 09-Aug-2019 13:38:42.951 EDT
+Begin processing the 12101st record. Run 1, Event 31762, LumiSection 127 on stream 0 at 09-Aug-2019 13:38:43.606 EDT
+Begin processing the 12201st record. Run 1, Event 76610, LumiSection 307 on stream 0 at 09-Aug-2019 13:38:44.316 EDT
+Begin processing the 12301st record. Run 1, Event 76705, LumiSection 307 on stream 0 at 09-Aug-2019 13:38:45.036 EDT
+09-Aug-2019 13:38:45 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_14.root
+09-Aug-2019 13:38:45 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_17.root
+09-Aug-2019 13:38:45 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_17.root
+Begin processing the 12401st record. Run 1, Event 76050, LumiSection 305 on stream 0 at 09-Aug-2019 13:38:45.774 EDT
+Begin processing the 12501st record. Run 1, Event 76147, LumiSection 305 on stream 0 at 09-Aug-2019 13:38:46.481 EDT
+Begin processing the 12601st record. Run 1, Event 76254, LumiSection 305 on stream 0 at 09-Aug-2019 13:38:47.356 EDT
+Begin processing the 12701st record. Run 1, Event 11598, LumiSection 47 on stream 0 at 09-Aug-2019 13:38:48.025 EDT
+Begin processing the 12801st record. Run 1, Event 11704, LumiSection 47 on stream 0 at 09-Aug-2019 13:38:48.693 EDT
+Begin processing the 12901st record. Run 1, Event 97562, LumiSection 391 on stream 0 at 09-Aug-2019 13:38:49.461 EDT
+Begin processing the 13001st record. Run 1, Event 97658, LumiSection 391 on stream 0 at 09-Aug-2019 13:38:50.124 EDT
+Begin processing the 13101st record. Run 1, Event 97752, LumiSection 391 on stream 0 at 09-Aug-2019 13:38:50.861 EDT
+Begin processing the 13201st record. Run 1, Event 19625, LumiSection 79 on stream 0 at 09-Aug-2019 13:38:51.520 EDT
+Begin processing the 13301st record. Run 1, Event 19725, LumiSection 79 on stream 0 at 09-Aug-2019 13:38:52.183 EDT
+Begin processing the 13401st record. Run 1, Event 81295, LumiSection 326 on stream 0 at 09-Aug-2019 13:38:52.970 EDT
+Begin processing the 13501st record. Run 1, Event 81398, LumiSection 326 on stream 0 at 09-Aug-2019 13:38:53.626 EDT
+Begin processing the 13601st record. Run 1, Event 81498, LumiSection 326 on stream 0 at 09-Aug-2019 13:38:54.317 EDT
+Begin processing the 13701st record. Run 1, Event 52607, LumiSection 211 on stream 0 at 09-Aug-2019 13:38:54.971 EDT
+Begin processing the 13801st record. Run 1, Event 52706, LumiSection 211 on stream 0 at 09-Aug-2019 13:38:55.703 EDT
+Begin processing the 13901st record. Run 1, Event 63305, LumiSection 254 on stream 0 at 09-Aug-2019 13:38:56.350 EDT
+Begin processing the 14001st record. Run 1, Event 63405, LumiSection 254 on stream 0 at 09-Aug-2019 13:38:57.027 EDT
+Begin processing the 14101st record. Run 1, Event 63508, LumiSection 254 on stream 0 at 09-Aug-2019 13:38:57.754 EDT
+Begin processing the 14201st record. Run 1, Event 67852, LumiSection 272 on stream 0 at 09-Aug-2019 13:38:58.432 EDT
+Begin processing the 14301st record. Run 1, Event 67941, LumiSection 272 on stream 0 at 09-Aug-2019 13:38:59.195 EDT
+Begin processing the 14401st record. Run 1, Event 3049, LumiSection 13 on stream 0 at 09-Aug-2019 13:38:59.864 EDT
+Begin processing the 14501st record. Run 1, Event 3153, LumiSection 13 on stream 0 at 09-Aug-2019 13:39:00.656 EDT
+Begin processing the 14601st record. Run 1, Event 3251, LumiSection 13 on stream 0 at 09-Aug-2019 13:39:01.375 EDT
+Begin processing the 14701st record. Run 1, Event 71588, LumiSection 287 on stream 0 at 09-Aug-2019 13:39:02.078 EDT
+Begin processing the 14801st record. Run 1, Event 71692, LumiSection 287 on stream 0 at 09-Aug-2019 13:39:02.802 EDT
+09-Aug-2019 13:39:03 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_17.root
+09-Aug-2019 13:39:03 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_19.root
+09-Aug-2019 13:39:03 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_19.root
+Begin processing the 14901st record. Run 1, Event 40274, LumiSection 162 on stream 0 at 09-Aug-2019 13:39:03.527 EDT
+Begin processing the 15001st record. Run 1, Event 40375, LumiSection 162 on stream 0 at 09-Aug-2019 13:39:04.272 EDT
+Begin processing the 15101st record. Run 1, Event 40478, LumiSection 162 on stream 0 at 09-Aug-2019 13:39:05.009 EDT
+Begin processing the 15201st record. Run 1, Event 76828, LumiSection 308 on stream 0 at 09-Aug-2019 13:39:05.756 EDT
+Begin processing the 15301st record. Run 1, Event 76935, LumiSection 308 on stream 0 at 09-Aug-2019 13:39:06.454 EDT
+Begin processing the 15401st record. Run 1, Event 94051, LumiSection 377 on stream 0 at 09-Aug-2019 13:39:07.170 EDT
+Begin processing the 15501st record. Run 1, Event 94155, LumiSection 377 on stream 0 at 09-Aug-2019 13:39:07.847 EDT
+Begin processing the 15601st record. Run 1, Event 94255, LumiSection 377 on stream 0 at 09-Aug-2019 13:39:08.618 EDT
+Begin processing the 15701st record. Run 1, Event 83594, LumiSection 335 on stream 0 at 09-Aug-2019 13:39:09.277 EDT
+Begin processing the 15801st record. Run 1, Event 83686, LumiSection 335 on stream 0 at 09-Aug-2019 13:39:09.931 EDT
+Begin processing the 15901st record. Run 1, Event 88036, LumiSection 353 on stream 0 at 09-Aug-2019 13:39:10.675 EDT
+Begin processing the 16001st record. Run 1, Event 88137, LumiSection 353 on stream 0 at 09-Aug-2019 13:39:11.331 EDT
+Begin processing the 16101st record. Run 1, Event 88237, LumiSection 353 on stream 0 at 09-Aug-2019 13:39:12.101 EDT
+Begin processing the 16201st record. Run 1, Event 48586, LumiSection 195 on stream 0 at 09-Aug-2019 13:39:12.746 EDT
+Begin processing the 16301st record. Run 1, Event 48695, LumiSection 195 on stream 0 at 09-Aug-2019 13:39:13.529 EDT
+Begin processing the 16401st record. Run 1, Event 13782, LumiSection 56 on stream 0 at 09-Aug-2019 13:39:14.155 EDT
+Begin processing the 16501st record. Run 1, Event 13893, LumiSection 56 on stream 0 at 09-Aug-2019 13:39:14.833 EDT
+Begin processing the 16601st record. Run 1, Event 13991, LumiSection 56 on stream 0 at 09-Aug-2019 13:39:15.591 EDT
+Begin processing the 16701st record. Run 1, Event 50306, LumiSection 202 on stream 0 at 09-Aug-2019 13:39:16.245 EDT
+Begin processing the 16801st record. Run 1, Event 50408, LumiSection 202 on stream 0 at 09-Aug-2019 13:39:16.976 EDT
+Begin processing the 16901st record. Run 1, Event 67026, LumiSection 269 on stream 0 at 09-Aug-2019 13:39:17.646 EDT
+Begin processing the 17001st record. Run 1, Event 67124, LumiSection 269 on stream 0 at 09-Aug-2019 13:39:18.339 EDT
+Begin processing the 17101st record. Run 1, Event 67224, LumiSection 269 on stream 0 at 09-Aug-2019 13:39:19.107 EDT
+Begin processing the 17201st record. Run 1, Event 62318, LumiSection 250 on stream 0 at 09-Aug-2019 13:39:19.756 EDT
+Begin processing the 17301st record. Run 1, Event 62419, LumiSection 250 on stream 0 at 09-Aug-2019 13:39:20.458 EDT
+09-Aug-2019 13:39:21 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_19.root
+09-Aug-2019 13:39:21 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_2.root
+09-Aug-2019 13:39:21 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_2.root
+Begin processing the 17401st record. Run 1, Event 85506, LumiSection 343 on stream 0 at 09-Aug-2019 13:39:21.188 EDT
+Begin processing the 17501st record. Run 1, Event 85608, LumiSection 343 on stream 0 at 09-Aug-2019 13:39:21.923 EDT
+Begin processing the 17601st record. Run 1, Event 85696, LumiSection 343 on stream 0 at 09-Aug-2019 13:39:22.670 EDT
+Begin processing the 17701st record. Run 1, Event 53071, LumiSection 213 on stream 0 at 09-Aug-2019 13:39:23.425 EDT
+Begin processing the 17801st record. Run 1, Event 53171, LumiSection 213 on stream 0 at 09-Aug-2019 13:39:24.092 EDT
+Begin processing the 17901st record. Run 1, Event 53274, LumiSection 213 on stream 0 at 09-Aug-2019 13:39:24.853 EDT
+Begin processing the 18001st record. Run 1, Event 14380, LumiSection 58 on stream 0 at 09-Aug-2019 13:39:25.647 EDT
+Begin processing the 18101st record. Run 1, Event 14485, LumiSection 58 on stream 0 at 09-Aug-2019 13:39:26.367 EDT
+Begin processing the 18201st record. Run 1, Event 96563, LumiSection 387 on stream 0 at 09-Aug-2019 13:39:27.175 EDT
+Begin processing the 18301st record. Run 1, Event 96658, LumiSection 387 on stream 0 at 09-Aug-2019 13:39:27.839 EDT
+Begin processing the 18401st record. Run 1, Event 96761, LumiSection 387 on stream 0 at 09-Aug-2019 13:39:28.586 EDT
+Begin processing the 18501st record. Run 1, Event 31101, LumiSection 125 on stream 0 at 09-Aug-2019 13:39:29.243 EDT
+Begin processing the 18601st record. Run 1, Event 31200, LumiSection 125 on stream 0 at 09-Aug-2019 13:39:29.975 EDT
+Begin processing the 18701st record. Run 1, Event 13311, LumiSection 54 on stream 0 at 09-Aug-2019 13:39:30.636 EDT
+Begin processing the 18801st record. Run 1, Event 13416, LumiSection 54 on stream 0 at 09-Aug-2019 13:39:31.307 EDT
+Begin processing the 18901st record. Run 1, Event 13520, LumiSection 54 on stream 0 at 09-Aug-2019 13:39:32.046 EDT
+Begin processing the 19001st record. Run 1, Event 60841, LumiSection 244 on stream 0 at 09-Aug-2019 13:39:32.716 EDT
+Begin processing the 19101st record. Run 1, Event 60937, LumiSection 244 on stream 0 at 09-Aug-2019 13:39:33.461 EDT
+Begin processing the 19201st record. Run 1, Event 66288, LumiSection 266 on stream 0 at 09-Aug-2019 13:39:34.106 EDT
+Begin processing the 19301st record. Run 1, Event 66395, LumiSection 266 on stream 0 at 09-Aug-2019 13:39:34.754 EDT
+Begin processing the 19401st record. Run 1, Event 66498, LumiSection 266 on stream 0 at 09-Aug-2019 13:39:35.485 EDT
+Begin processing the 19501st record. Run 1, Event 87358, LumiSection 350 on stream 0 at 09-Aug-2019 13:39:36.128 EDT
+Begin processing the 19601st record. Run 1, Event 87453, LumiSection 350 on stream 0 at 09-Aug-2019 13:39:36.863 EDT
+Begin processing the 19701st record. Run 1, Event 56039, LumiSection 225 on stream 0 at 09-Aug-2019 13:39:37.505 EDT
+Begin processing the 19801st record. Run 1, Event 56145, LumiSection 225 on stream 0 at 09-Aug-2019 13:39:38.282 EDT
+Begin processing the 19901st record. Run 1, Event 56243, LumiSection 225 on stream 0 at 09-Aug-2019 13:39:38.920 EDT
+09-Aug-2019 13:39:39 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_2.root
+09-Aug-2019 13:39:39 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_20.root
+09-Aug-2019 13:39:39 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_20.root
+Begin processing the 20001st record. Run 1, Event 30584, LumiSection 123 on stream 0 at 09-Aug-2019 13:39:39.711 EDT
+Begin processing the 20101st record. Run 1, Event 30682, LumiSection 123 on stream 0 at 09-Aug-2019 13:39:40.440 EDT
+Begin processing the 20201st record. Run 1, Event 40031, LumiSection 161 on stream 0 at 09-Aug-2019 13:39:41.254 EDT
+Begin processing the 20301st record. Run 1, Event 40119, LumiSection 161 on stream 0 at 09-Aug-2019 13:39:41.925 EDT
+Begin processing the 20401st record. Run 1, Event 40233, LumiSection 161 on stream 0 at 09-Aug-2019 13:39:42.751 EDT
+Begin processing the 20501st record. Run 1, Event 38608, LumiSection 155 on stream 0 at 09-Aug-2019 13:39:43.432 EDT
+Begin processing the 20601st record. Run 1, Event 38704, LumiSection 155 on stream 0 at 09-Aug-2019 13:39:44.066 EDT
+Begin processing the 20701st record. Run 1, Event 52046, LumiSection 209 on stream 0 at 09-Aug-2019 13:39:44.789 EDT
+Begin processing the 20801st record. Run 1, Event 52144, LumiSection 209 on stream 0 at 09-Aug-2019 13:39:45.458 EDT
+Begin processing the 20901st record. Run 1, Event 52239, LumiSection 209 on stream 0 at 09-Aug-2019 13:39:46.225 EDT
+Begin processing the 21001st record. Run 1, Event 75070, LumiSection 301 on stream 0 at 09-Aug-2019 13:39:46.902 EDT
+Begin processing the 21101st record. Run 1, Event 75164, LumiSection 301 on stream 0 at 09-Aug-2019 13:39:47.558 EDT
+Begin processing the 21201st record. Run 1, Event 79305, LumiSection 318 on stream 0 at 09-Aug-2019 13:39:48.295 EDT
+Begin processing the 21301st record. Run 1, Event 79408, LumiSection 318 on stream 0 at 09-Aug-2019 13:39:48.938 EDT
+Begin processing the 21401st record. Run 1, Event 79508, LumiSection 318 on stream 0 at 09-Aug-2019 13:39:49.651 EDT
+Begin processing the 21501st record. Run 1, Event 63099, LumiSection 253 on stream 0 at 09-Aug-2019 13:39:50.302 EDT
+Begin processing the 21601st record. Run 1, Event 63190, LumiSection 253 on stream 0 at 09-Aug-2019 13:39:51.053 EDT
+Begin processing the 21701st record. Run 1, Event 2030, LumiSection 9 on stream 0 at 09-Aug-2019 13:39:51.701 EDT
+Begin processing the 21801st record. Run 1, Event 2126, LumiSection 9 on stream 0 at 09-Aug-2019 13:39:52.366 EDT
+Begin processing the 21901st record. Run 1, Event 2228, LumiSection 9 on stream 0 at 09-Aug-2019 13:39:53.140 EDT
+Begin processing the 22001st record. Run 1, Event 87580, LumiSection 351 on stream 0 at 09-Aug-2019 13:39:53.800 EDT
+Begin processing the 22101st record. Run 1, Event 87691, LumiSection 351 on stream 0 at 09-Aug-2019 13:39:54.512 EDT
+Begin processing the 22201st record. Run 1, Event 1773, LumiSection 8 on stream 0 at 09-Aug-2019 13:39:55.171 EDT
+Begin processing the 22301st record. Run 1, Event 1878, LumiSection 8 on stream 0 at 09-Aug-2019 13:39:55.912 EDT
+Begin processing the 22401st record. Run 1, Event 1982, LumiSection 8 on stream 0 at 09-Aug-2019 13:39:56.545 EDT
+09-Aug-2019 13:39:56 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_20.root
+09-Aug-2019 13:39:56 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_24.root
+09-Aug-2019 13:39:56 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_24.root
+Begin processing the 22501st record. Run 1, Event 55562, LumiSection 223 on stream 0 at 09-Aug-2019 13:39:57.302 EDT
+Begin processing the 22601st record. Run 1, Event 55670, LumiSection 223 on stream 0 at 09-Aug-2019 13:39:58.042 EDT
+Begin processing the 22701st record. Run 1, Event 22018, LumiSection 89 on stream 0 at 09-Aug-2019 13:39:58.828 EDT
+Begin processing the 22801st record. Run 1, Event 22123, LumiSection 89 on stream 0 at 09-Aug-2019 13:39:59.466 EDT
+Begin processing the 22901st record. Run 1, Event 22225, LumiSection 89 on stream 0 at 09-Aug-2019 13:40:00.109 EDT
+Begin processing the 23001st record. Run 1, Event 64596, LumiSection 259 on stream 0 at 09-Aug-2019 13:40:00.836 EDT
+Begin processing the 23101st record. Run 1, Event 64694, LumiSection 259 on stream 0 at 09-Aug-2019 13:40:01.511 EDT
+Begin processing the 23201st record. Run 1, Event 97782, LumiSection 392 on stream 0 at 09-Aug-2019 13:40:02.296 EDT
+Begin processing the 23301st record. Run 1, Event 97878, LumiSection 392 on stream 0 at 09-Aug-2019 13:40:03.004 EDT
+Begin processing the 23401st record. Run 1, Event 97974, LumiSection 392 on stream 0 at 09-Aug-2019 13:40:03.791 EDT
+Begin processing the 23501st record. Run 1, Event 88583, LumiSection 355 on stream 0 at 09-Aug-2019 13:40:04.436 EDT
+Begin processing the 23601st record. Run 1, Event 88669, LumiSection 355 on stream 0 at 09-Aug-2019 13:40:05.103 EDT
+Begin processing the 23701st record. Run 1, Event 97278, LumiSection 390 on stream 0 at 09-Aug-2019 13:40:05.855 EDT
+Begin processing the 23801st record. Run 1, Event 97372, LumiSection 390 on stream 0 at 09-Aug-2019 13:40:06.509 EDT
+Begin processing the 23901st record. Run 1, Event 97471, LumiSection 390 on stream 0 at 09-Aug-2019 13:40:07.270 EDT
+Begin processing the 24001st record. Run 1, Event 17816, LumiSection 72 on stream 0 at 09-Aug-2019 13:40:07.922 EDT
+Begin processing the 24101st record. Run 1, Event 17927, LumiSection 72 on stream 0 at 09-Aug-2019 13:40:08.724 EDT
+Begin processing the 24201st record. Run 1, Event 18016, LumiSection 72 on stream 0 at 09-Aug-2019 13:40:09.361 EDT
+Begin processing the 24301st record. Run 1, Event 26105, LumiSection 105 on stream 0 at 09-Aug-2019 13:40:10.019 EDT
+Begin processing the 24401st record. Run 1, Event 26207, LumiSection 105 on stream 0 at 09-Aug-2019 13:40:10.757 EDT
+Begin processing the 24501st record. Run 1, Event 78574, LumiSection 315 on stream 0 at 09-Aug-2019 13:40:11.398 EDT
+Begin processing the 24601st record. Run 1, Event 78674, LumiSection 315 on stream 0 at 09-Aug-2019 13:40:12.161 EDT
+Begin processing the 24701st record. Run 1, Event 78777, LumiSection 315 on stream 0 at 09-Aug-2019 13:40:12.814 EDT
+Begin processing the 24801st record. Run 1, Event 70598, LumiSection 283 on stream 0 at 09-Aug-2019 13:40:13.475 EDT
+Begin processing the 24901st record. Run 1, Event 70701, LumiSection 283 on stream 0 at 09-Aug-2019 13:40:14.187 EDT
+09-Aug-2019 13:40:14 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_24.root
+09-Aug-2019 13:40:14 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_25.root
+09-Aug-2019 13:40:14 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_25.root
+Begin processing the 25001st record. Run 1, Event 94830, LumiSection 380 on stream 0 at 09-Aug-2019 13:40:14.984 EDT
+Begin processing the 25101st record. Run 1, Event 94926, LumiSection 380 on stream 0 at 09-Aug-2019 13:40:15.691 EDT
+Begin processing the 25201st record. Run 1, Event 51294, LumiSection 206 on stream 0 at 09-Aug-2019 13:40:16.409 EDT
+Begin processing the 25301st record. Run 1, Event 51384, LumiSection 206 on stream 0 at 09-Aug-2019 13:40:17.151 EDT
+Begin processing the 25401st record. Run 1, Event 51483, LumiSection 206 on stream 0 at 09-Aug-2019 13:40:17.801 EDT
+Begin processing the 25501st record. Run 1, Event 51079, LumiSection 205 on stream 0 at 09-Aug-2019 13:40:18.530 EDT
+Begin processing the 25601st record. Run 1, Event 51188, LumiSection 205 on stream 0 at 09-Aug-2019 13:40:19.201 EDT
+Begin processing the 25701st record. Run 1, Event 93802, LumiSection 376 on stream 0 at 09-Aug-2019 13:40:19.943 EDT
+Begin processing the 25801st record. Run 1, Event 93902, LumiSection 376 on stream 0 at 09-Aug-2019 13:40:20.621 EDT
+Begin processing the 25901st record. Run 1, Event 94002, LumiSection 376 on stream 0 at 09-Aug-2019 13:40:21.274 EDT
+Begin processing the 26001st record. Run 1, Event 75573, LumiSection 303 on stream 0 at 09-Aug-2019 13:40:22.000 EDT
+Begin processing the 26101st record. Run 1, Event 75675, LumiSection 303 on stream 0 at 09-Aug-2019 13:40:22.665 EDT
+Begin processing the 26201st record. Run 1, Event 2539, LumiSection 11 on stream 0 at 09-Aug-2019 13:40:23.440 EDT
+Begin processing the 26301st record. Run 1, Event 2645, LumiSection 11 on stream 0 at 09-Aug-2019 13:40:24.133 EDT
+Begin processing the 26401st record. Run 1, Event 2745, LumiSection 11 on stream 0 at 09-Aug-2019 13:40:24.833 EDT
+Begin processing the 26501st record. Run 1, Event 12839, LumiSection 52 on stream 0 at 09-Aug-2019 13:40:25.579 EDT
+Begin processing the 26601st record. Run 1, Event 12939, LumiSection 52 on stream 0 at 09-Aug-2019 13:40:26.225 EDT
+Begin processing the 26701st record. Run 1, Event 28794, LumiSection 116 on stream 0 at 09-Aug-2019 13:40:26.943 EDT
+Begin processing the 26801st record. Run 1, Event 28902, LumiSection 116 on stream 0 at 09-Aug-2019 13:40:27.579 EDT
+Begin processing the 26901st record. Run 1, Event 29003, LumiSection 116 on stream 0 at 09-Aug-2019 13:40:28.266 EDT
+Begin processing the 27001st record. Run 1, Event 3590, LumiSection 15 on stream 0 at 09-Aug-2019 13:40:28.940 EDT
+Begin processing the 27101st record. Run 1, Event 3692, LumiSection 15 on stream 0 at 09-Aug-2019 13:40:29.604 EDT
+Begin processing the 27201st record. Run 1, Event 87785, LumiSection 352 on stream 0 at 09-Aug-2019 13:40:30.307 EDT
+Begin processing the 27301st record. Run 1, Event 87886, LumiSection 352 on stream 0 at 09-Aug-2019 13:40:30.993 EDT
+Begin processing the 27401st record. Run 1, Event 87969, LumiSection 352 on stream 0 at 09-Aug-2019 13:40:31.707 EDT
+09-Aug-2019 13:40:31 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_25.root
+09-Aug-2019 13:40:31 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_27.root
+09-Aug-2019 13:40:31 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_27.root
+Begin processing the 27501st record. Run 1, Event 56830, LumiSection 228 on stream 0 at 09-Aug-2019 13:40:32.477 EDT
+Begin processing the 27601st record. Run 1, Event 56930, LumiSection 228 on stream 0 at 09-Aug-2019 13:40:33.230 EDT
+Begin processing the 27701st record. Run 1, Event 24044, LumiSection 97 on stream 0 at 09-Aug-2019 13:40:34.051 EDT
+Begin processing the 27801st record. Run 1, Event 24142, LumiSection 97 on stream 0 at 09-Aug-2019 13:40:34.695 EDT
+Begin processing the 27901st record. Run 1, Event 24242, LumiSection 97 on stream 0 at 09-Aug-2019 13:40:35.360 EDT
+Begin processing the 28001st record. Run 1, Event 83080, LumiSection 333 on stream 0 at 09-Aug-2019 13:40:36.070 EDT
+Begin processing the 28101st record. Run 1, Event 83184, LumiSection 333 on stream 0 at 09-Aug-2019 13:40:36.771 EDT
+Begin processing the 28201st record. Run 1, Event 59549, LumiSection 239 on stream 0 at 09-Aug-2019 13:40:37.489 EDT
+Begin processing the 28301st record. Run 1, Event 59642, LumiSection 239 on stream 0 at 09-Aug-2019 13:40:38.169 EDT
+Begin processing the 28401st record. Run 1, Event 59738, LumiSection 239 on stream 0 at 09-Aug-2019 13:40:38.938 EDT
+Begin processing the 28501st record. Run 1, Event 23582, LumiSection 95 on stream 0 at 09-Aug-2019 13:40:39.565 EDT
+Begin processing the 28601st record. Run 1, Event 23682, LumiSection 95 on stream 0 at 09-Aug-2019 13:40:40.197 EDT
+Begin processing the 28701st record. Run 1, Event 41766, LumiSection 168 on stream 0 at 09-Aug-2019 13:40:40.949 EDT
+Begin processing the 28801st record. Run 1, Event 41856, LumiSection 168 on stream 0 at 09-Aug-2019 13:40:41.590 EDT
+Begin processing the 28901st record. Run 1, Event 41964, LumiSection 168 on stream 0 at 09-Aug-2019 13:40:42.315 EDT
+Begin processing the 29001st record. Run 1, Event 61818, LumiSection 248 on stream 0 at 09-Aug-2019 13:40:42.980 EDT
+Begin processing the 29101st record. Run 1, Event 61912, LumiSection 248 on stream 0 at 09-Aug-2019 13:40:43.754 EDT
+Begin processing the 29201st record. Run 1, Event 62010, LumiSection 248 on stream 0 at 09-Aug-2019 13:40:44.427 EDT
+Begin processing the 29301st record. Run 1, Event 45849, LumiSection 184 on stream 0 at 09-Aug-2019 13:40:45.100 EDT
+Begin processing the 29401st record. Run 1, Event 45946, LumiSection 184 on stream 0 at 09-Aug-2019 13:40:45.812 EDT
+Begin processing the 29501st record. Run 1, Event 75288, LumiSection 302 on stream 0 at 09-Aug-2019 13:40:46.488 EDT
+Begin processing the 29601st record. Run 1, Event 75399, LumiSection 302 on stream 0 at 09-Aug-2019 13:40:47.215 EDT
+Begin processing the 29701st record. Run 1, Event 75491, LumiSection 302 on stream 0 at 09-Aug-2019 13:40:47.882 EDT
+Begin processing the 29801st record. Run 1, Event 71356, LumiSection 286 on stream 0 at 09-Aug-2019 13:40:48.635 EDT
+Begin processing the 29901st record. Run 1, Event 71449, LumiSection 286 on stream 0 at 09-Aug-2019 13:40:49.290 EDT
+09-Aug-2019 13:40:49 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_27.root
+09-Aug-2019 13:40:49 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_3.root
+09-Aug-2019 13:40:49 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_3.root
+Begin processing the 30001st record. Run 1, Event 16298, LumiSection 66 on stream 0 at 09-Aug-2019 13:40:50.052 EDT
+Begin processing the 30101st record. Run 1, Event 16402, LumiSection 66 on stream 0 at 09-Aug-2019 13:40:50.764 EDT
+Begin processing the 30201st record. Run 1, Event 16497, LumiSection 66 on stream 0 at 09-Aug-2019 13:40:51.628 EDT
+Begin processing the 30301st record. Run 1, Event 11100, LumiSection 45 on stream 0 at 09-Aug-2019 13:40:52.293 EDT
+Begin processing the 30401st record. Run 1, Event 11198, LumiSection 45 on stream 0 at 09-Aug-2019 13:40:52.973 EDT
+Begin processing the 30501st record. Run 1, Event 81803, LumiSection 328 on stream 0 at 09-Aug-2019 13:40:53.707 EDT
+Begin processing the 30601st record. Run 1, Event 81891, LumiSection 328 on stream 0 at 09-Aug-2019 13:40:54.358 EDT
+Begin processing the 30701st record. Run 1, Event 81999, LumiSection 328 on stream 0 at 09-Aug-2019 13:40:55.102 EDT
+Begin processing the 30801st record. Run 1, Event 14621, LumiSection 59 on stream 0 at 09-Aug-2019 13:40:55.761 EDT
+Begin processing the 30901st record. Run 1, Event 14713, LumiSection 59 on stream 0 at 09-Aug-2019 13:40:56.505 EDT
+Begin processing the 31001st record. Run 1, Event 39824, LumiSection 160 on stream 0 at 09-Aug-2019 13:40:57.146 EDT
+Begin processing the 31101st record. Run 1, Event 39925, LumiSection 160 on stream 0 at 09-Aug-2019 13:40:57.820 EDT
+Begin processing the 31201st record. Run 1, Event 23300, LumiSection 94 on stream 0 at 09-Aug-2019 13:40:58.560 EDT
+Begin processing the 31301st record. Run 1, Event 23395, LumiSection 94 on stream 0 at 09-Aug-2019 13:40:59.235 EDT
+Begin processing the 31401st record. Run 1, Event 23500, LumiSection 94 on stream 0 at 09-Aug-2019 13:40:59.975 EDT
+Begin processing the 31501st record. Run 1, Event 13088, LumiSection 53 on stream 0 at 09-Aug-2019 13:41:00.638 EDT
+Begin processing the 31601st record. Run 1, Event 13195, LumiSection 53 on stream 0 at 09-Aug-2019 13:41:01.445 EDT
+Begin processing the 31701st record. Run 1, Event 88293, LumiSection 354 on stream 0 at 09-Aug-2019 13:41:02.112 EDT
+Begin processing the 31801st record. Run 1, Event 88399, LumiSection 354 on stream 0 at 09-Aug-2019 13:41:02.757 EDT
+Begin processing the 31901st record. Run 1, Event 88494, LumiSection 354 on stream 0 at 09-Aug-2019 13:41:03.494 EDT
+Begin processing the 32001st record. Run 1, Event 70322, LumiSection 282 on stream 0 at 09-Aug-2019 13:41:04.196 EDT
+Begin processing the 32101st record. Run 1, Event 70409, LumiSection 282 on stream 0 at 09-Aug-2019 13:41:04.959 EDT
+Begin processing the 32201st record. Run 1, Event 44801, LumiSection 180 on stream 0 at 09-Aug-2019 13:41:05.650 EDT
+Begin processing the 32301st record. Run 1, Event 44908, LumiSection 180 on stream 0 at 09-Aug-2019 13:41:06.301 EDT
+09-Aug-2019 13:41:06 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_3.root
+09-Aug-2019 13:41:06 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_30.root
+09-Aug-2019 13:41:06 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_30.root
+Begin processing the 32401st record. Run 1, Event 86009, LumiSection 345 on stream 0 at 09-Aug-2019 13:41:07.056 EDT
+Begin processing the 32501st record. Run 1, Event 86102, LumiSection 345 on stream 0 at 09-Aug-2019 13:41:07.781 EDT
+Begin processing the 32601st record. Run 1, Event 86212, LumiSection 345 on stream 0 at 09-Aug-2019 13:41:08.526 EDT
+Begin processing the 32701st record. Run 1, Event 28583, LumiSection 115 on stream 0 at 09-Aug-2019 13:41:09.271 EDT
+Begin processing the 32801st record. Run 1, Event 28681, LumiSection 115 on stream 0 at 09-Aug-2019 13:41:09.913 EDT
+Begin processing the 32901st record. Run 1, Event 28774, LumiSection 115 on stream 0 at 09-Aug-2019 13:41:10.655 EDT
+Begin processing the 33001st record. Run 1, Event 24621, LumiSection 99 on stream 0 at 09-Aug-2019 13:41:11.284 EDT
+Begin processing the 33101st record. Run 1, Event 24732, LumiSection 99 on stream 0 at 09-Aug-2019 13:41:11.948 EDT
+Begin processing the 33201st record. Run 1, Event 15539, LumiSection 63 on stream 0 at 09-Aug-2019 13:41:12.691 EDT
+Begin processing the 33301st record. Run 1, Event 15649, LumiSection 63 on stream 0 at 09-Aug-2019 13:41:13.402 EDT
+Begin processing the 33401st record. Run 1, Event 15753, LumiSection 63 on stream 0 at 09-Aug-2019 13:41:14.142 EDT
+Begin processing the 33501st record. Run 1, Event 47108, LumiSection 189 on stream 0 at 09-Aug-2019 13:41:14.811 EDT
+Begin processing the 33601st record. Run 1, Event 47212, LumiSection 189 on stream 0 at 09-Aug-2019 13:41:15.566 EDT
+Begin processing the 33701st record. Run 1, Event 20790, LumiSection 84 on stream 0 at 09-Aug-2019 13:41:16.221 EDT
+Begin processing the 33801st record. Run 1, Event 20899, LumiSection 84 on stream 0 at 09-Aug-2019 13:41:16.854 EDT
+Begin processing the 33901st record. Run 1, Event 20996, LumiSection 84 on stream 0 at 09-Aug-2019 13:41:17.589 EDT
+Begin processing the 34001st record. Run 1, Event 90342, LumiSection 362 on stream 0 at 09-Aug-2019 13:41:18.252 EDT
+Begin processing the 34101st record. Run 1, Event 90445, LumiSection 362 on stream 0 at 09-Aug-2019 13:41:19.039 EDT
+Begin processing the 34201st record. Run 1, Event 10545, LumiSection 43 on stream 0 at 09-Aug-2019 13:41:19.707 EDT
+Begin processing the 34301st record. Run 1, Event 10633, LumiSection 43 on stream 0 at 09-Aug-2019 13:41:20.379 EDT
+Begin processing the 34401st record. Run 1, Event 10739, LumiSection 43 on stream 0 at 09-Aug-2019 13:41:21.161 EDT
+Begin processing the 34501st record. Run 1, Event 62859, LumiSection 252 on stream 0 at 09-Aug-2019 13:41:21.825 EDT
+Begin processing the 34601st record. Run 1, Event 62962, LumiSection 252 on stream 0 at 09-Aug-2019 13:41:22.548 EDT
+Begin processing the 34701st record. Run 1, Event 62549, LumiSection 251 on stream 0 at 09-Aug-2019 13:41:23.186 EDT
+Begin processing the 34801st record. Run 1, Event 62645, LumiSection 251 on stream 0 at 09-Aug-2019 13:41:23.915 EDT
+Begin processing the 34901st record. Run 1, Event 62747, LumiSection 251 on stream 0 at 09-Aug-2019 13:41:24.594 EDT
+09-Aug-2019 13:41:24 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_30.root
+09-Aug-2019 13:41:24 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_32.root
+09-Aug-2019 13:41:24 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_32.root
+Begin processing the 35001st record. Run 1, Event 54113, LumiSection 217 on stream 0 at 09-Aug-2019 13:41:25.408 EDT
+Begin processing the 35101st record. Run 1, Event 54209, LumiSection 217 on stream 0 at 09-Aug-2019 13:41:26.129 EDT
+Begin processing the 35201st record. Run 1, Event 80279, LumiSection 322 on stream 0 at 09-Aug-2019 13:41:26.938 EDT
+Begin processing the 35301st record. Run 1, Event 80370, LumiSection 322 on stream 0 at 09-Aug-2019 13:41:27.574 EDT
+Begin processing the 35401st record. Run 1, Event 80475, LumiSection 322 on stream 0 at 09-Aug-2019 13:41:28.308 EDT
+Begin processing the 35501st record. Run 1, Event 36089, LumiSection 145 on stream 0 at 09-Aug-2019 13:41:28.973 EDT
+Begin processing the 35601st record. Run 1, Event 36184, LumiSection 145 on stream 0 at 09-Aug-2019 13:41:29.658 EDT
+Begin processing the 35701st record. Run 1, Event 53299, LumiSection 214 on stream 0 at 09-Aug-2019 13:41:30.392 EDT
+Begin processing the 35801st record. Run 1, Event 53401, LumiSection 214 on stream 0 at 09-Aug-2019 13:41:31.074 EDT
+Begin processing the 35901st record. Run 1, Event 53504, LumiSection 214 on stream 0 at 09-Aug-2019 13:41:31.840 EDT
+Begin processing the 36001st record. Run 1, Event 13597, LumiSection 55 on stream 0 at 09-Aug-2019 13:41:32.486 EDT
+Begin processing the 36101st record. Run 1, Event 13698, LumiSection 55 on stream 0 at 09-Aug-2019 13:41:33.131 EDT
+Begin processing the 36201st record. Run 1, Event 30020, LumiSection 121 on stream 0 at 09-Aug-2019 13:41:33.871 EDT
+Begin processing the 36301st record. Run 1, Event 30120, LumiSection 121 on stream 0 at 09-Aug-2019 13:41:34.524 EDT
+Begin processing the 36401st record. Run 1, Event 30224, LumiSection 121 on stream 0 at 09-Aug-2019 13:41:35.329 EDT
+Begin processing the 36501st record. Run 1, Event 46833, LumiSection 188 on stream 0 at 09-Aug-2019 13:41:35.980 EDT
+Begin processing the 36601st record. Run 1, Event 46928, LumiSection 188 on stream 0 at 09-Aug-2019 13:41:36.724 EDT
+Begin processing the 36701st record. Run 1, Event 49047, LumiSection 197 on stream 0 at 09-Aug-2019 13:41:37.374 EDT
+Begin processing the 36801st record. Run 1, Event 49149, LumiSection 197 on stream 0 at 09-Aug-2019 13:41:38.067 EDT
+Begin processing the 36901st record. Run 1, Event 49241, LumiSection 197 on stream 0 at 09-Aug-2019 13:41:38.777 EDT
+Begin processing the 37001st record. Run 1, Event 73340, LumiSection 294 on stream 0 at 09-Aug-2019 13:41:39.453 EDT
+Begin processing the 37101st record. Run 1, Event 73443, LumiSection 294 on stream 0 at 09-Aug-2019 13:41:40.203 EDT
+Begin processing the 37201st record. Run 1, Event 59053, LumiSection 237 on stream 0 at 09-Aug-2019 13:41:40.878 EDT
+Begin processing the 37301st record. Run 1, Event 59146, LumiSection 237 on stream 0 at 09-Aug-2019 13:41:41.561 EDT
+Begin processing the 37401st record. Run 1, Event 59244, LumiSection 237 on stream 0 at 09-Aug-2019 13:41:42.229 EDT
+09-Aug-2019 13:41:42 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_32.root
+09-Aug-2019 13:41:42 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_37.root
+09-Aug-2019 13:41:42 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_37.root
+Begin processing the 37501st record. Run 1, Event 65820, LumiSection 264 on stream 0 at 09-Aug-2019 13:41:43.046 EDT
+Begin processing the 37601st record. Run 1, Event 65911, LumiSection 264 on stream 0 at 09-Aug-2019 13:41:43.782 EDT
+Begin processing the 37701st record. Run 1, Event 90011, LumiSection 361 on stream 0 at 09-Aug-2019 13:41:44.579 EDT
+Begin processing the 37801st record. Run 1, Event 90110, LumiSection 361 on stream 0 at 09-Aug-2019 13:41:45.280 EDT
+Begin processing the 37901st record. Run 1, Event 90203, LumiSection 361 on stream 0 at 09-Aug-2019 13:41:45.980 EDT
+Begin processing the 38001st record. Run 1, Event 45314, LumiSection 182 on stream 0 at 09-Aug-2019 13:41:46.690 EDT
+Begin processing the 38101st record. Run 1, Event 45405, LumiSection 182 on stream 0 at 09-Aug-2019 13:41:47.344 EDT
+Begin processing the 38201st record. Run 1, Event 41520, LumiSection 167 on stream 0 at 09-Aug-2019 13:41:48.087 EDT
+Begin processing the 38301st record. Run 1, Event 41619, LumiSection 167 on stream 0 at 09-Aug-2019 13:41:48.729 EDT
+Begin processing the 38401st record. Run 1, Event 41715, LumiSection 167 on stream 0 at 09-Aug-2019 13:41:49.495 EDT
+Begin processing the 38501st record. Run 1, Event 47328, LumiSection 190 on stream 0 at 09-Aug-2019 13:41:50.147 EDT
+Begin processing the 38601st record. Run 1, Event 47423, LumiSection 190 on stream 0 at 09-Aug-2019 13:41:50.831 EDT
+Begin processing the 38701st record. Run 1, Event 25506, LumiSection 103 on stream 0 at 09-Aug-2019 13:41:51.599 EDT
+Begin processing the 38801st record. Run 1, Event 25605, LumiSection 103 on stream 0 at 09-Aug-2019 13:41:52.225 EDT
+Begin processing the 38901st record. Run 1, Event 25708, LumiSection 103 on stream 0 at 09-Aug-2019 13:41:52.950 EDT
+Begin processing the 39001st record. Run 1, Event 54836, LumiSection 220 on stream 0 at 09-Aug-2019 13:41:53.614 EDT
+Begin processing the 39101st record. Run 1, Event 54944, LumiSection 220 on stream 0 at 09-Aug-2019 13:41:54.311 EDT
+Begin processing the 39201st record. Run 1, Event 35545, LumiSection 143 on stream 0 at 09-Aug-2019 13:41:54.949 EDT
+Begin processing the 39301st record. Run 1, Event 35644, LumiSection 143 on stream 0 at 09-Aug-2019 13:41:55.731 EDT
+Begin processing the 39401st record. Run 1, Event 35742, LumiSection 143 on stream 0 at 09-Aug-2019 13:41:56.589 EDT
+Begin processing the 39501st record. Run 1, Event 82605, LumiSection 331 on stream 0 at 09-Aug-2019 13:41:57.286 EDT
+Begin processing the 39601st record. Run 1, Event 82711, LumiSection 331 on stream 0 at 09-Aug-2019 13:41:58.039 EDT
+Begin processing the 39701st record. Run 1, Event 70788, LumiSection 284 on stream 0 at 09-Aug-2019 13:41:58.725 EDT
+Begin processing the 39801st record. Run 1, Event 70881, LumiSection 284 on stream 0 at 09-Aug-2019 13:41:59.418 EDT
+Begin processing the 39901st record. Run 1, Event 70989, LumiSection 284 on stream 0 at 09-Aug-2019 13:42:00.067 EDT
+09-Aug-2019 13:42:00 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_37.root
+09-Aug-2019 13:42:00 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_8.root
+09-Aug-2019 13:42:00 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_8.root
+Begin processing the 40001st record. Run 1, Event 37100, LumiSection 149 on stream 0 at 09-Aug-2019 13:42:00.925 EDT
+Begin processing the 40101st record. Run 1, Event 37197, LumiSection 149 on stream 0 at 09-Aug-2019 13:42:01.866 EDT
+Begin processing the 40201st record. Run 1, Event 94558, LumiSection 379 on stream 0 at 09-Aug-2019 13:42:02.731 EDT
+Begin processing the 40301st record. Run 1, Event 94667, LumiSection 379 on stream 0 at 09-Aug-2019 13:42:03.388 EDT
+Begin processing the 40401st record. Run 1, Event 94767, LumiSection 379 on stream 0 at 09-Aug-2019 13:42:04.232 EDT
+Begin processing the 40501st record. Run 1, Event 79107, LumiSection 317 on stream 0 at 09-Aug-2019 13:42:05.083 EDT
+Begin processing the 40601st record. Run 1, Event 79213, LumiSection 317 on stream 0 at 09-Aug-2019 13:42:05.866 EDT
+Begin processing the 40701st record. Run 1, Event 96286, LumiSection 386 on stream 0 at 09-Aug-2019 13:42:06.545 EDT
+Begin processing the 40801st record. Run 1, Event 96385, LumiSection 386 on stream 0 at 09-Aug-2019 13:42:07.255 EDT
+Begin processing the 40901st record. Run 1, Event 96491, LumiSection 386 on stream 0 at 09-Aug-2019 13:42:08.006 EDT
+Begin processing the 41001st record. Run 1, Event 61335, LumiSection 246 on stream 0 at 09-Aug-2019 13:42:08.880 EDT
+Begin processing the 41101st record. Run 1, Event 61437, LumiSection 246 on stream 0 at 09-Aug-2019 13:42:09.742 EDT
+Begin processing the 41201st record. Run 1, Event 68046, LumiSection 273 on stream 0 at 09-Aug-2019 13:42:10.416 EDT
+Begin processing the 41301st record. Run 1, Event 68138, LumiSection 273 on stream 0 at 09-Aug-2019 13:42:11.159 EDT
+Begin processing the 41401st record. Run 1, Event 68246, LumiSection 273 on stream 0 at 09-Aug-2019 13:42:11.941 EDT
+Begin processing the 41501st record. Run 1, Event 99099, LumiSection 397 on stream 0 at 09-Aug-2019 13:42:12.796 EDT
+Begin processing the 41601st record. Run 1, Event 99205, LumiSection 397 on stream 0 at 09-Aug-2019 13:42:13.417 EDT
+Begin processing the 41701st record. Run 1, Event 25771, LumiSection 104 on stream 0 at 09-Aug-2019 13:42:14.221 EDT
+Begin processing the 41801st record. Run 1, Event 25880, LumiSection 104 on stream 0 at 09-Aug-2019 13:42:15.047 EDT
+Begin processing the 41901st record. Run 1, Event 25978, LumiSection 104 on stream 0 at 09-Aug-2019 13:42:15.882 EDT
+Begin processing the 42001st record. Run 1, Event 26581, LumiSection 107 on stream 0 at 09-Aug-2019 13:42:16.556 EDT
+Begin processing the 42101st record. Run 1, Event 26679, LumiSection 107 on stream 0 at 09-Aug-2019 13:42:17.378 EDT
+Begin processing the 42201st record. Run 1, Event 33031, LumiSection 133 on stream 0 at 09-Aug-2019 13:42:18.066 EDT
+Begin processing the 42301st record. Run 1, Event 33143, LumiSection 133 on stream 0 at 09-Aug-2019 13:42:18.809 EDT
+Begin processing the 42401st record. Run 1, Event 33225, LumiSection 133 on stream 0 at 09-Aug-2019 13:42:19.513 EDT
+09-Aug-2019 13:42:19 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_8.root
+09-Aug-2019 13:42:19 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_9.root
+09-Aug-2019 13:42:19 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_9.root
+Begin processing the 42501st record. Run 1, Event 21574, LumiSection 87 on stream 0 at 09-Aug-2019 13:42:20.295 EDT
+Begin processing the 42601st record. Run 1, Event 21672, LumiSection 87 on stream 0 at 09-Aug-2019 13:42:20.997 EDT
+Begin processing the 42701st record. Run 1, Event 98286, LumiSection 394 on stream 0 at 09-Aug-2019 13:42:21.804 EDT
+Begin processing the 42801st record. Run 1, Event 98386, LumiSection 394 on stream 0 at 09-Aug-2019 13:42:22.470 EDT
+Begin processing the 42901st record. Run 1, Event 98485, LumiSection 394 on stream 0 at 09-Aug-2019 13:42:23.113 EDT
+Begin processing the 43001st record. Run 1, Event 53841, LumiSection 216 on stream 0 at 09-Aug-2019 13:42:23.836 EDT
+Begin processing the 43101st record. Run 1, Event 53937, LumiSection 216 on stream 0 at 09-Aug-2019 13:42:24.560 EDT
+Begin processing the 43201st record. Run 1, Event 79790, LumiSection 320 on stream 0 at 09-Aug-2019 13:42:25.307 EDT
+Begin processing the 43301st record. Run 1, Event 79892, LumiSection 320 on stream 0 at 09-Aug-2019 13:42:25.980 EDT
+Begin processing the 43401st record. Run 1, Event 79996, LumiSection 320 on stream 0 at 09-Aug-2019 13:42:26.715 EDT
+Begin processing the 43501st record. Run 1, Event 48874, LumiSection 196 on stream 0 at 09-Aug-2019 13:42:27.475 EDT
+Begin processing the 43601st record. Run 1, Event 48965, LumiSection 196 on stream 0 at 09-Aug-2019 13:42:28.075 EDT
+Begin processing the 43701st record. Run 1, Event 42312, LumiSection 170 on stream 0 at 09-Aug-2019 13:42:28.805 EDT
+Begin processing the 43801st record. Run 1, Event 42409, LumiSection 170 on stream 0 at 09-Aug-2019 13:42:29.463 EDT
+Begin processing the 43901st record. Run 1, Event 42514, LumiSection 170 on stream 0 at 09-Aug-2019 13:42:30.237 EDT
+Begin processing the 44001st record. Run 1, Event 93612, LumiSection 375 on stream 0 at 09-Aug-2019 13:42:30.900 EDT
+Begin processing the 44101st record. Run 1, Event 93718, LumiSection 375 on stream 0 at 09-Aug-2019 13:42:31.549 EDT
+Begin processing the 44201st record. Run 1, Event 77559, LumiSection 311 on stream 0 at 09-Aug-2019 13:42:32.270 EDT
+Begin processing the 44301st record. Run 1, Event 77659, LumiSection 311 on stream 0 at 09-Aug-2019 13:42:32.948 EDT
+Begin processing the 44401st record. Run 1, Event 77763, LumiSection 311 on stream 0 at 09-Aug-2019 13:42:33.699 EDT
+Begin processing the 44501st record. Run 1, Event 1347, LumiSection 6 on stream 0 at 09-Aug-2019 13:42:34.367 EDT
+Begin processing the 44601st record. Run 1, Event 1446, LumiSection 6 on stream 0 at 09-Aug-2019 13:42:35.037 EDT
+Begin processing the 44701st record. Run 1, Event 65290, LumiSection 262 on stream 0 at 09-Aug-2019 13:42:35.752 EDT
+Begin processing the 44801st record. Run 1, Event 65389, LumiSection 262 on stream 0 at 09-Aug-2019 13:42:36.397 EDT
+Begin processing the 44901st record. Run 1, Event 65483, LumiSection 262 on stream 0 at 09-Aug-2019 13:42:37.083 EDT
+09-Aug-2019 13:42:40 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTau/output_round1_9.root
 
 =============================================
 
