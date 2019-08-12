@@ -284,7 +284,6 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
 	    float total_3x5;
 
 	    //Individual tower energies in 3x5 array. 11 corresponds to lower left corner (least eta, least phi)
-	    float hcal_seed;
 	    float hcal_11;
 	    float hcal_12;
 	    float hcal_13;
@@ -300,7 +299,6 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
 	    float hcal_52;
 	    float hcal_53;
 
-	    float ecal_seed;
 	    float ecal_11;
 	    float ecal_12;
 	    float ecal_13;
@@ -316,7 +314,6 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
 	    float ecal_52;
 	    float ecal_53;
 
-	    float l1eg_seed;
 	    float l1eg_11;
 	    float l1eg_12;
 	    float l1eg_13;
@@ -570,7 +567,6 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("total_3x5", &treeinfo.total_3x5);
 
     //Add individual tower energies in 3x5 array to branches. 11 corresponds to lower left corner (least eta, least phi)
-    tree->Branch("hcal_seed", &treeinfo.hcal_seed);
     tree->Branch("hcal_11", &treeinfo.hcal_11);
     tree->Branch("hcal_12", &treeinfo.hcal_12);
     tree->Branch("hcal_13", &treeinfo.hcal_13);
@@ -586,7 +582,6 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("hcal_52", &treeinfo.hcal_52);
     tree->Branch("hcal_53", &treeinfo.hcal_53);
 
-    tree->Branch("ecal_seed", &treeinfo.ecal_seed);
     tree->Branch("ecal_11", &treeinfo.ecal_11);
     tree->Branch("ecal_12", &treeinfo.ecal_12);
     tree->Branch("ecal_13", &treeinfo.ecal_13);
@@ -602,7 +597,6 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("ecal_52", &treeinfo.ecal_52);
     tree->Branch("ecal_53", &treeinfo.ecal_53);
 
-    tree->Branch("l1eg_seed", &treeinfo.l1eg_seed);
     tree->Branch("l1eg_11", &treeinfo.l1eg_11);
     tree->Branch("l1eg_12", &treeinfo.l1eg_12);
     tree->Branch("l1eg_13", &treeinfo.l1eg_13);
@@ -1641,7 +1635,6 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
     treeinfo.total_3x5 = caloJet.GetExperimentalParam("total_3x5");
 
     //Fill branches with individual tower energies in 3x5 array. 11 corresponds to lower left corner (least eta, least phi)
-    treeinfo.hcal_seed = caloJet.GetExperimentalParam("hcal_seed");
     treeinfo.hcal_11 = caloJet.GetExperimentalParam("hcal_11");
     treeinfo.hcal_12 = caloJet.GetExperimentalParam("hcal_12");
     treeinfo.hcal_13 = caloJet.GetExperimentalParam("hcal_13");
@@ -1657,7 +1650,6 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
     treeinfo.hcal_52 = caloJet.GetExperimentalParam("hcal_52");
     treeinfo.hcal_53 = caloJet.GetExperimentalParam("hcal_53");
 
-    treeinfo.ecal_seed = caloJet.GetExperimentalParam("ecal_seed");
     treeinfo.ecal_11 = caloJet.GetExperimentalParam("ecal_11");
     treeinfo.ecal_12 = caloJet.GetExperimentalParam("ecal_12");
     treeinfo.ecal_13 = caloJet.GetExperimentalParam("ecal_13");
@@ -1673,7 +1665,6 @@ L1CaloJetStudies::fill_tree(const l1slhc::L1CaloJet& caloJet) {
     treeinfo.ecal_52 = caloJet.GetExperimentalParam("ecal_52");
     treeinfo.ecal_53 = caloJet.GetExperimentalParam("ecal_53");
 
-    treeinfo.l1eg_seed = caloJet.GetExperimentalParam("l1eg_seed");
     treeinfo.l1eg_11 = caloJet.GetExperimentalParam("l1eg_11");
     treeinfo.l1eg_12 = caloJet.GetExperimentalParam("l1eg_12");
     treeinfo.l1eg_13 = caloJet.GetExperimentalParam("l1eg_13");
@@ -1839,7 +1830,6 @@ L1CaloJetStudies::fill_tree_null() {
     treeinfo.total_3x5 = -9;
 
     //Fill null branches with individual tower energies in 3x5 array. 11 corresponds to lower left corner (least eta, least phi)
-    treeinfo.hcal_seed = -9;
     treeinfo.hcal_11 = -9;
     treeinfo.hcal_12 = -9;
     treeinfo.hcal_13 = -9;
@@ -1855,7 +1845,6 @@ L1CaloJetStudies::fill_tree_null() {
     treeinfo.hcal_52 = -9;
     treeinfo.hcal_53 = -9;
 
-    treeinfo.ecal_seed = -9;
     treeinfo.ecal_11 = -9;
     treeinfo.ecal_12 = -9;
     treeinfo.ecal_13 = -9;
@@ -1871,7 +1860,6 @@ L1CaloJetStudies::fill_tree_null() {
     treeinfo.ecal_52 = -9;
     treeinfo.ecal_53 = -9;
 
-    treeinfo.l1eg_seed = -9;
     treeinfo.l1eg_11 = -9;
     treeinfo.l1eg_12 = -9;
     treeinfo.l1eg_13 = -9;
