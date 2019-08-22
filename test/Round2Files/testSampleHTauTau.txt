@@ -1,1 +1,0 @@
-/afs/cern.ch/user/v/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/testR1sample/output_round1_1.root

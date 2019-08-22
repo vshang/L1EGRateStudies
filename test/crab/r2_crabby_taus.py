@@ -11,6 +11,22 @@ process.load('Configuration.Geometry.GeometryExtended2023D35Reco_cff')
 process.load('Configuration.Geometry.GeometryExtended2023D35_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+#Victor's edit: Load track files
+process.load('L1Trigger.TrackFindingTracklet.L1TrackletTracks_cff') 
+
+process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
+process.load('SimGeneral.MixingModule.mixNoPU_cfi')
+process.load('Configuration.StandardSequences.SimL1Emulator_cff')
+process.load('Configuration.StandardSequences.EndOfProcess_cff')
+
+process.load('Configuration.Geometry.GeometryExtended2023D17_cff')
+process.load('Configuration.StandardSequences.Generator_cff')
+process.load('IOMC.EventVertexGenerators.VtxSmearedHLLHC14TeV_cfi')
+process.load('GeneratorInterface.Core.genFilterSummary_cff')
+process.load('Configuration.StandardSequences.SimIdeal_cff')
+process.load('Configuration.StandardSequences.Digi_cff')
+process.load('Configuration.StandardSequences.DigiToRaw_cff')
+#End of Victor's edit
 process.MessageLogger.categories = cms.untracked.vstring('L1CaloJetStudies', 'FwkReport')
 process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
    reportEvery = cms.untracked.int32(100)
@@ -34,8 +50,8 @@ out_path = '/data/vshang/l1CaloJets_20190806_r2/'
 #name = "minBias"
 #name = "HiggsTauTau_test"
 #name = "QCD_test"
-#name = "HiggsTauTau_testv2"
-name = "QCD_testv2"
+name = "HiggsTauTau_testv3"
+#name = "QCD_testv2"
 # Load samples from external files here:
 from L1Trigger.L1EGRateStudies.loadRound2Files import getSampleFiles
 process.source.fileNames = getSampleFiles( name )
@@ -47,7 +63,9 @@ process.source.fileNames = getSampleFiles( name )
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, '103X_upgrade2023_realistic_v2', '') 
 
-
+#Victor's edit: run track process
+process.L1TrackTrigger_step = cms.Path(process.L1TrackletTracksWithAssociators) 
+#End of Victor's edit
 
 
 # --------------------------------------------------------------------------------------------
@@ -89,6 +107,7 @@ process.pL1Objs = cms.Path(
 # Analyzer starts here
 
 process.analyzer = cms.EDAnalyzer('L1CaloJetStudies',
+    L1TrackInputTag = cms.InputTag("TTTracksFromTracklet", "Level1TTTracks"), #Victor's edit: add track input tag
     L1CaloJetsInputTag = cms.InputTag("L1CaloJetProducer","L1CaloJetsNoCuts"),
     genJets = cms.InputTag("ak4GenJetsNoNu", "", "HLT"),
     genHadronicTauSrc = cms.InputTag("tauGenJetsSelectorAllHadrons"),
@@ -110,7 +129,7 @@ process.panalyzer = cms.Path(process.analyzer)
 
 
 process.TFileService = cms.Service("TFileService", 
-    fileName = cms.string( out_path+"output_round2_"+name+"v1.root" ),
+    fileName = cms.string( out_path+"output_round2_"+name+"_trackMatched.root" ),
     closeFileFast = cms.untracked.bool(True)
 )
 

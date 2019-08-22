@@ -12,7 +12,7 @@ sameCanvas = True
 nBins = 20
 yMax = 0.2
 
-#Remove stats box from histograms
+#Remove stats box from histograms by setting argument to 0
 gStyle.SetOptStat(0)
 
 #Get event trees
@@ -247,12 +247,12 @@ else:
 # h_QCD_3x3.Draw('hist same')
 # #Set ggHTT_3x3 histogram options
 # h_ggHTT_3x3.SetLineColor(kRed)
-# h_ggHTT_3x3.SetLineWidth(3)
+# h_ggHTT_3x3.SetLineWidth(1)
 # h_ggHTT_3x3.SetMinimum(0)
 # h_ggHTT_3x3.SetMaximum(yMax)
 # #Set QCD_3x3 histogram options
 # h_QCD_3x3.SetLineColor(kBlue)
-# h_QCD_3x3.SetLineWidth(3)
+# h_QCD_3x3.SetLineWidth(1)
 # h_QCD_3x3.SetMinimum(0)
 # h_QCD_3x3.SetMaximum(yMax)
 # #Add legend
@@ -265,18 +265,18 @@ h_ggHTT_max2inCross_0LessThreshold.Draw('hist')
 h_QCD_max2inCross_0LessThreshold.Draw('hist same')
 #Set ggHTT_max2inCross_0LessThreshold histogram options
 h_ggHTT_max2inCross_0LessThreshold.SetLineColor(kRed)
-h_ggHTT_max2inCross_0LessThreshold.SetLineWidth(3)
+h_ggHTT_max2inCross_0LessThreshold.SetLineWidth(1)
 h_ggHTT_max2inCross_0LessThreshold.SetMinimum(0)
 h_ggHTT_max2inCross_0LessThreshold.SetMaximum(yMax)
 #Set QCD_max2inCross_0LessThreshold histogram options
 h_QCD_max2inCross_0LessThreshold.SetLineColor(kBlue)
-h_QCD_max2inCross_0LessThreshold.SetLineWidth(3)
+h_QCD_max2inCross_0LessThreshold.SetLineWidth(1)
 h_QCD_max2inCross_0LessThreshold.SetMinimum(0)
 h_QCD_max2inCross_0LessThreshold.SetMaximum(yMax)
 #Add legend
 legend_max2inCross_0LessThreshold = TLegend(0.46, 0.73, 0.75, 0.87)
-legend_max2inCross_0LessThreshold.AddEntry(h_ggHTT_max2inCross_0LessThreshold, 'ggHTT, max2inCross_0LessThreshold', 'l')
-legend_max2inCross_0LessThreshold.AddEntry(h_QCD_max2inCross_0LessThreshold, 'QCD, max2inCross_0LessThreshold', 'l')
+legend_max2inCross_0LessThreshold.AddEntry(h_ggHTT_max2inCross_0LessThreshold, 'ggHTT, entries = ' + str(h_ggHTT_max2inCross_0LessThreshold.GetEntries()), 'l')
+legend_max2inCross_0LessThreshold.AddEntry(h_QCD_max2inCross_0LessThreshold, 'QCD, entries = ' + str(h_QCD_max2inCross_0LessThreshold.GetEntries()), 'l')
 legend_max2inCross_0LessThreshold.Draw('same')
 legend_max2inCross_0LessThreshold.SetBorderSize(0)
 
@@ -291,12 +291,12 @@ else:
 # h_QCD_1x3.Draw('hist same')
 # #Set ggHTT_1x3 histogram options
 # h_ggHTT_1x3.SetLineColor(kRed)
-# h_ggHTT_1x3.SetLineWidth(3)
+# h_ggHTT_1x3.SetLineWidth(1)
 # h_ggHTT_1x3.SetMinimum(0)
 # h_ggHTT_1x3.SetMaximum(yMax)
 # #Set QCD_1x3 histogram options
 # h_QCD_1x3.SetLineColor(kBlue)
-# h_QCD_1x3.SetLineWidth(3)
+# h_QCD_1x3.SetLineWidth(1)
 # h_QCD_1x3.SetMinimum(0)
 # h_QCD_1x3.SetMaximum(yMax)
 # #Add legend
@@ -309,18 +309,18 @@ h_ggHTT_max2inCross_1LessThreshold.Draw('hist')
 h_QCD_max2inCross_1LessThreshold.Draw('hist same')
 #Set ggHTT_max2inCross_1LessThreshold histogram options
 h_ggHTT_max2inCross_1LessThreshold.SetLineColor(kRed)
-h_ggHTT_max2inCross_1LessThreshold.SetLineWidth(3)
+h_ggHTT_max2inCross_1LessThreshold.SetLineWidth(1)
 h_ggHTT_max2inCross_1LessThreshold.SetMinimum(0)
 h_ggHTT_max2inCross_1LessThreshold.SetMaximum(yMax)
 #Set QCD_max2inCross_1LessThreshold histogram options
 h_QCD_max2inCross_1LessThreshold.SetLineColor(kBlue)
-h_QCD_max2inCross_1LessThreshold.SetLineWidth(3)
+h_QCD_max2inCross_1LessThreshold.SetLineWidth(1)
 h_QCD_max2inCross_1LessThreshold.SetMinimum(0)
 h_QCD_max2inCross_1LessThreshold.SetMaximum(yMax)
 #Add legend
 legend_max2inCross_1LessThreshold = TLegend(0.46, 0.73, 0.75, 0.87)
-legend_max2inCross_1LessThreshold.AddEntry(h_ggHTT_max2inCross_1LessThreshold, 'ggHTT, max2inCross_1LessThreshold', 'l')
-legend_max2inCross_1LessThreshold.AddEntry(h_QCD_max2inCross_1LessThreshold, 'QCD, max2inCross_1LessThreshold', 'l')
+legend_max2inCross_1LessThreshold.AddEntry(h_ggHTT_max2inCross_1LessThreshold, 'ggHTT, entries = ' + str(h_ggHTT_max2inCross_1LessThreshold.GetEntries()), 'l')
+legend_max2inCross_1LessThreshold.AddEntry(h_QCD_max2inCross_1LessThreshold, 'QCD, entries = ' + str(h_QCD_max2inCross_1LessThreshold.GetEntries()), 'l')
 legend_max2inCross_1LessThreshold.Draw('same')
 legend_max2inCross_1LessThreshold.SetBorderSize(0)
 
@@ -334,12 +334,12 @@ else:
 # h_QCD_3x1.Draw('hist same')
 # #Set ggHTT_3x1 histogram options
 # h_ggHTT_3x1.SetLineColor(kRed)
-# h_ggHTT_3x1.SetLineWidth(3)
+# h_ggHTT_3x1.SetLineWidth(1)
 # h_ggHTT_3x1.SetMinimum(0)
 # h_ggHTT_3x1.SetMaximum(yMax)
 # #Set QCD_3x1 histogram options
 # h_QCD_3x1.SetLineColor(kBlue)
-# h_QCD_3x1.SetLineWidth(3)
+# h_QCD_3x1.SetLineWidth(1)
 # h_QCD_3x1.SetMinimum(0)
 # h_QCD_3x1.SetMaximum(yMax)
 # #Add legend
@@ -352,18 +352,18 @@ h_ggHTT_max2inCross_2LessThreshold.Draw('hist')
 h_QCD_max2inCross_2LessThreshold.Draw('hist same')
 #Set ggHTT_max2inCross_2LessThreshold histogram options
 h_ggHTT_max2inCross_2LessThreshold.SetLineColor(kRed)
-h_ggHTT_max2inCross_2LessThreshold.SetLineWidth(3)
+h_ggHTT_max2inCross_2LessThreshold.SetLineWidth(1)
 h_ggHTT_max2inCross_2LessThreshold.SetMinimum(0)
 h_ggHTT_max2inCross_2LessThreshold.SetMaximum(yMax)
 #Set QCD_max2inCross_2LessThreshold histogram options
 h_QCD_max2inCross_2LessThreshold.SetLineColor(kBlue)
-h_QCD_max2inCross_2LessThreshold.SetLineWidth(3)
+h_QCD_max2inCross_2LessThreshold.SetLineWidth(1)
 h_QCD_max2inCross_2LessThreshold.SetMinimum(0)
 h_QCD_max2inCross_2LessThreshold.SetMaximum(yMax)
 #Add legend
 legend_max2inCross_2LessThreshold = TLegend(0.46, 0.73, 0.75, 0.87)
-legend_max2inCross_2LessThreshold.AddEntry(h_ggHTT_max2inCross_2LessThreshold, 'ggHTT, max2inCross_2LessThreshold', 'l')
-legend_max2inCross_2LessThreshold.AddEntry(h_QCD_max2inCross_2LessThreshold, 'QCD, max2inCross_2LessThreshold', 'l')
+legend_max2inCross_2LessThreshold.AddEntry(h_ggHTT_max2inCross_2LessThreshold, 'ggHTT, entries = ' + str(h_ggHTT_max2inCross_2LessThreshold.GetEntries()), 'l')
+legend_max2inCross_2LessThreshold.AddEntry(h_QCD_max2inCross_2LessThreshold, 'QCD, entries = ' + str(h_QCD_max2inCross_2LessThreshold.GetEntries()), 'l')
 legend_max2inCross_2LessThreshold.Draw('same')
 legend_max2inCross_2LessThreshold.SetBorderSize(0)
 
@@ -377,12 +377,12 @@ else:
 # h_QCD_Cross.Draw('hist same')
 # #Set ggHTT_Cross histogram options
 # h_ggHTT_Cross.SetLineColor(kRed)
-# h_ggHTT_Cross.SetLineWidth(3)
+# h_ggHTT_Cross.SetLineWidth(1)
 # h_ggHTT_Cross.SetMinimum(0)
 # h_ggHTT_Cross.SetMaximum(yMax)
 # #Set QCD_Cross histogram options
 # h_QCD_Cross.SetLineColor(kBlue)
-# h_QCD_Cross.SetLineWidth(3)
+# h_QCD_Cross.SetLineWidth(1)
 # h_QCD_Cross.SetMinimum(0)
 # h_QCD_Cross.SetMaximum(yMax)
 # #Add legend
@@ -395,19 +395,19 @@ h_ggHTT_max3inCross_0LessThreshold.Draw('hist')
 h_QCD_max3inCross_0LessThreshold.Draw('hist same')
 #Set ggHTT_max3inCross_0LessThreshold histogram options
 h_ggHTT_max3inCross_0LessThreshold.SetLineColor(kRed)
-h_ggHTT_max3inCross_0LessThreshold.SetLineWidth(3)
+h_ggHTT_max3inCross_0LessThreshold.SetLineWidth(1)
 h_ggHTT_max3inCross_0LessThreshold.SetMinimum(0)
 #h_ggHTT_max3inCross_0LessThreshold.SetMaximum(yMax)
 h_ggHTT_max3inCross_0LessThreshold.SetMaximum(0.6)
 #Set QCD_max3inCross_0LessThreshold histogram options
 h_QCD_max3inCross_0LessThreshold.SetLineColor(kBlue)
-h_QCD_max3inCross_0LessThreshold.SetLineWidth(3)
+h_QCD_max3inCross_0LessThreshold.SetLineWidth(1)
 h_QCD_max3inCross_0LessThreshold.SetMinimum(0)
 h_QCD_max3inCross_0LessThreshold.SetMaximum(yMax)
 #Add legend
 legend_max3inCross_0LessThreshold = TLegend(0.46, 0.73, 0.75, 0.87)
-legend_max3inCross_0LessThreshold.AddEntry(h_ggHTT_max3inCross_0LessThreshold, 'ggHTT, max3inCross_0LessThreshold', 'l')
-legend_max3inCross_0LessThreshold.AddEntry(h_QCD_max3inCross_0LessThreshold, 'QCD, max3inCross_0LessThreshold', 'l')
+legend_max3inCross_0LessThreshold.AddEntry(h_ggHTT_max3inCross_0LessThreshold, 'ggHTT, entries = ' + str(h_ggHTT_max3inCross_0LessThreshold.GetEntries()), 'l')
+legend_max3inCross_0LessThreshold.AddEntry(h_QCD_max3inCross_0LessThreshold, 'QCD, entries = ' + str(h_QCD_max3inCross_0LessThreshold.GetEntries()), 'l')
 legend_max3inCross_0LessThreshold.Draw('same')
 legend_max3inCross_0LessThreshold.SetBorderSize(0)
 
@@ -421,12 +421,12 @@ else:
 # h_QCD_X.Draw('hist same')
 # #Set ggHTT_X histogram options
 # h_ggHTT_X.SetLineColor(kRed)
-# h_ggHTT_X.SetLineWidth(3)
+# h_ggHTT_X.SetLineWidth(1)
 # h_ggHTT_X.SetMinimum(0)
 # h_ggHTT_X.SetMaximum(yMax)
 # #Set QCD_X histogram options
 # h_QCD_X.SetLineColor(kBlue)
-# h_QCD_X.SetLineWidth(3)
+# h_QCD_X.SetLineWidth(1)
 # h_QCD_X.SetMinimum(0)
 # h_QCD_X.SetMaximum(yMax)
 # #Add legend
@@ -439,18 +439,18 @@ h_ggHTT_max3inCross_1LessThreshold.Draw('hist')
 h_QCD_max3inCross_1LessThreshold.Draw('hist same')
 #Set ggHTT_max3inCross_1LessThreshold histogram options
 h_ggHTT_max3inCross_1LessThreshold.SetLineColor(kRed)
-h_ggHTT_max3inCross_1LessThreshold.SetLineWidth(3)
+h_ggHTT_max3inCross_1LessThreshold.SetLineWidth(1)
 h_ggHTT_max3inCross_1LessThreshold.SetMinimum(0)
 h_ggHTT_max3inCross_1LessThreshold.SetMaximum(yMax)
 #Set QCD_max3inCross_1LessThreshold histogram options
 h_QCD_max3inCross_1LessThreshold.SetLineColor(kBlue)
-h_QCD_max3inCross_1LessThreshold.SetLineWidth(3)
+h_QCD_max3inCross_1LessThreshold.SetLineWidth(1)
 h_QCD_max3inCross_1LessThreshold.SetMinimum(0)
 h_QCD_max3inCross_1LessThreshold.SetMaximum(yMax)
 #Add legend
 legend_max3inCross_1LessThreshold = TLegend(0.46, 0.73, 0.75, 0.87)
-legend_max3inCross_1LessThreshold.AddEntry(h_ggHTT_max3inCross_1LessThreshold, 'ggHTT, max3inCross_1LessThreshold', 'l')
-legend_max3inCross_1LessThreshold.AddEntry(h_QCD_max3inCross_1LessThreshold, 'QCD, max3inCross_1LessThreshold', 'l')
+legend_max3inCross_1LessThreshold.AddEntry(h_ggHTT_max3inCross_1LessThreshold, 'ggHTT, entries = ' + str(h_ggHTT_max3inCross_1LessThreshold.GetEntries()), 'l')
+legend_max3inCross_1LessThreshold.AddEntry(h_QCD_max3inCross_1LessThreshold, 'QCD, entries = ' + str(h_QCD_max3inCross_1LessThreshold.GetEntries()), 'l')
 legend_max3inCross_1LessThreshold.Draw('same')
 legend_max3inCross_1LessThreshold.SetBorderSize(0)
 
@@ -464,12 +464,12 @@ else:
 # h_QCD_X.Draw('hist same')
 # #Set ggHTT_X histogram options
 # h_ggHTT_X.SetLineColor(kRed)
-# h_ggHTT_X.SetLineWidth(3)
+# h_ggHTT_X.SetLineWidth(1)
 # h_ggHTT_X.SetMinimum(0)
 # h_ggHTT_X.SetMaximum(yMax)
 # #Set QCD_X histogram options
 # h_QCD_X.SetLineColor(kBlue)
-# h_QCD_X.SetLineWidth(3)
+# h_QCD_X.SetLineWidth(1)
 # h_QCD_X.SetMinimum(0)
 # h_QCD_X.SetMaximum(yMax)
 # #Add legend
@@ -482,17 +482,17 @@ h_ggHTT_max3inCross_2LessThreshold.Draw('hist')
 h_QCD_max3inCross_2LessThreshold.Draw('hist same')
 #Set ggHTT_max3inCross_2LessThreshold histogram options
 h_ggHTT_max3inCross_2LessThreshold.SetLineColor(kRed)
-h_ggHTT_max3inCross_2LessThreshold.SetLineWidth(3)
+h_ggHTT_max3inCross_2LessThreshold.SetLineWidth(1)
 h_ggHTT_max3inCross_2LessThreshold.SetMinimum(0)
 h_ggHTT_max3inCross_2LessThreshold.SetMaximum(yMax)
 #Set QCD_max3inCross_2LessThreshold histogram options
 h_QCD_max3inCross_2LessThreshold.SetLineColor(kBlue)
-h_QCD_max3inCross_2LessThreshold.SetLineWidth(3)
+h_QCD_max3inCross_2LessThreshold.SetLineWidth(1)
 h_QCD_max3inCross_2LessThreshold.SetMinimum(0)
 h_QCD_max3inCross_2LessThreshold.SetMaximum(yMax)
 #Add legend
 legend_max3inCross_2LessThreshold = TLegend(0.46, 0.73, 0.75, 0.87)
-legend_max3inCross_2LessThreshold.AddEntry(h_ggHTT_max3inCross_2LessThreshold, 'ggHTT, max3inCross_2LessThreshold', 'l')
-legend_max3inCross_2LessThreshold.AddEntry(h_QCD_max3inCross_2LessThreshold, 'QCD, max3inCross_2LessThreshold', 'l')
+legend_max3inCross_2LessThreshold.AddEntry(h_ggHTT_max3inCross_2LessThreshold, 'ggHTT, entries = ' + str(h_ggHTT_max3inCross_2LessThreshold.GetEntries()), 'l')
+legend_max3inCross_2LessThreshold.AddEntry(h_QCD_max3inCross_2LessThreshold, 'QCD, entries = ' + str(h_QCD_max3inCross_2LessThreshold.GetEntries()), 'l')
 legend_max3inCross_2LessThreshold.Draw('same')
 legend_max3inCross_2LessThreshold.SetBorderSize(0)

@@ -22,8 +22,8 @@ process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
    reportEvery = cms.untracked.int32(1)
 )
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
+#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 
 process.source = cms.Source("PoolSource",
    #fileNames = cms.untracked.vstring(),
@@ -38,12 +38,12 @@ process.source = cms.Source("PoolSource",
                     "drop l1tEMTFHit2016Extras_simEmtfDigis_CSC_HLT",
                     "drop l1tEMTFHit2016Extras_simEmtfDigis_RPC_HLT",
                     "drop l1tEMTFHit2016s_simEmtfDigis__HLT",
-                    "drop l1tEMTFTrack2016Extras_simEmtfDigis__HLT",
-                    "drop l1tEMTFTrack2016s_simEmtfDigis__HLT",
-                    "drop l1tHGCalTowerMapBXVector_hgcalTriggerPrimitiveDigiProducer_towerMap_HLT",
-                    "drop PCaloHits_g4SimHits_EcalHitsEB_SIM",
-                    "drop PCaloHits_g4SimHits_HGCHitsEE_SIM",
-                    "drop HGCalDetIdHGCSampleHGCDataFramesSorted_mix_HGCDigisEE_HLT",
+                    #"drop l1tEMTFTrack2016Extras_simEmtfDigis__HLT",
+                    #"drop l1tEMTFTrack2016s_simEmtfDigis__HLT",
+                    #"drop l1tHGCalTowerMapBXVector_hgcalTriggerPrimitiveDigiProducer_towerMap_HLT",
+                    #"drop PCaloHits_g4SimHits_EcalHitsEB_SIM",
+                    #"drop PCaloHits_g4SimHits_HGCHitsEE_SIM",
+                    #"drop HGCalDetIdHGCSampleHGCDataFramesSorted_mix_HGCDigisEE_HLT",
 
    )
 )
@@ -131,6 +131,7 @@ process.Out = cms.OutputModule( "PoolOutputModule",
                           "keep *_addPileupInfo_*_*",
                           "keep *_ak4GenJetsNoNu__HLT",
                           "keep *_tauGenJetsSelectorAllHadrons_*_*",
+                          "keep *_g4SimHits_*_*",
                           )
 )
 
