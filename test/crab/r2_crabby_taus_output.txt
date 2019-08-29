@@ -3,22 +3,30 @@
 
 Target Files: HiggsTauTau_testv3
 Loaded Files:
-cms.untracked.vstring('file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTauv2/output_round1_1.root')
+cms.untracked.vstring('file:/data/vshang/l1CaloJets_20190822_r1_withTracks/ggHTauTau/output_round1_1.root')
 
 
 
-22-Aug-2019 11:32:35 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTauv2/output_round1_1.root
-22-Aug-2019 11:32:36 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTauv2/output_round1_1.root
-Begin processing the 1st record. Run 1, Event 38281, LumiSection 154 on stream 0 at 22-Aug-2019 11:34:14.183 EDT
------ Begin Fatal Exception 22-Aug-2019 11:34:24 EDT-----------------------
+26-Aug-2019 12:17:27 EDT  Initiating request to open file file:/data/vshang/l1CaloJets_20190822_r1_withTracks/ggHTauTau/output_round1_1.root
+26-Aug-2019 12:17:29 EDT  Successfully opened file file:/data/vshang/l1CaloJets_20190822_r1_withTracks/ggHTauTau/output_round1_1.root
+Begin processing the 1st record. Run 1, Event 38281, LumiSection 154 on stream 0 at 26-Aug-2019 12:18:40.338 EDT
+%MSG-e L1TrackerEtMissProducer:  L1TrackerEtMissProducer:L1TrackerEtMiss  26-Aug-2019 12:18:54 EDT Run: 1 Event: 38281
+
+Warning: VertexCollection not found in the event. Exit
+%MSG
+%MSG-e L1TkCaloJetProducer:  L1TkCaloJetProducer:L1TkCaloJets  26-Aug-2019 12:18:54 EDT Run: 1 Event: 38281
+
+Warning: L1JetParticleCollection not found in the event. Exit
+%MSG
+track Handle is validjet is matchedtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matchingtrack Handle is validjet fails matching----- Begin Fatal Exception 26-Aug-2019 12:18:54 EDT-----------------------
 An exception of category 'ProductNotFound' occurred while
    [0] Processing  Event run: 1 lumi: 154 event: 38281 stream: 0
-   [1] Running path 'L1TrackTrigger_step'
-   [2] Calling method for module L1TrackProducer/'TTTracksFromTracklet'
+   [1] Running path 'pL1TkIsoElectrons'
+   [2] Calling method for module L1TkElectronTrackProducer/'L1TkIsoElectrons'
 Exception Message:
 Principal::getByToken: Found zero products matching all criteria
-Looking for type: std::vector<SimTrack>
-Looking for module label: g4SimHits
+Looking for type: BXVector<l1t::EGamma>
+Looking for module label: simCaloStage2Digis
 Looking for productInstanceName: 
 
    Additional Info:
@@ -26,7 +34,7 @@ Looking for productInstanceName:
 add "SkipEvent = cms.untracked.vstring('ProductNotFound')" to the "options" PSet in the configuration.
 
 ----- End Fatal Exception -------------------------------------------------
-22-Aug-2019 11:34:24 EDT  Closed file file:/data/vshang/l1CaloJets_20190806_r1/ggHTauTauv2/output_round1_1.root
+26-Aug-2019 12:18:54 EDT  Closed file file:/data/vshang/l1CaloJets_20190822_r1_withTracks/ggHTauTau/output_round1_1.root
 
 =============================================
 
@@ -34,18 +42,23 @@ MessageLogger Summary
 
  type     category        sev    module        subroutine        count    total
  ---- -------------------- -- ---------------- ----------------  -----    -----
-    1 Fatal Exception      -s PostModuleEvent                        1        1
-    2 fileAction           -s file_close                             1        1
-    3 fileAction           -s file_open                              2        2
+    1 L1TkCaloJetProducer  -e L1TkCaloJetProdu                       1        1
+    2 L1TrackerEtMissProdu -e L1TrackerEtMissP                       1        1
+    3 Fatal Exception      -s PostModuleEvent                        1        1
+    4 fileAction           -s file_close                             1        1
+    5 fileAction           -s file_open                              2        2
 
  type    category    Examples: run/evt        run/evt          run/evt
  ---- -------------------- ---------------- ---------------- ----------------
-    1 Fatal Exception      1/38281                           
-    2 fileAction           PostGlobalEndRun                  
-    3 fileAction           pre-events       pre-events       
+    1 L1TkCaloJetProducer  1/38281                           
+    2 L1TrackerEtMissProducer 1/38281                           
+    3 Fatal Exception      1/38281                           
+    4 fileAction           PostGlobalEndRun                  
+    5 fileAction           pre-events       pre-events       
 
 Severity    # Occurrences   Total Occurrences
 --------    -------------   -----------------
+Error                   2                   2
 System                  4                   4
 
 dropped waiting message count 0

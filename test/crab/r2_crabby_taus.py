@@ -64,7 +64,9 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, '103X_upgrade2023_realistic_v2', '') 
 
 #Victor's edit: run track process
-process.L1TrackTrigger_step = cms.Path(process.L1TrackletTracksWithAssociators) 
+# process.L1TrackTrigger_step = cms.Path(process.L1TrackletTracksWithAssociators) 
+
+# process.VertexProducer.l1TracksInputTag = cms.InputTag("TTTracksFromTracklet", "Level1TTTracks")
 #End of Victor's edit
 
 

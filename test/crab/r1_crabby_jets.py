@@ -17,6 +17,10 @@ process.load('Configuration.StandardSequences.SimL1Emulator_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
+#Victor's edit: Load track files
+process.load('L1Trigger.TrackFindingTracklet.L1TrackletTracks_cff') 
+#End of Victor's edit
+
 process.MessageLogger.categories = cms.untracked.vstring('L1CaloJets', 'FwkReport')
 process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
    reportEvery = cms.untracked.int32(1)
@@ -122,6 +126,7 @@ process.Out = cms.OutputModule( "PoolOutputModule",
      fileName = cms.untracked.string( "output_round1.root" ),
      fastCloning = cms.untracked.bool( False ),
      outputCommands = cms.untracked.vstring(
+                          # "keep *",
                           "drop *",
                           "keep *_genParticles_*_*",
                           #"keep *_L1EGammaClusterEmuProducer_*_*",
@@ -131,7 +136,15 @@ process.Out = cms.OutputModule( "PoolOutputModule",
                           "keep *_addPileupInfo_*_*",
                           "keep *_ak4GenJetsNoNu__HLT",
                           "keep *_tauGenJetsSelectorAllHadrons_*_*",
-                          "keep *_g4SimHits_*_*",
+                          #Victor's edit: keep modules for track matching
+                          # "keep *_g4SimHits_*_*",
+                          # "keep *_TTStubsFromPhase2TrackerDigis_*_*",
+                          # "keep *_TTClusterAssociatorFromPixelDigis_*_*",
+                          # "keep *_TTStubAssociatorFromPixelDigis_*_*",
+                          # "keep *_mix_*_*",
+                          # "keep *_offlineBeamSpot_*_*",
+                          # "keep *_TTTracksFromPhase2TrackerDigis_*_*",
+                          #End of Victor's edit
                           )
 )
 
