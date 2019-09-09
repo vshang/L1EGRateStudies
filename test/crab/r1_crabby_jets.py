@@ -17,10 +17,6 @@ process.load('Configuration.StandardSequences.SimL1Emulator_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
-#Victor's edit: Load track files
-process.load('L1Trigger.TrackFindingTracklet.L1TrackletTracks_cff') 
-#End of Victor's edit
-
 process.MessageLogger.categories = cms.untracked.vstring('L1CaloJets', 'FwkReport')
 process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
    reportEvery = cms.untracked.int32(1)
