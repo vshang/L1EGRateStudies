@@ -55,7 +55,7 @@ if __name__ == '__main__':
     for k in dataMap.keys() :
 
         # Normal eff and rate analysis
-        config.General.requestName = '20190825_%s_r1_forTaus_withTracks' % k
+        config.General.requestName = '20190909_%s_r1_forTaus_withTracks' % k
         config.JobType.psetName        = 'r1_crabby_jets.py'
         config.Data.inputDataset = dataMap[ k ][ 'das' ]
         if 'PU200' in k or 'PU140' in k :

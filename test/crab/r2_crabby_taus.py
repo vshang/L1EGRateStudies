@@ -12,20 +12,20 @@ process.load('Configuration.Geometry.GeometryExtended2023D35_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 #Victor's edit: Load track files
-process.load('L1Trigger.TrackFindingTracklet.L1TrackletTracks_cff') 
+# process.load('L1Trigger.TrackFindingTracklet.L1TrackletTracks_cff') 
 
-process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
-process.load('SimGeneral.MixingModule.mixNoPU_cfi')
-process.load('Configuration.StandardSequences.SimL1Emulator_cff')
-process.load('Configuration.StandardSequences.EndOfProcess_cff')
+# process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
+# process.load('SimGeneral.MixingModule.mixNoPU_cfi')
+# process.load('Configuration.StandardSequences.SimL1Emulator_cff')
+# process.load('Configuration.StandardSequences.EndOfProcess_cff')
 
-process.load('Configuration.Geometry.GeometryExtended2023D17_cff')
-process.load('Configuration.StandardSequences.Generator_cff')
-process.load('IOMC.EventVertexGenerators.VtxSmearedHLLHC14TeV_cfi')
-process.load('GeneratorInterface.Core.genFilterSummary_cff')
-process.load('Configuration.StandardSequences.SimIdeal_cff')
-process.load('Configuration.StandardSequences.Digi_cff')
-process.load('Configuration.StandardSequences.DigiToRaw_cff')
+# process.load('Configuration.Geometry.GeometryExtended2023D17_cff')
+# process.load('Configuration.StandardSequences.Generator_cff')
+# process.load('IOMC.EventVertexGenerators.VtxSmearedHLLHC14TeV_cfi')
+# process.load('GeneratorInterface.Core.genFilterSummary_cff')
+# process.load('Configuration.StandardSequences.SimIdeal_cff')
+# process.load('Configuration.StandardSequences.Digi_cff')
+# process.load('Configuration.StandardSequences.DigiToRaw_cff')
 #End of Victor's edit
 process.MessageLogger.categories = cms.untracked.vstring('L1CaloJetStudies', 'FwkReport')
 process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
@@ -43,14 +43,14 @@ process.source = cms.Source("PoolSource",
 )
 
 
-out_path = '/data/vshang/l1CaloJets_20190806_r2/'
+out_path = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20190909_r2/'
 #out_path = '/afs/cern.ch/user/v/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/testR2sample_Victor/'
 #name = "HiggsTauTauvL1EGs"
 #name = "HiggsTauTau"
 #name = "minBias"
 #name = "HiggsTauTau_test"
 #name = "QCD_test"
-name = "HiggsTauTau_testv3"
+name = "HiggsTauTau_withTracks"
 #name = "QCD_testv2"
 # Load samples from external files here:
 from L1Trigger.L1EGRateStudies.loadRound2Files import getSampleFiles
@@ -109,7 +109,7 @@ process.pL1Objs = cms.Path(
 # Analyzer starts here
 
 process.analyzer = cms.EDAnalyzer('L1CaloJetStudies',
-    L1TrackInputTag = cms.InputTag("TTTracksFromTracklet", "Level1TTTracks"), #Victor's edit: add track input tag
+    L1TrackInputTag = cms.InputTag("L1CaloJetProducer", "Level1TTTracks"), #Victor's track matching edit: add track info from L1CaloJetProducer
     L1CaloJetsInputTag = cms.InputTag("L1CaloJetProducer","L1CaloJetsNoCuts"),
     genJets = cms.InputTag("ak4GenJetsNoNu", "", "HLT"),
     genHadronicTauSrc = cms.InputTag("tauGenJetsSelectorAllHadrons"),

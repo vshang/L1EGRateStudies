@@ -65,7 +65,7 @@
 #include "DataFormats/L1Trigger/interface/Tau.h"
 #include "DataFormats/L1Trigger/interface/L1Candidate.h"
 
-//Victor's edit: track trigger data formats
+//Victor's track matching edit: track trigger data formats
 #include "DataFormats/L1TrackTrigger/interface/TTTypes.h"
 #include "DataFormats/L1TrackTrigger/interface/TTCluster.h"
 #include "DataFormats/L1TrackTrigger/interface/TTStub.h"
@@ -81,7 +81,7 @@
 #include "Geometry/Records/interface/TrackerDigiGeometryRecord.h"
 //Also include track matching algorithm
 #include "L1Trigger/L1CaloTrigger/interface/L1TkElectronTrackMatchAlgo.h"
-//End of Victor's edit
+//End of Victor's track matching edit
 
 
 // 
@@ -93,7 +93,7 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
     typedef std::vector<reco::GenJet> GenJetCollection;
     typedef BXVector<l1t::Tau> TauBxCollection;
     typedef std::vector<l1t::Tau> TauCollection;
-    typedef std::vector< TTTrack < Ref_Phase2TrackerDigi_ >> L1TkTrackCollectionType; //Victor's edit: added L1TkTrackCollectionType typedef
+    typedef std::vector< TTTrack < Ref_Phase2TrackerDigi_ >> L1TkTrackCollectionType; //Victor's track matching edit: added L1TkTrackCollectionType typedef
 
     public:
         explicit L1CaloJetStudies(const edm::ParameterSet&);
@@ -111,7 +111,7 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
 
         // -- user functions
         void integrateDown(TH1F *);
-        bool isJetTrackMatched(float jet_phi, float jet_eta, float jet_energy, edm::Handle<L1TkTrackCollectionType> l1trackHandle); //Victor's edit: added function to match jets to tracks
+        bool isJetTrackMatched(float jet_phi, float jet_eta, float jet_energy, edm::Handle<L1TkTrackCollectionType> l1trackHandle); //Victor's track matching edit: added function to check if jet is matched to a track
         void fill_tree(const l1slhc::L1CaloJet& caloJet);
         void fill_tree_null();
         
@@ -139,9 +139,7 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
         // Apply stage-2 calibrations to align to gen
         TGraph ptAdjustStage2 = TGraph(49, x_bins, y_bins);
 
-         // Victor's edit: Added track matching for reco tau objects
-        edm::EDGetTokenT<L1TkTrackCollectionType> L1TrackInputToken_;
-        // End of Victor's edit
+        edm::EDGetTokenT<L1TkTrackCollectionType> L1TrackInputToken_; // Victor's track matching edit: Get input token for track info from L1CaloJetProducer.cc
 
         edm::EDGetTokenT<l1slhc::L1CaloJetsCollection> caloJetsToken_;
         l1slhc::L1CaloJetsCollection caloJets;
@@ -476,7 +474,7 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     use_gen_taus(iConfig.getUntrackedParameter<bool>("use_gen_taus", false)),
     genMatchDeltaRcut(iConfig.getUntrackedParameter<double>("genMatchDeltaRcut", 0.3)),
     genMatchRelPtcut(iConfig.getUntrackedParameter<double>("genMatchRelPtcut", 0.5)),
-    L1TrackInputToken_(consumes<L1TkTrackCollectionType>(iConfig.getParameter<edm::InputTag>("L1TrackInputTag"))), //Victor's edit: Added L1Tracks to L1CaloJetStudies construtor
+    L1TrackInputToken_(consumes<L1TkTrackCollectionType>(iConfig.getParameter<edm::InputTag>("L1TrackInputTag"))), //Victor's track matching edit: Store track info from L1CaloJetProducer in token
     caloJetsToken_(consumes<l1slhc::L1CaloJetsCollection>(iConfig.getParameter<edm::InputTag>("L1CaloJetsInputTag"))),
     genJetsToken_(consumes<std::vector<reco::GenJet>>(iConfig.getParameter<edm::InputTag>("genJets"))),
     genHadronicTausToken_(consumes<std::vector<reco::GenJet>>(iConfig.getParameter<edm::InputTag>("genHadronicTauSrc"))),
@@ -812,10 +810,10 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
     }
     nTruePUHist->Fill( treeinfo.nTruePU );
 
-    // Victor's edit: Get L1 Tracks
+    // Victor's track matching edit: Get L1 Tracks from token and store them in handle
     edm::Handle<L1TkTrackCollectionType> l1trackHandle;
     iEvent.getByToken(L1TrackInputToken_, l1trackHandle);
-    // End of Victor's edit
+    // End of Victor's track matching edit
 
     // Get all collections for later in GenJet loop
     // Get Phase-II CaloJet collection
@@ -1382,14 +1380,14 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
                 total_et_f = caloJet.GetExperimentalParam("total_et");
                 //nTT_f = caloJet.GetExperimentalParam("total_nTowers");
-		//Victor's edit: get jet info for matching to tracks
+		//Victor's track matching edit: get jet info for matching to tracks
 		float jet_phi = caloJet.GetExperimentalParam("jet_phi");
 		float jet_eta = caloJet.GetExperimentalParam("jet_eta");
 		float jet_energy = caloJet.GetExperimentalParam("jet_energy");
 		bool found_jetTrack = isJetTrackMatched(jet_phi, jet_eta, jet_energy, l1trackHandle);
-		//End of Victor's edit
+		//End of Victor's track matching edit
 
-		if ( reco::deltaR(caloJet, genJetP4) < genMatchDeltaRcut && found_jetTrack ) //Victor's edit: added track matching condition
+		if ( reco::deltaR(caloJet, genJetP4) < genMatchDeltaRcut && found_jetTrack ) //Victor's track matching edit: added track matching condition found_jetTrack == true
                       //&& fabs(caloJet.pt()-genJetP4.pt())/genJetP4.pt() < genMatchRelPtcut )
                 {
 
@@ -1463,7 +1461,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
             if (!found_caloJet) fill_tree_null();
         } // have CaloJets
          // no CaloJets
-        if (caloJets.size() == 0 || !found_caloJet)
+        if (caloJets.size() == 0)// || !found_caloJet) //Victor's track matching edit: unmatched genJets are double counted if !found_caloJet part is included
         {
             // Fill tree with -1 to signify we lose a gen jet        
             fill_tree_null();
@@ -1588,37 +1586,35 @@ L1CaloJetStudies::fillDescriptions(edm::ConfigurationDescriptions& descriptions)
 }
 
 // ------------ user methods (ncsmith)
-//Victor's edit: method isJetTrackMatched takes in a jet's phi, eta, and energy as well as a track handle l1trackHandle and
+//Victor's track matching edit: method isJetTrackMatched takes in a jet's phi, eta, and energy as well as a track handle l1trackHandle and
 //returns true if the jet is matched to a track and false otherwise. The jet must be within a certian dR of the
 //track and the track pt and chi2 must pass certain selection cuts.
 bool 
 L1CaloJetStudies::isJetTrackMatched(float jet_phi, float jet_eta, float jet_energy, edm::Handle<L1TkTrackCollectionType> l1trackHandle) {
     if ( l1trackHandle.isValid() )
     {
-        cout << "track Handle is valid";
+        // cout << "track Handle is valid";
         float dR_cut = 0.1;
         float pt_cut = 5.;
         float chi2_cut = 100.;
-        edm::Ptr<TTTrack<Ref_Phase2TrackerDigi_>> matched_track;
-	for(size_t track_index=0; track_index<l1trackHandle->size(); ++track_index)
+	for(size_t track_index=0; track_index < l1trackHandle->size(); ++track_index)
 	{
-	    edm::Ptr<TTTrack<Ref_Phase2TrackerDigi_>> ptr(l1trackHandle, track_index);
+	    edm::Ptr< TTTrack< Ref_Phase2TrackerDigi_ > > ptr(l1trackHandle, track_index);
             float pt = ptr->getMomentum().perp();
-	    // Don't consider tracks with pt < 2 for studies
-	    if (pt < 2.) continue;
+	    if (pt < 2.) continue; // Don't consider tracks with pt < 2 for studies
             float dR = L1TkElectronTrackMatchAlgo::deltaR(L1TkElectronTrackMatchAlgo::calorimeterPosition(jet_phi, jet_eta, jet_energy), ptr);
 	    float chi2 = ptr->getChi2();
 	    if ( dR < dR_cut && pt > pt_cut && chi2 < chi2_cut )
 	    {
-	        cout << "jet is matched";
+	        // cout << "jet is matched";
 	        return true;
 	    }
 	} //end track loop
     } //end isValid
-    cout << "jet fails matching";
+    // cout << "jet fails matching";
     return false;
 }
-//End of Victor's edit
+//End of Victor's track matching edit
 
 void 
 L1CaloJetStudies::integrateDown(TH1F * hist) {
