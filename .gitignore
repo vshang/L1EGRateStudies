@@ -6,3 +6,4 @@
 __init__.py
 test/dump_file.py
 test/calibrations/*_cfi.py
+*.__*

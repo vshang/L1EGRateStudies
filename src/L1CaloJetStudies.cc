@@ -859,13 +859,13 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
 
     /*******************************************************
-    * If using a min-biase sample and doRate selected, record the
+    * If using a min-bias sample and doRate selected, record the
     * Phase-2 and Stage-2 CaloJet objects only
     ************************************************************/
     if (doRate)
     {
 
-        // Reset these to defauls -9
+        // Reset these to defaults -9
         treeinfo.stage2jet_pt = -9;
         treeinfo.stage2jet_pt_calib = -9;
         treeinfo.stage2jet_eta = -9;
@@ -1023,70 +1023,81 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
         {
             for(const auto& caloJet : caloJets)
             {
+	        //Victor's track matching edit: added track matching condition to minBias code as well (doRate = true)
+	        float jet_phi = caloJet.GetExperimentalParam("jet_phi");
+		float jet_eta = caloJet.GetExperimentalParam("jet_eta");
+		float jet_energy = caloJet.GetExperimentalParam("jet_energy");
+		bool found_jetTrack = isJetTrackMatched(jet_phi, jet_eta, jet_energy, l1trackHandle);
 
-                if ( caloJet.GetExperimentalParam("jet_pt_calibration") > 30 && fabs(caloJet.GetExperimentalParam("jet_eta")) < 2.4 )
-                {
-                    f_phase2_jet_HTT += caloJet.GetExperimentalParam("jet_pt_calibration");
-                }
+		if ( found_jetTrack ) //Change to true to turn off track matching
+		{
 
-                if (use_gen_taus && fabs(caloJet.eta()) > 3.0) continue;
-                float abs_eta = fabs( caloJet.GetExperimentalParam("jet_eta") );
-                if ( abs_eta < 6.0 && !phase2_all_filled )
-                {
-                    phase2_rate_all_hist->Fill( caloJet.GetExperimentalParam("jet_pt") );
-                    phase2_rate_all_eta_hist->Fill( caloJet.GetExperimentalParam("jet_eta") );
-                    phase2_all_filled = true;
-                }
-                if ( (abs_eta < 1.5 || (abs_eta < 6.0 && abs_eta > 3.0)) && !phase2_noHGCal_filled )
-                {
-                    phase2_rate_noHGCal_hist->Fill( caloJet.GetExperimentalParam("jet_pt") );
-                    phase2_noHGCal_filled = true;
-                }
-                if ( abs_eta < 1.5 && !phase2_barrel_filled )
-                {
-                    phase2_rate_barrel_hist->Fill( caloJet.GetExperimentalParam("jet_pt") );
-                    phase2_rate_barrel_eta_hist->Fill( caloJet.GetExperimentalParam("jet_eta") );
-                    phase2_barrel_filled = true;
-                }
-                if (caloJet.pt() < 10) continue;
+		  if ( caloJet.GetExperimentalParam("jet_pt_calibration") > 30 && fabs(caloJet.GetExperimentalParam("jet_eta")) < 2.4 )
+		    {
+		      f_phase2_jet_HTT += caloJet.GetExperimentalParam("jet_pt_calibration");
+		    }
 
-                // CaloTau L1EG Info
-                treeinfo.n_l1eg_HoverE_Less0p25 = 0.;
-                treeinfo.n_l1eg_HoverE_Less0p25_trkSS = 0.;
-                treeinfo.n_l1eg_HoverE_Less0p25_saSS = 0.;
-                treeinfo.n_l1eg_HoverE_0p5to1p0 = 0.;
-                treeinfo.n_l1eg_HoverE_0p5to1p0_trkSS = 0.;
-                treeinfo.n_l1eg_HoverE_0p5to1p0_saSS = 0.;
-                treeinfo.n_l1eg_HoverE_Gtr0p25 = 0.;
-                treeinfo.n_l1eg_HoverE_Gtr0p25_trkSS = 0.;
-                treeinfo.n_l1eg_HoverE_Gtr0p25_saSS = 0.;
-                treeinfo.n_l1eg_avgHoverE = 0.;
-                for (auto info : caloJet.associated_l1EGs)
-                {
-                    //printf("l1eg pt %f, HCAL ET %f, ECAL ET %f, dEta %i, dPhi %i, trkSS %i, trkIso %i, standaloneSS %i, standaloneIso %i\n",
-                    //    info[0], info[1], info[2], int(info[3]), int(info[4]), int(info[5]), int(info[6]), int(info[7]), int(info[8]));
-                    float HoverE = info[1] / (info[0] + info[2]);
-                    treeinfo.n_l1eg_avgHoverE += HoverE / caloJet.associated_l1EGs.size();
-                    if (HoverE < 0.25)
-                    {
-                        treeinfo.n_l1eg_HoverE_Less0p25 += 1.;
-                        if (int(info[5]) > 0.5) treeinfo.n_l1eg_HoverE_Less0p25_trkSS += 1.;
-                        if (int(info[7]) > 0.5) treeinfo.n_l1eg_HoverE_Less0p25_saSS += 1.;
-                    }
-                    //else if (HoverE < 1.0)
-                    //{
-                    //    treeinfo.n_l1eg_HoverE_0p5to1p0 += 1.;
-                    //    if (int(info[5]) > 0.5) treeinfo.n_l1eg_HoverE_0p5to1p0_trkSS += 1.;
-                    //    if (int(info[7]) > 0.5) treeinfo.n_l1eg_HoverE_0p5to1p0_saSS += 1.;
-                    //}
-                    else if (HoverE >= 0.25)
-                    {
-                        treeinfo.n_l1eg_HoverE_Gtr0p25 += 1.;
-                        if (int(info[5]) > 0.5) treeinfo.n_l1eg_HoverE_Gtr0p25_trkSS += 1.;
-                        if (int(info[7]) > 0.5) treeinfo.n_l1eg_HoverE_Gtr0p25_saSS += 1.;
-                    }
-                }
-                fill_tree(caloJet);
+		  if (use_gen_taus && fabs(caloJet.eta()) > 3.0) continue;
+		  float abs_eta = fabs( caloJet.GetExperimentalParam("jet_eta") );
+		  if ( abs_eta < 6.0 && !phase2_all_filled )
+		    {
+		      phase2_rate_all_hist->Fill( caloJet.GetExperimentalParam("jet_pt") );
+		      phase2_rate_all_eta_hist->Fill( caloJet.GetExperimentalParam("jet_eta") );
+		      phase2_all_filled = true;
+		    }
+		  if ( (abs_eta < 1.5 || (abs_eta < 6.0 && abs_eta > 3.0)) && !phase2_noHGCal_filled )
+		    {
+		      phase2_rate_noHGCal_hist->Fill( caloJet.GetExperimentalParam("jet_pt") );
+		      phase2_noHGCal_filled = true;
+		    }
+		  if ( abs_eta < 1.5 && !phase2_barrel_filled )
+		    {
+		      phase2_rate_barrel_hist->Fill( caloJet.GetExperimentalParam("jet_pt") );
+		      phase2_rate_barrel_eta_hist->Fill( caloJet.GetExperimentalParam("jet_eta") );
+		      phase2_barrel_filled = true;
+		    }
+		  if (caloJet.pt() < 10) continue;
+
+		  // CaloTau L1EG Info
+		  treeinfo.n_l1eg_HoverE_Less0p25 = 0.;
+		  treeinfo.n_l1eg_HoverE_Less0p25_trkSS = 0.;
+		  treeinfo.n_l1eg_HoverE_Less0p25_saSS = 0.;
+		  treeinfo.n_l1eg_HoverE_0p5to1p0 = 0.;
+		  treeinfo.n_l1eg_HoverE_0p5to1p0_trkSS = 0.;
+		  treeinfo.n_l1eg_HoverE_0p5to1p0_saSS = 0.;
+		  treeinfo.n_l1eg_HoverE_Gtr0p25 = 0.;
+		  treeinfo.n_l1eg_HoverE_Gtr0p25_trkSS = 0.;
+		  treeinfo.n_l1eg_HoverE_Gtr0p25_saSS = 0.;
+		  treeinfo.n_l1eg_avgHoverE = 0.;
+		  for (auto info : caloJet.associated_l1EGs)
+		    {
+		      //printf("l1eg pt %f, HCAL ET %f, ECAL ET %f, dEta %i, dPhi %i, trkSS %i, trkIso %i, standaloneSS %i, standaloneIso %i\n",
+		      //    info[0], info[1], info[2], int(info[3]), int(info[4]), int(info[5]), int(info[6]), int(info[7]), int(info[8]));
+		      float HoverE = info[1] / (info[0] + info[2]);
+		      treeinfo.n_l1eg_avgHoverE += HoverE / caloJet.associated_l1EGs.size();
+		      if (HoverE < 0.25)
+			{
+			  treeinfo.n_l1eg_HoverE_Less0p25 += 1.;
+			  if (int(info[5]) > 0.5) treeinfo.n_l1eg_HoverE_Less0p25_trkSS += 1.;
+			  if (int(info[7]) > 0.5) treeinfo.n_l1eg_HoverE_Less0p25_saSS += 1.;
+			}
+		      //else if (HoverE < 1.0)
+		      //{
+		      //    treeinfo.n_l1eg_HoverE_0p5to1p0 += 1.;
+		      //    if (int(info[5]) > 0.5) treeinfo.n_l1eg_HoverE_0p5to1p0_trkSS += 1.;
+		      //    if (int(info[7]) > 0.5) treeinfo.n_l1eg_HoverE_0p5to1p0_saSS += 1.;
+		      //}
+		      else if (HoverE >= 0.25)
+			{
+			  treeinfo.n_l1eg_HoverE_Gtr0p25 += 1.;
+			  if (int(info[5]) > 0.5) treeinfo.n_l1eg_HoverE_Gtr0p25_trkSS += 1.;
+			  if (int(info[7]) > 0.5) treeinfo.n_l1eg_HoverE_Gtr0p25_saSS += 1.;
+			}
+		    }
+		  fill_tree(caloJet);
+
+	        } //End of found_jetTrack loop
+		//End of Victor's track matching edit
             } // end Calo Jets loop
         } // have CaloJets
         phase2_jet_HTT_rate_hist->Fill( f_phase2_jet_HTT );
@@ -1461,7 +1472,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
             if (!found_caloJet) fill_tree_null();
         } // have CaloJets
          // no CaloJets
-        if (caloJets.size() == 0)// || !found_caloJet) //Victor's track matching edit: unmatched genJets are double counted if !found_caloJet part is included
+        if (caloJets.size() == 0)// || !found_caloJet) //Victor's track matching edit: removed !found_caloJet condition so that unmatched genJets are not double counted 
         {
             // Fill tree with -1 to signify we lose a gen jet        
             fill_tree_null();

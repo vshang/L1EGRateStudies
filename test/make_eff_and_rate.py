@@ -21,8 +21,8 @@ doPtEff = False
 doRate = True
 #doRate = False
 
-#doRateFirstHalf = True
-doRateFirstHalf = False
+doRateFirstHalf = True
+#doRateFirstHalf = False
 doRateSecondHalf = True
 #doRateSecondHalf = False
 
@@ -45,11 +45,11 @@ text = 'Jet' if not doTau else 'Tau'
     
 
 if doEff :
-    fName = 'output_round2_QCDv1'
+    fName = 'output_round2_HiggsTauTau_withTracks_trackMatched'
     #fName = 'output_round2_HiggsTauTauv1'
-    date = '20190723'
-    base = '/data/vshang/l1CaloJets_20190723_r2/'
-    universalSaveDir = "/afs/cern.ch/user/v/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/efficiencies/"+date+"/"+fName+"/"
+    date = '20190909'
+    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20190909_r2/'
+    universalSaveDir = "/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/efficiencies/"+date+"/"+fName+"/"
     checkDir( universalSaveDir )
 
     f = ROOT.TFile( base+fName+'.root', 'r' )
@@ -148,17 +148,17 @@ if doEff :
     app = 'ptEff' if doPtEff else 'etaEff_ptDenom%i' % denom_pt
     #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_include_S2Iso.png' % (pt_cut, app) )
     c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s.png' % (pt_cut, app) )
-    c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_NoIsoTaus.png' % (pt_cut, app) )
+    #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_NoIsoTaus.png' % (pt_cut, app) )
     #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_HGCal.png' % (pt_cut, app) )
 
 """ MAKE RATES """
 if doRate :
 
-    fName = 'output_round2_minBiasv1'
-    #fName = 'output_round2_minBiasv1_withCuts'
-    date = '20190723'
-    base = '/data/vshang/l1CaloJets_20190723_r2/'
-    universalSaveDir = "/afs/cern.ch/user/v/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/rates/"+date+"/"+fName+"/"
+    #fName = 'output_round2_minBiasv1'
+    fName = 'output_round2_minBias_withTracks_trackMatched'
+    date = '20190909'
+    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20190909_r2/'
+    universalSaveDir = "/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/rates/"+date+"/"+fName+"/"
     checkDir( universalSaveDir )
 
 
@@ -211,7 +211,7 @@ if doRate :
         assert(0)
     
     colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray+2]
-    saveName = 'output_round2_minBiasv1'
+    saveName = 'output_round2_minBias_withTracks_trackMatched'
     x_info_rebin = [100, 0, 160]
 
     plot_map = OrderedDict()

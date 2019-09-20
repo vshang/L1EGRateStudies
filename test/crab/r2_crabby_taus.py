@@ -50,7 +50,8 @@ out_path = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_p
 #name = "minBias"
 #name = "HiggsTauTau_test"
 #name = "QCD_test"
-name = "HiggsTauTau_withTracks"
+#name = "HiggsTauTau_withTracks"
+name = "minBias_withTracks"
 #name = "QCD_testv2"
 # Load samples from external files here:
 from L1Trigger.L1EGRateStudies.loadRound2Files import getSampleFiles
@@ -123,7 +124,7 @@ process.analyzer = cms.EDAnalyzer('L1CaloJetStudies',
     puSrc = cms.InputTag("addPileupInfo")
 )
 
-if name == "minBias" :
+if name == "minBias" or name == "minBias_withTracks" :
     process.analyzer.doRate = cms.untracked.bool(True)
 
 process.panalyzer = cms.Path(process.analyzer)
