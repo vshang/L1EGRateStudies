@@ -1,0 +1,50 @@
+Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/rates/20190909/output_round2_minBias_withTracks/output_round2_minBias_withTracks_Calib_rate_barrel.png has been created
+Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/rates/20190909/output_round2_minBias_withTracks/output_round2_minBias_withTracks_Calib_rate_runII.png has been created
+Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/rates/20190909/output_round2_minBias_withTracks/output_round2_minBias_withTracks_Calib_rate_all.png has been created
+<ROOT.TFile object ("/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20190909_r2/output_round2_minBias_withTracks_notTrackMatched.root") at 0x396a8d0>
+<ROOT.TFile object ("/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20190909_r2/output_round2_minBias_withTracks_notTrackMatched.root") at 0x6680b10>
+Phase-2_matched ['Tau', 0] trackMatched_barrel
+<ROOT.TFile object ("eff_and_rate_roots/output_round2_minBias_withTracks_trackMatched_barrel_Phase-2.root") at 0x11ec9f0>
+Phase-2_matched ['Tau', 0] notTrackMatched_barrel
+Phase-2_matched ['Tau', 0] trackMatched_runII
+Phase-2_matched ['Tau', 0] notTrackMatched_runII
+Phase-2_matched ['Tau', 0] trackMatched_all
+Phase-2_matched ['Tau', 0] notTrackMatched_all
+Phase-2 ['Tau', 2] trackMatched_barrel
+Phase-2 ['Tau', 2] notTrackMatched_barrel
+<ROOT.TFile object ("eff_and_rate_roots/output_round2_minBias_withTracks_notTrackMatched_barrel_Phase-2.root") at 0x674da70>
+Phase-2 ['Tau', 2] trackMatched_runII
+Phase-2 ['Tau', 2] notTrackMatched_runII
+Phase-2 ['Tau', 2] trackMatched_all
+Phase-2 ['Tau', 2] notTrackMatched_all
+<ROOT.TH1F object ("Phase-2 Track matched Tau, trackMatched_barrel") at 0x66f6eb0>
+Phase-2_matched ['Tau', 0] trackMatched_barrel
+Phase-2_matched ['Tau', 0] notTrackMatched_barrel
+Phase-2_matched ['Tau', 0] trackMatched_runII
+<ROOT.TFile object ("eff_and_rate_roots/output_round2_minBias_withTracks_trackMatched_runII_Phase-2.root") at 0x6975500>
+Phase-2_matched ['Tau', 0] notTrackMatched_runII
+Phase-2_matched ['Tau', 0] trackMatched_all
+Phase-2_matched ['Tau', 0] notTrackMatched_all
+Phase-2 ['Tau', 2] trackMatched_barrel
+Phase-2 ['Tau', 2] notTrackMatched_barrel
+Phase-2 ['Tau', 2] trackMatched_runII
+Phase-2 ['Tau', 2] notTrackMatched_runII
+<ROOT.TFile object ("eff_and_rate_roots/output_round2_minBias_withTracks_notTrackMatched_runII_Phase-2.root") at 0x6a29a40>
+Phase-2 ['Tau', 2] trackMatched_all
+Phase-2 ['Tau', 2] notTrackMatched_all
+<ROOT.TH1F object ("Phase-2 Track matched Tau, trackMatched_runII") at 0x674da70>
+Phase-2_matched ['Tau', 0] trackMatched_barrel
+Phase-2_matched ['Tau', 0] notTrackMatched_barrel
+Phase-2_matched ['Tau', 0] trackMatched_runII
+Phase-2_matched ['Tau', 0] notTrackMatched_runII
+Phase-2_matched ['Tau', 0] trackMatched_all
+<ROOT.TFile object ("eff_and_rate_roots/output_round2_minBias_withTracks_trackMatched_all_Phase-2.root") at 0x697b9b0>
+Phase-2_matched ['Tau', 0] notTrackMatched_all
+Phase-2 ['Tau', 2] trackMatched_barrel
+Phase-2 ['Tau', 2] notTrackMatched_barrel
+Phase-2 ['Tau', 2] trackMatched_runII
+Phase-2 ['Tau', 2] notTrackMatched_runII
+Phase-2 ['Tau', 2] trackMatched_all
+Phase-2 ['Tau', 2] notTrackMatched_all
+<ROOT.TFile object ("eff_and_rate_roots/output_round2_minBias_withTracks_notTrackMatched_all_Phase-2.root") at 0x693d470>
+<ROOT.TH1F object ("Phase-2 Track matched Tau, trackMatched_all") at 0x6a29a40>
