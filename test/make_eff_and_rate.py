@@ -15,14 +15,14 @@ doTau = True
 #doEff = True
 doEff = False
 
-#doPtEff = True
-doPtEff = False
+doPtEff = True
+#doPtEff = False
 
 doRate = True
 #doRate = False
 
-#doRateFirstHalf = True
-doRateFirstHalf = False
+doRateFirstHalf = True
+#doRateFirstHalf = False
 doRateSecondHalf = True
 #doRateSecondHalf = False
 
@@ -37,6 +37,7 @@ s2Obj = 'stage2jet_pt'
 s2ObjEta = 'stage2jet_eta'
 if doTau :
     p2Obj = 'calibPtHH'
+    #p2Obj = 'tau_pt'
     #s2Obj = 'stage2tau_pt'
     s2Obj = 'stage2tau_pt_calibration3'
     s2ObjEta = 'stage2tau_eta'
@@ -45,9 +46,9 @@ text = 'Jet' if not doTau else 'Tau'
     
 
 if doEff :
-    fName = 'output_round2_HiggsTauTau_withTracks_trackMatched'
+    fName = 'output_round2_HiggsTauTau_withTracks_trackMatchedwithTrackdR'
     #fName = 'output_round2_HiggsTauTauv1'
-    date = '20190909'
+    date = '20191013'
     base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20190909_r2/'
     universalSaveDir = "/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/efficiencies/"+date+"/"+fName+"/"
     checkDir( universalSaveDir )
@@ -57,7 +58,7 @@ if doEff :
     
 
     # Threshold cuts for passing region
-    pt_cut = 100
+    #pt_cut = 100
     #pt_cut = 40
     #pt_cut = 20
     pt_cut = 32
@@ -128,12 +129,19 @@ if doEff :
     p.SetGrid()
 
     cmsString = drawCMSString("#bf{CMS Simulation}  <PU>=200  ggH+qqH, H#rightarrow#tau#tau")
+    # title = ROOT.TLatex()
+    # title.SetTextSize(0.045)
+    # title.DrawLatexNDC(.12, .91, "CMS")
+    # title.SetTextSize(0.030)
+    # title.DrawLatexNDC(.22, .91, "Phase-2 Simulation")
+    # title.SetTextSize(0.035)
+    # title.DrawLatexNDC(.53, .91, "14 TeV, 3000 fb^{-1}, 200 PU")
     
-    txt = ROOT.TLatex()
-    txt.SetTextSize(0.035)
-    txt.DrawLatexNDC(.12, .85,  "Baseline:")
-    txt.DrawLatexNDC(.12, .81,  "   %s" % denom_cut)
-    txt.DrawLatexNDC(.12, .76, "Passing: (Reco p_{T} > %i)" % pt_cut)
+    # txt = ROOT.TLatex()
+    # txt.SetTextSize(0.035)
+    # txt.DrawLatexNDC(.12, .85,  "Baseline:")
+    # txt.DrawLatexNDC(.12, .81,  "   %s" % denom_cut)
+    # txt.DrawLatexNDC(.12, .76, "Passing: (Reco p_{T} > %i)" % pt_cut)
     
     #leg = setLegStyle(0.5,0.3,0.9,0.7)
     leg = setLegStyle(0.5,0.72,0.9,0.88)
@@ -147,19 +155,19 @@ if doEff :
     
     app = 'ptEff' if doPtEff else 'etaEff_ptDenom%i' % denom_pt
     #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_include_S2Iso.png' % (pt_cut, app) )
-    c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s.png' % (pt_cut, app) )
-    #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_NoIsoTaus.png' % (pt_cut, app) )
+    c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%sv2.pdf' % (pt_cut, app) )
+    #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_IsoTaus.pdf' % (pt_cut, app) )
     #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_HGCal.png' % (pt_cut, app) )
 
 """ MAKE RATES """
 if doRate :
 
     #fName = 'output_round2_minBiasv1'
-    fName = 'output_round2_minBias_withTracks_notTrackMatched'
-    date = '20190909'
+    fName = 'output_round2_minBias_withTracks_trackMatchedwithTrackdR'
+    date = '20191013'
     base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20190909_r2/'
-    #universalSaveDir = "/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/rates/"+date+"/"+fName+"/"
-    universalSaveDir = "/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/rates/"+date+"/"+'output_round2_minBias_withTracks'+"/"
+    #base = '/hdfs/store/user/vshang/l1CaloJets_20190723_r2/'
+    universalSaveDir = "/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/rates/"+date+"/"+fName+"/"
     checkDir( universalSaveDir )
 
 
@@ -178,23 +186,23 @@ if doRate :
 
     # Min and Max eta thresholds for barrel, HGCal, HF rates
     eta_thresholds = OrderedDict()
-    # if doTau :
-    #     eta_thresholds['all']    = [0., 2.8, ROOT.kBlack]
-    #     eta_thresholds['runII']  = [0., 2.1, ROOT.kBlue]
-    # else :
-    #     eta_thresholds['all']    = [0., 6.0, ROOT.kBlack]
-    # eta_thresholds['barrel'] = [0., 1.5, ROOT.kRed]
-    # #eta_thresholds['hgcal']  = [1.5, 3.0, ROOT.kBlue]
-    # if not doTau :
-    #     eta_thresholds['hf']     = [3.0, 6.0, ROOT.kGreen+3]
+    if doTau :
+        eta_thresholds['all']    = [0., 2.8, ROOT.kBlack]
+        eta_thresholds['runII']  = [0., 2.1, ROOT.kBlue]
+    else :
+        eta_thresholds['all']    = [0., 6.0, ROOT.kBlack]
+    eta_thresholds['barrel'] = [0., 1.5, ROOT.kRed]
+    #eta_thresholds['hgcal']  = [1.5, 3.0, ROOT.kBlue]
+    if not doTau :
+        eta_thresholds['hf']     = [3.0, 6.0, ROOT.kGreen+3]
 
     #Victor's edit: redefined eta_thresholds to plot track matched and unmatched rates on same plot
-    eta_thresholds['trackMatched_barrel'] = [0., 1.5, ROOT.kRed]
-    eta_thresholds['notTrackMatched_barrel'] = [0., 1.5, ROOT.kRed]
-    eta_thresholds['trackMatched_runII']  = [0., 2.1, ROOT.kBlue]
-    eta_thresholds['notTrackMatched_runII']  = [0., 2.1, ROOT.kBlue]
-    eta_thresholds['trackMatched_all']    = [0., 2.8, ROOT.kBlack]
-    eta_thresholds['notTrackMatched_all']    = [0., 2.8, ROOT.kBlack]
+    # eta_thresholds['trackMatched_barrel'] = [0., 1.5, ROOT.kRed]
+    # eta_thresholds['notTrackMatched_barrel'] = [0., 1.5, ROOT.kRed]
+    # eta_thresholds['trackMatched_runII']  = [0., 2.1, ROOT.kBlue]
+    # eta_thresholds['notTrackMatched_runII']  = [0., 2.1, ROOT.kBlue]
+    # eta_thresholds['trackMatched_all']    = [0., 2.8, ROOT.kBlack]
+    # eta_thresholds['notTrackMatched_all']    = [0., 2.8, ROOT.kBlack]
 
 
     # nBins, min, max
@@ -221,31 +229,31 @@ if doRate :
         assert(0)
     
     colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray+2]
-    #saveName = 'output_round2_minBias_withTracks_trackMatched'
-    saveName = 'output_round2_minBias_withTracks'
+    saveName = 'output_round2_minBias_withTracks_trackMatchedwithTrackdR'
+    #saveName = 'output_round2_minBiasv1'
     x_info_rebin = [100, 0, 160]
 
     plot_map = OrderedDict()
-    # plot_map['barrel'] = OrderedDict()
-    # plot_map['barrel']['Phase-2'] = ['Tau', 0]
-    # plot_map['barrel']['Stage-2'] = ['Tau', 2]
-    # plot_map['nominal'] = OrderedDict()
-    # plot_map['nominal']['Phase-2'] = ['Tau', 0]
-    # plot_map['nominal']['Stage-2'] = ['Tau', 2]
-    # plot_map['phase2_All'] = OrderedDict()
-    # plot_map['phase2_All']['Phase-2'] = ['Tau', 0]
-    # plot_map['phase2_All']['Phase-2_iso'] = ['IsoTau', 2]
+    plot_map['barrel'] = OrderedDict()
+    plot_map['barrel']['Phase-2'] = ['Tau', 0]
+    plot_map['barrel']['Stage-2'] = ['Tau', 2]
+    plot_map['nominal'] = OrderedDict()
+    plot_map['nominal']['Phase-2'] = ['Tau', 0]
+    plot_map['nominal']['Stage-2'] = ['Tau', 2]
+    plot_map['phase2_All'] = OrderedDict()
+    plot_map['phase2_All']['Phase-2'] = ['Tau', 0]
+    plot_map['phase2_All']['Phase-2_iso'] = ['IsoTau', 2]
 
     #Victor's edit: changed plot_map to plot track matched + unmatched rates on same plot for barrel, runII, and all seperately
-    plot_map['barrel'] = OrderedDict()
-    plot_map['barrel']['Phase-2_matched'] = ['Tau', 0]
-    plot_map['barrel']['Phase-2'] = ['Tau', 2]
-    plot_map['runII'] = OrderedDict()
-    plot_map['runII']['Phase-2_matched'] = ['Tau', 0]
-    plot_map['runII']['Phase-2'] = ['Tau', 2]
-    plot_map['all'] = OrderedDict()
-    plot_map['all']['Phase-2_matched'] = ['Tau', 0]
-    plot_map['all']['Phase-2'] = ['Tau', 2]
+    # plot_map['barrel'] = OrderedDict()
+    # plot_map['barrel']['Phase-2_matched'] = ['Tau', 0]
+    # plot_map['barrel']['Phase-2'] = ['Tau', 2]
+    # plot_map['runII'] = OrderedDict()
+    # plot_map['runII']['Phase-2_matched'] = ['Tau', 0]
+    # plot_map['runII']['Phase-2'] = ['Tau', 2]
+    # plot_map['all'] = OrderedDict()
+    # plot_map['all']['Phase-2_matched'] = ['Tau', 0]
+    # plot_map['all']['Phase-2'] = ['Tau', 2]
 
     for plot, samples in plot_map.iteritems() :
         rates = []
@@ -254,23 +262,23 @@ if doRate :
             for name, thresholds in eta_thresholds.iteritems() :
 
                 print sample, info, name
-                # if plot == 'barrel' and name != 'barrel' : continue
-                if plot == 'barrel' and sample == 'Phase-2_matched' and name != 'trackMatched_barrel' : continue
-                if plot == 'barrel' and sample == 'Phase-2' and name != 'notTrackMatched_barrel' : continue
-                if plot == 'runII' and sample == 'Phase-2_matched' and name!= 'trackMatched_runII' : continue
-                if plot == 'runII' and sample == 'Phase-2' and name!= 'notTrackMatched_runII' : continue
-                if plot == 'all' and sample == 'Phase-2_matched' and name!= 'trackMatched_all' : continue
-                if plot == 'all' and sample == 'Phase-2' and name!= 'notTrackMatched_all' : continue
+                if plot == 'barrel' and name != 'barrel' : continue
+                # if plot == 'barrel' and sample == 'Phase-2_matched' and name != 'trackMatched_barrel' : continue
+                # if plot == 'barrel' and sample == 'Phase-2' and name != 'notTrackMatched_barrel' : continue
+                # if plot == 'runII' and sample == 'Phase-2_matched' and name!= 'trackMatched_runII' : continue
+                # if plot == 'runII' and sample == 'Phase-2' and name!= 'notTrackMatched_runII' : continue
+                # if plot == 'all' and sample == 'Phase-2_matched' and name!= 'trackMatched_all' : continue
+                # if plot == 'all' and sample == 'Phase-2' and name!= 'notTrackMatched_all' : continue
 
 
                 f1 = ROOT.TFile( 'eff_and_rate_roots/'+saveName+'_'+name+'_'+sample.replace('_matched','')+'.root', 'r')
                 print f1
                 rates.append( f1.Get('cumul') )
                 rates[-1].SetDirectory( 0 )
-                # rates[-1].SetTitle( '%s %s, %s' % (sample.replace('_iso',''), info[0], name) )
-                # rates[-1].SetName( '%s %s, %s' % (sample.replace('_iso',''), info[0], name) )
-                rates[-1].SetTitle( '%s %s, %s' % (sample.replace('_matched',' Track matched'), info[0], name) )
-                rates[-1].SetName( '%s %s, %s' % (sample.replace('_matched',' Track matched'), info[0], name) )
+                rates[-1].SetTitle( '%s %s, %s' % (sample.replace('_iso',''), info[0], name) )
+                rates[-1].SetName( '%s %s, %s' % (sample.replace('_iso',''), info[0], name) )
+                # rates[-1].SetTitle( '%s %s, %s' % (sample.replace('_matched',' Track matched'), info[0], name) )
+                # rates[-1].SetName( '%s %s, %s' % (sample.replace('_matched',' Track matched'), info[0], name) )
                 rates[-1].SetLineColor( thresholds[2]+info[1] )
                 rates[-1].SetMarkerColor( thresholds[2]+info[1] )
                 rates[-1].SetLineWidth( 2 )
@@ -328,4 +336,4 @@ if doRate :
         
         
         # c.SaveAs( universalSaveDir + fName +  '_Calib_rate_'+plot+'.png' )
-        c.SaveAs( universalSaveDir + saveName +  '_Calib_rate_'+plot+'.png' )
+        c.SaveAs( universalSaveDir + saveName +  '_Calib_rate_'+plot+'.pdf' )

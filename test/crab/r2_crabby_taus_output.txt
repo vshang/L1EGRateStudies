@@ -1,0 +1,1132 @@
+/afs/hep.wisc.edu/user/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/Round2Files/HiggsTauTau_withTracks.txt
+
+
+Target Files: HiggsTauTau_withTracks
+Loaded Files:
+cms.untracked.vstring(
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_1.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_10.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_11.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_12.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_13.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_14.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_15.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_16.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_17.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_18.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_19.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_2.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_20.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_21.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_22.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_23.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_24.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_25.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_26.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_27.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_28.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_29.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_3.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_30.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_31.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_32.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_33.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_34.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_35.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_36.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_37.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_38.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_4.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_5.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_6.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_7.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_8.root', 
+    'file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_9.root'
+)
+
+
+
+20-Oct-2019 06:22:14 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_1.root
+20-Oct-2019 06:22:17 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_1.root
+Begin processing the 1st record. Run 1, Event 38281, LumiSection 154 on stream 0 at 20-Oct-2019 06:23:22.066 CDT
+Begin processing the 101st record. Run 1, Event 38377, LumiSection 154 on stream 0 at 20-Oct-2019 06:23:26.302 CDT
+Begin processing the 201st record. Run 1, Event 38475, LumiSection 154 on stream 0 at 20-Oct-2019 06:23:31.227 CDT
+Begin processing the 301st record. Run 1, Event 40559, LumiSection 163 on stream 0 at 20-Oct-2019 06:23:34.435 CDT
+Begin processing the 401st record. Run 1, Event 40658, LumiSection 163 on stream 0 at 20-Oct-2019 06:23:37.283 CDT
+Begin processing the 501st record. Run 1, Event 40754, LumiSection 163 on stream 0 at 20-Oct-2019 06:23:39.694 CDT
+Begin processing the 601st record. Run 1, Event 34884, LumiSection 140 on stream 0 at 20-Oct-2019 06:23:43.272 CDT
+Begin processing the 701st record. Run 1, Event 34987, LumiSection 140 on stream 0 at 20-Oct-2019 06:23:46.117 CDT
+Begin processing the 801st record. Run 1, Event 49875, LumiSection 200 on stream 0 at 20-Oct-2019 06:23:49.451 CDT
+Begin processing the 901st record. Run 1, Event 49974, LumiSection 200 on stream 0 at 20-Oct-2019 06:23:52.379 CDT
+Begin processing the 1001st record. Run 1, Event 44108, LumiSection 177 on stream 0 at 20-Oct-2019 06:23:55.801 CDT
+Begin processing the 1101st record. Run 1, Event 44209, LumiSection 177 on stream 0 at 20-Oct-2019 06:23:58.732 CDT
+Begin processing the 1201st record. Run 1, Event 66789, LumiSection 268 on stream 0 at 20-Oct-2019 06:24:01.832 CDT
+Begin processing the 1301st record. Run 1, Event 66883, LumiSection 268 on stream 0 at 20-Oct-2019 06:24:04.821 CDT
+Begin processing the 1401st record. Run 1, Event 66980, LumiSection 268 on stream 0 at 20-Oct-2019 06:24:08.066 CDT
+Begin processing the 1501st record. Run 1, Event 27338, LumiSection 110 on stream 0 at 20-Oct-2019 06:24:11.168 CDT
+Begin processing the 1601st record. Run 1, Event 27443, LumiSection 110 on stream 0 at 20-Oct-2019 06:24:14.488 CDT
+Begin processing the 1701st record. Run 1, Event 52793, LumiSection 212 on stream 0 at 20-Oct-2019 06:24:17.164 CDT
+Begin processing the 1801st record. Run 1, Event 52885, LumiSection 212 on stream 0 at 20-Oct-2019 06:24:19.942 CDT
+Begin processing the 1901st record. Run 1, Event 52990, LumiSection 212 on stream 0 at 20-Oct-2019 06:24:22.990 CDT
+Begin processing the 2001st record. Run 1, Event 79596, LumiSection 319 on stream 0 at 20-Oct-2019 06:24:25.992 CDT
+Begin processing the 2101st record. Run 1, Event 79695, LumiSection 319 on stream 0 at 20-Oct-2019 06:24:28.860 CDT
+Begin processing the 2201st record. Run 1, Event 93037, LumiSection 373 on stream 0 at 20-Oct-2019 06:24:32.110 CDT
+Begin processing the 2301st record. Run 1, Event 93138, LumiSection 373 on stream 0 at 20-Oct-2019 06:24:34.958 CDT
+Begin processing the 2401st record. Run 1, Event 93240, LumiSection 373 on stream 0 at 20-Oct-2019 06:24:37.972 CDT
+20-Oct-2019 06:24:39 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_1.root
+20-Oct-2019 06:24:39 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_10.root
+20-Oct-2019 06:24:39 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_10.root
+Begin processing the 2501st record. Run 1, Event 29849, LumiSection 120 on stream 0 at 20-Oct-2019 06:24:41.873 CDT
+Begin processing the 2601st record. Run 1, Event 29951, LumiSection 120 on stream 0 at 20-Oct-2019 06:24:45.359 CDT
+Begin processing the 2701st record. Run 1, Event 86311, LumiSection 346 on stream 0 at 20-Oct-2019 06:24:49.381 CDT
+Begin processing the 2801st record. Run 1, Event 86404, LumiSection 346 on stream 0 at 20-Oct-2019 06:24:52.003 CDT
+Begin processing the 2901st record. Run 1, Event 86512, LumiSection 346 on stream 0 at 20-Oct-2019 06:24:56.554 CDT
+Begin processing the 3001st record. Run 1, Event 99637, LumiSection 399 on stream 0 at 20-Oct-2019 06:24:59.445 CDT
+Begin processing the 3101st record. Run 1, Event 99730, LumiSection 399 on stream 0 at 20-Oct-2019 06:25:02.548 CDT
+Begin processing the 3201st record. Run 1, Event 806, LumiSection 4 on stream 0 at 20-Oct-2019 06:25:05.426 CDT
+Begin processing the 3301st record. Run 1, Event 906, LumiSection 4 on stream 0 at 20-Oct-2019 06:25:09.087 CDT
+Begin processing the 3401st record. Run 1, Event 1007, LumiSection 4 on stream 0 at 20-Oct-2019 06:25:12.005 CDT
+Begin processing the 3501st record. Run 1, Event 2360, LumiSection 10 on stream 0 at 20-Oct-2019 06:25:15.119 CDT
+Begin processing the 3601st record. Run 1, Event 2462, LumiSection 10 on stream 0 at 20-Oct-2019 06:25:18.428 CDT
+Begin processing the 3701st record. Run 1, Event 64830, LumiSection 260 on stream 0 at 20-Oct-2019 06:25:20.865 CDT
+Begin processing the 3801st record. Run 1, Event 64932, LumiSection 260 on stream 0 at 20-Oct-2019 06:25:24.622 CDT
+Begin processing the 3901st record. Run 1, Event 47792, LumiSection 192 on stream 0 at 20-Oct-2019 06:25:26.992 CDT
+Begin processing the 4001st record. Run 1, Event 47901, LumiSection 192 on stream 0 at 20-Oct-2019 06:25:30.382 CDT
+Begin processing the 4101st record. Run 1, Event 47998, LumiSection 192 on stream 0 at 20-Oct-2019 06:25:33.340 CDT
+Begin processing the 4201st record. Run 1, Event 1090, LumiSection 5 on stream 0 at 20-Oct-2019 06:25:36.229 CDT
+Begin processing the 4301st record. Run 1, Event 1182, LumiSection 5 on stream 0 at 20-Oct-2019 06:25:39.761 CDT
+Begin processing the 4401st record. Run 1, Event 96038, LumiSection 385 on stream 0 at 20-Oct-2019 06:25:43.033 CDT
+Begin processing the 4501st record. Run 1, Event 96137, LumiSection 385 on stream 0 at 20-Oct-2019 06:25:45.919 CDT
+Begin processing the 4601st record. Run 1, Event 96236, LumiSection 385 on stream 0 at 20-Oct-2019 06:25:49.005 CDT
+Begin processing the 4701st record. Run 1, Event 28101, LumiSection 113 on stream 0 at 20-Oct-2019 06:25:51.970 CDT
+Begin processing the 4801st record. Run 1, Event 28197, LumiSection 113 on stream 0 at 20-Oct-2019 06:25:55.051 CDT
+20-Oct-2019 06:25:57 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_10.root
+20-Oct-2019 06:25:57 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_11.root
+20-Oct-2019 06:25:57 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_11.root
+Begin processing the 4901st record. Run 1, Event 83799, LumiSection 336 on stream 0 at 20-Oct-2019 06:25:58.835 CDT
+Begin processing the 5001st record. Run 1, Event 83904, LumiSection 336 on stream 0 at 20-Oct-2019 06:26:02.378 CDT
+Begin processing the 5101st record. Run 1, Event 83997, LumiSection 336 on stream 0 at 20-Oct-2019 06:26:06.173 CDT
+Begin processing the 5201st record. Run 1, Event 69106, LumiSection 277 on stream 0 at 20-Oct-2019 06:26:08.940 CDT
+Begin processing the 5301st record. Run 1, Event 69204, LumiSection 277 on stream 0 at 20-Oct-2019 06:26:12.482 CDT
+Begin processing the 5401st record. Run 1, Event 45021, LumiSection 181 on stream 0 at 20-Oct-2019 06:26:15.886 CDT
+Begin processing the 5501st record. Run 1, Event 45114, LumiSection 181 on stream 0 at 20-Oct-2019 06:26:19.142 CDT
+Begin processing the 5601st record. Run 1, Event 45210, LumiSection 181 on stream 0 at 20-Oct-2019 06:26:22.345 CDT
+Begin processing the 5701st record. Run 1, Event 49352, LumiSection 198 on stream 0 at 20-Oct-2019 06:26:25.647 CDT
+Begin processing the 5801st record. Run 1, Event 49446, LumiSection 198 on stream 0 at 20-Oct-2019 06:26:28.808 CDT
+Begin processing the 5901st record. Run 1, Event 98539, LumiSection 395 on stream 0 at 20-Oct-2019 06:26:32.541 CDT
+Begin processing the 6001st record. Run 1, Event 98641, LumiSection 395 on stream 0 at 20-Oct-2019 06:26:35.204 CDT
+Begin processing the 6101st record. Run 1, Event 98747, LumiSection 395 on stream 0 at 20-Oct-2019 06:26:38.499 CDT
+Begin processing the 6201st record. Run 1, Event 72580, LumiSection 291 on stream 0 at 20-Oct-2019 06:26:41.030 CDT
+Begin processing the 6301st record. Run 1, Event 72683, LumiSection 291 on stream 0 at 20-Oct-2019 06:26:44.009 CDT
+Begin processing the 6401st record. Run 1, Event 22278, LumiSection 90 on stream 0 at 20-Oct-2019 06:26:46.859 CDT
+Begin processing the 6501st record. Run 1, Event 22378, LumiSection 90 on stream 0 at 20-Oct-2019 06:26:50.260 CDT
+Begin processing the 6601st record. Run 1, Event 22481, LumiSection 90 on stream 0 at 20-Oct-2019 06:26:53.476 CDT
+Begin processing the 6701st record. Run 1, Event 51825, LumiSection 208 on stream 0 at 20-Oct-2019 06:26:56.588 CDT
+Begin processing the 6801st record. Run 1, Event 51924, LumiSection 208 on stream 0 at 20-Oct-2019 06:26:59.160 CDT
+Begin processing the 6901st record. Run 1, Event 31265, LumiSection 126 on stream 0 at 20-Oct-2019 06:27:02.399 CDT
+Begin processing the 7001st record. Run 1, Event 31361, LumiSection 126 on stream 0 at 20-Oct-2019 06:27:05.308 CDT
+Begin processing the 7101st record. Run 1, Event 31463, LumiSection 126 on stream 0 at 20-Oct-2019 06:27:08.710 CDT
+Begin processing the 7201st record. Run 1, Event 56555, LumiSection 227 on stream 0 at 20-Oct-2019 06:27:11.320 CDT
+Begin processing the 7301st record. Run 1, Event 56663, LumiSection 227 on stream 0 at 20-Oct-2019 06:27:15.078 CDT
+20-Oct-2019 06:27:17 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_11.root
+20-Oct-2019 06:27:17 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_12.root
+20-Oct-2019 06:27:18 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_12.root
+Begin processing the 7401st record. Run 1, Event 99790, LumiSection 400 on stream 0 at 20-Oct-2019 06:27:18.666 CDT
+Begin processing the 7501st record. Run 1, Event 99892, LumiSection 400 on stream 0 at 20-Oct-2019 06:27:21.845 CDT
+Begin processing the 7601st record. Run 1, Event 99991, LumiSection 400 on stream 0 at 20-Oct-2019 06:27:25.150 CDT
+Begin processing the 7701st record. Run 1, Event 89881, LumiSection 360 on stream 0 at 20-Oct-2019 06:27:28.078 CDT
+Begin processing the 7801st record. Run 1, Event 89973, LumiSection 360 on stream 0 at 20-Oct-2019 06:27:30.930 CDT
+Begin processing the 7901st record. Run 1, Event 68359, LumiSection 274 on stream 0 at 20-Oct-2019 06:27:34.070 CDT
+Begin processing the 8001st record. Run 1, Event 68453, LumiSection 274 on stream 0 at 20-Oct-2019 06:27:37.536 CDT
+Begin processing the 8101st record. Run 1, Event 92546, LumiSection 371 on stream 0 at 20-Oct-2019 06:27:40.199 CDT
+Begin processing the 8201st record. Run 1, Event 92646, LumiSection 371 on stream 0 at 20-Oct-2019 06:27:43.525 CDT
+Begin processing the 8301st record. Run 1, Event 92734, LumiSection 371 on stream 0 at 20-Oct-2019 06:27:46.157 CDT
+Begin processing the 8401st record. Run 1, Event 55078, LumiSection 221 on stream 0 at 20-Oct-2019 06:27:49.399 CDT
+Begin processing the 8501st record. Run 1, Event 55170, LumiSection 221 on stream 0 at 20-Oct-2019 06:27:52.059 CDT
+Begin processing the 8601st record. Run 1, Event 26788, LumiSection 108 on stream 0 at 20-Oct-2019 06:27:55.721 CDT
+Begin processing the 8701st record. Run 1, Event 26890, LumiSection 108 on stream 0 at 20-Oct-2019 06:27:58.660 CDT
+Begin processing the 8801st record. Run 1, Event 26984, LumiSection 108 on stream 0 at 20-Oct-2019 06:28:01.626 CDT
+Begin processing the 8901st record. Run 1, Event 37846, LumiSection 152 on stream 0 at 20-Oct-2019 06:28:05.323 CDT
+Begin processing the 9001st record. Run 1, Event 37944, LumiSection 152 on stream 0 at 20-Oct-2019 06:28:08.875 CDT
+Begin processing the 9101st record. Run 1, Event 87035, LumiSection 349 on stream 0 at 20-Oct-2019 06:28:11.744 CDT
+Begin processing the 9201st record. Run 1, Event 87136, LumiSection 349 on stream 0 at 20-Oct-2019 06:28:15.305 CDT
+Begin processing the 9301st record. Run 1, Event 87239, LumiSection 349 on stream 0 at 20-Oct-2019 06:28:18.763 CDT
+Begin processing the 9401st record. Run 1, Event 20572, LumiSection 83 on stream 0 at 20-Oct-2019 06:28:22.055 CDT
+Begin processing the 9501st record. Run 1, Event 20672, LumiSection 83 on stream 0 at 20-Oct-2019 06:28:24.993 CDT
+Begin processing the 9601st record. Run 1, Event 18035, LumiSection 73 on stream 0 at 20-Oct-2019 06:28:28.275 CDT
+Begin processing the 9701st record. Run 1, Event 18133, LumiSection 73 on stream 0 at 20-Oct-2019 06:28:31.472 CDT
+Begin processing the 9801st record. Run 1, Event 18241, LumiSection 73 on stream 0 at 20-Oct-2019 06:28:34.741 CDT
+20-Oct-2019 06:28:35 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_12.root
+20-Oct-2019 06:28:35 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_13.root
+20-Oct-2019 06:28:35 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_13.root
+Begin processing the 9901st record. Run 1, Event 64349, LumiSection 258 on stream 0 at 20-Oct-2019 06:28:38.636 CDT
+Begin processing the 10001st record. Run 1, Event 64446, LumiSection 258 on stream 0 at 20-Oct-2019 06:28:41.675 CDT
+Begin processing the 10101st record. Run 1, Event 74545, LumiSection 299 on stream 0 at 20-Oct-2019 06:28:44.818 CDT
+Begin processing the 10201st record. Run 1, Event 74647, LumiSection 299 on stream 0 at 20-Oct-2019 06:28:47.456 CDT
+Begin processing the 10301st record. Run 1, Event 74738, LumiSection 299 on stream 0 at 20-Oct-2019 06:28:50.702 CDT
+Begin processing the 10401st record. Run 1, Event 36823, LumiSection 148 on stream 0 at 20-Oct-2019 06:28:53.431 CDT
+Begin processing the 10501st record. Run 1, Event 36922, LumiSection 148 on stream 0 at 20-Oct-2019 06:28:56.518 CDT
+Begin processing the 10601st record. Run 1, Event 14794, LumiSection 60 on stream 0 at 20-Oct-2019 06:28:59.660 CDT
+Begin processing the 10701st record. Run 1, Event 14894, LumiSection 60 on stream 0 at 20-Oct-2019 06:29:03.042 CDT
+Begin processing the 10801st record. Run 1, Event 14992, LumiSection 60 on stream 0 at 20-Oct-2019 06:29:06.117 CDT
+Begin processing the 10901st record. Run 1, Event 47616, LumiSection 191 on stream 0 at 20-Oct-2019 06:29:08.682 CDT
+Begin processing the 11001st record. Run 1, Event 47714, LumiSection 191 on stream 0 at 20-Oct-2019 06:29:11.930 CDT
+Begin processing the 11101st record. Run 1, Event 73574, LumiSection 295 on stream 0 at 20-Oct-2019 06:29:14.592 CDT
+Begin processing the 11201st record. Run 1, Event 73667, LumiSection 295 on stream 0 at 20-Oct-2019 06:29:18.258 CDT
+Begin processing the 11301st record. Run 1, Event 73773, LumiSection 295 on stream 0 at 20-Oct-2019 06:29:20.855 CDT
+Begin processing the 11401st record. Run 1, Event 38865, LumiSection 156 on stream 0 at 20-Oct-2019 06:29:24.109 CDT
+Begin processing the 11501st record. Run 1, Event 38962, LumiSection 156 on stream 0 at 20-Oct-2019 06:29:27.558 CDT
+Begin processing the 11601st record. Run 1, Event 77303, LumiSection 310 on stream 0 at 20-Oct-2019 06:29:30.934 CDT
+Begin processing the 11701st record. Run 1, Event 77409, LumiSection 310 on stream 0 at 20-Oct-2019 06:29:33.738 CDT
+Begin processing the 11801st record. Run 1, Event 77486, LumiSection 310 on stream 0 at 20-Oct-2019 06:29:37.408 CDT
+Begin processing the 11901st record. Run 1, Event 29371, LumiSection 118 on stream 0 at 20-Oct-2019 06:29:40.372 CDT
+Begin processing the 12001st record. Run 1, Event 29472, LumiSection 118 on stream 0 at 20-Oct-2019 06:29:43.555 CDT
+Begin processing the 12101st record. Run 1, Event 82046, LumiSection 329 on stream 0 at 20-Oct-2019 06:29:46.563 CDT
+Begin processing the 12201st record. Run 1, Event 82147, LumiSection 329 on stream 0 at 20-Oct-2019 06:29:49.791 CDT
+Begin processing the 12301st record. Run 1, Event 82251, LumiSection 329 on stream 0 at 20-Oct-2019 06:29:53.137 CDT
+20-Oct-2019 06:29:53 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_13.root
+20-Oct-2019 06:29:53 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_14.root
+20-Oct-2019 06:29:53 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_14.root
+Begin processing the 12401st record. Run 1, Event 24871, LumiSection 100 on stream 0 at 20-Oct-2019 06:29:57.063 CDT
+Begin processing the 12501st record. Run 1, Event 24971, LumiSection 100 on stream 0 at 20-Oct-2019 06:30:00.158 CDT
+Begin processing the 12601st record. Run 1, Event 15069, LumiSection 61 on stream 0 at 20-Oct-2019 06:30:03.547 CDT
+Begin processing the 12701st record. Run 1, Event 15172, LumiSection 61 on stream 0 at 20-Oct-2019 06:30:07.136 CDT
+Begin processing the 12801st record. Run 1, Event 58795, LumiSection 236 on stream 0 at 20-Oct-2019 06:30:09.797 CDT
+Begin processing the 12901st record. Run 1, Event 58897, LumiSection 236 on stream 0 at 20-Oct-2019 06:30:13.000 CDT
+Begin processing the 13001st record. Run 1, Event 58994, LumiSection 236 on stream 0 at 20-Oct-2019 06:30:16.346 CDT
+Begin processing the 13101st record. Run 1, Event 60574, LumiSection 243 on stream 0 at 20-Oct-2019 06:30:19.895 CDT
+Begin processing the 13201st record. Run 1, Event 60666, LumiSection 243 on stream 0 at 20-Oct-2019 06:30:23.174 CDT
+Begin processing the 13301st record. Run 1, Event 35016, LumiSection 141 on stream 0 at 20-Oct-2019 06:30:26.332 CDT
+Begin processing the 13401st record. Run 1, Event 35114, LumiSection 141 on stream 0 at 20-Oct-2019 06:30:29.541 CDT
+Begin processing the 13501st record. Run 1, Event 35212, LumiSection 141 on stream 0 at 20-Oct-2019 06:30:33.483 CDT
+Begin processing the 13601st record. Run 1, Event 57334, LumiSection 230 on stream 0 at 20-Oct-2019 06:30:35.857 CDT
+Begin processing the 13701st record. Run 1, Event 57433, LumiSection 230 on stream 0 at 20-Oct-2019 06:30:38.791 CDT
+Begin processing the 13801st record. Run 1, Event 66015, LumiSection 265 on stream 0 at 20-Oct-2019 06:30:41.943 CDT
+Begin processing the 13901st record. Run 1, Event 66109, LumiSection 265 on stream 0 at 20-Oct-2019 06:30:44.949 CDT
+Begin processing the 14001st record. Run 1, Event 66218, LumiSection 265 on stream 0 at 20-Oct-2019 06:30:48.066 CDT
+Begin processing the 14101st record. Run 1, Event 16569, LumiSection 67 on stream 0 at 20-Oct-2019 06:30:51.408 CDT
+Begin processing the 14201st record. Run 1, Event 16666, LumiSection 67 on stream 0 at 20-Oct-2019 06:30:54.289 CDT
+Begin processing the 14301st record. Run 1, Event 31513, LumiSection 127 on stream 0 at 20-Oct-2019 06:30:57.115 CDT
+Begin processing the 14401st record. Run 1, Event 31609, LumiSection 127 on stream 0 at 20-Oct-2019 06:31:01.149 CDT
+Begin processing the 14501st record. Run 1, Event 31717, LumiSection 127 on stream 0 at 20-Oct-2019 06:31:03.919 CDT
+Begin processing the 14601st record. Run 1, Event 76562, LumiSection 307 on stream 0 at 20-Oct-2019 06:31:07.148 CDT
+Begin processing the 14701st record. Run 1, Event 76665, LumiSection 307 on stream 0 at 20-Oct-2019 06:31:09.998 CDT
+20-Oct-2019 06:31:12 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_14.root
+20-Oct-2019 06:31:12 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_15.root
+20-Oct-2019 06:31:12 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_15.root
+Begin processing the 14801st record. Run 1, Event 35757, LumiSection 144 on stream 0 at 20-Oct-2019 06:31:13.334 CDT
+Begin processing the 14901st record. Run 1, Event 35858, LumiSection 144 on stream 0 at 20-Oct-2019 06:31:16.652 CDT
+Begin processing the 15001st record. Run 1, Event 35961, LumiSection 144 on stream 0 at 20-Oct-2019 06:31:20.020 CDT
+Begin processing the 15101st record. Run 1, Event 80543, LumiSection 323 on stream 0 at 20-Oct-2019 06:31:23.893 CDT
+Begin processing the 15201st record. Run 1, Event 80651, LumiSection 323 on stream 0 at 20-Oct-2019 06:31:27.281 CDT
+Begin processing the 15301st record. Run 1, Event 80754, LumiSection 323 on stream 0 at 20-Oct-2019 06:31:30.137 CDT
+Begin processing the 15401st record. Run 1, Event 81611, LumiSection 327 on stream 0 at 20-Oct-2019 06:31:33.219 CDT
+Begin processing the 15501st record. Run 1, Event 81705, LumiSection 327 on stream 0 at 20-Oct-2019 06:31:36.018 CDT
+Begin processing the 15601st record. Run 1, Event 39078, LumiSection 157 on stream 0 at 20-Oct-2019 06:31:39.151 CDT
+Begin processing the 15701st record. Run 1, Event 39179, LumiSection 157 on stream 0 at 20-Oct-2019 06:31:41.875 CDT
+Begin processing the 15801st record. Run 1, Event 39279, LumiSection 157 on stream 0 at 20-Oct-2019 06:31:45.073 CDT
+Begin processing the 15901st record. Run 1, Event 57108, LumiSection 229 on stream 0 at 20-Oct-2019 06:31:48.089 CDT
+Begin processing the 16001st record. Run 1, Event 57207, LumiSection 229 on stream 0 at 20-Oct-2019 06:31:51.258 CDT
+Begin processing the 16101st record. Run 1, Event 43823, LumiSection 176 on stream 0 at 20-Oct-2019 06:31:54.029 CDT
+Begin processing the 16201st record. Run 1, Event 43920, LumiSection 176 on stream 0 at 20-Oct-2019 06:31:57.453 CDT
+Begin processing the 16301st record. Run 1, Event 44026, LumiSection 176 on stream 0 at 20-Oct-2019 06:32:00.617 CDT
+Begin processing the 16401st record. Run 1, Event 91094, LumiSection 365 on stream 0 at 20-Oct-2019 06:32:03.971 CDT
+Begin processing the 16501st record. Run 1, Event 91195, LumiSection 365 on stream 0 at 20-Oct-2019 06:32:06.824 CDT
+Begin processing the 16601st record. Run 1, Event 27560, LumiSection 111 on stream 0 at 20-Oct-2019 06:32:10.263 CDT
+Begin processing the 16701st record. Run 1, Event 27654, LumiSection 111 on stream 0 at 20-Oct-2019 06:32:13.533 CDT
+Begin processing the 16801st record. Run 1, Event 27756, LumiSection 111 on stream 0 at 20-Oct-2019 06:32:16.944 CDT
+Begin processing the 16901st record. Run 1, Event 82858, LumiSection 332 on stream 0 at 20-Oct-2019 06:32:19.852 CDT
+Begin processing the 17001st record. Run 1, Event 82961, LumiSection 332 on stream 0 at 20-Oct-2019 06:32:22.644 CDT
+Begin processing the 17101st record. Run 1, Event 86796, LumiSection 348 on stream 0 at 20-Oct-2019 06:32:26.021 CDT
+Begin processing the 17201st record. Run 1, Event 86893, LumiSection 348 on stream 0 at 20-Oct-2019 06:32:29.746 CDT
+Begin processing the 17301st record. Run 1, Event 86996, LumiSection 348 on stream 0 at 20-Oct-2019 06:32:32.970 CDT
+20-Oct-2019 06:32:33 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_15.root
+20-Oct-2019 06:32:33 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_16.root
+20-Oct-2019 06:32:33 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_16.root
+Begin processing the 17401st record. Run 1, Event 46342, LumiSection 186 on stream 0 at 20-Oct-2019 06:32:37.315 CDT
+Begin processing the 17501st record. Run 1, Event 46444, LumiSection 186 on stream 0 at 20-Oct-2019 06:32:40.782 CDT
+Begin processing the 17601st record. Run 1, Event 34568, LumiSection 139 on stream 0 at 20-Oct-2019 06:32:44.117 CDT
+Begin processing the 17701st record. Run 1, Event 34670, LumiSection 139 on stream 0 at 20-Oct-2019 06:32:47.320 CDT
+Begin processing the 17801st record. Run 1, Event 34769, LumiSection 139 on stream 0 at 20-Oct-2019 06:32:50.449 CDT
+Begin processing the 17901st record. Run 1, Event 75, LumiSection 1 on stream 0 at 20-Oct-2019 06:32:53.932 CDT
+Begin processing the 18001st record. Run 1, Event 178, LumiSection 1 on stream 0 at 20-Oct-2019 06:32:56.489 CDT
+Begin processing the 18101st record. Run 1, Event 74061, LumiSection 297 on stream 0 at 20-Oct-2019 06:33:00.627 CDT
+Begin processing the 18201st record. Run 1, Event 74158, LumiSection 297 on stream 0 at 20-Oct-2019 06:33:03.570 CDT
+Begin processing the 18301st record. Run 1, Event 74260, LumiSection 297 on stream 0 at 20-Oct-2019 06:33:07.075 CDT
+Begin processing the 18401st record. Run 1, Event 18855, LumiSection 76 on stream 0 at 20-Oct-2019 06:33:10.372 CDT
+Begin processing the 18501st record. Run 1, Event 18944, LumiSection 76 on stream 0 at 20-Oct-2019 06:33:13.602 CDT
+Begin processing the 18601st record. Run 1, Event 32289, LumiSection 130 on stream 0 at 20-Oct-2019 06:33:16.822 CDT
+Begin processing the 18701st record. Run 1, Event 32393, LumiSection 130 on stream 0 at 20-Oct-2019 06:33:20.527 CDT
+Begin processing the 18801st record. Run 1, Event 32492, LumiSection 130 on stream 0 at 20-Oct-2019 06:33:23.385 CDT
+Begin processing the 18901st record. Run 1, Event 50065, LumiSection 201 on stream 0 at 20-Oct-2019 06:33:26.795 CDT
+Begin processing the 19001st record. Run 1, Event 50171, LumiSection 201 on stream 0 at 20-Oct-2019 06:33:29.840 CDT
+Begin processing the 19101st record. Run 1, Event 95018, LumiSection 381 on stream 0 at 20-Oct-2019 06:33:33.198 CDT
+Begin processing the 19201st record. Run 1, Event 95118, LumiSection 381 on stream 0 at 20-Oct-2019 06:33:35.689 CDT
+Begin processing the 19301st record. Run 1, Event 95214, LumiSection 381 on stream 0 at 20-Oct-2019 06:33:38.818 CDT
+Begin processing the 19401st record. Run 1, Event 2839, LumiSection 12 on stream 0 at 20-Oct-2019 06:33:41.538 CDT
+Begin processing the 19501st record. Run 1, Event 2941, LumiSection 12 on stream 0 at 20-Oct-2019 06:33:44.532 CDT
+Begin processing the 19601st record. Run 1, Event 71019, LumiSection 285 on stream 0 at 20-Oct-2019 06:33:47.451 CDT
+Begin processing the 19701st record. Run 1, Event 71118, LumiSection 285 on stream 0 at 20-Oct-2019 06:33:50.616 CDT
+Begin processing the 19801st record. Run 1, Event 71222, LumiSection 285 on stream 0 at 20-Oct-2019 06:33:53.527 CDT
+20-Oct-2019 06:33:54 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_16.root
+20-Oct-2019 06:33:54 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_17.root
+20-Oct-2019 06:33:55 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_17.root
+Begin processing the 19901st record. Run 1, Event 76070, LumiSection 305 on stream 0 at 20-Oct-2019 06:33:57.794 CDT
+Begin processing the 20001st record. Run 1, Event 76171, LumiSection 305 on stream 0 at 20-Oct-2019 06:34:00.720 CDT
+Begin processing the 20101st record. Run 1, Event 11525, LumiSection 47 on stream 0 at 20-Oct-2019 06:34:04.111 CDT
+Begin processing the 20201st record. Run 1, Event 11626, LumiSection 47 on stream 0 at 20-Oct-2019 06:34:07.160 CDT
+Begin processing the 20301st record. Run 1, Event 11721, LumiSection 47 on stream 0 at 20-Oct-2019 06:34:11.835 CDT
+Begin processing the 20401st record. Run 1, Event 97579, LumiSection 391 on stream 0 at 20-Oct-2019 06:34:15.327 CDT
+Begin processing the 20501st record. Run 1, Event 97675, LumiSection 391 on stream 0 at 20-Oct-2019 06:34:18.952 CDT
+Begin processing the 20601st record. Run 1, Event 19538, LumiSection 79 on stream 0 at 20-Oct-2019 06:34:22.221 CDT
+Begin processing the 20701st record. Run 1, Event 19641, LumiSection 79 on stream 0 at 20-Oct-2019 06:34:25.617 CDT
+Begin processing the 20801st record. Run 1, Event 19745, LumiSection 79 on stream 0 at 20-Oct-2019 06:34:29.256 CDT
+Begin processing the 20901st record. Run 1, Event 81313, LumiSection 326 on stream 0 at 20-Oct-2019 06:34:32.589 CDT
+Begin processing the 21001st record. Run 1, Event 81421, LumiSection 326 on stream 0 at 20-Oct-2019 06:34:35.823 CDT
+Begin processing the 21101st record. Run 1, Event 52522, LumiSection 211 on stream 0 at 20-Oct-2019 06:34:38.150 CDT
+Begin processing the 21201st record. Run 1, Event 52619, LumiSection 211 on stream 0 at 20-Oct-2019 06:34:41.113 CDT
+Begin processing the 21301st record. Run 1, Event 52719, LumiSection 211 on stream 0 at 20-Oct-2019 06:34:43.903 CDT
+Begin processing the 21401st record. Run 1, Event 63320, LumiSection 254 on stream 0 at 20-Oct-2019 06:34:47.019 CDT
+Begin processing the 21501st record. Run 1, Event 63429, LumiSection 254 on stream 0 at 20-Oct-2019 06:34:49.912 CDT
+Begin processing the 21601st record. Run 1, Event 63519, LumiSection 254 on stream 0 at 20-Oct-2019 06:34:53.203 CDT
+Begin processing the 21701st record. Run 1, Event 67872, LumiSection 272 on stream 0 at 20-Oct-2019 06:34:56.173 CDT
+Begin processing the 21801st record. Run 1, Event 67973, LumiSection 272 on stream 0 at 20-Oct-2019 06:34:59.639 CDT
+Begin processing the 21901st record. Run 1, Event 3068, LumiSection 13 on stream 0 at 20-Oct-2019 06:35:02.524 CDT
+Begin processing the 22001st record. Run 1, Event 3172, LumiSection 13 on stream 0 at 20-Oct-2019 06:35:05.615 CDT
+Begin processing the 22101st record. Run 1, Event 3268, LumiSection 13 on stream 0 at 20-Oct-2019 06:35:08.638 CDT
+Begin processing the 22201st record. Run 1, Event 71608, LumiSection 287 on stream 0 at 20-Oct-2019 06:35:11.733 CDT
+Begin processing the 22301st record. Run 1, Event 71709, LumiSection 287 on stream 0 at 20-Oct-2019 06:35:14.899 CDT
+20-Oct-2019 06:35:16 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_17.root
+20-Oct-2019 06:35:16 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_18.root
+20-Oct-2019 06:35:16 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_18.root
+Begin processing the 22401st record. Run 1, Event 42562, LumiSection 171 on stream 0 at 20-Oct-2019 06:35:18.879 CDT
+Begin processing the 22501st record. Run 1, Event 42657, LumiSection 171 on stream 0 at 20-Oct-2019 06:35:22.603 CDT
+Begin processing the 22601st record. Run 1, Event 42763, LumiSection 171 on stream 0 at 20-Oct-2019 06:35:26.253 CDT
+Begin processing the 22701st record. Run 1, Event 34123, LumiSection 137 on stream 0 at 20-Oct-2019 06:35:29.287 CDT
+Begin processing the 22801st record. Run 1, Event 34223, LumiSection 137 on stream 0 at 20-Oct-2019 06:35:32.635 CDT
+Begin processing the 22901st record. Run 1, Event 19827, LumiSection 80 on stream 0 at 20-Oct-2019 06:35:35.609 CDT
+Begin processing the 23001st record. Run 1, Event 19924, LumiSection 80 on stream 0 at 20-Oct-2019 06:35:38.396 CDT
+Begin processing the 23101st record. Run 1, Event 20279, LumiSection 82 on stream 0 at 20-Oct-2019 06:35:41.644 CDT
+Begin processing the 23201st record. Run 1, Event 20376, LumiSection 82 on stream 0 at 20-Oct-2019 06:35:45.122 CDT
+Begin processing the 23301st record. Run 1, Event 20480, LumiSection 82 on stream 0 at 20-Oct-2019 06:35:48.298 CDT
+Begin processing the 23401st record. Run 1, Event 10321, LumiSection 42 on stream 0 at 20-Oct-2019 06:35:50.954 CDT
+Begin processing the 23501st record. Run 1, Event 10428, LumiSection 42 on stream 0 at 20-Oct-2019 06:35:54.012 CDT
+Begin processing the 23601st record. Run 1, Event 20022, LumiSection 81 on stream 0 at 20-Oct-2019 06:35:56.659 CDT
+Begin processing the 23701st record. Run 1, Event 20119, LumiSection 81 on stream 0 at 20-Oct-2019 06:36:00.280 CDT
+Begin processing the 23801st record. Run 1, Event 20220, LumiSection 81 on stream 0 at 20-Oct-2019 06:36:03.246 CDT
+Begin processing the 23901st record. Run 1, Event 48349, LumiSection 194 on stream 0 at 20-Oct-2019 06:36:06.043 CDT
+Begin processing the 24001st record. Run 1, Event 48449, LumiSection 194 on stream 0 at 20-Oct-2019 06:36:09.294 CDT
+Begin processing the 24101st record. Run 1, Event 89549, LumiSection 359 on stream 0 at 20-Oct-2019 06:36:12.496 CDT
+Begin processing the 24201st record. Run 1, Event 89651, LumiSection 359 on stream 0 at 20-Oct-2019 06:36:15.712 CDT
+Begin processing the 24301st record. Run 1, Event 89755, LumiSection 359 on stream 0 at 20-Oct-2019 06:36:19.583 CDT
+Begin processing the 24401st record. Run 1, Event 75821, LumiSection 304 on stream 0 at 20-Oct-2019 06:36:22.573 CDT
+Begin processing the 24501st record. Run 1, Event 75911, LumiSection 304 on stream 0 at 20-Oct-2019 06:36:25.647 CDT
+Begin processing the 24601st record. Run 1, Event 19293, LumiSection 78 on stream 0 at 20-Oct-2019 06:36:28.566 CDT
+Begin processing the 24701st record. Run 1, Event 19398, LumiSection 78 on stream 0 at 20-Oct-2019 06:36:31.729 CDT
+Begin processing the 24801st record. Run 1, Event 19491, LumiSection 78 on stream 0 at 20-Oct-2019 06:36:34.648 CDT
+20-Oct-2019 06:36:35 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_18.root
+20-Oct-2019 06:36:35 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_19.root
+20-Oct-2019 06:36:35 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_19.root
+Begin processing the 24901st record. Run 1, Event 40318, LumiSection 162 on stream 0 at 20-Oct-2019 06:36:38.846 CDT
+Begin processing the 25001st record. Run 1, Event 40416, LumiSection 162 on stream 0 at 20-Oct-2019 06:36:42.297 CDT
+Begin processing the 25101st record. Run 1, Event 76783, LumiSection 308 on stream 0 at 20-Oct-2019 06:36:44.755 CDT
+Begin processing the 25201st record. Run 1, Event 76880, LumiSection 308 on stream 0 at 20-Oct-2019 06:36:47.591 CDT
+Begin processing the 25301st record. Run 1, Event 76975, LumiSection 308 on stream 0 at 20-Oct-2019 06:36:50.769 CDT
+Begin processing the 25401st record. Run 1, Event 94091, LumiSection 377 on stream 0 at 20-Oct-2019 06:36:53.629 CDT
+Begin processing the 25501st record. Run 1, Event 94189, LumiSection 377 on stream 0 at 20-Oct-2019 06:36:56.812 CDT
+Begin processing the 25601st record. Run 1, Event 83537, LumiSection 335 on stream 0 at 20-Oct-2019 06:36:59.882 CDT
+Begin processing the 25701st record. Run 1, Event 83635, LumiSection 335 on stream 0 at 20-Oct-2019 06:37:02.794 CDT
+Begin processing the 25801st record. Run 1, Event 83730, LumiSection 335 on stream 0 at 20-Oct-2019 06:37:05.958 CDT
+Begin processing the 25901st record. Run 1, Event 88082, LumiSection 353 on stream 0 at 20-Oct-2019 06:37:08.841 CDT
+Begin processing the 26001st record. Run 1, Event 88179, LumiSection 353 on stream 0 at 20-Oct-2019 06:37:12.146 CDT
+Begin processing the 26101st record. Run 1, Event 48535, LumiSection 195 on stream 0 at 20-Oct-2019 06:37:14.976 CDT
+Begin processing the 26201st record. Run 1, Event 48629, LumiSection 195 on stream 0 at 20-Oct-2019 06:37:18.273 CDT
+Begin processing the 26301st record. Run 1, Event 48726, LumiSection 195 on stream 0 at 20-Oct-2019 06:37:21.569 CDT
+Begin processing the 26401st record. Run 1, Event 13833, LumiSection 56 on stream 0 at 20-Oct-2019 06:37:24.888 CDT
+Begin processing the 26501st record. Run 1, Event 13925, LumiSection 56 on stream 0 at 20-Oct-2019 06:37:27.883 CDT
+Begin processing the 26601st record. Run 1, Event 14026, LumiSection 56 on stream 0 at 20-Oct-2019 06:37:30.942 CDT
+Begin processing the 26701st record. Run 1, Event 50350, LumiSection 202 on stream 0 at 20-Oct-2019 06:37:34.018 CDT
+Begin processing the 26801st record. Run 1, Event 50448, LumiSection 202 on stream 0 at 20-Oct-2019 06:37:37.769 CDT
+Begin processing the 26901st record. Run 1, Event 67048, LumiSection 269 on stream 0 at 20-Oct-2019 06:37:40.459 CDT
+Begin processing the 27001st record. Run 1, Event 67165, LumiSection 269 on stream 0 at 20-Oct-2019 06:37:43.911 CDT
+Begin processing the 27101st record. Run 1, Event 67260, LumiSection 269 on stream 0 at 20-Oct-2019 06:37:46.755 CDT
+Begin processing the 27201st record. Run 1, Event 62359, LumiSection 250 on stream 0 at 20-Oct-2019 06:37:49.737 CDT
+Begin processing the 27301st record. Run 1, Event 62460, LumiSection 250 on stream 0 at 20-Oct-2019 06:37:52.270 CDT
+20-Oct-2019 06:37:53 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_19.root
+20-Oct-2019 06:37:53 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_2.root
+20-Oct-2019 06:37:54 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_2.root
+Begin processing the 27401st record. Run 1, Event 85550, LumiSection 343 on stream 0 at 20-Oct-2019 06:37:56.684 CDT
+Begin processing the 27501st record. Run 1, Event 85644, LumiSection 343 on stream 0 at 20-Oct-2019 06:38:00.153 CDT
+Begin processing the 27601st record. Run 1, Event 85743, LumiSection 343 on stream 0 at 20-Oct-2019 06:38:03.745 CDT
+Begin processing the 27701st record. Run 1, Event 53116, LumiSection 213 on stream 0 at 20-Oct-2019 06:38:07.057 CDT
+Begin processing the 27801st record. Run 1, Event 53210, LumiSection 213 on stream 0 at 20-Oct-2019 06:38:10.459 CDT
+Begin processing the 27901st record. Run 1, Event 14314, LumiSection 58 on stream 0 at 20-Oct-2019 06:38:13.213 CDT
+Begin processing the 28001st record. Run 1, Event 14419, LumiSection 58 on stream 0 at 20-Oct-2019 06:38:16.845 CDT
+Begin processing the 28101st record. Run 1, Event 14520, LumiSection 58 on stream 0 at 20-Oct-2019 06:38:19.502 CDT
+Begin processing the 28201st record. Run 1, Event 96597, LumiSection 387 on stream 0 at 20-Oct-2019 06:38:22.510 CDT
+Begin processing the 28301st record. Run 1, Event 96694, LumiSection 387 on stream 0 at 20-Oct-2019 06:38:25.513 CDT
+Begin processing the 28401st record. Run 1, Event 31045, LumiSection 125 on stream 0 at 20-Oct-2019 06:38:28.470 CDT
+Begin processing the 28501st record. Run 1, Event 31138, LumiSection 125 on stream 0 at 20-Oct-2019 06:38:31.574 CDT
+Begin processing the 28601st record. Run 1, Event 31244, LumiSection 125 on stream 0 at 20-Oct-2019 06:38:35.179 CDT
+Begin processing the 28701st record. Run 1, Event 13357, LumiSection 54 on stream 0 at 20-Oct-2019 06:38:38.150 CDT
+Begin processing the 28801st record. Run 1, Event 13458, LumiSection 54 on stream 0 at 20-Oct-2019 06:38:41.497 CDT
+Begin processing the 28901st record. Run 1, Event 60788, LumiSection 244 on stream 0 at 20-Oct-2019 06:38:44.530 CDT
+Begin processing the 29001st record. Run 1, Event 60884, LumiSection 244 on stream 0 at 20-Oct-2019 06:38:48.341 CDT
+Begin processing the 29101st record. Run 1, Event 60978, LumiSection 244 on stream 0 at 20-Oct-2019 06:38:51.500 CDT
+Begin processing the 29201st record. Run 1, Event 66341, LumiSection 266 on stream 0 at 20-Oct-2019 06:38:54.627 CDT
+Begin processing the 29301st record. Run 1, Event 66435, LumiSection 266 on stream 0 at 20-Oct-2019 06:38:57.522 CDT
+Begin processing the 29401st record. Run 1, Event 87295, LumiSection 350 on stream 0 at 20-Oct-2019 06:39:00.301 CDT
+Begin processing the 29501st record. Run 1, Event 87392, LumiSection 350 on stream 0 at 20-Oct-2019 06:39:03.782 CDT
+Begin processing the 29601st record. Run 1, Event 87498, LumiSection 350 on stream 0 at 20-Oct-2019 06:39:06.597 CDT
+Begin processing the 29701st record. Run 1, Event 56083, LumiSection 225 on stream 0 at 20-Oct-2019 06:39:10.596 CDT
+Begin processing the 29801st record. Run 1, Event 56177, LumiSection 225 on stream 0 at 20-Oct-2019 06:39:13.235 CDT
+20-Oct-2019 06:39:15 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_2.root
+20-Oct-2019 06:39:15 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_20.root
+20-Oct-2019 06:39:16 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_20.root
+Begin processing the 29901st record. Run 1, Event 30522, LumiSection 123 on stream 0 at 20-Oct-2019 06:39:19.368 CDT
+Begin processing the 30001st record. Run 1, Event 30626, LumiSection 123 on stream 0 at 20-Oct-2019 06:39:23.066 CDT
+Begin processing the 30101st record. Run 1, Event 30721, LumiSection 123 on stream 0 at 20-Oct-2019 06:39:26.402 CDT
+Begin processing the 30201st record. Run 1, Event 40069, LumiSection 161 on stream 0 at 20-Oct-2019 06:39:29.446 CDT
+Begin processing the 30301st record. Run 1, Event 40163, LumiSection 161 on stream 0 at 20-Oct-2019 06:39:32.963 CDT
+Begin processing the 30401st record. Run 1, Event 38546, LumiSection 155 on stream 0 at 20-Oct-2019 06:39:36.478 CDT
+Begin processing the 30501st record. Run 1, Event 38649, LumiSection 155 on stream 0 at 20-Oct-2019 06:39:39.548 CDT
+Begin processing the 30601st record. Run 1, Event 38747, LumiSection 155 on stream 0 at 20-Oct-2019 06:39:42.102 CDT
+Begin processing the 30701st record. Run 1, Event 52088, LumiSection 209 on stream 0 at 20-Oct-2019 06:39:45.003 CDT
+Begin processing the 30801st record. Run 1, Event 52189, LumiSection 209 on stream 0 at 20-Oct-2019 06:39:48.294 CDT
+Begin processing the 30901st record. Run 1, Event 75008, LumiSection 301 on stream 0 at 20-Oct-2019 06:39:51.099 CDT
+Begin processing the 31001st record. Run 1, Event 75112, LumiSection 301 on stream 0 at 20-Oct-2019 06:39:53.873 CDT
+Begin processing the 31101st record. Run 1, Event 75211, LumiSection 301 on stream 0 at 20-Oct-2019 06:39:59.087 CDT
+Begin processing the 31201st record. Run 1, Event 79351, LumiSection 318 on stream 0 at 20-Oct-2019 06:40:02.386 CDT
+Begin processing the 31301st record. Run 1, Event 79447, LumiSection 318 on stream 0 at 20-Oct-2019 06:40:10.289 CDT
+Begin processing the 31401st record. Run 1, Event 63043, LumiSection 253 on stream 0 at 20-Oct-2019 06:40:19.234 CDT
+Begin processing the 31501st record. Run 1, Event 63134, LumiSection 253 on stream 0 at 20-Oct-2019 06:40:22.803 CDT
+Begin processing the 31601st record. Run 1, Event 63228, LumiSection 253 on stream 0 at 20-Oct-2019 06:40:29.965 CDT
+Begin processing the 31701st record. Run 1, Event 2078, LumiSection 9 on stream 0 at 20-Oct-2019 06:40:32.562 CDT
+Begin processing the 31801st record. Run 1, Event 2169, LumiSection 9 on stream 0 at 20-Oct-2019 06:40:35.873 CDT
+Begin processing the 31901st record. Run 1, Event 87524, LumiSection 351 on stream 0 at 20-Oct-2019 06:40:39.018 CDT
+Begin processing the 32001st record. Run 1, Event 87619, LumiSection 351 on stream 0 at 20-Oct-2019 06:40:42.380 CDT
+Begin processing the 32101st record. Run 1, Event 87723, LumiSection 351 on stream 0 at 20-Oct-2019 06:40:45.700 CDT
+Begin processing the 32201st record. Run 1, Event 1821, LumiSection 8 on stream 0 at 20-Oct-2019 06:40:48.873 CDT
+Begin processing the 32301st record. Run 1, Event 1916, LumiSection 8 on stream 0 at 20-Oct-2019 06:40:51.868 CDT
+20-Oct-2019 06:40:55 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_20.root
+20-Oct-2019 06:40:55 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_21.root
+20-Oct-2019 06:40:55 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_21.root
+Begin processing the 32401st record. Run 1, Event 27774, LumiSection 112 on stream 0 at 20-Oct-2019 06:40:55.927 CDT
+Begin processing the 32501st record. Run 1, Event 27876, LumiSection 112 on stream 0 at 20-Oct-2019 06:40:59.132 CDT
+Begin processing the 32601st record. Run 1, Event 27974, LumiSection 112 on stream 0 at 20-Oct-2019 06:41:02.406 CDT
+Begin processing the 32701st record. Run 1, Event 55301, LumiSection 222 on stream 0 at 20-Oct-2019 06:41:05.438 CDT
+Begin processing the 32801st record. Run 1, Event 55407, LumiSection 222 on stream 0 at 20-Oct-2019 06:41:08.307 CDT
+Begin processing the 32901st record. Run 1, Event 55500, LumiSection 222 on stream 0 at 20-Oct-2019 06:41:11.520 CDT
+Begin processing the 33001st record. Run 1, Event 97116, LumiSection 389 on stream 0 at 20-Oct-2019 06:41:14.617 CDT
+Begin processing the 33101st record. Run 1, Event 97215, LumiSection 389 on stream 0 at 20-Oct-2019 06:41:17.583 CDT
+Begin processing the 33201st record. Run 1, Event 59837, LumiSection 240 on stream 0 at 20-Oct-2019 06:41:20.972 CDT
+Begin processing the 33301st record. Run 1, Event 59936, LumiSection 240 on stream 0 at 20-Oct-2019 06:41:24.087 CDT
+Begin processing the 33401st record. Run 1, Event 36294, LumiSection 146 on stream 0 at 20-Oct-2019 06:41:27.210 CDT
+Begin processing the 33501st record. Run 1, Event 36390, LumiSection 146 on stream 0 at 20-Oct-2019 06:41:30.378 CDT
+Begin processing the 33601st record. Run 1, Event 36494, LumiSection 146 on stream 0 at 20-Oct-2019 06:41:33.617 CDT
+Begin processing the 33701st record. Run 1, Event 43360, LumiSection 174 on stream 0 at 20-Oct-2019 06:41:36.357 CDT
+Begin processing the 33801st record. Run 1, Event 43460, LumiSection 174 on stream 0 at 20-Oct-2019 06:41:39.877 CDT
+Begin processing the 33901st record. Run 1, Event 24313, LumiSection 98 on stream 0 at 20-Oct-2019 06:41:42.356 CDT
+Begin processing the 34001st record. Run 1, Event 24411, LumiSection 98 on stream 0 at 20-Oct-2019 06:41:45.714 CDT
+Begin processing the 34101st record. Run 1, Event 24514, LumiSection 98 on stream 0 at 20-Oct-2019 06:41:48.455 CDT
+Begin processing the 34201st record. Run 1, Event 98105, LumiSection 393 on stream 0 at 20-Oct-2019 06:41:51.971 CDT
+Begin processing the 34301st record. Run 1, Event 98199, LumiSection 393 on stream 0 at 20-Oct-2019 06:41:55.412 CDT
+Begin processing the 34401st record. Run 1, Event 66541, LumiSection 267 on stream 0 at 20-Oct-2019 06:41:58.371 CDT
+Begin processing the 34501st record. Run 1, Event 66631, LumiSection 267 on stream 0 at 20-Oct-2019 06:42:01.769 CDT
+Begin processing the 34601st record. Run 1, Event 66738, LumiSection 267 on stream 0 at 20-Oct-2019 06:42:04.712 CDT
+Begin processing the 34701st record. Run 1, Event 18607, LumiSection 75 on stream 0 at 20-Oct-2019 06:42:08.112 CDT
+Begin processing the 34801st record. Run 1, Event 18699, LumiSection 75 on stream 0 at 20-Oct-2019 06:42:10.663 CDT
+20-Oct-2019 06:42:12 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_21.root
+20-Oct-2019 06:42:12 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_22.root
+20-Oct-2019 06:42:12 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_22.root
+Begin processing the 34901st record. Run 1, Event 30783, LumiSection 124 on stream 0 at 20-Oct-2019 06:42:15.246 CDT
+Begin processing the 35001st record. Run 1, Event 30879, LumiSection 124 on stream 0 at 20-Oct-2019 06:42:18.754 CDT
+Begin processing the 35101st record. Run 1, Event 30980, LumiSection 124 on stream 0 at 20-Oct-2019 06:42:22.304 CDT
+Begin processing the 35201st record. Run 1, Event 33600, LumiSection 135 on stream 0 at 20-Oct-2019 06:42:25.126 CDT
+Begin processing the 35301st record. Run 1, Event 33693, LumiSection 135 on stream 0 at 20-Oct-2019 06:42:28.375 CDT
+Begin processing the 35401st record. Run 1, Event 259, LumiSection 2 on stream 0 at 20-Oct-2019 06:42:31.908 CDT
+Begin processing the 35501st record. Run 1, Event 376, LumiSection 2 on stream 0 at 20-Oct-2019 06:42:34.912 CDT
+Begin processing the 35601st record. Run 1, Event 472, LumiSection 2 on stream 0 at 20-Oct-2019 06:42:37.934 CDT
+Begin processing the 35701st record. Run 1, Event 15316, LumiSection 62 on stream 0 at 20-Oct-2019 06:42:41.620 CDT
+Begin processing the 35801st record. Run 1, Event 15417, LumiSection 62 on stream 0 at 20-Oct-2019 06:42:44.649 CDT
+Begin processing the 35901st record. Run 1, Event 78278, LumiSection 314 on stream 0 at 20-Oct-2019 06:42:47.823 CDT
+Begin processing the 36001st record. Run 1, Event 78390, LumiSection 314 on stream 0 at 20-Oct-2019 06:42:50.894 CDT
+Begin processing the 36101st record. Run 1, Event 78494, LumiSection 314 on stream 0 at 20-Oct-2019 06:42:54.609 CDT
+Begin processing the 36201st record. Run 1, Event 4593, LumiSection 19 on stream 0 at 20-Oct-2019 06:42:57.426 CDT
+Begin processing the 36301st record. Run 1, Event 4695, LumiSection 19 on stream 0 at 20-Oct-2019 06:43:00.781 CDT
+Begin processing the 36401st record. Run 1, Event 84552, LumiSection 339 on stream 0 at 20-Oct-2019 06:43:03.674 CDT
+Begin processing the 36501st record. Run 1, Event 84644, LumiSection 339 on stream 0 at 20-Oct-2019 06:43:07.427 CDT
+Begin processing the 36601st record. Run 1, Event 84753, LumiSection 339 on stream 0 at 20-Oct-2019 06:43:11.170 CDT
+Begin processing the 36701st record. Run 1, Event 70062, LumiSection 281 on stream 0 at 20-Oct-2019 06:43:13.782 CDT
+Begin processing the 36801st record. Run 1, Event 70161, LumiSection 281 on stream 0 at 20-Oct-2019 06:43:18.638 CDT
+Begin processing the 36901st record. Run 1, Event 72782, LumiSection 292 on stream 0 at 20-Oct-2019 06:43:21.486 CDT
+Begin processing the 37001st record. Run 1, Event 72881, LumiSection 292 on stream 0 at 20-Oct-2019 06:43:28.665 CDT
+Begin processing the 37101st record. Run 1, Event 72978, LumiSection 292 on stream 0 at 20-Oct-2019 06:43:31.914 CDT
+Begin processing the 37201st record. Run 1, Event 29089, LumiSection 117 on stream 0 at 20-Oct-2019 06:43:40.721 CDT
+Begin processing the 37301st record. Run 1, Event 29191, LumiSection 117 on stream 0 at 20-Oct-2019 06:43:43.616 CDT
+20-Oct-2019 06:43:46 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_22.root
+20-Oct-2019 06:43:46 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_23.root
+20-Oct-2019 06:43:46 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_23.root
+Begin processing the 37401st record. Run 1, Event 91513, LumiSection 367 on stream 0 at 20-Oct-2019 06:43:47.533 CDT
+Begin processing the 37501st record. Run 1, Event 91598, LumiSection 367 on stream 0 at 20-Oct-2019 06:43:53.810 CDT
+Begin processing the 37601st record. Run 1, Event 91712, LumiSection 367 on stream 0 at 20-Oct-2019 06:43:57.290 CDT
+Begin processing the 37701st record. Run 1, Event 15808, LumiSection 64 on stream 0 at 20-Oct-2019 06:43:59.861 CDT
+Begin processing the 37801st record. Run 1, Event 15903, LumiSection 64 on stream 0 at 20-Oct-2019 06:44:03.584 CDT
+Begin processing the 37901st record. Run 1, Event 16001, LumiSection 64 on stream 0 at 20-Oct-2019 06:44:06.425 CDT
+Begin processing the 38001st record. Run 1, Event 92113, LumiSection 369 on stream 0 at 20-Oct-2019 06:44:09.866 CDT
+Begin processing the 38101st record. Run 1, Event 92215, LumiSection 369 on stream 0 at 20-Oct-2019 06:44:12.662 CDT
+Begin processing the 38201st record. Run 1, Event 27053, LumiSection 109 on stream 0 at 20-Oct-2019 06:44:15.940 CDT
+Begin processing the 38301st record. Run 1, Event 27161, LumiSection 109 on stream 0 at 20-Oct-2019 06:44:18.776 CDT
+Begin processing the 38401st record. Run 1, Event 27263, LumiSection 109 on stream 0 at 20-Oct-2019 06:44:21.776 CDT
+Begin processing the 38501st record. Run 1, Event 92351, LumiSection 370 on stream 0 at 20-Oct-2019 06:44:24.603 CDT
+Begin processing the 38601st record. Run 1, Event 92460, LumiSection 370 on stream 0 at 20-Oct-2019 06:44:27.746 CDT
+Begin processing the 38701st record. Run 1, Event 96798, LumiSection 388 on stream 0 at 20-Oct-2019 06:44:30.759 CDT
+Begin processing the 38801st record. Run 1, Event 96907, LumiSection 388 on stream 0 at 20-Oct-2019 06:44:34.201 CDT
+Begin processing the 38901st record. Run 1, Event 97004, LumiSection 388 on stream 0 at 20-Oct-2019 06:44:37.094 CDT
+Begin processing the 39001st record. Run 1, Event 38110, LumiSection 153 on stream 0 at 20-Oct-2019 06:44:40.519 CDT
+Begin processing the 39101st record. Run 1, Event 38212, LumiSection 153 on stream 0 at 20-Oct-2019 06:44:43.824 CDT
+Begin processing the 39201st record. Run 1, Event 3819, LumiSection 16 on stream 0 at 20-Oct-2019 06:44:46.960 CDT
+Begin processing the 39301st record. Run 1, Event 3918, LumiSection 16 on stream 0 at 20-Oct-2019 06:44:49.414 CDT
+Begin processing the 39401st record. Run 1, Event 4021, LumiSection 16 on stream 0 at 20-Oct-2019 06:44:53.052 CDT
+Begin processing the 39501st record. Run 1, Event 33365, LumiSection 134 on stream 0 at 20-Oct-2019 06:44:55.862 CDT
+Begin processing the 39601st record. Run 1, Event 33459, LumiSection 134 on stream 0 at 20-Oct-2019 06:44:59.587 CDT
+Begin processing the 39701st record. Run 1, Event 73058, LumiSection 293 on stream 0 at 20-Oct-2019 06:45:03.207 CDT
+Begin processing the 39801st record. Run 1, Event 73155, LumiSection 293 on stream 0 at 20-Oct-2019 06:45:06.094 CDT
+Begin processing the 39901st record. Run 1, Event 73256, LumiSection 293 on stream 0 at 20-Oct-2019 06:45:08.607 CDT
+20-Oct-2019 06:45:09 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_23.root
+20-Oct-2019 06:45:09 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_24.root
+20-Oct-2019 06:45:09 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_24.root
+Begin processing the 40001st record. Run 1, Event 55583, LumiSection 223 on stream 0 at 20-Oct-2019 06:45:13.294 CDT
+Begin processing the 40101st record. Run 1, Event 55687, LumiSection 223 on stream 0 at 20-Oct-2019 06:45:16.094 CDT
+Begin processing the 40201st record. Run 1, Event 22047, LumiSection 89 on stream 0 at 20-Oct-2019 06:45:18.677 CDT
+Begin processing the 40301st record. Run 1, Event 22150, LumiSection 89 on stream 0 at 20-Oct-2019 06:45:21.572 CDT
+Begin processing the 40401st record. Run 1, Event 22250, LumiSection 89 on stream 0 at 20-Oct-2019 06:45:24.799 CDT
+Begin processing the 40501st record. Run 1, Event 64612, LumiSection 259 on stream 0 at 20-Oct-2019 06:45:28.784 CDT
+Begin processing the 40601st record. Run 1, Event 64717, LumiSection 259 on stream 0 at 20-Oct-2019 06:45:31.848 CDT
+Begin processing the 40701st record. Run 1, Event 97798, LumiSection 392 on stream 0 at 20-Oct-2019 06:45:35.621 CDT
+Begin processing the 40801st record. Run 1, Event 97885, LumiSection 392 on stream 0 at 20-Oct-2019 06:45:38.397 CDT
+Begin processing the 40901st record. Run 1, Event 97996, LumiSection 392 on stream 0 at 20-Oct-2019 06:45:42.419 CDT
+Begin processing the 41001st record. Run 1, Event 88602, LumiSection 355 on stream 0 at 20-Oct-2019 06:45:45.221 CDT
+Begin processing the 41101st record. Run 1, Event 88700, LumiSection 355 on stream 0 at 20-Oct-2019 06:45:48.872 CDT
+Begin processing the 41201st record. Run 1, Event 97286, LumiSection 390 on stream 0 at 20-Oct-2019 06:45:52.291 CDT
+Begin processing the 41301st record. Run 1, Event 97392, LumiSection 390 on stream 0 at 20-Oct-2019 06:45:55.615 CDT
+Begin processing the 41401st record. Run 1, Event 97485, LumiSection 390 on stream 0 at 20-Oct-2019 06:45:58.552 CDT
+Begin processing the 41501st record. Run 1, Event 17844, LumiSection 72 on stream 0 at 20-Oct-2019 06:46:01.532 CDT
+Begin processing the 41601st record. Run 1, Event 17939, LumiSection 72 on stream 0 at 20-Oct-2019 06:46:04.529 CDT
+Begin processing the 41701st record. Run 1, Event 26030, LumiSection 105 on stream 0 at 20-Oct-2019 06:46:07.693 CDT
+Begin processing the 41801st record. Run 1, Event 26131, LumiSection 105 on stream 0 at 20-Oct-2019 06:46:10.976 CDT
+Begin processing the 41901st record. Run 1, Event 26217, LumiSection 105 on stream 0 at 20-Oct-2019 06:46:14.576 CDT
+Begin processing the 42001st record. Run 1, Event 78592, LumiSection 315 on stream 0 at 20-Oct-2019 06:46:17.432 CDT
+Begin processing the 42101st record. Run 1, Event 78697, LumiSection 315 on stream 0 at 20-Oct-2019 06:46:20.910 CDT
+Begin processing the 42201st record. Run 1, Event 70509, LumiSection 283 on stream 0 at 20-Oct-2019 06:46:23.624 CDT
+Begin processing the 42301st record. Run 1, Event 70619, LumiSection 283 on stream 0 at 20-Oct-2019 06:46:26.624 CDT
+Begin processing the 42401st record. Run 1, Event 70723, LumiSection 283 on stream 0 at 20-Oct-2019 06:46:29.739 CDT
+20-Oct-2019 06:46:31 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_24.root
+20-Oct-2019 06:46:31 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_25.root
+20-Oct-2019 06:46:31 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_25.root
+Begin processing the 42501st record. Run 1, Event 94841, LumiSection 380 on stream 0 at 20-Oct-2019 06:46:33.934 CDT
+Begin processing the 42601st record. Run 1, Event 94954, LumiSection 380 on stream 0 at 20-Oct-2019 06:46:36.963 CDT
+Begin processing the 42701st record. Run 1, Event 51310, LumiSection 206 on stream 0 at 20-Oct-2019 06:46:40.542 CDT
+Begin processing the 42801st record. Run 1, Event 51414, LumiSection 206 on stream 0 at 20-Oct-2019 06:46:43.520 CDT
+Begin processing the 42901st record. Run 1, Event 51508, LumiSection 206 on stream 0 at 20-Oct-2019 06:46:46.484 CDT
+Begin processing the 43001st record. Run 1, Event 51106, LumiSection 205 on stream 0 at 20-Oct-2019 06:46:49.574 CDT
+Begin processing the 43101st record. Run 1, Event 51199, LumiSection 205 on stream 0 at 20-Oct-2019 06:46:53.211 CDT
+Begin processing the 43201st record. Run 1, Event 93827, LumiSection 376 on stream 0 at 20-Oct-2019 06:46:56.467 CDT
+Begin processing the 43301st record. Run 1, Event 93923, LumiSection 376 on stream 0 at 20-Oct-2019 06:46:59.931 CDT
+Begin processing the 43401st record. Run 1, Event 94021, LumiSection 376 on stream 0 at 20-Oct-2019 06:47:02.867 CDT
+Begin processing the 43501st record. Run 1, Event 75598, LumiSection 303 on stream 0 at 20-Oct-2019 06:47:06.278 CDT
+Begin processing the 43601st record. Run 1, Event 75696, LumiSection 303 on stream 0 at 20-Oct-2019 06:47:09.502 CDT
+Begin processing the 43701st record. Run 1, Event 2566, LumiSection 11 on stream 0 at 20-Oct-2019 06:47:13.286 CDT
+Begin processing the 43801st record. Run 1, Event 2664, LumiSection 11 on stream 0 at 20-Oct-2019 06:47:16.695 CDT
+Begin processing the 43901st record. Run 1, Event 2762, LumiSection 11 on stream 0 at 20-Oct-2019 06:47:19.590 CDT
+Begin processing the 44001st record. Run 1, Event 12865, LumiSection 52 on stream 0 at 20-Oct-2019 06:47:22.878 CDT
+Begin processing the 44101st record. Run 1, Event 12961, LumiSection 52 on stream 0 at 20-Oct-2019 06:47:25.646 CDT
+Begin processing the 44201st record. Run 1, Event 28818, LumiSection 116 on stream 0 at 20-Oct-2019 06:47:28.727 CDT
+Begin processing the 44301st record. Run 1, Event 28919, LumiSection 116 on stream 0 at 20-Oct-2019 06:47:31.416 CDT
+Begin processing the 44401st record. Run 1, Event 29017, LumiSection 116 on stream 0 at 20-Oct-2019 06:47:34.475 CDT
+Begin processing the 44501st record. Run 1, Event 3619, LumiSection 15 on stream 0 at 20-Oct-2019 06:47:37.588 CDT
+Begin processing the 44601st record. Run 1, Event 3714, LumiSection 15 on stream 0 at 20-Oct-2019 06:47:41.041 CDT
+Begin processing the 44701st record. Run 1, Event 87803, LumiSection 352 on stream 0 at 20-Oct-2019 06:47:44.133 CDT
+Begin processing the 44801st record. Run 1, Event 87904, LumiSection 352 on stream 0 at 20-Oct-2019 06:47:47.823 CDT
+Begin processing the 44901st record. Run 1, Event 87991, LumiSection 352 on stream 0 at 20-Oct-2019 06:47:51.340 CDT
+20-Oct-2019 06:47:52 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_25.root
+20-Oct-2019 06:47:52 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_26.root
+20-Oct-2019 06:47:52 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_26.root
+Begin processing the 45001st record. Run 1, Event 39611, LumiSection 159 on stream 0 at 20-Oct-2019 06:47:55.763 CDT
+Begin processing the 45101st record. Run 1, Event 39713, LumiSection 159 on stream 0 at 20-Oct-2019 06:47:58.641 CDT
+Begin processing the 45201st record. Run 1, Event 68816, LumiSection 276 on stream 0 at 20-Oct-2019 06:48:01.526 CDT
+Begin processing the 45301st record. Run 1, Event 68908, LumiSection 276 on stream 0 at 20-Oct-2019 06:48:04.705 CDT
+Begin processing the 45401st record. Run 1, Event 69006, LumiSection 276 on stream 0 at 20-Oct-2019 06:48:08.363 CDT
+Begin processing the 45501st record. Run 1, Event 95577, LumiSection 383 on stream 0 at 20-Oct-2019 06:48:11.646 CDT
+Begin processing the 45601st record. Run 1, Event 95683, LumiSection 383 on stream 0 at 20-Oct-2019 06:48:15.019 CDT
+Begin processing the 45701st record. Run 1, Event 91794, LumiSection 368 on stream 0 at 20-Oct-2019 06:48:18.536 CDT
+Begin processing the 45801st record. Run 1, Event 91890, LumiSection 368 on stream 0 at 20-Oct-2019 06:48:21.215 CDT
+Begin processing the 45901st record. Run 1, Event 91990, LumiSection 368 on stream 0 at 20-Oct-2019 06:48:23.919 CDT
+Begin processing the 46001st record. Run 1, Event 10074, LumiSection 41 on stream 0 at 20-Oct-2019 06:48:27.903 CDT
+Begin processing the 46101st record. Run 1, Event 10170, LumiSection 41 on stream 0 at 20-Oct-2019 06:48:30.836 CDT
+Begin processing the 46201st record. Run 1, Event 4055, LumiSection 17 on stream 0 at 20-Oct-2019 06:48:33.951 CDT
+Begin processing the 46301st record. Run 1, Event 4151, LumiSection 17 on stream 0 at 20-Oct-2019 06:48:37.038 CDT
+Begin processing the 46401st record. Run 1, Event 4260, LumiSection 17 on stream 0 at 20-Oct-2019 06:48:39.977 CDT
+Begin processing the 46501st record. Run 1, Event 80055, LumiSection 321 on stream 0 at 20-Oct-2019 06:48:43.438 CDT
+Begin processing the 46601st record. Run 1, Event 80165, LumiSection 321 on stream 0 at 20-Oct-2019 06:48:46.451 CDT
+Begin processing the 46701st record. Run 1, Event 95262, LumiSection 382 on stream 0 at 20-Oct-2019 06:48:50.076 CDT
+Begin processing the 46801st record. Run 1, Event 95368, LumiSection 382 on stream 0 at 20-Oct-2019 06:48:52.741 CDT
+Begin processing the 46901st record. Run 1, Event 95467, LumiSection 382 on stream 0 at 20-Oct-2019 06:48:55.853 CDT
+Begin processing the 47001st record. Run 1, Event 63842, LumiSection 256 on stream 0 at 20-Oct-2019 06:48:58.940 CDT
+Begin processing the 47101st record. Run 1, Event 63945, LumiSection 256 on stream 0 at 20-Oct-2019 06:49:02.698 CDT
+Begin processing the 47201st record. Run 1, Event 520, LumiSection 3 on stream 0 at 20-Oct-2019 06:49:05.722 CDT
+Begin processing the 47301st record. Run 1, Event 616, LumiSection 3 on stream 0 at 20-Oct-2019 06:49:09.024 CDT
+Begin processing the 47401st record. Run 1, Event 721, LumiSection 3 on stream 0 at 20-Oct-2019 06:49:12.178 CDT
+20-Oct-2019 06:49:13 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_26.root
+20-Oct-2019 06:49:13 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_27.root
+20-Oct-2019 06:49:13 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_27.root
+Begin processing the 47501st record. Run 1, Event 56830, LumiSection 228 on stream 0 at 20-Oct-2019 06:49:16.058 CDT
+Begin processing the 47601st record. Run 1, Event 56930, LumiSection 228 on stream 0 at 20-Oct-2019 06:49:19.074 CDT
+Begin processing the 47701st record. Run 1, Event 24044, LumiSection 97 on stream 0 at 20-Oct-2019 06:49:22.292 CDT
+Begin processing the 47801st record. Run 1, Event 24142, LumiSection 97 on stream 0 at 20-Oct-2019 06:49:24.997 CDT
+Begin processing the 47901st record. Run 1, Event 24242, LumiSection 97 on stream 0 at 20-Oct-2019 06:49:27.764 CDT
+Begin processing the 48001st record. Run 1, Event 83080, LumiSection 333 on stream 0 at 20-Oct-2019 06:49:30.464 CDT
+Begin processing the 48101st record. Run 1, Event 83184, LumiSection 333 on stream 0 at 20-Oct-2019 06:49:33.763 CDT
+Begin processing the 48201st record. Run 1, Event 59549, LumiSection 239 on stream 0 at 20-Oct-2019 06:49:37.276 CDT
+Begin processing the 48301st record. Run 1, Event 59642, LumiSection 239 on stream 0 at 20-Oct-2019 06:49:40.279 CDT
+Begin processing the 48401st record. Run 1, Event 59738, LumiSection 239 on stream 0 at 20-Oct-2019 06:49:43.512 CDT
+Begin processing the 48501st record. Run 1, Event 23582, LumiSection 95 on stream 0 at 20-Oct-2019 06:49:46.054 CDT
+Begin processing the 48601st record. Run 1, Event 23682, LumiSection 95 on stream 0 at 20-Oct-2019 06:49:48.536 CDT
+Begin processing the 48701st record. Run 1, Event 41766, LumiSection 168 on stream 0 at 20-Oct-2019 06:49:51.937 CDT
+Begin processing the 48801st record. Run 1, Event 41856, LumiSection 168 on stream 0 at 20-Oct-2019 06:49:54.859 CDT
+Begin processing the 48901st record. Run 1, Event 41964, LumiSection 168 on stream 0 at 20-Oct-2019 06:49:58.184 CDT
+Begin processing the 49001st record. Run 1, Event 61818, LumiSection 248 on stream 0 at 20-Oct-2019 06:50:01.612 CDT
+Begin processing the 49101st record. Run 1, Event 61912, LumiSection 248 on stream 0 at 20-Oct-2019 06:50:04.688 CDT
+Begin processing the 49201st record. Run 1, Event 62010, LumiSection 248 on stream 0 at 20-Oct-2019 06:50:07.417 CDT
+Begin processing the 49301st record. Run 1, Event 45849, LumiSection 184 on stream 0 at 20-Oct-2019 06:50:10.936 CDT
+Begin processing the 49401st record. Run 1, Event 45946, LumiSection 184 on stream 0 at 20-Oct-2019 06:50:13.708 CDT
+Begin processing the 49501st record. Run 1, Event 75288, LumiSection 302 on stream 0 at 20-Oct-2019 06:50:16.647 CDT
+Begin processing the 49601st record. Run 1, Event 75399, LumiSection 302 on stream 0 at 20-Oct-2019 06:50:19.697 CDT
+Begin processing the 49701st record. Run 1, Event 75491, LumiSection 302 on stream 0 at 20-Oct-2019 06:50:22.556 CDT
+Begin processing the 49801st record. Run 1, Event 71356, LumiSection 286 on stream 0 at 20-Oct-2019 06:50:26.415 CDT
+Begin processing the 49901st record. Run 1, Event 71449, LumiSection 286 on stream 0 at 20-Oct-2019 06:50:29.932 CDT
+20-Oct-2019 06:50:31 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_27.root
+20-Oct-2019 06:50:31 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_28.root
+20-Oct-2019 06:50:31 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_28.root
+Begin processing the 50001st record. Run 1, Event 23827, LumiSection 96 on stream 0 at 20-Oct-2019 06:50:33.758 CDT
+Begin processing the 50101st record. Run 1, Event 23925, LumiSection 96 on stream 0 at 20-Oct-2019 06:50:36.484 CDT
+Begin processing the 50201st record. Run 1, Event 24024, LumiSection 96 on stream 0 at 20-Oct-2019 06:50:39.803 CDT
+Begin processing the 50301st record. Run 1, Event 60346, LumiSection 242 on stream 0 at 20-Oct-2019 06:50:42.651 CDT
+Begin processing the 50401st record. Run 1, Event 60444, LumiSection 242 on stream 0 at 20-Oct-2019 06:50:46.245 CDT
+Begin processing the 50501st record. Run 1, Event 69828, LumiSection 280 on stream 0 at 20-Oct-2019 06:50:49.795 CDT
+Begin processing the 50601st record. Run 1, Event 69923, LumiSection 280 on stream 0 at 20-Oct-2019 06:50:52.941 CDT
+Begin processing the 50701st record. Run 1, Event 12547, LumiSection 51 on stream 0 at 20-Oct-2019 06:50:55.791 CDT
+Begin processing the 50801st record. Run 1, Event 12645, LumiSection 51 on stream 0 at 20-Oct-2019 06:50:59.718 CDT
+Begin processing the 50901st record. Run 1, Event 12745, LumiSection 51 on stream 0 at 20-Oct-2019 06:51:03.062 CDT
+Begin processing the 51001st record. Run 1, Event 76330, LumiSection 306 on stream 0 at 20-Oct-2019 06:51:06.352 CDT
+Begin processing the 51101st record. Run 1, Event 76435, LumiSection 306 on stream 0 at 20-Oct-2019 06:51:09.025 CDT
+Begin processing the 51201st record. Run 1, Event 74309, LumiSection 298 on stream 0 at 20-Oct-2019 06:51:12.758 CDT
+Begin processing the 51301st record. Run 1, Event 74400, LumiSection 298 on stream 0 at 20-Oct-2019 06:51:16.153 CDT
+Begin processing the 51401st record. Run 1, Event 74505, LumiSection 298 on stream 0 at 20-Oct-2019 06:51:18.760 CDT
+Begin processing the 51501st record. Run 1, Event 23082, LumiSection 93 on stream 0 at 20-Oct-2019 06:51:22.252 CDT
+Begin processing the 51601st record. Run 1, Event 23190, LumiSection 93 on stream 0 at 20-Oct-2019 06:51:24.970 CDT
+Begin processing the 51701st record. Run 1, Event 81028, LumiSection 325 on stream 0 at 20-Oct-2019 06:51:28.076 CDT
+Begin processing the 51801st record. Run 1, Event 81130, LumiSection 325 on stream 0 at 20-Oct-2019 06:51:31.293 CDT
+Begin processing the 51901st record. Run 1, Event 81231, LumiSection 325 on stream 0 at 20-Oct-2019 06:51:34.156 CDT
+Begin processing the 52001st record. Run 1, Event 1570, LumiSection 7 on stream 0 at 20-Oct-2019 06:51:36.898 CDT
+Begin processing the 52101st record. Run 1, Event 1679, LumiSection 7 on stream 0 at 20-Oct-2019 06:51:40.272 CDT
+Begin processing the 52201st record. Run 1, Event 61027, LumiSection 245 on stream 0 at 20-Oct-2019 06:51:43.158 CDT
+Begin processing the 52301st record. Run 1, Event 61116, LumiSection 245 on stream 0 at 20-Oct-2019 06:51:46.670 CDT
+Begin processing the 52401st record. Run 1, Event 61213, LumiSection 245 on stream 0 at 20-Oct-2019 06:51:49.155 CDT
+20-Oct-2019 06:51:50 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_28.root
+20-Oct-2019 06:51:50 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_29.root
+20-Oct-2019 06:51:50 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_29.root
+Begin processing the 52501st record. Run 1, Event 30313, LumiSection 122 on stream 0 at 20-Oct-2019 06:51:53.213 CDT
+Begin processing the 52601st record. Run 1, Event 30413, LumiSection 122 on stream 0 at 20-Oct-2019 06:51:56.262 CDT
+Begin processing the 52701st record. Run 1, Event 32538, LumiSection 131 on stream 0 at 20-Oct-2019 06:51:59.158 CDT
+Begin processing the 52801st record. Run 1, Event 32623, LumiSection 131 on stream 0 at 20-Oct-2019 06:52:02.588 CDT
+Begin processing the 52901st record. Run 1, Event 32731, LumiSection 131 on stream 0 at 20-Oct-2019 06:52:05.699 CDT
+Begin processing the 53001st record. Run 1, Event 67324, LumiSection 270 on stream 0 at 20-Oct-2019 06:52:08.912 CDT
+Begin processing the 53101st record. Run 1, Event 67420, LumiSection 270 on stream 0 at 20-Oct-2019 06:52:12.506 CDT
+Begin processing the 53201st record. Run 1, Event 39294, LumiSection 158 on stream 0 at 20-Oct-2019 06:52:16.142 CDT
+Begin processing the 53301st record. Run 1, Event 39389, LumiSection 158 on stream 0 at 20-Oct-2019 06:52:18.845 CDT
+Begin processing the 53401st record. Run 1, Event 39487, LumiSection 158 on stream 0 at 20-Oct-2019 06:52:21.939 CDT
+Begin processing the 53501st record. Run 1, Event 45562, LumiSection 183 on stream 0 at 20-Oct-2019 06:52:24.906 CDT
+Begin processing the 53601st record. Run 1, Event 45650, LumiSection 183 on stream 0 at 20-Oct-2019 06:52:28.688 CDT
+Begin processing the 53701st record. Run 1, Event 58289, LumiSection 234 on stream 0 at 20-Oct-2019 06:52:31.491 CDT
+Begin processing the 53801st record. Run 1, Event 58385, LumiSection 234 on stream 0 at 20-Oct-2019 06:52:34.227 CDT
+Begin processing the 53901st record. Run 1, Event 58481, LumiSection 234 on stream 0 at 20-Oct-2019 06:52:37.384 CDT
+Begin processing the 54001st record. Run 1, Event 54333, LumiSection 218 on stream 0 at 20-Oct-2019 06:52:40.595 CDT
+Begin processing the 54101st record. Run 1, Event 54433, LumiSection 218 on stream 0 at 20-Oct-2019 06:52:43.637 CDT
+Begin processing the 54201st record. Run 1, Event 54532, LumiSection 218 on stream 0 at 20-Oct-2019 06:52:46.690 CDT
+Begin processing the 54301st record. Run 1, Event 82364, LumiSection 330 on stream 0 at 20-Oct-2019 06:52:49.968 CDT
+Begin processing the 54401st record. Run 1, Event 82471, LumiSection 330 on stream 0 at 20-Oct-2019 06:52:52.960 CDT
+Begin processing the 54501st record. Run 1, Event 46055, LumiSection 185 on stream 0 at 20-Oct-2019 06:52:55.770 CDT
+Begin processing the 54601st record. Run 1, Event 46151, LumiSection 185 on stream 0 at 20-Oct-2019 06:52:59.330 CDT
+Begin processing the 54701st record. Run 1, Event 46246, LumiSection 185 on stream 0 at 20-Oct-2019 06:53:02.613 CDT
+Begin processing the 54801st record. Run 1, Event 17358, LumiSection 70 on stream 0 at 20-Oct-2019 06:53:05.412 CDT
+Begin processing the 54901st record. Run 1, Event 17460, LumiSection 70 on stream 0 at 20-Oct-2019 06:53:08.677 CDT
+20-Oct-2019 06:53:10 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_29.root
+20-Oct-2019 06:53:10 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_3.root
+20-Oct-2019 06:53:10 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_3.root
+Begin processing the 55001st record. Run 1, Event 16298, LumiSection 66 on stream 0 at 20-Oct-2019 06:53:12.897 CDT
+Begin processing the 55101st record. Run 1, Event 16402, LumiSection 66 on stream 0 at 20-Oct-2019 06:53:16.041 CDT
+Begin processing the 55201st record. Run 1, Event 16497, LumiSection 66 on stream 0 at 20-Oct-2019 06:53:18.781 CDT
+Begin processing the 55301st record. Run 1, Event 11100, LumiSection 45 on stream 0 at 20-Oct-2019 06:53:21.725 CDT
+Begin processing the 55401st record. Run 1, Event 11198, LumiSection 45 on stream 0 at 20-Oct-2019 06:53:25.170 CDT
+Begin processing the 55501st record. Run 1, Event 81803, LumiSection 328 on stream 0 at 20-Oct-2019 06:53:27.907 CDT
+Begin processing the 55601st record. Run 1, Event 81891, LumiSection 328 on stream 0 at 20-Oct-2019 06:53:31.234 CDT
+Begin processing the 55701st record. Run 1, Event 81999, LumiSection 328 on stream 0 at 20-Oct-2019 06:53:34.087 CDT
+Begin processing the 55801st record. Run 1, Event 14621, LumiSection 59 on stream 0 at 20-Oct-2019 06:53:37.265 CDT
+Begin processing the 55901st record. Run 1, Event 14713, LumiSection 59 on stream 0 at 20-Oct-2019 06:53:39.777 CDT
+Begin processing the 56001st record. Run 1, Event 39824, LumiSection 160 on stream 0 at 20-Oct-2019 06:53:43.500 CDT
+Begin processing the 56101st record. Run 1, Event 39925, LumiSection 160 on stream 0 at 20-Oct-2019 06:53:46.345 CDT
+Begin processing the 56201st record. Run 1, Event 23300, LumiSection 94 on stream 0 at 20-Oct-2019 06:53:49.764 CDT
+Begin processing the 56301st record. Run 1, Event 23395, LumiSection 94 on stream 0 at 20-Oct-2019 06:53:52.233 CDT
+Begin processing the 56401st record. Run 1, Event 23500, LumiSection 94 on stream 0 at 20-Oct-2019 06:53:55.335 CDT
+Begin processing the 56501st record. Run 1, Event 13088, LumiSection 53 on stream 0 at 20-Oct-2019 06:53:58.522 CDT
+Begin processing the 56601st record. Run 1, Event 13195, LumiSection 53 on stream 0 at 20-Oct-2019 06:54:01.380 CDT
+Begin processing the 56701st record. Run 1, Event 88293, LumiSection 354 on stream 0 at 20-Oct-2019 06:54:04.821 CDT
+Begin processing the 56801st record. Run 1, Event 88399, LumiSection 354 on stream 0 at 20-Oct-2019 06:54:07.740 CDT
+Begin processing the 56901st record. Run 1, Event 88494, LumiSection 354 on stream 0 at 20-Oct-2019 06:54:11.316 CDT
+Begin processing the 57001st record. Run 1, Event 70322, LumiSection 282 on stream 0 at 20-Oct-2019 06:54:13.949 CDT
+Begin processing the 57101st record. Run 1, Event 70409, LumiSection 282 on stream 0 at 20-Oct-2019 06:54:17.654 CDT
+Begin processing the 57201st record. Run 1, Event 44801, LumiSection 180 on stream 0 at 20-Oct-2019 06:54:20.493 CDT
+Begin processing the 57301st record. Run 1, Event 44908, LumiSection 180 on stream 0 at 20-Oct-2019 06:54:23.830 CDT
+20-Oct-2019 06:54:26 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_3.root
+20-Oct-2019 06:54:26 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_30.root
+20-Oct-2019 06:54:27 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_30.root
+Begin processing the 57401st record. Run 1, Event 86009, LumiSection 345 on stream 0 at 20-Oct-2019 06:54:27.583 CDT
+Begin processing the 57501st record. Run 1, Event 86102, LumiSection 345 on stream 0 at 20-Oct-2019 06:54:31.515 CDT
+Begin processing the 57601st record. Run 1, Event 86212, LumiSection 345 on stream 0 at 20-Oct-2019 06:54:34.931 CDT
+Begin processing the 57701st record. Run 1, Event 28583, LumiSection 115 on stream 0 at 20-Oct-2019 06:54:37.649 CDT
+Begin processing the 57801st record. Run 1, Event 28681, LumiSection 115 on stream 0 at 20-Oct-2019 06:54:40.808 CDT
+Begin processing the 57901st record. Run 1, Event 28774, LumiSection 115 on stream 0 at 20-Oct-2019 06:54:43.631 CDT
+Begin processing the 58001st record. Run 1, Event 24621, LumiSection 99 on stream 0 at 20-Oct-2019 06:54:46.646 CDT
+Begin processing the 58101st record. Run 1, Event 24732, LumiSection 99 on stream 0 at 20-Oct-2019 06:54:49.182 CDT
+Begin processing the 58201st record. Run 1, Event 15539, LumiSection 63 on stream 0 at 20-Oct-2019 06:54:52.280 CDT
+Begin processing the 58301st record. Run 1, Event 15649, LumiSection 63 on stream 0 at 20-Oct-2019 06:54:55.270 CDT
+Begin processing the 58401st record. Run 1, Event 15753, LumiSection 63 on stream 0 at 20-Oct-2019 06:54:58.316 CDT
+Begin processing the 58501st record. Run 1, Event 47108, LumiSection 189 on stream 0 at 20-Oct-2019 06:55:01.768 CDT
+Begin processing the 58601st record. Run 1, Event 47212, LumiSection 189 on stream 0 at 20-Oct-2019 06:55:05.357 CDT
+Begin processing the 58701st record. Run 1, Event 20790, LumiSection 84 on stream 0 at 20-Oct-2019 06:55:08.380 CDT
+Begin processing the 58801st record. Run 1, Event 20899, LumiSection 84 on stream 0 at 20-Oct-2019 06:55:12.215 CDT
+Begin processing the 58901st record. Run 1, Event 20996, LumiSection 84 on stream 0 at 20-Oct-2019 06:55:15.089 CDT
+Begin processing the 59001st record. Run 1, Event 90342, LumiSection 362 on stream 0 at 20-Oct-2019 06:55:18.400 CDT
+Begin processing the 59101st record. Run 1, Event 90445, LumiSection 362 on stream 0 at 20-Oct-2019 06:55:21.399 CDT
+Begin processing the 59201st record. Run 1, Event 10545, LumiSection 43 on stream 0 at 20-Oct-2019 06:55:25.083 CDT
+Begin processing the 59301st record. Run 1, Event 10633, LumiSection 43 on stream 0 at 20-Oct-2019 06:55:28.473 CDT
+Begin processing the 59401st record. Run 1, Event 10739, LumiSection 43 on stream 0 at 20-Oct-2019 06:55:31.651 CDT
+Begin processing the 59501st record. Run 1, Event 62859, LumiSection 252 on stream 0 at 20-Oct-2019 06:55:34.613 CDT
+Begin processing the 59601st record. Run 1, Event 62962, LumiSection 252 on stream 0 at 20-Oct-2019 06:55:38.407 CDT
+Begin processing the 59701st record. Run 1, Event 62549, LumiSection 251 on stream 0 at 20-Oct-2019 06:55:41.305 CDT
+Begin processing the 59801st record. Run 1, Event 62645, LumiSection 251 on stream 0 at 20-Oct-2019 06:55:45.180 CDT
+Begin processing the 59901st record. Run 1, Event 62747, LumiSection 251 on stream 0 at 20-Oct-2019 06:55:48.366 CDT
+20-Oct-2019 06:55:48 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_30.root
+20-Oct-2019 06:55:48 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_31.root
+20-Oct-2019 06:55:49 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_31.root
+Begin processing the 60001st record. Run 1, Event 52349, LumiSection 210 on stream 0 at 20-Oct-2019 06:55:52.520 CDT
+Begin processing the 60101st record. Run 1, Event 52455, LumiSection 210 on stream 0 at 20-Oct-2019 06:55:55.656 CDT
+Begin processing the 60201st record. Run 1, Event 44316, LumiSection 178 on stream 0 at 20-Oct-2019 06:55:58.549 CDT
+Begin processing the 60301st record. Run 1, Event 44402, LumiSection 178 on stream 0 at 20-Oct-2019 06:56:01.085 CDT
+Begin processing the 60401st record. Run 1, Event 44516, LumiSection 178 on stream 0 at 20-Oct-2019 06:56:04.178 CDT
+Begin processing the 60501st record. Run 1, Event 89114, LumiSection 357 on stream 0 at 20-Oct-2019 06:56:07.547 CDT
+Begin processing the 60601st record. Run 1, Event 89215, LumiSection 357 on stream 0 at 20-Oct-2019 06:56:10.178 CDT
+Begin processing the 60701st record. Run 1, Event 21031, LumiSection 85 on stream 0 at 20-Oct-2019 06:56:13.916 CDT
+Begin processing the 60801st record. Run 1, Event 21131, LumiSection 85 on stream 0 at 20-Oct-2019 06:56:16.479 CDT
+Begin processing the 60901st record. Run 1, Event 21236, LumiSection 85 on stream 0 at 20-Oct-2019 06:56:19.469 CDT
+Begin processing the 61001st record. Run 1, Event 32849, LumiSection 132 on stream 0 at 20-Oct-2019 06:56:22.699 CDT
+Begin processing the 61101st record. Run 1, Event 32944, LumiSection 132 on stream 0 at 20-Oct-2019 06:56:26.008 CDT
+Begin processing the 61201st record. Run 1, Event 12294, LumiSection 50 on stream 0 at 20-Oct-2019 06:56:29.134 CDT
+Begin processing the 61301st record. Run 1, Event 12391, LumiSection 50 on stream 0 at 20-Oct-2019 06:56:32.754 CDT
+Begin processing the 61401st record. Run 1, Event 12492, LumiSection 50 on stream 0 at 20-Oct-2019 06:56:35.959 CDT
+Begin processing the 61501st record. Run 1, Event 17581, LumiSection 71 on stream 0 at 20-Oct-2019 06:56:39.487 CDT
+Begin processing the 61601st record. Run 1, Event 17694, LumiSection 71 on stream 0 at 20-Oct-2019 06:56:42.721 CDT
+Begin processing the 61701st record. Run 1, Event 84297, LumiSection 338 on stream 0 at 20-Oct-2019 06:56:46.015 CDT
+Begin processing the 61801st record. Run 1, Event 84405, LumiSection 338 on stream 0 at 20-Oct-2019 06:56:48.838 CDT
+Begin processing the 61901st record. Run 1, Event 84497, LumiSection 338 on stream 0 at 20-Oct-2019 06:56:52.362 CDT
+Begin processing the 62001st record. Run 1, Event 33848, LumiSection 136 on stream 0 at 20-Oct-2019 06:56:55.268 CDT
+Begin processing the 62101st record. Run 1, Event 33951, LumiSection 136 on stream 0 at 20-Oct-2019 06:56:58.136 CDT
+Begin processing the 62201st record. Run 1, Event 99298, LumiSection 398 on stream 0 at 20-Oct-2019 06:57:01.201 CDT
+Begin processing the 62301st record. Run 1, Event 99399, LumiSection 398 on stream 0 at 20-Oct-2019 06:57:04.396 CDT
+Begin processing the 62401st record. Run 1, Event 99500, LumiSection 398 on stream 0 at 20-Oct-2019 06:57:07.535 CDT
+20-Oct-2019 06:57:08 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_31.root
+20-Oct-2019 06:57:08 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_32.root
+20-Oct-2019 06:57:08 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_32.root
+Begin processing the 62501st record. Run 1, Event 54096, LumiSection 217 on stream 0 at 20-Oct-2019 06:57:12.121 CDT
+Begin processing the 62601st record. Run 1, Event 54195, LumiSection 217 on stream 0 at 20-Oct-2019 06:57:15.006 CDT
+Begin processing the 62701st record. Run 1, Event 80253, LumiSection 322 on stream 0 at 20-Oct-2019 06:57:18.230 CDT
+Begin processing the 62801st record. Run 1, Event 80364, LumiSection 322 on stream 0 at 20-Oct-2019 06:57:21.540 CDT
+Begin processing the 62901st record. Run 1, Event 80464, LumiSection 322 on stream 0 at 20-Oct-2019 06:57:25.277 CDT
+Begin processing the 63001st record. Run 1, Event 36069, LumiSection 145 on stream 0 at 20-Oct-2019 06:57:28.454 CDT
+Begin processing the 63101st record. Run 1, Event 36171, LumiSection 145 on stream 0 at 20-Oct-2019 06:57:31.830 CDT
+Begin processing the 63201st record. Run 1, Event 53277, LumiSection 214 on stream 0 at 20-Oct-2019 06:57:34.907 CDT
+Begin processing the 63301st record. Run 1, Event 53383, LumiSection 214 on stream 0 at 20-Oct-2019 06:57:38.160 CDT
+Begin processing the 63401st record. Run 1, Event 53481, LumiSection 214 on stream 0 at 20-Oct-2019 06:57:41.328 CDT
+Begin processing the 63501st record. Run 1, Event 13575, LumiSection 55 on stream 0 at 20-Oct-2019 06:57:44.630 CDT
+Begin processing the 63601st record. Run 1, Event 13676, LumiSection 55 on stream 0 at 20-Oct-2019 06:57:48.571 CDT
+Begin processing the 63701st record. Run 1, Event 30004, LumiSection 121 on stream 0 at 20-Oct-2019 06:57:51.326 CDT
+Begin processing the 63801st record. Run 1, Event 30105, LumiSection 121 on stream 0 at 20-Oct-2019 06:57:54.568 CDT
+Begin processing the 63901st record. Run 1, Event 30201, LumiSection 121 on stream 0 at 20-Oct-2019 06:57:57.195 CDT
+Begin processing the 64001st record. Run 1, Event 46815, LumiSection 188 on stream 0 at 20-Oct-2019 06:58:00.559 CDT
+Begin processing the 64101st record. Run 1, Event 46912, LumiSection 188 on stream 0 at 20-Oct-2019 06:58:03.566 CDT
+Begin processing the 64201st record. Run 1, Event 47012, LumiSection 188 on stream 0 at 20-Oct-2019 06:58:07.412 CDT
+Begin processing the 64301st record. Run 1, Event 49131, LumiSection 197 on stream 0 at 20-Oct-2019 06:58:10.197 CDT
+Begin processing the 64401st record. Run 1, Event 49227, LumiSection 197 on stream 0 at 20-Oct-2019 06:58:14.019 CDT
+Begin processing the 64501st record. Run 1, Event 73323, LumiSection 294 on stream 0 at 20-Oct-2019 06:58:16.646 CDT
+Begin processing the 64601st record. Run 1, Event 73420, LumiSection 294 on stream 0 at 20-Oct-2019 06:58:20.185 CDT
+Begin processing the 64701st record. Run 1, Event 73525, LumiSection 294 on stream 0 at 20-Oct-2019 06:58:22.556 CDT
+Begin processing the 64801st record. Run 1, Event 59127, LumiSection 237 on stream 0 at 20-Oct-2019 06:58:26.734 CDT
+Begin processing the 64901st record. Run 1, Event 59226, LumiSection 237 on stream 0 at 20-Oct-2019 06:58:29.254 CDT
+20-Oct-2019 06:58:31 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_32.root
+20-Oct-2019 06:58:31 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_33.root
+20-Oct-2019 06:58:31 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_33.root
+Begin processing the 65001st record. Run 1, Event 62056, LumiSection 249 on stream 0 at 20-Oct-2019 06:58:34.167 CDT
+Begin processing the 65101st record. Run 1, Event 62154, LumiSection 249 on stream 0 at 20-Oct-2019 06:58:37.471 CDT
+Begin processing the 65201st record. Run 1, Event 62257, LumiSection 249 on stream 0 at 20-Oct-2019 06:58:40.689 CDT
+Begin processing the 65301st record. Run 1, Event 72357, LumiSection 290 on stream 0 at 20-Oct-2019 06:58:43.214 CDT
+Begin processing the 65401st record. Run 1, Event 72461, LumiSection 290 on stream 0 at 20-Oct-2019 06:58:46.332 CDT
+Begin processing the 65501st record. Run 1, Event 4324, LumiSection 18 on stream 0 at 20-Oct-2019 06:58:49.538 CDT
+Begin processing the 65601st record. Run 1, Event 4422, LumiSection 18 on stream 0 at 20-Oct-2019 06:58:53.032 CDT
+Begin processing the 65701st record. Run 1, Event 4519, LumiSection 18 on stream 0 at 20-Oct-2019 06:58:56.171 CDT
+Begin processing the 65801st record. Run 1, Event 11847, LumiSection 48 on stream 0 at 20-Oct-2019 06:58:59.548 CDT
+Begin processing the 65901st record. Run 1, Event 11956, LumiSection 48 on stream 0 at 20-Oct-2019 06:59:02.158 CDT
+Begin processing the 66001st record. Run 1, Event 43560, LumiSection 175 on stream 0 at 20-Oct-2019 06:59:05.635 CDT
+Begin processing the 66101st record. Run 1, Event 43660, LumiSection 175 on stream 0 at 20-Oct-2019 06:59:08.511 CDT
+Begin processing the 66201st record. Run 1, Event 43765, LumiSection 175 on stream 0 at 20-Oct-2019 06:59:11.405 CDT
+Begin processing the 66301st record. Run 1, Event 58107, LumiSection 233 on stream 0 at 20-Oct-2019 06:59:14.474 CDT
+Begin processing the 66401st record. Run 1, Event 58201, LumiSection 233 on stream 0 at 20-Oct-2019 06:59:17.791 CDT
+Begin processing the 66501st record. Run 1, Event 85034, LumiSection 341 on stream 0 at 20-Oct-2019 06:59:21.193 CDT
+Begin processing the 66601st record. Run 1, Event 85129, LumiSection 341 on stream 0 at 20-Oct-2019 06:59:24.225 CDT
+Begin processing the 66701st record. Run 1, Event 85233, LumiSection 341 on stream 0 at 20-Oct-2019 06:59:27.091 CDT
+Begin processing the 66801st record. Run 1, Event 25068, LumiSection 101 on stream 0 at 20-Oct-2019 06:59:30.113 CDT
+Begin processing the 66901st record. Run 1, Event 25180, LumiSection 101 on stream 0 at 20-Oct-2019 06:59:33.240 CDT
+Begin processing the 67001st record. Run 1, Event 74809, LumiSection 300 on stream 0 at 20-Oct-2019 06:59:35.998 CDT
+Begin processing the 67101st record. Run 1, Event 74906, LumiSection 300 on stream 0 at 20-Oct-2019 06:59:39.424 CDT
+Begin processing the 67201st record. Run 1, Event 41019, LumiSection 165 on stream 0 at 20-Oct-2019 06:59:42.423 CDT
+Begin processing the 67301st record. Run 1, Event 41120, LumiSection 165 on stream 0 at 20-Oct-2019 06:59:45.747 CDT
+Begin processing the 67401st record. Run 1, Event 41221, LumiSection 165 on stream 0 at 20-Oct-2019 06:59:48.716 CDT
+20-Oct-2019 06:59:49 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_33.root
+20-Oct-2019 06:59:49 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_34.root
+20-Oct-2019 06:59:49 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_34.root
+Begin processing the 67501st record. Run 1, Event 69345, LumiSection 278 on stream 0 at 20-Oct-2019 06:59:52.378 CDT
+Begin processing the 67601st record. Run 1, Event 69445, LumiSection 278 on stream 0 at 20-Oct-2019 06:59:55.434 CDT
+Begin processing the 67701st record. Run 1, Event 49542, LumiSection 199 on stream 0 at 20-Oct-2019 06:59:58.557 CDT
+Begin processing the 67801st record. Run 1, Event 49649, LumiSection 199 on stream 0 at 20-Oct-2019 07:00:01.055 CDT
+Begin processing the 67901st record. Run 1, Event 49751, LumiSection 199 on stream 0 at 20-Oct-2019 07:00:04.773 CDT
+Begin processing the 68001st record. Run 1, Event 56316, LumiSection 226 on stream 0 at 20-Oct-2019 07:00:08.226 CDT
+Begin processing the 68101st record. Run 1, Event 56403, LumiSection 226 on stream 0 at 20-Oct-2019 07:00:11.627 CDT
+Begin processing the 68201st record. Run 1, Event 34290, LumiSection 138 on stream 0 at 20-Oct-2019 07:00:14.631 CDT
+Begin processing the 68301st record. Run 1, Event 34384, LumiSection 138 on stream 0 at 20-Oct-2019 07:00:17.361 CDT
+Begin processing the 68401st record. Run 1, Event 34491, LumiSection 138 on stream 0 at 20-Oct-2019 07:00:20.055 CDT
+Begin processing the 68501st record. Run 1, Event 98824, LumiSection 396 on stream 0 at 20-Oct-2019 07:00:23.949 CDT
+Begin processing the 68601st record. Run 1, Event 98928, LumiSection 396 on stream 0 at 20-Oct-2019 07:00:27.292 CDT
+Begin processing the 68701st record. Run 1, Event 16011, LumiSection 65 on stream 0 at 20-Oct-2019 07:00:30.174 CDT
+Begin processing the 68801st record. Run 1, Event 16101, LumiSection 65 on stream 0 at 20-Oct-2019 07:00:33.527 CDT
+Begin processing the 68901st record. Run 1, Event 16215, LumiSection 65 on stream 0 at 20-Oct-2019 07:00:37.188 CDT
+Begin processing the 69001st record. Run 1, Event 93330, LumiSection 374 on stream 0 at 20-Oct-2019 07:00:40.067 CDT
+Begin processing the 69101st record. Run 1, Event 93425, LumiSection 374 on stream 0 at 20-Oct-2019 07:00:42.849 CDT
+Begin processing the 69201st record. Run 1, Event 93528, LumiSection 374 on stream 0 at 20-Oct-2019 07:00:45.627 CDT
+Begin processing the 69301st record. Run 1, Event 50851, LumiSection 204 on stream 0 at 20-Oct-2019 07:00:48.880 CDT
+Begin processing the 69401st record. Run 1, Event 50952, LumiSection 204 on stream 0 at 20-Oct-2019 07:00:51.877 CDT
+Begin processing the 69501st record. Run 1, Event 63579, LumiSection 255 on stream 0 at 20-Oct-2019 07:00:54.887 CDT
+Begin processing the 69601st record. Run 1, Event 63672, LumiSection 255 on stream 0 at 20-Oct-2019 07:00:57.640 CDT
+Begin processing the 69701st record. Run 1, Event 63770, LumiSection 255 on stream 0 at 20-Oct-2019 07:01:01.081 CDT
+Begin processing the 69801st record. Run 1, Event 17108, LumiSection 69 on stream 0 at 20-Oct-2019 07:01:04.096 CDT
+Begin processing the 69901st record. Run 1, Event 17209, LumiSection 69 on stream 0 at 20-Oct-2019 07:01:06.630 CDT
+20-Oct-2019 07:01:08 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_34.root
+20-Oct-2019 07:01:08 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_35.root
+20-Oct-2019 07:01:08 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_35.root
+Begin processing the 70001st record. Run 1, Event 41305, LumiSection 166 on stream 0 at 20-Oct-2019 07:01:11.115 CDT
+Begin processing the 70101st record. Run 1, Event 41405, LumiSection 166 on stream 0 at 20-Oct-2019 07:01:14.767 CDT
+Begin processing the 70201st record. Run 1, Event 41502, LumiSection 166 on stream 0 at 20-Oct-2019 07:01:17.583 CDT
+Begin processing the 70301st record. Run 1, Event 21849, LumiSection 88 on stream 0 at 20-Oct-2019 07:01:20.489 CDT
+Begin processing the 70401st record. Run 1, Event 21953, LumiSection 88 on stream 0 at 20-Oct-2019 07:01:23.928 CDT
+Begin processing the 70501st record. Run 1, Event 85293, LumiSection 342 on stream 0 at 20-Oct-2019 07:01:26.744 CDT
+Begin processing the 70601st record. Run 1, Event 85383, LumiSection 342 on stream 0 at 20-Oct-2019 07:01:30.011 CDT
+Begin processing the 70701st record. Run 1, Event 85490, LumiSection 342 on stream 0 at 20-Oct-2019 07:01:33.041 CDT
+Begin processing the 70801st record. Run 1, Event 85838, LumiSection 344 on stream 0 at 20-Oct-2019 07:01:36.893 CDT
+Begin processing the 70901st record. Run 1, Event 85936, LumiSection 344 on stream 0 at 20-Oct-2019 07:01:39.842 CDT
+Begin processing the 71001st record. Run 1, Event 4820, LumiSection 20 on stream 0 at 20-Oct-2019 07:01:43.376 CDT
+Begin processing the 71101st record. Run 1, Event 4927, LumiSection 20 on stream 0 at 20-Oct-2019 07:01:46.423 CDT
+Begin processing the 71201st record. Run 1, Event 77036, LumiSection 309 on stream 0 at 20-Oct-2019 07:01:49.782 CDT
+Begin processing the 71301st record. Run 1, Event 77134, LumiSection 309 on stream 0 at 20-Oct-2019 07:01:53.155 CDT
+Begin processing the 71401st record. Run 1, Event 77233, LumiSection 309 on stream 0 at 20-Oct-2019 07:01:56.590 CDT
+Begin processing the 71501st record. Run 1, Event 55829, LumiSection 224 on stream 0 at 20-Oct-2019 07:01:59.360 CDT
+Begin processing the 71601st record. Run 1, Event 55924, LumiSection 224 on stream 0 at 20-Oct-2019 07:02:02.154 CDT
+Begin processing the 71701st record. Run 1, Event 91279, LumiSection 366 on stream 0 at 20-Oct-2019 07:02:05.390 CDT
+Begin processing the 71801st record. Run 1, Event 91379, LumiSection 366 on stream 0 at 20-Oct-2019 07:02:08.399 CDT
+Begin processing the 71901st record. Run 1, Event 91477, LumiSection 366 on stream 0 at 20-Oct-2019 07:02:12.118 CDT
+Begin processing the 72001st record. Run 1, Event 65069, LumiSection 261 on stream 0 at 20-Oct-2019 07:02:15.554 CDT
+Begin processing the 72101st record. Run 1, Event 65164, LumiSection 261 on stream 0 at 20-Oct-2019 07:02:18.924 CDT
+Begin processing the 72201st record. Run 1, Event 28285, LumiSection 114 on stream 0 at 20-Oct-2019 07:02:21.896 CDT
+Begin processing the 72301st record. Run 1, Event 28379, LumiSection 114 on stream 0 at 20-Oct-2019 07:02:25.689 CDT
+Begin processing the 72401st record. Run 1, Event 28493, LumiSection 114 on stream 0 at 20-Oct-2019 07:02:28.312 CDT
+20-Oct-2019 07:02:29 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_35.root
+20-Oct-2019 07:02:29 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_36.root
+20-Oct-2019 07:02:29 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_36.root
+Begin processing the 72501st record. Run 1, Event 22831, LumiSection 92 on stream 0 at 20-Oct-2019 07:02:32.786 CDT
+Begin processing the 72601st record. Run 1, Event 22931, LumiSection 92 on stream 0 at 20-Oct-2019 07:02:35.683 CDT
+Begin processing the 72701st record. Run 1, Event 19041, LumiSection 77 on stream 0 at 20-Oct-2019 07:02:38.828 CDT
+Begin processing the 72801st record. Run 1, Event 19145, LumiSection 77 on stream 0 at 20-Oct-2019 07:02:41.801 CDT
+Begin processing the 72901st record. Run 1, Event 19241, LumiSection 77 on stream 0 at 20-Oct-2019 07:02:45.001 CDT
+Begin processing the 73001st record. Run 1, Event 46569, LumiSection 187 on stream 0 at 20-Oct-2019 07:02:47.987 CDT
+Begin processing the 73101st record. Run 1, Event 46670, LumiSection 187 on stream 0 at 20-Oct-2019 07:02:51.530 CDT
+Begin processing the 73201st record. Run 1, Event 54542, LumiSection 219 on stream 0 at 20-Oct-2019 07:02:54.537 CDT
+Begin processing the 73301st record. Run 1, Event 54642, LumiSection 219 on stream 0 at 20-Oct-2019 07:02:57.927 CDT
+Begin processing the 73401st record. Run 1, Event 54722, LumiSection 219 on stream 0 at 20-Oct-2019 07:03:01.278 CDT
+Begin processing the 73501st record. Run 1, Event 58586, LumiSection 235 on stream 0 at 20-Oct-2019 07:03:04.379 CDT
+Begin processing the 73601st record. Run 1, Event 58678, LumiSection 235 on stream 0 at 20-Oct-2019 07:03:06.951 CDT
+Begin processing the 73701st record. Run 1, Event 11265, LumiSection 46 on stream 0 at 20-Oct-2019 07:03:10.706 CDT
+Begin processing the 73801st record. Run 1, Event 11357, LumiSection 46 on stream 0 at 20-Oct-2019 07:03:13.704 CDT
+Begin processing the 73901st record. Run 1, Event 11463, LumiSection 46 on stream 0 at 20-Oct-2019 07:03:16.803 CDT
+Begin processing the 74001st record. Run 1, Event 64076, LumiSection 257 on stream 0 at 20-Oct-2019 07:03:20.098 CDT
+Begin processing the 74101st record. Run 1, Event 64185, LumiSection 257 on stream 0 at 20-Oct-2019 07:03:22.994 CDT
+Begin processing the 74201st record. Run 1, Event 64277, LumiSection 257 on stream 0 at 20-Oct-2019 07:03:26.587 CDT
+Begin processing the 74301st record. Run 1, Event 65608, LumiSection 263 on stream 0 at 20-Oct-2019 07:03:29.583 CDT
+Begin processing the 74401st record. Run 1, Event 65700, LumiSection 263 on stream 0 at 20-Oct-2019 07:03:32.705 CDT
+Begin processing the 74501st record. Run 1, Event 61556, LumiSection 247 on stream 0 at 20-Oct-2019 07:03:35.769 CDT
+Begin processing the 74601st record. Run 1, Event 61661, LumiSection 247 on stream 0 at 20-Oct-2019 07:03:38.772 CDT
+Begin processing the 74701st record. Run 1, Event 61750, LumiSection 247 on stream 0 at 20-Oct-2019 07:03:41.328 CDT
+Begin processing the 74801st record. Run 1, Event 71863, LumiSection 288 on stream 0 at 20-Oct-2019 07:03:44.559 CDT
+Begin processing the 74901st record. Run 1, Event 71958, LumiSection 288 on stream 0 at 20-Oct-2019 07:03:47.417 CDT
+20-Oct-2019 07:03:48 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_36.root
+20-Oct-2019 07:03:48 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_37.root
+20-Oct-2019 07:03:48 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_37.root
+Begin processing the 75001st record. Run 1, Event 65797, LumiSection 264 on stream 0 at 20-Oct-2019 07:03:51.936 CDT
+Begin processing the 75101st record. Run 1, Event 65901, LumiSection 264 on stream 0 at 20-Oct-2019 07:03:55.037 CDT
+Begin processing the 75201st record. Run 1, Event 65994, LumiSection 264 on stream 0 at 20-Oct-2019 07:03:57.627 CDT
+Begin processing the 75301st record. Run 1, Event 90094, LumiSection 361 on stream 0 at 20-Oct-2019 07:04:00.575 CDT
+Begin processing the 75401st record. Run 1, Event 90190, LumiSection 361 on stream 0 at 20-Oct-2019 07:04:04.023 CDT
+Begin processing the 75501st record. Run 1, Event 45294, LumiSection 182 on stream 0 at 20-Oct-2019 07:04:07.146 CDT
+Begin processing the 75601st record. Run 1, Event 45391, LumiSection 182 on stream 0 at 20-Oct-2019 07:04:10.757 CDT
+Begin processing the 75701st record. Run 1, Event 45489, LumiSection 182 on stream 0 at 20-Oct-2019 07:04:13.483 CDT
+Begin processing the 75801st record. Run 1, Event 41593, LumiSection 167 on stream 0 at 20-Oct-2019 07:04:16.638 CDT
+Begin processing the 75901st record. Run 1, Event 41700, LumiSection 167 on stream 0 at 20-Oct-2019 07:04:19.576 CDT
+Begin processing the 76001st record. Run 1, Event 47299, LumiSection 190 on stream 0 at 20-Oct-2019 07:04:22.557 CDT
+Begin processing the 76101st record. Run 1, Event 47401, LumiSection 190 on stream 0 at 20-Oct-2019 07:04:26.662 CDT
+Begin processing the 76201st record. Run 1, Event 47500, LumiSection 190 on stream 0 at 20-Oct-2019 07:04:29.828 CDT
+Begin processing the 76301st record. Run 1, Event 25588, LumiSection 103 on stream 0 at 20-Oct-2019 07:04:32.811 CDT
+Begin processing the 76401st record. Run 1, Event 25688, LumiSection 103 on stream 0 at 20-Oct-2019 07:04:37.817 CDT
+Begin processing the 76501st record. Run 1, Event 54817, LumiSection 220 on stream 0 at 20-Oct-2019 07:04:41.166 CDT
+Begin processing the 76601st record. Run 1, Event 54915, LumiSection 220 on stream 0 at 20-Oct-2019 07:04:44.054 CDT
+Begin processing the 76701st record. Run 1, Event 35515, LumiSection 143 on stream 0 at 20-Oct-2019 07:04:47.061 CDT
+Begin processing the 76801st record. Run 1, Event 35621, LumiSection 143 on stream 0 at 20-Oct-2019 07:04:50.093 CDT
+Begin processing the 76901st record. Run 1, Event 35725, LumiSection 143 on stream 0 at 20-Oct-2019 07:04:53.282 CDT
+Begin processing the 77001st record. Run 1, Event 82592, LumiSection 331 on stream 0 at 20-Oct-2019 07:04:56.122 CDT
+Begin processing the 77101st record. Run 1, Event 82687, LumiSection 331 on stream 0 at 20-Oct-2019 07:04:59.322 CDT
+Begin processing the 77201st record. Run 1, Event 70770, LumiSection 284 on stream 0 at 20-Oct-2019 07:05:02.889 CDT
+Begin processing the 77301st record. Run 1, Event 70874, LumiSection 284 on stream 0 at 20-Oct-2019 07:05:05.725 CDT
+Begin processing the 77401st record. Run 1, Event 70970, LumiSection 284 on stream 0 at 20-Oct-2019 07:05:08.419 CDT
+20-Oct-2019 07:05:09 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_37.root
+20-Oct-2019 07:05:09 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_38.root
+20-Oct-2019 07:05:09 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_38.root
+Begin processing the 77501st record. Run 1, Event 84852, LumiSection 340 on stream 0 at 20-Oct-2019 07:05:12.916 CDT
+Begin processing the 77601st record. Run 1, Event 84948, LumiSection 340 on stream 0 at 20-Oct-2019 07:05:15.536 CDT
+Begin processing the 77701st record. Run 1, Event 68577, LumiSection 275 on stream 0 at 20-Oct-2019 07:05:19.101 CDT
+Begin processing the 77801st record. Run 1, Event 68672, LumiSection 275 on stream 0 at 20-Oct-2019 07:05:22.498 CDT
+Begin processing the 77901st record. Run 1, Event 68767, LumiSection 275 on stream 0 at 20-Oct-2019 07:05:26.273 CDT
+Begin processing the 78001st record. Run 1, Event 50601, LumiSection 203 on stream 0 at 20-Oct-2019 07:05:29.256 CDT
+Begin processing the 78101st record. Run 1, Event 50707, LumiSection 203 on stream 0 at 20-Oct-2019 07:05:32.461 CDT
+Begin processing the 78201st record. Run 1, Event 89329, LumiSection 358 on stream 0 at 20-Oct-2019 07:05:35.286 CDT
+Begin processing the 78301st record. Run 1, Event 89433, LumiSection 358 on stream 0 at 20-Oct-2019 07:05:38.456 CDT
+Begin processing the 78401st record. Run 1, Event 89524, LumiSection 358 on stream 0 at 20-Oct-2019 07:05:41.390 CDT
+Begin processing the 78501st record. Run 1, Event 40845, LumiSection 164 on stream 0 at 20-Oct-2019 07:05:44.538 CDT
+Begin processing the 78601st record. Run 1, Event 40949, LumiSection 164 on stream 0 at 20-Oct-2019 07:05:47.690 CDT
+Begin processing the 78701st record. Run 1, Event 29574, LumiSection 119 on stream 0 at 20-Oct-2019 07:05:50.666 CDT
+Begin processing the 78801st record. Run 1, Event 29679, LumiSection 119 on stream 0 at 20-Oct-2019 07:05:53.393 CDT
+Begin processing the 78901st record. Run 1, Event 29776, LumiSection 119 on stream 0 at 20-Oct-2019 07:05:56.775 CDT
+Begin processing the 79001st record. Run 1, Event 16858, LumiSection 68 on stream 0 at 20-Oct-2019 07:05:59.736 CDT
+Begin processing the 79101st record. Run 1, Event 16959, LumiSection 68 on stream 0 at 20-Oct-2019 07:06:02.365 CDT
+Begin processing the 79201st record. Run 1, Event 12055, LumiSection 49 on stream 0 at 20-Oct-2019 07:06:05.824 CDT
+Begin processing the 79301st record. Run 1, Event 12145, LumiSection 49 on stream 0 at 20-Oct-2019 07:06:08.681 CDT
+Begin processing the 79401st record. Run 1, Event 12253, LumiSection 49 on stream 0 at 20-Oct-2019 07:06:12.307 CDT
+Begin processing the 79501st record. Run 1, Event 84122, LumiSection 337 on stream 0 at 20-Oct-2019 07:06:15.209 CDT
+Begin processing the 79601st record. Run 1, Event 84213, LumiSection 337 on stream 0 at 20-Oct-2019 07:06:18.606 CDT
+Begin processing the 79701st record. Run 1, Event 77804, LumiSection 312 on stream 0 at 20-Oct-2019 07:06:21.264 CDT
+Begin processing the 79801st record. Run 1, Event 77902, LumiSection 312 on stream 0 at 20-Oct-2019 07:06:24.823 CDT
+Begin processing the 79901st record. Run 1, Event 78003, LumiSection 312 on stream 0 at 20-Oct-2019 07:06:27.576 CDT
+20-Oct-2019 07:06:28 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_38.root
+20-Oct-2019 07:06:28 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_4.root
+20-Oct-2019 07:06:28 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_4.root
+Begin processing the 80001st record. Run 1, Event 92852, LumiSection 372 on stream 0 at 20-Oct-2019 07:06:31.972 CDT
+Begin processing the 80101st record. Run 1, Event 92952, LumiSection 372 on stream 0 at 20-Oct-2019 07:06:34.964 CDT
+Begin processing the 80201st record. Run 1, Event 90532, LumiSection 363 on stream 0 at 20-Oct-2019 07:06:38.228 CDT
+Begin processing the 80301st record. Run 1, Event 90637, LumiSection 363 on stream 0 at 20-Oct-2019 07:06:41.430 CDT
+Begin processing the 80401st record. Run 1, Event 90735, LumiSection 363 on stream 0 at 20-Oct-2019 07:06:44.281 CDT
+Begin processing the 80501st record. Run 1, Event 57600, LumiSection 231 on stream 0 at 20-Oct-2019 07:06:47.581 CDT
+Begin processing the 80601st record. Run 1, Event 57693, LumiSection 231 on stream 0 at 20-Oct-2019 07:06:50.591 CDT
+Begin processing the 80701st record. Run 1, Event 72041, LumiSection 289 on stream 0 at 20-Oct-2019 07:06:53.894 CDT
+Begin processing the 80801st record. Run 1, Event 72142, LumiSection 289 on stream 0 at 20-Oct-2019 07:06:56.669 CDT
+Begin processing the 80901st record. Run 1, Event 72242, LumiSection 289 on stream 0 at 20-Oct-2019 07:06:59.763 CDT
+Begin processing the 81001st record. Run 1, Event 69612, LumiSection 279 on stream 0 at 20-Oct-2019 07:07:02.776 CDT
+Begin processing the 81101st record. Run 1, Event 69703, LumiSection 279 on stream 0 at 20-Oct-2019 07:07:06.506 CDT
+Begin processing the 81201st record. Run 1, Event 60012, LumiSection 241 on stream 0 at 20-Oct-2019 07:07:09.388 CDT
+Begin processing the 81301st record. Run 1, Event 60111, LumiSection 241 on stream 0 at 20-Oct-2019 07:07:13.644 CDT
+Begin processing the 81401st record. Run 1, Event 60223, LumiSection 241 on stream 0 at 20-Oct-2019 07:07:16.777 CDT
+Begin processing the 81501st record. Run 1, Event 37585, LumiSection 151 on stream 0 at 20-Oct-2019 07:07:20.135 CDT
+Begin processing the 81601st record. Run 1, Event 37685, LumiSection 151 on stream 0 at 20-Oct-2019 07:07:22.897 CDT
+Begin processing the 81701st record. Run 1, Event 57786, LumiSection 232 on stream 0 at 20-Oct-2019 07:07:26.132 CDT
+Begin processing the 81801st record. Run 1, Event 57880, LumiSection 232 on stream 0 at 20-Oct-2019 07:07:29.383 CDT
+Begin processing the 81901st record. Run 1, Event 57988, LumiSection 232 on stream 0 at 20-Oct-2019 07:07:32.553 CDT
+Begin processing the 82001st record. Run 1, Event 94346, LumiSection 378 on stream 0 at 20-Oct-2019 07:07:35.547 CDT
+Begin processing the 82101st record. Run 1, Event 94451, LumiSection 378 on stream 0 at 20-Oct-2019 07:07:38.601 CDT
+Begin processing the 82201st record. Run 1, Event 44551, LumiSection 179 on stream 0 at 20-Oct-2019 07:07:41.358 CDT
+Begin processing the 82301st record. Run 1, Event 44651, LumiSection 179 on stream 0 at 20-Oct-2019 07:07:44.572 CDT
+Begin processing the 82401st record. Run 1, Event 44751, LumiSection 179 on stream 0 at 20-Oct-2019 07:07:47.574 CDT
+20-Oct-2019 07:07:48 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_4.root
+20-Oct-2019 07:07:48 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_5.root
+20-Oct-2019 07:07:49 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_5.root
+Begin processing the 82501st record. Run 1, Event 31826, LumiSection 128 on stream 0 at 20-Oct-2019 07:08:03.002 CDT
+Begin processing the 82601st record. Run 1, Event 31930, LumiSection 128 on stream 0 at 20-Oct-2019 07:08:05.400 CDT
+Begin processing the 82701st record. Run 1, Event 78036, LumiSection 313 on stream 0 at 20-Oct-2019 07:08:08.230 CDT
+Begin processing the 82801st record. Run 1, Event 78141, LumiSection 313 on stream 0 at 20-Oct-2019 07:08:11.358 CDT
+Begin processing the 82901st record. Run 1, Event 78234, LumiSection 313 on stream 0 at 20-Oct-2019 07:08:18.886 CDT
+Begin processing the 83001st record. Run 1, Event 14087, LumiSection 57 on stream 0 at 20-Oct-2019 07:08:21.687 CDT
+Begin processing the 83101st record. Run 1, Event 14193, LumiSection 57 on stream 0 at 20-Oct-2019 07:08:28.839 CDT
+Begin processing the 83201st record. Run 1, Event 36522, LumiSection 147 on stream 0 at 20-Oct-2019 07:08:31.742 CDT
+Begin processing the 83301st record. Run 1, Event 36620, LumiSection 147 on stream 0 at 20-Oct-2019 07:08:39.211 CDT
+Begin processing the 83401st record. Run 1, Event 36720, LumiSection 147 on stream 0 at 20-Oct-2019 07:08:45.594 CDT
+Begin processing the 83501st record. Run 1, Event 51568, LumiSection 207 on stream 0 at 20-Oct-2019 07:08:48.814 CDT
+Begin processing the 83601st record. Run 1, Event 51667, LumiSection 207 on stream 0 at 20-Oct-2019 07:08:53.950 CDT
+Begin processing the 83701st record. Run 1, Event 78790, LumiSection 316 on stream 0 at 20-Oct-2019 07:08:56.550 CDT
+Begin processing the 83801st record. Run 1, Event 78882, LumiSection 316 on stream 0 at 20-Oct-2019 07:08:59.801 CDT
+Begin processing the 83901st record. Run 1, Event 78978, LumiSection 316 on stream 0 at 20-Oct-2019 07:09:02.427 CDT
+Begin processing the 84001st record. Run 1, Event 35306, LumiSection 142 on stream 0 at 20-Oct-2019 07:09:06.122 CDT
+Begin processing the 84101st record. Run 1, Event 35401, LumiSection 142 on stream 0 at 20-Oct-2019 07:09:09.233 CDT
+Begin processing the 84201st record. Run 1, Event 35502, LumiSection 142 on stream 0 at 20-Oct-2019 07:09:12.447 CDT
+Begin processing the 84301st record. Run 1, Event 3373, LumiSection 14 on stream 0 at 20-Oct-2019 07:09:15.065 CDT
+Begin processing the 84401st record. Run 1, Event 3479, LumiSection 14 on stream 0 at 20-Oct-2019 07:09:18.732 CDT
+Begin processing the 84501st record. Run 1, Event 88828, LumiSection 356 on stream 0 at 20-Oct-2019 07:09:21.781 CDT
+Begin processing the 84601st record. Run 1, Event 88922, LumiSection 356 on stream 0 at 20-Oct-2019 07:09:24.859 CDT
+Begin processing the 84701st record. Run 1, Event 89026, LumiSection 356 on stream 0 at 20-Oct-2019 07:09:27.749 CDT
+Begin processing the 84801st record. Run 1, Event 53617, LumiSection 215 on stream 0 at 20-Oct-2019 07:09:31.174 CDT
+Begin processing the 84901st record. Run 1, Event 53718, LumiSection 215 on stream 0 at 20-Oct-2019 07:09:34.093 CDT
+20-Oct-2019 07:09:35 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_5.root
+20-Oct-2019 07:09:35 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_6.root
+20-Oct-2019 07:09:36 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_6.root
+Begin processing the 85001st record. Run 1, Event 95803, LumiSection 384 on stream 0 at 20-Oct-2019 07:09:38.389 CDT
+Begin processing the 85101st record. Run 1, Event 95897, LumiSection 384 on stream 0 at 20-Oct-2019 07:09:41.921 CDT
+Begin processing the 85201st record. Run 1, Event 95997, LumiSection 384 on stream 0 at 20-Oct-2019 07:09:44.705 CDT
+Begin processing the 85301st record. Run 1, Event 83367, LumiSection 334 on stream 0 at 20-Oct-2019 07:09:47.572 CDT
+Begin processing the 85401st record. Run 1, Event 83466, LumiSection 334 on stream 0 at 20-Oct-2019 07:09:51.538 CDT
+Begin processing the 85501st record. Run 1, Event 90798, LumiSection 364 on stream 0 at 20-Oct-2019 07:09:54.581 CDT
+Begin processing the 85601st record. Run 1, Event 90894, LumiSection 364 on stream 0 at 20-Oct-2019 07:09:58.346 CDT
+Begin processing the 85701st record. Run 1, Event 90992, LumiSection 364 on stream 0 at 20-Oct-2019 07:10:01.273 CDT
+Begin processing the 85801st record. Run 1, Event 32096, LumiSection 129 on stream 0 at 20-Oct-2019 07:10:06.453 CDT
+Begin processing the 85901st record. Run 1, Event 32204, LumiSection 129 on stream 0 at 20-Oct-2019 07:10:09.104 CDT
+Begin processing the 86001st record. Run 1, Event 42051, LumiSection 169 on stream 0 at 20-Oct-2019 07:10:12.138 CDT
+Begin processing the 86101st record. Run 1, Event 42153, LumiSection 169 on stream 0 at 20-Oct-2019 07:10:15.165 CDT
+Begin processing the 86201st record. Run 1, Event 42248, LumiSection 169 on stream 0 at 20-Oct-2019 07:10:19.082 CDT
+Begin processing the 86301st record. Run 1, Event 73844, LumiSection 296 on stream 0 at 20-Oct-2019 07:10:21.719 CDT
+Begin processing the 86401st record. Run 1, Event 73958, LumiSection 296 on stream 0 at 20-Oct-2019 07:10:25.315 CDT
+Begin processing the 86501st record. Run 1, Event 22548, LumiSection 91 on stream 0 at 20-Oct-2019 07:10:29.030 CDT
+Begin processing the 86601st record. Run 1, Event 22656, LumiSection 91 on stream 0 at 20-Oct-2019 07:10:32.297 CDT
+Begin processing the 86701st record. Run 1, Event 22750, LumiSection 91 on stream 0 at 20-Oct-2019 07:10:35.805 CDT
+Begin processing the 86801st record. Run 1, Event 25330, LumiSection 102 on stream 0 at 20-Oct-2019 07:10:38.767 CDT
+Begin processing the 86901st record. Run 1, Event 25420, LumiSection 102 on stream 0 at 20-Oct-2019 07:10:41.848 CDT
+Begin processing the 87001st record. Run 1, Event 26275, LumiSection 106 on stream 0 at 20-Oct-2019 07:10:44.785 CDT
+Begin processing the 87101st record. Run 1, Event 26382, LumiSection 106 on stream 0 at 20-Oct-2019 07:10:47.981 CDT
+Begin processing the 87201st record. Run 1, Event 26486, LumiSection 106 on stream 0 at 20-Oct-2019 07:10:50.448 CDT
+Begin processing the 87301st record. Run 1, Event 59355, LumiSection 238 on stream 0 at 20-Oct-2019 07:10:54.054 CDT
+Begin processing the 87401st record. Run 1, Event 59460, LumiSection 238 on stream 0 at 20-Oct-2019 07:10:56.970 CDT
+20-Oct-2019 07:10:59 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_6.root
+20-Oct-2019 07:10:59 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_7.root
+20-Oct-2019 07:10:59 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_7.root
+Begin processing the 87501st record. Run 1, Event 21285, LumiSection 86 on stream 0 at 20-Oct-2019 07:11:01.245 CDT
+Begin processing the 87601st record. Run 1, Event 21380, LumiSection 86 on stream 0 at 20-Oct-2019 07:11:04.986 CDT
+Begin processing the 87701st record. Run 1, Event 21479, LumiSection 86 on stream 0 at 20-Oct-2019 07:11:08.138 CDT
+Begin processing the 87801st record. Run 1, Event 10826, LumiSection 44 on stream 0 at 20-Oct-2019 07:11:11.601 CDT
+Begin processing the 87901st record. Run 1, Event 10930, LumiSection 44 on stream 0 at 20-Oct-2019 07:11:14.718 CDT
+Begin processing the 88001st record. Run 1, Event 42796, LumiSection 172 on stream 0 at 20-Oct-2019 07:11:17.596 CDT
+Begin processing the 88101st record. Run 1, Event 42893, LumiSection 172 on stream 0 at 20-Oct-2019 07:11:21.017 CDT
+Begin processing the 88201st record. Run 1, Event 42991, LumiSection 172 on stream 0 at 20-Oct-2019 07:11:23.951 CDT
+Begin processing the 88301st record. Run 1, Event 80826, LumiSection 324 on stream 0 at 20-Oct-2019 07:11:27.545 CDT
+Begin processing the 88401st record. Run 1, Event 80923, LumiSection 324 on stream 0 at 20-Oct-2019 07:11:29.878 CDT
+Begin processing the 88501st record. Run 1, Event 48038, LumiSection 193 on stream 0 at 20-Oct-2019 07:11:33.170 CDT
+Begin processing the 88601st record. Run 1, Event 48131, LumiSection 193 on stream 0 at 20-Oct-2019 07:11:36.099 CDT
+Begin processing the 88701st record. Run 1, Event 48241, LumiSection 193 on stream 0 at 20-Oct-2019 07:11:39.418 CDT
+Begin processing the 88801st record. Run 1, Event 67584, LumiSection 271 on stream 0 at 20-Oct-2019 07:11:42.145 CDT
+Begin processing the 88901st record. Run 1, Event 67683, LumiSection 271 on stream 0 at 20-Oct-2019 07:11:45.555 CDT
+Begin processing the 89001st record. Run 1, Event 43031, LumiSection 173 on stream 0 at 20-Oct-2019 07:11:48.415 CDT
+Begin processing the 89101st record. Run 1, Event 43133, LumiSection 173 on stream 0 at 20-Oct-2019 07:11:50.987 CDT
+Begin processing the 89201st record. Run 1, Event 43236, LumiSection 173 on stream 0 at 20-Oct-2019 07:11:54.783 CDT
+Begin processing the 89301st record. Run 1, Event 86573, LumiSection 347 on stream 0 at 20-Oct-2019 07:11:57.343 CDT
+Begin processing the 89401st record. Run 1, Event 86668, LumiSection 347 on stream 0 at 20-Oct-2019 07:12:00.645 CDT
+Begin processing the 89501st record. Run 1, Event 18278, LumiSection 74 on stream 0 at 20-Oct-2019 07:12:03.918 CDT
+Begin processing the 89601st record. Run 1, Event 18381, LumiSection 74 on stream 0 at 20-Oct-2019 07:12:07.373 CDT
+Begin processing the 89701st record. Run 1, Event 18481, LumiSection 74 on stream 0 at 20-Oct-2019 07:12:10.752 CDT
+Begin processing the 89801st record. Run 1, Event 37322, LumiSection 150 on stream 0 at 20-Oct-2019 07:12:14.053 CDT
+Begin processing the 89901st record. Run 1, Event 37423, LumiSection 150 on stream 0 at 20-Oct-2019 07:12:17.060 CDT
+20-Oct-2019 07:12:20 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_7.root
+20-Oct-2019 07:12:20 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_8.root
+20-Oct-2019 07:12:20 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_8.root
+Begin processing the 90001st record. Run 1, Event 37022, LumiSection 149 on stream 0 at 20-Oct-2019 07:12:21.004 CDT
+Begin processing the 90101st record. Run 1, Event 37117, LumiSection 149 on stream 0 at 20-Oct-2019 07:12:24.095 CDT
+Begin processing the 90201st record. Run 1, Event 37210, LumiSection 149 on stream 0 at 20-Oct-2019 07:12:27.116 CDT
+Begin processing the 90301st record. Run 1, Event 94583, LumiSection 379 on stream 0 at 20-Oct-2019 07:12:30.142 CDT
+Begin processing the 90401st record. Run 1, Event 94691, LumiSection 379 on stream 0 at 20-Oct-2019 07:12:33.338 CDT
+Begin processing the 90501st record. Run 1, Event 94784, LumiSection 379 on stream 0 at 20-Oct-2019 07:12:36.258 CDT
+Begin processing the 90601st record. Run 1, Event 79131, LumiSection 317 on stream 0 at 20-Oct-2019 07:12:38.883 CDT
+Begin processing the 90701st record. Run 1, Event 79231, LumiSection 317 on stream 0 at 20-Oct-2019 07:12:41.323 CDT
+Begin processing the 90801st record. Run 1, Event 96306, LumiSection 386 on stream 0 at 20-Oct-2019 07:12:44.591 CDT
+Begin processing the 90901st record. Run 1, Event 96400, LumiSection 386 on stream 0 at 20-Oct-2019 07:12:47.094 CDT
+Begin processing the 91001st record. Run 1, Event 96510, LumiSection 386 on stream 0 at 20-Oct-2019 07:12:50.438 CDT
+Begin processing the 91101st record. Run 1, Event 61357, LumiSection 246 on stream 0 at 20-Oct-2019 07:12:53.401 CDT
+Begin processing the 91201st record. Run 1, Event 61453, LumiSection 246 on stream 0 at 20-Oct-2019 07:12:56.744 CDT
+Begin processing the 91301st record. Run 1, Event 68068, LumiSection 273 on stream 0 at 20-Oct-2019 07:12:59.477 CDT
+Begin processing the 91401st record. Run 1, Event 68165, LumiSection 273 on stream 0 at 20-Oct-2019 07:13:02.602 CDT
+Begin processing the 91501st record. Run 1, Event 68270, LumiSection 273 on stream 0 at 20-Oct-2019 07:13:05.836 CDT
+Begin processing the 91601st record. Run 1, Event 99124, LumiSection 397 on stream 0 at 20-Oct-2019 07:13:08.973 CDT
+Begin processing the 91701st record. Run 1, Event 99224, LumiSection 397 on stream 0 at 20-Oct-2019 07:13:11.676 CDT
+Begin processing the 91801st record. Run 1, Event 25790, LumiSection 104 on stream 0 at 20-Oct-2019 07:13:14.565 CDT
+Begin processing the 91901st record. Run 1, Event 25896, LumiSection 104 on stream 0 at 20-Oct-2019 07:13:17.564 CDT
+Begin processing the 92001st record. Run 1, Event 26000, LumiSection 104 on stream 0 at 20-Oct-2019 07:13:20.942 CDT
+Begin processing the 92101st record. Run 1, Event 26599, LumiSection 107 on stream 0 at 20-Oct-2019 07:13:23.616 CDT
+Begin processing the 92201st record. Run 1, Event 26694, LumiSection 107 on stream 0 at 20-Oct-2019 07:13:26.036 CDT
+Begin processing the 92301st record. Run 1, Event 33055, LumiSection 133 on stream 0 at 20-Oct-2019 07:13:29.067 CDT
+Begin processing the 92401st record. Run 1, Event 33153, LumiSection 133 on stream 0 at 20-Oct-2019 07:13:32.376 CDT
+Begin processing the 92501st record. Run 1, Event 33259, LumiSection 133 on stream 0 at 20-Oct-2019 07:13:35.429 CDT
+20-Oct-2019 07:13:36 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_8.root
+20-Oct-2019 07:13:36 CDT  Initiating request to open file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_9.root
+20-Oct-2019 07:13:36 CDT  Successfully opened file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_9.root
+Begin processing the 92601st record. Run 1, Event 21591, LumiSection 87 on stream 0 at 20-Oct-2019 07:13:39.698 CDT
+Begin processing the 92701st record. Run 1, Event 21697, LumiSection 87 on stream 0 at 20-Oct-2019 07:13:42.506 CDT
+Begin processing the 92801st record. Run 1, Event 98312, LumiSection 394 on stream 0 at 20-Oct-2019 07:13:45.500 CDT
+Begin processing the 92901st record. Run 1, Event 98407, LumiSection 394 on stream 0 at 20-Oct-2019 07:13:48.836 CDT
+Begin processing the 93001st record. Run 1, Event 98510, LumiSection 394 on stream 0 at 20-Oct-2019 07:13:52.032 CDT
+Begin processing the 93101st record. Run 1, Event 53858, LumiSection 216 on stream 0 at 20-Oct-2019 07:13:54.715 CDT
+Begin processing the 93201st record. Run 1, Event 53953, LumiSection 216 on stream 0 at 20-Oct-2019 07:13:58.469 CDT
+Begin processing the 93301st record. Run 1, Event 79811, LumiSection 320 on stream 0 at 20-Oct-2019 07:14:01.850 CDT
+Begin processing the 93401st record. Run 1, Event 79914, LumiSection 320 on stream 0 at 20-Oct-2019 07:14:04.920 CDT
+Begin processing the 93501st record. Run 1, Event 48791, LumiSection 196 on stream 0 at 20-Oct-2019 07:14:08.622 CDT
+Begin processing the 93601st record. Run 1, Event 48896, LumiSection 196 on stream 0 at 20-Oct-2019 07:14:11.749 CDT
+Begin processing the 93701st record. Run 1, Event 48996, LumiSection 196 on stream 0 at 20-Oct-2019 07:14:15.089 CDT
+Begin processing the 93801st record. Run 1, Event 42324, LumiSection 170 on stream 0 at 20-Oct-2019 07:14:17.894 CDT
+Begin processing the 93901st record. Run 1, Event 42431, LumiSection 170 on stream 0 at 20-Oct-2019 07:14:21.784 CDT
+Begin processing the 94001st record. Run 1, Event 93537, LumiSection 375 on stream 0 at 20-Oct-2019 07:14:24.572 CDT
+Begin processing the 94101st record. Run 1, Event 93643, LumiSection 375 on stream 0 at 20-Oct-2019 07:14:28.017 CDT
+Begin processing the 94201st record. Run 1, Event 93733, LumiSection 375 on stream 0 at 20-Oct-2019 07:14:31.664 CDT
+Begin processing the 94301st record. Run 1, Event 77574, LumiSection 311 on stream 0 at 20-Oct-2019 07:14:35.134 CDT
+Begin processing the 94401st record. Run 1, Event 77674, LumiSection 311 on stream 0 at 20-Oct-2019 07:14:38.395 CDT
+Begin processing the 94501st record. Run 1, Event 1263, LumiSection 6 on stream 0 at 20-Oct-2019 07:14:41.652 CDT
+Begin processing the 94601st record. Run 1, Event 1365, LumiSection 6 on stream 0 at 20-Oct-2019 07:14:44.435 CDT
+Begin processing the 94701st record. Run 1, Event 1462, LumiSection 6 on stream 0 at 20-Oct-2019 07:14:47.825 CDT
+Begin processing the 94801st record. Run 1, Event 65307, LumiSection 262 on stream 0 at 20-Oct-2019 07:14:50.721 CDT
+Begin processing the 94901st record. Run 1, Event 65400, LumiSection 262 on stream 0 at 20-Oct-2019 07:14:53.552 CDT
+20-Oct-2019 07:14:56 CDT  Closed file file:/hdfs/store/user/vshang/GluGluHToTauTau_M125_14TeV_powheg_pythia8/20190909_ggHTT-PU200_r1_forTaus_withTracks/190909_095538/0000/output_round1_9.root
+
+=============================================
+
+MessageLogger Summary
+
+ type     category        sev    module        subroutine        count    total
+ ---- -------------------- -- ---------------- ----------------  -----    -----
+    1 fileAction           -s file_close                            38       38
+    2 fileAction           -s file_open                             76       76
+
+ type    category    Examples: run/evt        run/evt          run/evt
+ ---- -------------------- ---------------- ---------------- ----------------
+    1 fileAction           PostProcessEvent PostProcessEvent PostGlobalEndRun
+    2 fileAction           pre-events       pre-events       PostProcessEvent
+
+Severity    # Occurrences   Total Occurrences
+--------    -------------   -----------------
+System                114                 114
+
+dropped waiting message count 0

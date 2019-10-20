@@ -548,7 +548,7 @@ if '__main__' in __name__ :
     plot_calibrated_results = False
 
     # Uncomment to run!
-    make_calibrations = True
+    #make_calibrations = True
     apply_phase2_calibrations = True
     apply_stage2_calibrations = True
     #prepare_calibration_cfg = True
@@ -561,8 +561,8 @@ if '__main__' in __name__ :
         # R2
         #'output_round2_HiggsTauTauv1',
         #'output_round2_minBiasv1'
-        #'output_round2_HiggsTauTau_withTracks_notTrackMatched'
-        'output_round2_minBias_withTracks_trackMatched'
+        'output_round2_HiggsTauTau_withTracks_notTrackMatched'
+        #'output_round2_minBias_withTracks_trackMatchedwithTrackdR'
     ]
 
     for shape in shapes :

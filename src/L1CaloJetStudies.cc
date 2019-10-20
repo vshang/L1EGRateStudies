@@ -112,6 +112,8 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
         // -- user functions
         void integrateDown(TH1F *);
         bool isJetTrackMatched(float jet_phi, float jet_eta, float jet_energy, edm::Handle<L1TkTrackCollectionType> l1trackHandle); //Victor's track matching edit: added function to check if jet is matched to a track
+        float findClosestTrackdR(float jet_phi, float jet_eta, float jet_energy, edm::Handle<L1TkTrackCollectionType> l1trackHandle, float pt_cut); //Victor's track matching edit: added function to check min dR between jet and tracks
+        float findMaxTrackPt(float jet_phi, float jet_eta, float jet_energy, edm::Handle<L1TkTrackCollectionType> l1trackHandle, float dR_cut); //Victor's track matching edit: added function to check max pT distribution of matched tracks
         void fill_tree(const l1slhc::L1CaloJet& caloJet);
         void fill_tree_null();
         
@@ -367,6 +369,12 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
 	    float total_51;
 	    float total_52;
 	    float total_53;
+
+	    //Also added branch to check dR and Pt distribution of reco taus/tracks
+	    float jet_and_track_dR;
+	    float jet_and_track_dR_2GeV;
+	    float jet_and_track_dR_10GeV;
+	    float max_track_pt_dR0p2;
 
 	    //End of Victor's edit
 
@@ -651,6 +659,13 @@ L1CaloJetStudies::L1CaloJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("total_51", &treeinfo.total_51);
     tree->Branch("total_52", &treeinfo.total_52);
     tree->Branch("total_53", &treeinfo.total_53);
+
+    //Also add branch for min_dR to check dR and Pt distribution between reco tau jets and tracks
+    tree->Branch("jet_and_track_dR", &treeinfo.jet_and_track_dR);
+    tree->Branch("jet_and_track_dR_2GeV", &treeinfo.jet_and_track_dR_2GeV);
+    tree->Branch("jet_and_track_dR_10GeV", &treeinfo.jet_and_track_dR_10GeV);
+    tree->Branch("max_track_pt_dR0p2", &treeinfo.max_track_pt_dR0p2);
+
     //End of Victor's edit
 
     //tree->Branch("hcal_3x3", &treeinfo.hcal_3x3);
@@ -1029,7 +1044,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 		float jet_energy = caloJet.GetExperimentalParam("jet_energy");
 		bool found_jetTrack = isJetTrackMatched(jet_phi, jet_eta, jet_energy, l1trackHandle);
 
-		if ( found_jetTrack ) //Change to true to turn off track matching
+	        if ( found_jetTrack ) //Change to true to turn off track matching
 		{
 
 		  if ( caloJet.GetExperimentalParam("jet_pt_calibration") > 30 && fabs(caloJet.GetExperimentalParam("jet_eta")) < 2.4 )
@@ -1391,16 +1406,27 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 
                 total_et_f = caloJet.GetExperimentalParam("total_et");
                 //nTT_f = caloJet.GetExperimentalParam("total_nTowers");
+
 		//Victor's track matching edit: get jet info for matching to tracks
 		float jet_phi = caloJet.GetExperimentalParam("jet_phi");
 		float jet_eta = caloJet.GetExperimentalParam("jet_eta");
 		float jet_energy = caloJet.GetExperimentalParam("jet_energy");
 		bool found_jetTrack = isJetTrackMatched(jet_phi, jet_eta, jet_energy, l1trackHandle);
+		float min_dR = findClosestTrackdR(jet_phi, jet_eta, jet_energy, l1trackHandle, 0.);
+		float min_dR_2GeV = findClosestTrackdR(jet_phi, jet_eta, jet_energy, l1trackHandle, 2.);
+		float min_dR_10GeV = findClosestTrackdR(jet_phi, jet_eta, jet_energy, l1trackHandle, 10.);
+		float max_track_pt_dR0p2 = findMaxTrackPt(jet_phi, jet_eta, jet_energy, l1trackHandle, 0.2);
 		//End of Victor's track matching edit
 
-		if ( reco::deltaR(caloJet, genJetP4) < genMatchDeltaRcut && found_jetTrack ) //Victor's track matching edit: added track matching condition found_jetTrack == true
+		if ( reco::deltaR(caloJet, genJetP4) < genMatchDeltaRcut )// && found_jetTrack ) //Victor's track matching edit: added track matching condition found_jetTrack == true
                       //&& fabs(caloJet.pt()-genJetP4.pt())/genJetP4.pt() < genMatchRelPtcut )
                 {
+
+		    // Victor's edit: store min_dR in event tree for each reco tau jet and max_track_pt for each matched track
+		    treeinfo.jet_and_track_dR = min_dR; 
+		    treeinfo.jet_and_track_dR_2GeV = min_dR_2GeV; 
+		    treeinfo.jet_and_track_dR_10GeV = min_dR_10GeV; 
+		    treeinfo.max_track_pt_dR0p2 = max_track_pt_dR0p2;
 
                     treeinfo.n_l1eg_HoverE_Less0p25 = 0.;
                     treeinfo.n_l1eg_HoverE_Less0p25_trkSS = 0.;
@@ -1447,6 +1473,7 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
                         treeinfo.deltaR_phase2_stage2 = reco::deltaR( treeinfo.stage2tau_eta, treeinfo.stage2tau_phi, caloJet.eta(), caloJet.phi() );
                     }
                     
+
                     fill_tree(caloJet);
 
                     // Fill basic numerator efficiencies
@@ -1596,7 +1623,7 @@ L1CaloJetStudies::fillDescriptions(edm::ConfigurationDescriptions& descriptions)
   descriptions.addDefault(desc);
 }
 
-// ------------ user methods (ncsmith)
+// ------------ user methods (vshang)
 //Victor's track matching edit: method isJetTrackMatched takes in a jet's phi, eta, and energy as well as a track handle l1trackHandle and
 //returns true if the jet is matched to a track and false otherwise. The jet must be within a certian dR of the
 //track and the track pt and chi2 must pass certain selection cuts.
@@ -1605,17 +1632,16 @@ L1CaloJetStudies::isJetTrackMatched(float jet_phi, float jet_eta, float jet_ener
     if ( l1trackHandle.isValid() )
     {
         // cout << "track Handle is valid";
-        float dR_cut = 0.1;
-        float pt_cut = 5.;
-        float chi2_cut = 100.;
+        float dR_cut = 0.2;
+        float pt_cut = 10.;
+        //float chi2_cut = 100.;
 	for(size_t track_index=0; track_index < l1trackHandle->size(); ++track_index)
 	{
 	    edm::Ptr< TTTrack< Ref_Phase2TrackerDigi_ > > ptr(l1trackHandle, track_index);
             float pt = ptr->getMomentum().perp();
-	    if (pt < 2.) continue; // Don't consider tracks with pt < 2 for studies
             float dR = L1TkElectronTrackMatchAlgo::deltaR(L1TkElectronTrackMatchAlgo::calorimeterPosition(jet_phi, jet_eta, jet_energy), ptr);
-	    float chi2 = ptr->getChi2();
-	    if ( dR < dR_cut && pt > pt_cut && chi2 < chi2_cut )
+	    //float chi2 = ptr->getChi2();
+	    if ( dR < dR_cut && pt > pt_cut )// && chi2 < chi2_cut )
 	    {
 	        // cout << "jet is matched";
 	        return true;
@@ -1624,6 +1650,54 @@ L1CaloJetStudies::isJetTrackMatched(float jet_phi, float jet_eta, float jet_ener
     } //end isValid
     // cout << "jet fails matching";
     return false;
+}
+
+//method findClosestTrackdR takes in a jet's phi, eta, and energy as well as a track handle l1trackHandle and a track pt cut and
+//returns the minimum dR between the jet and all the tracks with pt > pt_cut. Used to study the dR distribution of reco jets.
+float 
+L1CaloJetStudies::findClosestTrackdR(float jet_phi, float jet_eta, float jet_energy, edm::Handle<L1TkTrackCollectionType> l1trackHandle, float pt_cut) {
+    float min_dR = 9999.0;
+    if ( l1trackHandle.isValid() )
+    {
+        // cout << "track Handle is valid";
+	for(size_t track_index=0; track_index < l1trackHandle->size(); ++track_index)
+	{
+	    edm::Ptr< TTTrack< Ref_Phase2TrackerDigi_ > > ptr(l1trackHandle, track_index);
+	    float pt = ptr->getMomentum().perp();
+            float dR = L1TkElectronTrackMatchAlgo::deltaR(L1TkElectronTrackMatchAlgo::calorimeterPosition(jet_phi, jet_eta, jet_energy), ptr);
+	    if ( dR < min_dR and pt > pt_cut)
+	    {
+	        // cout << "jet is matched";
+	        min_dR = dR;
+	    }
+	} //end track loop
+    } //end isValid
+    // cout << "jet fails matching";
+    return min_dR;
+}
+
+//method findMaxTrackPt takes in a jet's phi, eta, and energy as well as a track handle l1trackHandle and a track dR cut and
+//returns the track with the highest pT with dR < dR_cut. Used to study the pT distribution of matched tracks.
+float 
+L1CaloJetStudies::findMaxTrackPt(float jet_phi, float jet_eta, float jet_energy, edm::Handle<L1TkTrackCollectionType> l1trackHandle, float dR_cut) {
+    float max_pt = -9.0;
+    if ( l1trackHandle.isValid() )
+    {
+        // cout << "track Handle is valid";
+	for(size_t track_index=0; track_index < l1trackHandle->size(); ++track_index)
+	{
+	    edm::Ptr< TTTrack< Ref_Phase2TrackerDigi_ > > ptr(l1trackHandle, track_index);
+	    float pt = ptr->getMomentum().perp();
+            float dR = L1TkElectronTrackMatchAlgo::deltaR(L1TkElectronTrackMatchAlgo::calorimeterPosition(jet_phi, jet_eta, jet_energy), ptr);
+	    if ( pt > max_pt and dR < dR_cut )
+	    {
+	        // cout << "jet is matched";
+	        max_pt = pt;
+	    }
+	} //end track loop
+    } //end isValid
+    // cout << "jet fails matching";
+    return max_pt;
 }
 //End of Victor's track matching edit
 
@@ -1966,6 +2040,11 @@ L1CaloJetStudies::fill_tree_null() {
     treeinfo.total_51 = -9;
     treeinfo.total_52 = -9;
     treeinfo.total_53 = -9;
+
+    treeinfo.jet_and_track_dR = -9; 
+    treeinfo.jet_and_track_dR_2GeV = -9;
+    treeinfo.jet_and_track_dR_10GeV = -9; 
+    treeinfo.max_track_pt_dR0p2 = -9;
     //End of Victor's edit
 
     //treeinfo.hcal_5x5 = -9;
