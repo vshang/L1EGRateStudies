@@ -28,7 +28,7 @@ process.source = cms.Source("PoolSource",
 
 
 #out_path = '/data/truggles/l1CaloJets_20190308_r2/'
-out_path = '/data/vshang/l1CaloJets_20190723_r2/'
+out_path = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20190909_r2/'
 name = "QCD"
 #name = "TTbar"
 # Load samples from external files here:
@@ -84,6 +84,7 @@ process.pL1Objs = cms.Path(
 # Analyzer starts here
 
 process.analyzer = cms.EDAnalyzer('L1CaloJetStudies',
+    L1TrackInputTag = cms.InputTag("L1CaloJetProducer", "Level1TTTracks"), #Victor's track matching edit: add track info from L1CaloJetProducer
     L1CaloJetsInputTag = cms.InputTag("L1CaloJetProducer","L1CaloJetsNoCuts"),
     genJets = cms.InputTag("ak4GenJetsNoNu", "", "HLT"),
     genHadronicTauSrc = cms.InputTag("tauGenJetsSelectorAllHadrons"),

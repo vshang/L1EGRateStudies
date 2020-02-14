@@ -114,6 +114,7 @@ class L1CaloJetStudies : public edm::EDAnalyzer {
         bool isJetTrackMatched(float jet_phi, float jet_eta, float jet_energy, edm::Handle<L1TkTrackCollectionType> l1trackHandle); //Victor's track matching edit: added function to check if jet is matched to a track
         float findClosestTrackdR(float jet_phi, float jet_eta, float jet_energy, edm::Handle<L1TkTrackCollectionType> l1trackHandle, float pt_cut); //Victor's track matching edit: added function to check min dR between jet and tracks
         float findMaxTrackPt(float jet_phi, float jet_eta, float jet_energy, edm::Handle<L1TkTrackCollectionType> l1trackHandle, float dR_cut); //Victor's track matching edit: added function to check max pT distribution of matched tracks
+        bool isJEFThreshold(float jet_pt, float jet_eta, float jetEnergyFraction); //Victor's JEF edit: added function to check if jet passes JEF threshold
         void fill_tree(const l1slhc::L1CaloJet& caloJet);
         void fill_tree_null();
         
@@ -1044,7 +1045,24 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 		float jet_energy = caloJet.GetExperimentalParam("jet_energy");
 		bool found_jetTrack = isJetTrackMatched(jet_phi, jet_eta, jet_energy, l1trackHandle);
 
-	        if ( found_jetTrack ) //Change to true to turn off track matching
+		//Victor's JEF edit: added JEF threshold condition to minBias code (doRate = true)
+		float total_seed = caloJet.GetExperimentalParam("total_seed");
+		float total_22 = caloJet.GetExperimentalParam("total_22");
+		float total_31 = caloJet.GetExperimentalParam("total_31");
+		float total_33 = caloJet.GetExperimentalParam("total_33");
+		float total_42 = caloJet.GetExperimentalParam("total_42");
+		float total_3x5 = caloJet.GetExperimentalParam("total_3x5");
+
+		float crossTowerList[5] = {total_seed, total_22, total_31, total_33, total_42};
+		std::sort(crossTowerList, crossTowerList+5, std::greater<float>());
+		float max2inCross = crossTowerList[0] + crossTowerList[1];
+		float jetEnergyFraction = max2inCross/total_3x5;
+		
+		float tau_pt = caloJet.GetExperimentalParam("tau_pt");
+		bool pass_JEFThreshold = isJEFThreshold(tau_pt, jet_eta, jetEnergyFraction);
+		//End of Victor's JEF edit
+
+	        if ( pass_JEFThreshold ) //found_jetTrack ) //Change to true to turn off track matching and JEF threshold condition
 		{
 
 		  if ( caloJet.GetExperimentalParam("jet_pt_calibration") > 30 && fabs(caloJet.GetExperimentalParam("jet_eta")) < 2.4 )
@@ -1418,7 +1436,24 @@ L1CaloJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetu
 		float max_track_pt_dR0p2 = findMaxTrackPt(jet_phi, jet_eta, jet_energy, l1trackHandle, 0.2);
 		//End of Victor's track matching edit
 
-		if ( reco::deltaR(caloJet, genJetP4) < genMatchDeltaRcut )// && found_jetTrack ) //Victor's track matching edit: added track matching condition found_jetTrack == true
+		//Victor's JEF edit: added JEF threshold condition
+		float total_seed = caloJet.GetExperimentalParam("total_seed");
+		float total_22 = caloJet.GetExperimentalParam("total_22");
+		float total_31 = caloJet.GetExperimentalParam("total_31");
+		float total_33 = caloJet.GetExperimentalParam("total_33");
+		float total_42 = caloJet.GetExperimentalParam("total_42");
+		float total_3x5 = caloJet.GetExperimentalParam("total_3x5");
+
+		float crossTowerList[5] = {total_seed, total_22, total_31, total_33, total_42};
+		std::sort(crossTowerList, crossTowerList+5, std::greater<float>());
+		float max2inCross = crossTowerList[0] + crossTowerList[1];
+		float jetEnergyFraction = max2inCross/total_3x5;
+
+		float tau_pt = caloJet.GetExperimentalParam("tau_pt");
+		bool pass_JEFThreshold = isJEFThreshold(tau_pt, jet_eta, jetEnergyFraction);
+		//End of Victor's JEF edit
+
+		if ( reco::deltaR(caloJet, genJetP4) < genMatchDeltaRcut && pass_JEFThreshold )// && found_jetTrack ) //Victor's track matching edit: added track matching condition found_jetTrack == true. 
                       //&& fabs(caloJet.pt()-genJetP4.pt())/genJetP4.pt() < genMatchRelPtcut )
                 {
 
@@ -1700,6 +1735,84 @@ L1CaloJetStudies::findMaxTrackPt(float jet_phi, float jet_eta, float jet_energy,
     return max_pt;
 }
 //End of Victor's track matching edit
+
+//Victor's JEF edit: method isJEFThreshold takes in a tau jet's pt, eta, and jet energy fraction value and returns true if 
+// max2inCross is greater than some threshold between 0 and 1 based on the tau jet pt and eta, where max2inCross is 
+// a jet energy fraction variable used to distinguish between ggHTT and QCD samples. If the eta is outside the endcap region 
+// (eta > 2.6), we do not put a threshold at all (return true by default).
+bool 
+L1CaloJetStudies::isJEFThreshold(float jet_pt, float jet_eta, float jetEnergyFraction) {
+    cout << "jet pt: " << jet_pt << endl;
+    cout << "jet eta: " << jet_eta << endl;
+    cout << "abs(jet eta): " << fabs(jet_eta) << endl;
+    cout << "JEF: " << jetEnergyFraction << endl;
+    if ( fabs(jet_eta) < 1.6 )
+    {
+      cout << "abs(jet_eta) < 1.6\n";
+        if ( jet_pt < 40. ) 
+	{
+	    cout << "jet_pt < 40\n";
+	    if ( jetEnergyFraction < 0.8 ) 
+	    {
+	        cout << "JEF < 0.8\n";
+	        return false;
+	    }
+	}
+	else if ( jet_pt > 40. && jet_pt < 60. ) 
+	{
+	    cout << "40 < jet_pt < 60\n";
+	    if ( jetEnergyFraction < 0.8 ) 
+	    {
+	        cout << "JEF < 0.8\n";
+	        return false;
+	    }
+	}
+	else if ( jet_pt > 60. ) 
+	{
+	    cout << "jet_pt > 60\n";
+	    if ( jetEnergyFraction < 0.85 ) 
+	    {
+	        cout << "JEF < 0.85\n";
+	        return false;
+	    }
+	}
+    }
+    else if ( fabs(jet_eta) > 1.6 && fabs(jet_eta) < 2.8 )
+    {
+        cout << "1.6 < abs(jet_eta) < 2.8\n";
+        if ( jet_pt < 40. ) 
+	{
+	    cout << "jet_pt < 40\n";
+	    if ( jetEnergyFraction < 0.65 ) 
+	    {
+	        cout << "JEF < 0.65\n";
+	        return false;
+	    }
+	}
+	else if ( jet_pt > 40. && jet_pt < 60. ) 
+	{
+	    cout << "40 < jet_pt < 60\n";
+	    if ( jetEnergyFraction < 0.65 ) 
+	    {
+	        cout << "JEF < 0.65\n";
+	        return false;
+	    }
+	}
+	else if ( jet_pt > 60. ) 
+	{
+	    cout << "jet_pt > 60\n";
+	    if ( jetEnergyFraction < 0.75 ) 
+	    {
+	        cout << "JEF < 0.75\n";
+	        return false;
+	    }
+	}
+    }
+    cout << "all pt and eta checks failed\n";
+    return true;
+}
+//End of Victor's JEF edit
+
 
 void 
 L1CaloJetStudies::integrateDown(TH1F * hist) {

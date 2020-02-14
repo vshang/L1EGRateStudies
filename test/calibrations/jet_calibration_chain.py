@@ -561,8 +561,11 @@ if '__main__' in __name__ :
         # R2
         #'output_round2_HiggsTauTauv1',
         #'output_round2_minBiasv1'
-        'output_round2_HiggsTauTau_withTracks_notTrackMatched'
+        #'output_round2_HiggsTauTau_withTracks_notTrackMatched'
         #'output_round2_minBias_withTracks_trackMatchedwithTrackdR'
+        #'output_round2_QCDv1'
+        'output_round2_minBias_withTracks_passJEFThreshold'
+        #'output_round2_HiggsTauTau_withTracks_passJEFThreshold'
     ]
 
     for shape in shapes :

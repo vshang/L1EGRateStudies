@@ -125,6 +125,64 @@ def make_rate_hist( nEvents, tree, x_var, x_var_calib, eta_var, eta_min, eta_max
 
     return h2
 
+#Victor's edit: same as make_rate_hist, but for double tau trigger as a function of the lower pt tau
+def make_rate_hist2( nEvents, tree, x_var, x_var_calib, eta_var, eta_min, eta_max, x_info, wp='' ) : 
+    print "Making rate for x_var %s,\n x_var_calib %f,\n eta_var %s,\n eta_min %.2f,\n eta_max %.2f,\n wp %s" % (x_var, x_var_calib, eta_var, eta_min, eta_max, wp)
+    h1 = ROOT.TH1F('hist', 'hist', x_info[0], x_info[1], x_info[2])
+
+    previous_event = -1
+    max_pt = 0.
+    max2_pt = 0.
+    # Fill non-cululative distribution
+    cnt = 0
+    ntaus = 0
+    for row in tree :
+        cnt += 1
+        if cnt % 100000 == 0 : print cnt
+        evt = row.event
+        # Initial row
+        if previous_event == -1 : previous_event = evt
+        # If new event, then fill value from previous
+        if previous_event != evt:
+            if max2_pt > 0. and ntaus >= 2:
+                h1.Fill( max2_pt )
+            previous_event = evt
+            max_pt = 0.
+            max2_pt = 0.
+            ntaus = 0
+        # Skip jets outside of eta threshold region
+        eta = getattr( row, eta_var )
+        if abs(eta) >= eta_max : continue
+        if abs(eta) < eta_min : continue
+
+        # Add other selections based on defined WPs
+        # where < 0.5 is fail and 1.0 is pass
+        if wp != '' :
+            if getattr( row, wp ) < 0.5 : continue
+        # If same event, then increment ntaus and update pt values
+        pt = getattr( row, x_var ) * x_var_calib
+        if pt > 0:
+            ntaus += 1
+        if pt > max_pt : 
+            max2_pt = max_pt
+            max_pt = pt
+        elif pt > max2_pt:
+            max2_pt = pt
+    
+    # Make non-cumulative --> cumulative
+    h2 = ROOT.TH1F('cumul', 'cumul', x_info[0], x_info[1], x_info[2])
+    n_bins = h1.GetXaxis().GetNbins()
+    integral=0.
+    for b in range( n_bins+1 ) :
+        i = n_bins - b
+        integral += h1.GetBinContent(i)
+        h2.SetBinContent( i, integral )
+        h2.SetBinError( b, ROOT.TMath.Sqrt(integral) )
+    
+    h2.Scale( 30000 / nEvents )
+
+    return h2
+#End of Victor's edit
 
 
 def drawCMSString( title ) :

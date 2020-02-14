@@ -37,6 +37,7 @@ for i in range(nEntries):
     eventTree.GetEntry(i)
     if abs(eventTree.genJet_eta) < 1.4 and eventTree.calibPtHH > 0:
         pt_ratio = eventTree.max_track_pt_dR0p2/eventTree.calibPtHH
+        #pt_ratio = eventTree.max_track_pt_dR0p2/eventTree.genJet_pt
         histo1.Fill(pt_ratio)
         #histo1.Fill(eventTree.max_track_pt_dR0p2)
         if eventTree.calibPtHH > 32 and eventTree.genJet_pt > 40:
@@ -64,7 +65,7 @@ histo2.SetLineWidth(1)
 histo2.SetMinimum(0)
 histo2.SetMaximum(yMax)
 #Add legend
-legend = TLegend(0.46, 0.73, 0.75, 0.87)
+legend = TLegend(0.61, 0.73, 0.90, 0.87)
 legend.AddEntry(histo1, 'reco tau p_{T} > 0 GeV', 'l')
 legend.AddEntry(histo2, 'reco tau p_{T} > 32 GeV & gen tau p_{T} > 40 GeV', 'l')
 legend.Draw('same')

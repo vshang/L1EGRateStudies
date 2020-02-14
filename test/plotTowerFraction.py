@@ -1,21 +1,30 @@
 from ROOT import *
+from L1Trigger.L1EGRateStudies.trigHelpers import checkDir
 
 #Select and load root files here
-f_ggHTT = TFile.Open('/data/vshang/l1CaloJets_20190806_r2/output_round2_HiggsTauTau_testv2.root', '')
-f_QCD = TFile.Open('/data/vshang/l1CaloJets_20190806_r2/output_round2_QCD_testv2.root', '')
+#f_ggHTT = TFile.Open('/data/vshang/l1CaloJets_20190806_r2/output_round2_HiggsTauTau_testv2.root', '')
+#f_QCD = TFile.Open('/data/vshang/l1CaloJets_20190806_r2/output_round2_QCD_testv2.root', '')
+print 'Loading root files...'
+f_ggHTT = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20190909_r2/output_round2_HiggsTauTau_withTracks_notTrackMatched.root', '')
+f_QCD = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20190909_r2/output_round2_QCDv1.root', '')
 
+#Set date and save directory
+date = '20191107'
+saveDir = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/towerStudies/' + date + '/'
+checkDir( saveDir )
 
 #Set sameCanvas to True for all plots on same Canvas, False if you want seperate plots
 sameCanvas = True
 
 #Set number of histogram bins and maximum value of y axis here
 nBins = 20
-yMax = 0.2
+yMax = 0.4
 
 #Remove stats box from histograms by setting argument to 0
 gStyle.SetOptStat(0)
 
 #Get event trees
+print 'Getting event trees...'
 ggHTT_eventTree = f_ggHTT.Get('analyzer/tree')
 QCD_eventTree = f_QCD.Get('analyzer/tree')
 
@@ -63,6 +72,8 @@ QCD_eventTree = f_QCD.Get('analyzer/tree')
 # h_ggHTT_max2x2in3x3 = TH1F('h_ggHTT_max2x2in3x3', 'max2x2in3x3 Tower Energy fraction distribution; fraction of total 3x5 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
 # h_QCD_max2x2in3x3 = TH1F('h_QCD_max2x2in3x3', 'max2x2in3x3 Tower Energy fraction distribution; fraction of total 3x5 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
 
+print 'Creating histograms...'
+
 #Define ggHTT and QCD max2inCross_0LessThreshold tower histograms
 h_ggHTT_max2inCross_0LessThreshold = TH1F('h_ggHTT_max2inCross_0LessThreshold', 'max2inCross_0LessThreshold Tower Energy fraction distribution; fraction of total 3x5 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
 h_QCD_max2inCross_0LessThreshold = TH1F('h_QCD_max2inCross_0LessThreshold', 'max2inCross_0LessThreshold Tower Energy fraction distribution; fraction of total 3x5 tower E_{T}; Number of tau jets (normalized)', nBins, 0, 1)
@@ -89,6 +100,7 @@ h_QCD_max3inCross_2LessThreshold = TH1F('h_QCD_max3inCross_2LessThreshold', 'max
 
 
 #Fill ggHTT histograms
+print 'Filling histograms...'
 nEntries_ggHTT = ggHTT_eventTree.GetEntries()
 for i in range(nEntries_ggHTT):
     ggHTT_eventTree.GetEntry(i)
@@ -123,23 +135,30 @@ for i in range(nEntries_ggHTT):
     # if ggHTT_eventTree.total_3x5 >= 0:
     #      h_ggHTT_max2x2in3x3.Fill(ggHTT_total_max2x2in3x3/float(ggHTT_eventTree.total_3x5))
 
-    ggHTT_CrossTowerList = [ggHTT_eventTree.total_seed, ggHTT_eventTree.total_22, ggHTT_eventTree.total_31, ggHTT_eventTree.total_33, ggHTT_eventTree.total_42]
-    ggHTT_CrossTowerList.sort(reverse=True)
-    ggHTT_sortedTowers = ggHTT_CrossTowerList
-    ggHTT_total_max2inCross = ggHTT_sortedTowers[0] + ggHTT_sortedTowers[1]
-    if ggHTT_eventTree.total_3x5 >= 0 and ggHTT_eventTree.n_l1eg_HoverE_LessThreshold == 0:
-        h_ggHTT_max2inCross_0LessThreshold.Fill(ggHTT_total_max2inCross/float(ggHTT_eventTree.total_3x5))
-    if ggHTT_eventTree.total_3x5 >= 0 and ggHTT_eventTree.n_l1eg_HoverE_LessThreshold == 1:
-        h_ggHTT_max2inCross_1LessThreshold.Fill(ggHTT_total_max2inCross/float(ggHTT_eventTree.total_3x5))
-    if ggHTT_eventTree.total_3x5 >= 0 and ggHTT_eventTree.n_l1eg_HoverE_LessThreshold >= 2:
-        h_ggHTT_max2inCross_2LessThreshold.Fill(ggHTT_total_max2inCross/float(ggHTT_eventTree.total_3x5))
-    ggHTT_total_max3inCross = ggHTT_sortedTowers[0] + ggHTT_sortedTowers[1] + ggHTT_sortedTowers[2]
-    if ggHTT_eventTree.total_3x5 >= 0 and ggHTT_eventTree.n_l1eg_HoverE_LessThreshold == 0:
-        h_ggHTT_max3inCross_0LessThreshold.Fill(ggHTT_total_max3inCross/float(ggHTT_eventTree.total_3x5))
-    if ggHTT_eventTree.total_3x5 >= 0 and ggHTT_eventTree.n_l1eg_HoverE_LessThreshold == 1:
-        h_ggHTT_max3inCross_1LessThreshold.Fill(ggHTT_total_max3inCross/float(ggHTT_eventTree.total_3x5))
-    if ggHTT_eventTree.total_3x5 >= 0 and ggHTT_eventTree.n_l1eg_HoverE_LessThreshold >= 2:
-        h_ggHTT_max3inCross_2LessThreshold.Fill(ggHTT_total_max3inCross/float(ggHTT_eventTree.total_3x5))
+    #if abs(ggHTT_eventTree.genJet_eta) < 1.4 and 30 < ggHTT_eventTree.genJet_pt < 40:
+    #if abs(ggHTT_eventTree.genJet_eta) < 1.4 and 40 < ggHTT_eventTree.genJet_pt < 60:
+    #if abs(ggHTT_eventTree.genJet_eta) < 1.4 and ggHTT_eventTree.genJet_pt > 60:
+    #if 1.6 < abs(ggHTT_eventTree.genJet_eta) < 2.6 and 30 < ggHTT_eventTree.genJet_pt < 40:
+    #if 1.6 < abs(ggHTT_eventTree.genJet_eta) < 2.6 and 40 < ggHTT_eventTree.genJet_pt < 60:
+    if 1.6 < abs(ggHTT_eventTree.genJet_eta) < 2.6 and ggHTT_eventTree.genJet_pt > 60:
+        ggHTT_CrossTowerList = [ggHTT_eventTree.total_seed, ggHTT_eventTree.total_22, ggHTT_eventTree.total_31, ggHTT_eventTree.total_33, ggHTT_eventTree.total_42]
+        ggHTT_CrossTowerList.sort(reverse=True)
+        ggHTT_sortedTowers = ggHTT_CrossTowerList
+        ggHTT_total_max2inCross = ggHTT_sortedTowers[0] + ggHTT_sortedTowers[1]
+        ggHTT_total_max3inCross = ggHTT_sortedTowers[0] + ggHTT_sortedTowers[1] + ggHTT_sortedTowers[2]
+        if ggHTT_eventTree.total_3x5 >= 0 and ggHTT_eventTree.n_l1eg_HoverE_LessThreshold == 0:
+            h_ggHTT_max2inCross_0LessThreshold.Fill(ggHTT_total_max2inCross/float(ggHTT_eventTree.total_3x5))
+        if ggHTT_eventTree.total_3x5 >= 0 and ggHTT_eventTree.n_l1eg_HoverE_LessThreshold == 1:
+            h_ggHTT_max2inCross_1LessThreshold.Fill(ggHTT_total_max2inCross/float(ggHTT_eventTree.total_3x5))
+        if ggHTT_eventTree.total_3x5 >= 0 and ggHTT_eventTree.n_l1eg_HoverE_LessThreshold >= 2:
+            h_ggHTT_max2inCross_2LessThreshold.Fill(ggHTT_total_max2inCross/float(ggHTT_eventTree.total_3x5))
+
+        if ggHTT_eventTree.total_3x5 >= 0 and ggHTT_eventTree.n_l1eg_HoverE_LessThreshold == 0:
+            h_ggHTT_max3inCross_0LessThreshold.Fill(ggHTT_total_max3inCross/float(ggHTT_eventTree.total_3x5))
+        if ggHTT_eventTree.total_3x5 >= 0 and ggHTT_eventTree.n_l1eg_HoverE_LessThreshold == 1:
+            h_ggHTT_max3inCross_1LessThreshold.Fill(ggHTT_total_max3inCross/float(ggHTT_eventTree.total_3x5))
+        if ggHTT_eventTree.total_3x5 >= 0 and ggHTT_eventTree.n_l1eg_HoverE_LessThreshold >= 2:
+            h_ggHTT_max3inCross_2LessThreshold.Fill(ggHTT_total_max3inCross/float(ggHTT_eventTree.total_3x5))
 
 #Fill QCD histograms
 nEntries_QCD = QCD_eventTree.GetEntries()
@@ -176,23 +195,29 @@ for i in range(nEntries_QCD):
     # if QCD_eventTree.total_3x5 >= 0:
     #      h_QCD_max2x2in3x3.Fill(QCD_total_max2x2in3x3/float(QCD_eventTree.total_3x5))
 
-    QCD_CrossTowerList = [QCD_eventTree.total_seed, QCD_eventTree.total_22, QCD_eventTree.total_31, QCD_eventTree.total_33, QCD_eventTree.total_42]
-    QCD_CrossTowerList.sort(reverse=True)
-    QCD_sortedTowers = QCD_CrossTowerList
-    QCD_total_max2inCross = QCD_sortedTowers[0] + QCD_sortedTowers[1]
-    if QCD_eventTree.total_3x5 >= 0 and QCD_eventTree.n_l1eg_HoverE_LessThreshold == 0:
-        h_QCD_max2inCross_0LessThreshold.Fill(QCD_total_max2inCross/float(QCD_eventTree.total_3x5))
-    if QCD_eventTree.total_3x5 >= 0 and QCD_eventTree.n_l1eg_HoverE_LessThreshold == 1:
-        h_QCD_max2inCross_1LessThreshold.Fill(QCD_total_max2inCross/float(QCD_eventTree.total_3x5))
-    if QCD_eventTree.total_3x5 >= 0 and QCD_eventTree.n_l1eg_HoverE_LessThreshold >= 2:
-        h_QCD_max2inCross_2LessThreshold.Fill(QCD_total_max2inCross/float(QCD_eventTree.total_3x5))
-    QCD_total_max3inCross = QCD_sortedTowers[0] + QCD_sortedTowers[1] + QCD_sortedTowers[2]
-    if QCD_eventTree.total_3x5 >= 0 and QCD_eventTree.n_l1eg_HoverE_LessThreshold == 0:
-        h_QCD_max3inCross_0LessThreshold.Fill(QCD_total_max3inCross/float(QCD_eventTree.total_3x5))
-    if QCD_eventTree.total_3x5 >= 0 and QCD_eventTree.n_l1eg_HoverE_LessThreshold == 1:
-        h_QCD_max3inCross_1LessThreshold.Fill(QCD_total_max3inCross/float(QCD_eventTree.total_3x5))
-    if QCD_eventTree.total_3x5 >= 0 and QCD_eventTree.n_l1eg_HoverE_LessThreshold >= 2:
-        h_QCD_max3inCross_2LessThreshold.Fill(QCD_total_max3inCross/float(QCD_eventTree.total_3x5))
+    #if abs(QCD_eventTree.genJet_eta) < 1.4 and 30 < QCD_eventTree.genJet_pt < 40:
+    #if abs(QCD_eventTree.genJet_eta) < 1.4 and 40 < QCD_eventTree.genJet_pt < 60:
+    #if abs(QCD_eventTree.genJet_eta) < 1.4 and QCD_eventTree.genJet_pt > 60:
+    #if 1.6 < abs(QCD_eventTree.genJet_eta) < 2.6 and 30 < QCD_eventTree.genJet_pt < 40:
+    #if 1.6 < abs(QCD_eventTree.genJet_eta) < 2.6 and 40 < QCD_eventTree.genJet_pt < 60:
+    if 1.6 < abs(QCD_eventTree.genJet_eta) < 2.6 and QCD_eventTree.genJet_pt > 60:
+        QCD_CrossTowerList = [QCD_eventTree.total_seed, QCD_eventTree.total_22, QCD_eventTree.total_31, QCD_eventTree.total_33, QCD_eventTree.total_42]
+        QCD_CrossTowerList.sort(reverse=True)
+        QCD_sortedTowers = QCD_CrossTowerList
+        QCD_total_max2inCross = QCD_sortedTowers[0] + QCD_sortedTowers[1]
+        QCD_total_max3inCross = QCD_sortedTowers[0] + QCD_sortedTowers[1] + QCD_sortedTowers[2]
+        if QCD_eventTree.total_3x5 >= 0 and QCD_eventTree.n_l1eg_HoverE_LessThreshold == 0:
+            h_QCD_max2inCross_0LessThreshold.Fill(QCD_total_max2inCross/float(QCD_eventTree.total_3x5))
+        if QCD_eventTree.total_3x5 >= 0 and QCD_eventTree.n_l1eg_HoverE_LessThreshold == 1:
+            h_QCD_max2inCross_1LessThreshold.Fill(QCD_total_max2inCross/float(QCD_eventTree.total_3x5))
+        if QCD_eventTree.total_3x5 >= 0 and QCD_eventTree.n_l1eg_HoverE_LessThreshold >= 2:
+            h_QCD_max2inCross_2LessThreshold.Fill(QCD_total_max2inCross/float(QCD_eventTree.total_3x5))
+        if QCD_eventTree.total_3x5 >= 0 and QCD_eventTree.n_l1eg_HoverE_LessThreshold == 0:
+            h_QCD_max3inCross_0LessThreshold.Fill(QCD_total_max3inCross/float(QCD_eventTree.total_3x5))
+        if QCD_eventTree.total_3x5 >= 0 and QCD_eventTree.n_l1eg_HoverE_LessThreshold == 1:
+            h_QCD_max3inCross_1LessThreshold.Fill(QCD_total_max3inCross/float(QCD_eventTree.total_3x5))
+        if QCD_eventTree.total_3x5 >= 0 and QCD_eventTree.n_l1eg_HoverE_LessThreshold >= 2:
+            h_QCD_max3inCross_2LessThreshold.Fill(QCD_total_max3inCross/float(QCD_eventTree.total_3x5))
 
 #Normalize ggHTT histograms to unit area
 # h_ggHTT_3x3.Scale(1/h_ggHTT_3x3.Integral())
@@ -207,12 +232,12 @@ for i in range(nEntries_QCD):
 # h_ggHTT_XNoSeed.Scale(1/h_ggHTT_XNoSeed.Integral())
 # h_ggHTT_max2x2in3x3.Scale(1/h_ggHTT_max2x2in3x3.Integral())
 
-h_ggHTT_max2inCross_0LessThreshold.Scale(1/h_ggHTT_max2inCross_0LessThreshold.Integral())
-h_ggHTT_max2inCross_1LessThreshold.Scale(1/h_ggHTT_max2inCross_1LessThreshold.Integral())
-h_ggHTT_max2inCross_2LessThreshold.Scale(1/h_ggHTT_max2inCross_2LessThreshold.Integral())
-h_ggHTT_max3inCross_0LessThreshold.Scale(1/h_ggHTT_max3inCross_0LessThreshold.Integral())
-h_ggHTT_max3inCross_1LessThreshold.Scale(1/h_ggHTT_max3inCross_1LessThreshold.Integral())
-h_ggHTT_max3inCross_2LessThreshold.Scale(1/h_ggHTT_max3inCross_2LessThreshold.Integral())
+h_ggHTT_max2inCross_0LessThreshold.Scale(1/max(h_ggHTT_max2inCross_0LessThreshold.Integral(),1))
+h_ggHTT_max2inCross_1LessThreshold.Scale(1/max(h_ggHTT_max2inCross_1LessThreshold.Integral(),1))
+h_ggHTT_max2inCross_2LessThreshold.Scale(1/max(h_ggHTT_max2inCross_2LessThreshold.Integral(),1))
+h_ggHTT_max3inCross_0LessThreshold.Scale(1/max(h_ggHTT_max3inCross_0LessThreshold.Integral(),1))
+h_ggHTT_max3inCross_1LessThreshold.Scale(1/max(h_ggHTT_max3inCross_1LessThreshold.Integral(),1))
+h_ggHTT_max3inCross_2LessThreshold.Scale(1/max(h_ggHTT_max3inCross_2LessThreshold.Integral(),1))
 
 #Normalize QCT histograms to unit area
 # h_QCD_3x3.Scale(1/h_QCD_3x3.Integral())
@@ -227,14 +252,15 @@ h_ggHTT_max3inCross_2LessThreshold.Scale(1/h_ggHTT_max3inCross_2LessThreshold.In
 # h_QCD_XNoSeed.Scale(1/h_QCD_XNoSeed.Integral())
 # h_QCD_max2x2in3x3.Scale(1/h_QCD_max2x2in3x3.Integral())
 
-h_QCD_max2inCross_0LessThreshold.Scale(1/h_QCD_max2inCross_0LessThreshold.Integral())
-h_QCD_max2inCross_1LessThreshold.Scale(1/h_QCD_max2inCross_1LessThreshold.Integral())
-h_QCD_max2inCross_2LessThreshold.Scale(1/h_QCD_max2inCross_2LessThreshold.Integral())
-h_QCD_max3inCross_0LessThreshold.Scale(1/h_QCD_max3inCross_0LessThreshold.Integral())
-h_QCD_max3inCross_1LessThreshold.Scale(1/h_QCD_max3inCross_1LessThreshold.Integral())
-h_QCD_max3inCross_2LessThreshold.Scale(1/h_QCD_max3inCross_2LessThreshold.Integral())
+h_QCD_max2inCross_0LessThreshold.Scale(1/max(h_QCD_max2inCross_0LessThreshold.Integral(),1))
+h_QCD_max2inCross_1LessThreshold.Scale(1/max(h_QCD_max2inCross_1LessThreshold.Integral(),1))
+h_QCD_max2inCross_2LessThreshold.Scale(1/max(h_QCD_max2inCross_2LessThreshold.Integral(),1))
+h_QCD_max3inCross_0LessThreshold.Scale(1/max(h_QCD_max3inCross_0LessThreshold.Integral(),1))
+h_QCD_max3inCross_1LessThreshold.Scale(1/max(h_QCD_max3inCross_1LessThreshold.Integral(),1))
+h_QCD_max3inCross_2LessThreshold.Scale(1/max(h_QCD_max3inCross_2LessThreshold.Integral(),1))
 
 #Draw max2inCross_0LessThreshold tower E_T fraction distribution plots 
+print 'Drawing histogram plots...'
 if sameCanvas:
     c = TCanvas('c', 'Tower energy fraction distributions')
     c.Divide(3,2)
@@ -397,8 +423,7 @@ h_QCD_max3inCross_0LessThreshold.Draw('hist same')
 h_ggHTT_max3inCross_0LessThreshold.SetLineColor(kRed)
 h_ggHTT_max3inCross_0LessThreshold.SetLineWidth(1)
 h_ggHTT_max3inCross_0LessThreshold.SetMinimum(0)
-#h_ggHTT_max3inCross_0LessThreshold.SetMaximum(yMax)
-h_ggHTT_max3inCross_0LessThreshold.SetMaximum(0.6)
+h_ggHTT_max3inCross_0LessThreshold.SetMaximum(yMax)
 #Set QCD_max3inCross_0LessThreshold histogram options
 h_QCD_max3inCross_0LessThreshold.SetLineColor(kBlue)
 h_QCD_max3inCross_0LessThreshold.SetLineWidth(1)
@@ -496,3 +521,8 @@ legend_max3inCross_2LessThreshold.AddEntry(h_ggHTT_max3inCross_2LessThreshold, '
 legend_max3inCross_2LessThreshold.AddEntry(h_QCD_max3inCross_2LessThreshold, 'QCD, entries = ' + str(h_QCD_max3inCross_2LessThreshold.GetEntries()), 'l')
 legend_max3inCross_2LessThreshold.Draw('same')
 legend_max3inCross_2LessThreshold.SetBorderSize(0)
+
+#Save histograms on same canvas
+if sameCanvas:
+    print 'Saving histograms on same canvas...'
+    c.SaveAs(saveDir+'towerConfigHistos_3x5_endcap_ptover60.pdf')
