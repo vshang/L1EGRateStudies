@@ -2,13 +2,13 @@ import FWCore.ParameterSet.Config as cms
 
 from Configuration.StandardSequences.Eras import eras
 
-process = cms.Process('L1Jets2',eras.Phase2C4_trigger)
+process = cms.Process('L1Jets2',eras.Phase2C9)
 
 process.load('Configuration.StandardSequences.Services_cff')
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.load('Configuration.EventContent.EventContent_cff')
-process.load('Configuration.Geometry.GeometryExtended2023D35Reco_cff')
-process.load('Configuration.Geometry.GeometryExtended2023D35_cff')
+process.load('Configuration.Geometry.GeometryExtended2026D41Reco_cff')
+process.load('Configuration.Geometry.GeometryExtended2026D41_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 #Victor's edit: Load track files
@@ -32,8 +32,8 @@ process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
    reportEvery = cms.untracked.int32(100)
 )
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
+#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100000) )
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
@@ -43,15 +43,17 @@ process.source = cms.Source("PoolSource",
 )
 
 
-out_path = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20190909_r2/'
+#out_path = '/nfs_scratch/vshang/'
+out_path = '/afs/hep.wisc.edu/home/vshang/public/test/CMSSW_11_1_3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20210101_r2/'
 #out_path = '/afs/cern.ch/user/v/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/testR2sample_Victor/'
+#name = "VBFHiggsTauTau"
 #name = "HiggsTauTauvL1EGs"
 #name = "HiggsTauTau"
-#name = "minBias"
+name = "minBias"
 #name = "HiggsTauTau_test"
 #name = "QCD_test"
 #name = "HiggsTauTau_withTracks"
-name = "minBias_withTracks"
+#name = "minBias_withTracks"
 #name = "QCD_testv2"
 # Load samples from external files here:
 from L1Trigger.L1EGRateStudies.loadRound2Files import getSampleFiles
@@ -62,7 +64,7 @@ process.source.fileNames = getSampleFiles( name )
                          
 # ---- Global Tag :
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '103X_upgrade2023_realistic_v2', '') 
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '') 
 
 #Victor's edit: run track process
 # process.L1TrackTrigger_step = cms.Path(process.L1TrackletTracksWithAssociators) 
@@ -113,7 +115,7 @@ process.pL1Objs = cms.Path(
 # Analyzer starts here
 
 process.analyzer = cms.EDAnalyzer('L1CaloJetStudies',
-    L1TrackInputTag = cms.InputTag("L1CaloJetProducer", "Level1TTTracks"), #Victor's track matching edit: add track info from L1CaloJetProducer
+    #L1TrackInputTag = cms.InputTag("L1CaloJetProducer", "Level1TTTracks"), #Victor's track matching edit: add track info from L1CaloJetProducer
     L1CaloJetsInputTag = cms.InputTag("L1CaloJetProducer","L1CaloJetsNoCuts"),
     genJets = cms.InputTag("ak4GenJetsNoNu", "", "HLT"),
     genHadronicTauSrc = cms.InputTag("tauGenJetsSelectorAllHadrons"),
@@ -122,8 +124,8 @@ process.analyzer = cms.EDAnalyzer('L1CaloJetStudies',
     debug = cms.untracked.bool(False),
     doRate = cms.untracked.bool(False),
     use_gen_taus = cms.untracked.bool(True),
-    Stage2JetTag = cms.InputTag("simCaloStage2Digis", "MP", "HLT"),
-    Stage2TauTag = cms.InputTag("simCaloStage2Digis", "MP", "HLT"),
+    Stage2JetTag = cms.InputTag("simCaloStage2Digis", "MP", "RECO"),
+    Stage2TauTag = cms.InputTag("simCaloStage2Digis", "MP", "RECO"),
     puSrc = cms.InputTag("addPileupInfo")
 )
 
@@ -135,7 +137,7 @@ process.panalyzer = cms.Path(process.analyzer)
 
 
 process.TFileService = cms.Service("TFileService", 
-    fileName = cms.string( out_path+"output_round2_"+name+"_passJEFThreshold.root" ),
+    fileName = cms.string( out_path+"output_round2_"+name+"_test.root" ),
     closeFileFast = cms.untracked.bool(True)
 )
 

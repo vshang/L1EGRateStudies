@@ -3,12 +3,11 @@
 <use name="FWCore/ParameterSet"/>
 <use name="CommonTools/UtilAlgos"/>
 <use name="PhysicsTools/UtilAlgos"/>
-<use name="DataFormats/Phase2L1CaloTrig"/>
+<use name="DataFormats/L1TCalorimeterPhase2"/>
 <use name="DataFormats/EcalDigi"/>
 <use name="L1Trigger/L1CaloTrigger"/>
 <use name="FastSimulation/CaloGeometryTools"/>
 <use name="FastSimulation/Particle"/>
-<use name="FastSimulation/BaseParticlePropagator"/>
 <use name="DataFormats/JetReco"/>
 <use name="hepmc"/>
 <use name="heppdt"/>

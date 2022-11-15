@@ -1,19 +1,28 @@
+from L1Trigger.L1EGRateStudies.trigHelpers import checkDir
 from ROOT import *
 
 #Select and load root files here
-name = 'output_round2_HiggsTauTau_withTracks'
-f1 = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20190909_r2/' + name + '_notTrackMatched.root', '')
+file = 'output_round2_VBFHiggsTauTau_test'
+#name = 'output_round2_TTbarv1'
+date = '02_09_2021'
+f1 = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/test/CMSSW_11_1_3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20210101_r2/' + file + '.root')
+#f1 = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20190909_r2/' + name + '_notTrackMatched.root', '')
 #f2 = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20190909_r2/' + name + '_trackMatchedwithTrackdR.root', '')
 #f2 = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20190909_r2/output_round2_HiggsTauTauv1.root', '')
 
 #Set save directory here
-saveDirectory = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/resolutions/'
+saveDirectory = '/afs/hep.wisc.edu/home/vshang/public/test/CMSSW_11_1_3/src/L1Trigger/L1EGRateStudies/test/resolutions/' + date + '/' 
+checkDir( saveDirectory)
 
 #Set number of histogram bins and maximum value of x and y axis here
+# nBins = 50
+# xMin = -0.5
+# xMax = 2
+# yMax = 0.1
 nBins = 50
-xMin = -0.5
-xMax = 2
-yMax = 0.1
+xMin = -1
+xMax = 1
+yMax = 1
 
 #Remove stats box from histograms by setting argument to 0
 gStyle.SetOptStat(0)
@@ -26,99 +35,106 @@ eventTree1 = f1.Get('analyzer/tree')
 ##Create distribution plots of minimum dR between reco jets and all tracks
 ##-----------------------------------------------------------------------------------------------
 
-#Define histogramg
-print('Creating histograms...')
-histo_1= TH1F('histo_1', '; #tau_{h} E_{T} within core / Total Gen #tau E_{T}; Fraction of Events', nBins, xMin, xMax)
-histo_2 = TH1F('histo_2', '; #tau_{h} E_{T} within core / Total Gen #tau E_{T}; Fraction of Events', nBins, xMin, xMax)
-histo_3 = TH1F('histo_3', '; #tau_{h} E_{T} within core / Total Gen #tau E_{T}; Fraction of Events', nBins, xMin, xMax)
+#Define eta list and fill histograms
+print('Creating eta list...')
+hists = {}
+means = []
+errs = []
+eta_list = [i*0.0873 for i in range(17)] + [1.479+i*0.0845 for i in range(19)]
+tower_eta_list = [0.04365+i*0.0873 for i in range(17)] + [1.52125+i*0.0845 for i in range(18)]
+print 'eta list = ', eta_list
+print 'tower eta list = ', tower_eta_list
 
-#Fill histogramg
-print('Filling histograms...')
-nEntries1 = eventTree1.GetEntries()
-#nEntries2 = eventTree2.GetEntries()
-for i in range(nEntries1):
-    eventTree1.GetEntry(i)
-    if abs(eventTree1.genJet_eta) < 1.4 and eventTree1.genJet_pt > 20 and eventTree1.calibPtHH > 0:
-        genJet_pt = eventTree1.genJet_pt
-        total_2x3a = eventTree1.total_22 + eventTree1.total_23 + eventTree1.total_seed + eventTree1.total_33 + eventTree1.total_42 + eventTree1.total_43
-        total_2x3b = eventTree1.total_21 + eventTree1.total_22 + eventTree1.total_31 + eventTree1.total_seed + eventTree1.total_41 + eventTree1.total_42
-        total_2x3 = max(total_2x3a, total_2x3b)
-        total_3x5 = eventTree1.total_3x5
-        total_7x7 = eventTree1.total_7x7
+for i in range(len(eta_list)-1):
+    hist = TH1F('hist', '; P_{T}^{CaloJet} resolution; Fraction of Events', nBins, xMin, xMax)
+    hists['hist_'+str(i)] = TH1F('hist_'+str(i), '; P_{T}^{CaloJet} resolution; Fraction of Events', nBins, xMin, xMax)
+    var = '(genJet_pt - jet_pt)/genJet_pt'
+    cut = 'genJet_eta >= ' + str(eta_list[i]) + ' && genJet_eta < ' + str(eta_list[i+1])
+    print ' i = ', i
+    print '        var = ', var
+    print '        cut = ', cut
+    eventTree1.Draw(var + '>>hist', cut)
+    hists['hist_'+str(i)] += hist
+    print '        hist integral = ', hists['hist_'+str(i)].Integral()
+    print '--------------------------'
 
-        histo_1.Fill(total_2x3/genJet_pt)
-        histo_2.Fill(total_3x5/genJet_pt)
-        histo_3.Fill(total_7x7/genJet_pt)
-        #resolution1 = (eventTree1.calibPtHH - eventTree1.genJet_pt)/eventTree1.genJet_pt
-        #histo_1.Fill(resolution1)
-# for i in range(nEntries2):
-#     eventTree2.GetEntry(i)
-#     if abs(eventTree2.genJet_eta) < 1.4:# and eventTree2.genJet_pt > 30 and eventTree2.genJet_pt < 34:
-#         resolution2 = (eventTree2.calibPtHH - eventTree2.genJet_pt)/eventTree2.genJet_pt
-#         histo_2.Fill(resolution2)
-
-#Normalize histograms to unit area
+#Normalize histograms to unit area and set y axis limits
 print('Normalizing histograms...')
-histo_1.Scale(1/histo_1.Integral())
-histo_2.Scale(1/histo_2.Integral())
-histo_3.Scale(1/histo_3.Integral())
+for name in hists:
+    hists[name].Scale(1/hists[name].Integral())
+    hists[name].SetMinimum(0)
+    hists[name].SetMaximum(yMax)
 
-#Draw histograms
-print('Drawing histograms')
-canvas = TCanvas('canvas', 'Jet p_{T} resolution')
+#Define Gaussian functions to fit and store mean and err
+print('Fitting histograms..')
+for i in range(len(hists)):
+    f1 = TF1('f1', '([0]*exp(-0.5*((x-[1])/[2])^2))', xMin, xMax)
+    f1.SetParName(0, 'norm')
+    f1.SetParName(1, 'mean')
+    f1.SetParName(2, 'err')
+    f1.SetParameter(0, 1.)
+    f1.SetParameter(1, 0.)
+    f1.SetParameter(2, 0.2)
+    hists['hist_'+str(i)].Fit('f1')
+    means.append(f1.GetParameter('mean'))
+    errs.append(abs(f1.GetParameter('err')))
 
-histo_1.Draw('hist e')
-histo_2.Draw('hist e same')
-histo_3.Draw('hist e same')
-#Set histo_1 histogram options
-histo_1.SetLineColor(kBlack)
-histo_1.SetLineWidth(2)
-histo_1.SetMinimum(0)
-histo_1.SetMaximum(yMax)
-#Set histo_2 histogram options
-histo_2.SetLineColor(kRed)
-histo_2.SetLineStyle(3)
-histo_2.SetLineWidth(2)
-histo_2.SetMinimum(0)
-histo_2.SetMaximum(yMax)
-#Set histo_3 histogram options
-histo_3.SetLineColor(kBlue)
-histo_3.SetLineStyle(2)
-histo_3.SetLineWidth(2)
-histo_3.SetMinimum(0)
-histo_3.SetMaximum(yMax)
-#Add legend
-legend = TLegend(0.16, 0.55, 0.45, 0.85)
-legend.AddEntry(histo_1, '2x3 #tau_{h} core', 'le')
-legend.AddEntry(histo_2, '3x5 #tau_{h} core', 'le')
-legend.AddEntry(histo_3, '7x7 #tau_{h} core', 'le')
+print 'list of means: ', means
+print 'list of errs: ', errs
+
+#Define mean and error graphs
+n = len(tower_eta_list)
+graph_mean = TGraph()
+graph_err = TGraph()
+for i in range(n):
+    graph_mean.SetPoint(i, tower_eta_list[i], means[i])
+    graph_err.SetPoint(i, tower_eta_list[i], errs[i])
+
+#Draw graphs
+print('Drawing plots')
+c_hists = TCanvas('c_hists', 'Jet p_{T} resolution')
+for name in hists:
+    if name == 'hist_0':
+        hists[name].Draw('hist PLC')
+        hists[name].SetMinimum(0)
+        hists[name].SetMaximum(0.12)
+        hists[name].SetTitle('Jet p_{T} resolution')
+        hists[name].GetXaxis().SetTitle('(genJet p_{T} - jet p_{T})/genJet p_{T}')
+    else:
+        hists[name].Draw('hist same PLC')
+# for i in range(len(hists)):
+#     if i <= 8:
+#         hists['hist_'+str(i)].SetLineColor(1+i)
+#     else:
+#         hists['hist_'+str(i)].SetLineColor(22+i)
+
+legend = TLegend(0.2, 0.65, 0.85, 0.85)
+legend.SetNColumns(6)
+for i in range(len(hists)):
+    legend.AddEntry(hists['hist_'+str(i)], str(eta_list[i]) + ' #leq #eta < ' + str(eta_list[i+1]), 'l')  
 legend.Draw('same')
 legend.SetBorderSize(0)
-#Set text size
-histo_1.SetTitleSize(0.04, 'xyz')
-histo_2.SetTitleSize(0.04, 'xyz')
-histo_3.SetTitleSize(0.04, 'xyz')
-legend.SetTextSize(0.04)
+legend.SetFillStyle(0)
 
-#Set title
-title = TLatex()
-title.SetTextSize(0.045)
-title.DrawLatexNDC(.12, .91, "CMS")
-title.SetTextSize(0.030)
-title.DrawLatexNDC(.19, .91, "Phase-2 Simulation")
-title.SetTextSize(0.035)
-title.DrawLatexNDC(.74, .91, "14 TeV, 200 PU")
 
-#Set selection cut text
-txt = TLatex()
-txt.SetTextSize(0.040)
-txt.DrawLatexNDC(.68, .83,  "|#eta^{GenTau}| < 1.4")
-txt.DrawLatexNDC(.68, .76, "p_{T}^{GenTau} > 20 GeV")
+c_mean = TCanvas('c_mean', 'Jet p_{T} resolution mean')
+graph_mean.Draw('ALP')
+graph_mean.SetMarkerSize(2)
+graph_mean.SetTitle('Jet p_{T} resolution mean vs #eta_{seed}')
+graph_mean.GetXaxis().SetTitle('#eta_{seed}')
+graph_mean.GetYaxis().SetTitle('Jet p_{T} resolution mean')
 
-#Set grid
-canvas.SetGrid()
+c_err = TCanvas('c_err', 'Jet p_{T} resolution standard deviation')
+graph_err.Draw('ALP')
+graph_err.SetMarkerSize(2)
+graph_err.SetTitle('Jet p_{T} resolution std dev vs #eta_{seed}')
+graph_err.GetXaxis().SetTitle('#eta_{seed}')
+graph_err.GetYaxis().SetTitle('Jet p_{T} resolution std dev')
+graph_err.SetMinimum(0)
 
 #Save histograms
-print('Saving histograms...')
-canvas.SaveAs(saveDirectory+name + '_tauCoreResolutionPlots.pdf')
-print('Saved histograms')
+print('Saving plots...')
+c_hists.SaveAs(saveDirectory + file + '_res.pdf')
+c_mean.SaveAs(saveDirectory + file + '_resMean.pdf')
+c_err.SaveAs(saveDirectory + file + '_resErr.pdf')
+print('Saved plots')

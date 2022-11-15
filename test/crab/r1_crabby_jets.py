@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 from Configuration.StandardSequences.Eras import eras
 
-process = cms.Process('REPR',eras.Phase2C4_trigger)
+process = cms.Process('REPR',eras.Phase2C9)
  
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -10,8 +10,8 @@ process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('SimGeneral.MixingModule.mixNoPU_cfi')
-process.load('Configuration.Geometry.GeometryExtended2023D35Reco_cff')
-process.load('Configuration.Geometry.GeometryExtended2023D35_cff')
+process.load('Configuration.Geometry.GeometryExtended2026D41Reco_cff')
+process.load('Configuration.Geometry.GeometryExtended2026D41_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration.StandardSequences.SimL1Emulator_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
@@ -50,7 +50,7 @@ process.source = cms.Source("PoolSource",
 
 # ---- Global Tag :
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '103X_upgrade2023_realistic_v2', '') 
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '') 
 
 
 # Add HCAL Transcoder
@@ -65,8 +65,8 @@ process.L1simulation_step = cms.Path(process.SimL1Emulator)
 ### of the two lines below.  It makes the test script run!
 ### from L1Trigger.Configuration.customiseUtils import L1TrackTriggerTracklet
 ### process = L1TrackTriggerTracklet(process)
-process.load('L1Trigger.TrackFindingTracklet.L1TrackletTracks_cff')
-process.L1TrackTriggerTracklet_step = cms.Path(process.L1TrackletTracksWithAssociators)
+process.load('L1Trigger.TrackFindingTracklet.L1HybridEmulationTracks_cff')
+process.L1TrackTriggerTracklet_step = cms.Path(process.L1HybridTracksWithAssociators)
 
 
 
@@ -128,7 +128,7 @@ process.Out = cms.OutputModule( "PoolOutputModule",
                           #"keep *_L1EGammaClusterEmuProducer_*_*",
                           #"keep *_L1TowerCalibrationProducer_*_*",
                           "keep *_L1CaloJetProducer_*_*",
-                          "keep *_simCaloStage2Digis_MP_HLT",
+                          "keep *_simCaloStage2Digis_MP_RECO",
                           "keep *_addPileupInfo_*_*",
                           "keep *_ak4GenJetsNoNu__HLT",
                           "keep *_tauGenJetsSelectorAllHadrons_*_*",

@@ -14,14 +14,14 @@ ROOT.gStyle.SetOptStat(0)
 doTau = True
 #doTau = False
 
-doEff = True
-#doEff = False
+#doEff = True
+doEff = False
 
 doPtEff = True
 #doPtEff = False
 
-#doRate = True
-doRate = False
+doRate = True
+#doRate = False
 
 doRateFirstHalf = True
 #doRateFirstHalf = False
@@ -39,10 +39,10 @@ s2Obj = 'stage2jet_pt_calib'
 #s2Obj = 'stage2jet_pt_calibration3'
 s2ObjEta = 'stage2jet_eta'
 if doTau :
-    p2Obj = 'calibPtHH'
-    #p2Obj = 'tau_pt'
-    #s2Obj = 'stage2tau_pt'
-    s2Obj = 'stage2tau_pt_calibration3'
+    #p2Obj = 'calibPtHH'
+    p2Obj = 'tau_pt'
+    s2Obj = 'stage2tau_pt'
+    #s2Obj = 'stage2tau_pt_calibration3'
     s2ObjEta = 'stage2tau_eta'
 
 text = 'Jet' if not doTau else 'Tau'
@@ -50,11 +50,12 @@ text = 'Jet' if not doTau else 'Tau'
 
 if doEff :
     #fName = 'output_round2_HiggsTauTau_withTracks_trackMatchedwithTrackdR'
-    fName = 'output_round2_HiggsTauTau_withTracks_passJEFThreshold'
+    #fName = 'output_round2_HiggsTauTau_withTracks_passJEFThreshold'
+    fName = 'output_round2_VBFHiggsTauTau_test'
     #fName = 'output_round2_QCDv1'
-    date = '20200128'
-    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20190909_r2/'
-    universalSaveDir = "/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/efficiencies/"+date+"/"+fName+"/"
+    date = '20210101'
+    base = '/afs/hep.wisc.edu/home/vshang/public/test/CMSSW_11_1_3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20210101_r2/'
+    universalSaveDir = "/afs/hep.wisc.edu/home/vshang/public/test/CMSSW_11_1_3/src/L1Trigger/L1EGRateStudies/test/efficiencies/"+date+"/"+fName+"/"
     checkDir( universalSaveDir )
 
     f = ROOT.TFile( base+fName+'.root', 'r' )
@@ -76,10 +77,10 @@ if doEff :
     """ Pt Eff """
     if doPtEff :
         # Use eta cuts to restrict when doing pT efficiencies
-        #denom_cut = 'abs(genJet_eta)<1.4'
-        denom_cut = 'abs(genJet_eta)>1.6 && abs(genJet_eta)<2.6'
-        #denom_cut_label = '|#eta^{GenTau}| < 1.4'
-        denom_cut_label = '1.6 < |#eta^{GenTau}| < 2.6'
+        denom_cut = 'abs(genJet_eta)<1.4'
+        #denom_cut = 'abs(genJet_eta)>1.6 && abs(genJet_eta)<2.6'
+        denom_cut_label = '|#eta^{GenTau}| < 1.4'
+        #denom_cut_label = '1.6 < |#eta^{GenTau}| < 2.6'
         axis = [160, 0, 400]
         if doTau :
             axis = [150, 0, 150]
@@ -166,7 +167,7 @@ if doEff :
     
     app = 'ptEff' if doPtEff else 'etaEff_ptDenom%i' % denom_pt
     #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_include_S2Iso.png' % (pt_cut, app) )
-    c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_endcap.pdf' % (pt_cut, app) )
+    c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_barrel_newv2.pdf' % (pt_cut, app) )
     #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_IsoTaus_NoS2.pdf' % (pt_cut, app) )
     #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_HGCal.png' % (pt_cut, app) )
 
@@ -174,12 +175,12 @@ if doEff :
 if doRate :
 
     #fName = 'output_round2_minBias_withTracks_passJEFThreshold'
-    fName = 'output_round2_minBiasv1'
+    fName = 'output_round2_minBias_test'
     #fName = 'output_round2_minBias_withTracks_trackMatchedwithTrackdR'
-    date = '20200128'
-    #base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20190909_r2/'
-    base = '/hdfs/store/user/vshang/l1CaloJets_20190723_r2/'
-    universalSaveDir = "/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/rates/"+date+"/"+fName+"/"
+    date = '20210116'
+    base = '/afs/hep.wisc.edu/home/vshang/public/test/CMSSW_11_1_3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20210101_r2/'
+    #base = '/hdfs/store/user/vshang/l1CaloJets_20210101_r2/'
+    universalSaveDir = "/afs/hep.wisc.edu/home/vshang/public/test/CMSSW_11_1_3/src/L1Trigger/L1EGRateStudies/test/rates/"+date+"/"+fName+"/"
     checkDir( universalSaveDir )
 
 
@@ -250,7 +251,7 @@ if doRate :
     
     colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray+2]
     #saveName = 'output_round2_minBias_withTracks_trackMatchedwithTrackdR'
-    saveName = 'output_round2_minBiasv1'
+    saveName = 'output_round2_minBias_test'
     #saveName = 'output_round2_minBias_withTracks_passJEFThreshold'
     x_info_rebin = [100, 0, 160]
 

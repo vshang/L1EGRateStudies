@@ -337,9 +337,12 @@ def add_tau_calibration( name_in, quantile_map ) :
     f1Barrel.SetParName( 0, "y rise" )
     f1Barrel.SetParName( 1, "scale" )
     f1Barrel.SetParName( 2, "decay" )
-    f1Barrel.SetParameter( 0, 0.25 )
-    f1Barrel.SetParameter( 1, 0.85 )
-    f1Barrel.SetParameter( 2, 0.094 )
+    # f1Barrel.SetParameter( 0, 0.25 ) #Old IsoTau threshold calibrations
+    # f1Barrel.SetParameter( 1, 0.85 )
+    # f1Barrel.SetParameter( 2, 0.094 )
+    f1Barrel.SetParameter( 0, 0.30 ) #Updated IsoTau threshold calibrations
+    f1Barrel.SetParameter( 1, 0.31 )
+    f1Barrel.SetParameter( 2, 0.040 )
     
     f1HGCal = ROOT.TF1( 'isoTauHGCal', '([0] + [1]*TMath::Exp(-[2]*x))')
     f1HGCal.SetParName( 0, "y rise" )
@@ -554,7 +557,8 @@ if '__main__' in __name__ :
     #prepare_calibration_cfg = True
     #plot_calibrated_results = True
 
-    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20190909_r2/'
+    base = '/afs/hep.wisc.edu/home/vshang/public/test/CMSSW_11_1_3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20210101_r2/'
+    #base = '/hdfs/store/user/vshang/l1CaloJets_20210101_r2/'
     #base = '/data/truggles/l1CaloJets_20190417_r2/' # For Jets
 
     shapes = [
@@ -564,8 +568,11 @@ if '__main__' in __name__ :
         #'output_round2_HiggsTauTau_withTracks_notTrackMatched'
         #'output_round2_minBias_withTracks_trackMatchedwithTrackdR'
         #'output_round2_QCDv1'
-        'output_round2_minBias_withTracks_passJEFThreshold'
+        #'output_round2_minBias_withTracks_passJEFThreshold'
         #'output_round2_HiggsTauTau_withTracks_passJEFThreshold'
+        #'output_round2_TTbarv1'
+        #'output_round2_VBFHiggsTauTau_test'
+        'output_round2_minBias_test'
     ]
 
     for shape in shapes :
@@ -575,7 +582,7 @@ if '__main__' in __name__ :
         jetsF0 = '%s.root' % shape
         date = jetsF0.replace('merged_','').replace('.root','')
         date = base.split('/')[-2].replace('l1CaloJets_','')+shape
-        plotDir = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_10_5_0_pre1/src/L1Trigger/L1EGRateStudies/test/crab'+date+'Vxy1'
+        plotDir = '/afs/hep.wisc.edu/home/vshang/public/test/CMSSW_11_1_3/src/L1Trigger/L1EGRateStudies/test/crab'+date+'Vxy1'
         if not os.path.exists( plotDir ) : os.makedirs( plotDir )
 
         c = ROOT.TCanvas('c', '', 800, 700)
@@ -593,7 +600,7 @@ if '__main__' in __name__ :
             print jetFile
             tree = jetFile.Get("analyzer/tree")
 
-            if ('qcd' in shape or 'QCD' in shape) and doJets :
+            if ('qcd' in shape or 'QCD' in shape or True) and doJets :
                 make_em_fraction_calibrations( c, base+jetsF0, cut, plotDir )
             if 'Tau' in shape and doTaus :
                 make_tau_calibrations( c, base+jetsF0, cut, plotDir )

@@ -1,0 +1,24 @@
+fileName =  VBF
+region =  barrel
+Creating histograms...
+Filling histograms...
+Computing efficiency curve for Iso Tau performance...
+Fitting new Iso Tau threshold function...
+Info in <TCanvas::MakeDefCanvas>:  created default TCanvas with name c1
+ FCN=0.0141375 FROM MIGRAD    STATUS=CONVERGED     117 CALLS         118 TOTAL
+                     EDM=1.85349e-08    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  y rise       2.98514e-01   1.37919e-01   4.60042e-05   6.51945e-04
+   2  scale        3.13120e-01   2.79528e+00   4.36936e-04  -4.66598e-05
+   3  decay        4.03957e-02   2.85430e-01   3.88874e-05   7.98146e-04
+old y rise:  0.25
+Info in <TCanvas::Print>: file /afs/hep.wisc.edu/home/vshang/public/test/CMSSW_11_1_3/src/L1Trigger/L1EGRateStudies/test/isoTauStudies/isoTauVariable2D_VBF_barrelv2.png has been created
+old scale:  0.85
+old decay:  0.094
+new y rise:  0.298514437364
+new scale:  0.313119886517
+new decay:  0.0403957437976
+Drawing histograms...
+Saving histogram...
+Saved histogram
