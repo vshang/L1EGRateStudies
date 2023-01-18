@@ -57,7 +57,7 @@ def makeNewCutTrees( ifileName, ofileName, cut ) :
     newEffFile = ROOT.TFile(ofileName,'RECREATE')
     ETree = eTree.CopyTree( cut )
     ETree.SetName('events')
-    print "Post Cut - New tree has %i events" % ETree.GetEntries()
+    print("Post Cut - New tree has %i events" % ETree.GetEntries())
     newEffFile.cd()
     ETree.Write()
     newEffFile.Close()
@@ -78,7 +78,7 @@ def make_efficiency_graph( tree, base_cut, threshold_cut, x_var, x_info ) :
     return g
 
 def make_rate_hist( nEvents, tree, x_var, x_var_calib, eta_var, eta_min, eta_max, x_info, wp='' ) : 
-    print "Making rate for x_var %s,\n x_var_calib %f,\n eta_var %s,\n eta_min %.2f,\n eta_max %.2f,\n wp %s" % (x_var, x_var_calib, eta_var, eta_min, eta_max, wp)
+    print("Making rate for x_var %s,\n x_var_calib %f,\n eta_var %s,\n eta_min %.2f,\n eta_max %.2f,\n wp %s" % (x_var, x_var_calib, eta_var, eta_min, eta_max, wp))
     h1 = ROOT.TH1F('hist', 'hist', x_info[0], x_info[1], x_info[2])
 
     previous_event = -1
@@ -87,7 +87,7 @@ def make_rate_hist( nEvents, tree, x_var, x_var_calib, eta_var, eta_min, eta_max
     cnt = 0
     for row in tree :
         cnt += 1
-        if cnt % 100000 == 0 : print cnt
+        if cnt % 100000 == 0 : print(cnt)
         evt = row.event
         # Initial row
         if previous_event == -1 : previous_event = evt
@@ -127,7 +127,7 @@ def make_rate_hist( nEvents, tree, x_var, x_var_calib, eta_var, eta_min, eta_max
 
 #Victor's edit: same as make_rate_hist, but for double tau trigger as a function of the lower pt tau
 def make_rate_hist2( nEvents, tree, x_var, x_var_calib, eta_var, eta_min, eta_max, x_info, wp='' ) : 
-    print "Making rate for x_var %s,\n x_var_calib %f,\n eta_var %s,\n eta_min %.2f,\n eta_max %.2f,\n wp %s" % (x_var, x_var_calib, eta_var, eta_min, eta_max, wp)
+    print("Making rate for x_var %s,\n x_var_calib %f,\n eta_var %s,\n eta_min %.2f,\n eta_max %.2f,\n wp %s" % (x_var, x_var_calib, eta_var, eta_min, eta_max, wp))
     h1 = ROOT.TH1F('hist', 'hist', x_info[0], x_info[1], x_info[2])
 
     previous_event = -1
@@ -138,7 +138,7 @@ def make_rate_hist2( nEvents, tree, x_var, x_var_calib, eta_var, eta_min, eta_ma
     ntaus = 0
     for row in tree :
         cnt += 1
-        if cnt % 100000 == 0 : print cnt
+        if cnt % 100000 == 0 : print(cnt)
         evt = row.event
         # Initial row
         if previous_event == -1 : previous_event = evt

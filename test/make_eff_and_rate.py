@@ -4,9 +4,9 @@ from L1Trigger.L1EGRateStudies.trigHelpers import make_efficiency_graph, make_ra
 import os
 from L1Trigger.L1EGRateStudies.trigHelpers import drawCMSString
 
-if not os.path.exists( 'eff_and_rate_roots/' ) : os.makedirs( 'eff_and_rate_roots/' )
-if not os.path.exists( 'eff_and_rate_roots_jets/' ) : os.makedirs( 'eff_and_rate_roots_jets/' )
-if not os.path.exists( 'eff_and_rate_roots2/' ) : os.makedirs( 'eff_and_rate_roots2/' )
+#if not os.path.exists( 'eff_and_rate_roots/' ) : os.makedirs( 'eff_and_rate_roots/' )
+#if not os.path.exists( 'eff_and_rate_roots_jets/' ) : os.makedirs( 'eff_and_rate_roots_jets/' )
+#if not os.path.exists( 'eff_and_rate_roots2/' ) : os.makedirs( 'eff_and_rate_roots2/' )
 
 ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
@@ -17,8 +17,8 @@ doTau = True
 #doEff = True
 doEff = False
 
-doPtEff = True
-#doPtEff = False
+#doPtEff = True
+doPtEff = False
 
 doRate = True
 #doRate = False
@@ -51,11 +51,11 @@ text = 'Jet' if not doTau else 'Tau'
 if doEff :
     #fName = 'output_round2_HiggsTauTau_withTracks_trackMatchedwithTrackdR'
     #fName = 'output_round2_HiggsTauTau_withTracks_passJEFThreshold'
-    fName = 'output_round2_VBFHiggsTauTau_test'
+    fName = 'output_round2_HiggsTauTau'
     #fName = 'output_round2_QCDv1'
-    date = '20210101'
-    base = '/afs/hep.wisc.edu/home/vshang/public/test/CMSSW_11_1_3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20210101_r2/'
-    universalSaveDir = "/afs/hep.wisc.edu/home/vshang/public/test/CMSSW_11_1_3/src/L1Trigger/L1EGRateStudies/test/efficiencies/"+date+"/"+fName+"/"
+    date = '20221208'
+    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20221208_r2/'
+    universalSaveDir = "/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/efficiencies/"+date+"/"+fName+"/"
     checkDir( universalSaveDir )
 
     f = ROOT.TFile( base+fName+'.root', 'r' )
@@ -77,10 +77,10 @@ if doEff :
     """ Pt Eff """
     if doPtEff :
         # Use eta cuts to restrict when doing pT efficiencies
-        denom_cut = 'abs(genJet_eta)<1.4'
-        #denom_cut = 'abs(genJet_eta)>1.6 && abs(genJet_eta)<2.6'
-        denom_cut_label = '|#eta^{GenTau}| < 1.4'
-        #denom_cut_label = '1.6 < |#eta^{GenTau}| < 2.6'
+        #denom_cut = 'abs(genJet_eta)<1.4'
+        denom_cut = 'abs(genJet_eta)>1.6 && abs(genJet_eta)<2.8'
+        #denom_cut_label = '|#eta^{GenTau}| < 1.4'
+        denom_cut_label = '1.6 < |#eta^{GenTau}| < 2.8'
         axis = [160, 0, 400]
         if doTau :
             axis = [150, 0, 150]
@@ -167,7 +167,7 @@ if doEff :
     
     app = 'ptEff' if doPtEff else 'etaEff_ptDenom%i' % denom_pt
     #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_include_S2Iso.png' % (pt_cut, app) )
-    c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_barrel_newv2.pdf' % (pt_cut, app) )
+    c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s.pdf' % (pt_cut, app) )
     #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_IsoTaus_NoS2.pdf' % (pt_cut, app) )
     #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_HGCal.png' % (pt_cut, app) )
 
@@ -175,38 +175,38 @@ if doEff :
 if doRate :
 
     #fName = 'output_round2_minBias_withTracks_passJEFThreshold'
-    fName = 'output_round2_minBias_test'
+    fName = 'output_round2_minBias'
     #fName = 'output_round2_minBias_withTracks_trackMatchedwithTrackdR'
-    date = '20210116'
-    base = '/afs/hep.wisc.edu/home/vshang/public/test/CMSSW_11_1_3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20210101_r2/'
+    date = '20221208'
+    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20221208_r2/'
     #base = '/hdfs/store/user/vshang/l1CaloJets_20210101_r2/'
-    universalSaveDir = "/afs/hep.wisc.edu/home/vshang/public/test/CMSSW_11_1_3/src/L1Trigger/L1EGRateStudies/test/rates/"+date+"/"+fName+"/"
+    universalSaveDir = "/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/rates/"+date+"/"+fName+"/"
     checkDir( universalSaveDir )
 
 
 
     f = ROOT.TFile( base+fName+'.root', 'r' )
-    print f
+    print(f)
     t = f.Get('analyzer/tree')
 
     # We used cuts to make a slimmed ttree for looping, so need to get nEvents from the
     # original file
 
     fEvents = ROOT.TFile( base+fName.replace('_withCuts','')+'.root', 'r' )
-    print fEvents
+    print(fEvents)
     nEvents = fEvents.Get('analyzer/nEvents').Integral()
     #nEvents = f.Get('analyzer/nEvents').Integral()
 
     # Min and Max eta thresholds for barrel, HGCal, HF rates
     eta_thresholds = OrderedDict()
     if doTau :
-        #eta_thresholds['all']    = [0., 2.8, ROOT.kBlack]
+        eta_thresholds['all']    = [0., 2.8, ROOT.kBlack]
         #eta_thresholds['runII']  = [0., 2.1, ROOT.kBlue]
-        eta_thresholds['runII']  = [0., 2.172, ROOT.kBlue]
+        #eta_thresholds['runII']  = [0., 2.172, ROOT.kBlue]
     else :
         eta_thresholds['all']    = [0., 6.0, ROOT.kBlack]
-    #eta_thresholds['barrel'] = [0., 1.5, ROOT.kRed]
-    eta_thresholds['barrel'] = [0., 1.4, ROOT.kRed]
+    eta_thresholds['barrel'] = [0., 1.5, ROOT.kRed]
+    #eta_thresholds['barrel'] = [0., 1.4, ROOT.kRed]
     #eta_thresholds['hgcal']  = [1.5, 3.0, ROOT.kBlue]
     if not doTau :
         eta_thresholds['hf']     = [3.0, 6.0, ROOT.kGreen+3]
@@ -225,7 +225,7 @@ if doRate :
     
     """ This portion takes a long time, only do it if doRateFirstHalf is True """
     if doRateFirstHalf :
-        for name, thresholds in eta_thresholds.iteritems() :
+        for name, thresholds in eta_thresholds.items() :
             hP2 = make_rate_hist( nEvents, t, p2Obj, 1.0, 'jet_eta', thresholds[0], thresholds[1], x_info ) 
             #hP2 = make_rate_hist2( nEvents, t, p2Obj, 1.0, 'jet_eta', thresholds[0], thresholds[1], x_info ) #Uncomment to make double tau rate plot
             hP2.SaveAs( 'eff_and_rate_roots/'+fName+'_'+name+'_Phase-2.root' )
@@ -246,12 +246,12 @@ if doRate :
             #del hS22
 
     if not doRateSecondHalf :
-        print "Skip second half of rate code"
+        print("Skip second half of rate code")
         assert(0)
     
     colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray+2]
     #saveName = 'output_round2_minBias_withTracks_trackMatchedwithTrackdR'
-    saveName = 'output_round2_minBias_test'
+    saveName = 'output_round2_minBias'
     #saveName = 'output_round2_minBias_withTracks_passJEFThreshold'
     x_info_rebin = [100, 0, 160]
 
@@ -277,13 +277,13 @@ if doRate :
     # plot_map['all']['Phase-2_matched'] = ['Tau', 0]
     # plot_map['all']['Phase-2'] = ['Tau', 2]
 
-    for plot, samples in plot_map.iteritems() :
+    for plot, samples in plot_map.items() :
         rates = []
-        for sample, info in samples.iteritems() :
+        for sample, info in samples.items() :
             cnt = 0
-            for name, thresholds in eta_thresholds.iteritems() :
+            for name, thresholds in eta_thresholds.items() :
 
-                print sample, info, name
+                print(sample, info, name)
                 if plot == 'barrel' and name != 'barrel' : continue
                 # if plot == 'barrel' and sample == 'Phase-2_matched' and name != 'trackMatched_barrel' : continue
                 # if plot == 'barrel' and sample == 'Phase-2' and name != 'notTrackMatched_barrel' : continue
@@ -295,7 +295,7 @@ if doRate :
 
                 f1 = ROOT.TFile( 'eff_and_rate_roots/'+saveName+'_'+name+'_'+sample.replace('_matched','')+'.root', 'r')
                 #f1 = ROOT.TFile( 'eff_and_rate_roots2/'+saveName+'_'+name+'_'+sample.replace('_matched','')+'.root', 'r') ##Uncomment to make double tau rate plot
-                print f1
+                print(f1)
                 rates.append( f1.Get('cumul') )
                 rates[-1].SetDirectory( 0 )
                 rates[-1].SetTitle( '%s %s, %s' % (sample.replace('_iso',''), info[0], name) )
@@ -310,7 +310,7 @@ if doRate :
                 rates[-1].GetXaxis().SetRangeUser(x_info_rebin[1], x_info_rebin[2])
                 cnt += 1
         
-        print rates[0]
+        print(rates[0])
         if doTau :
             rates[0].GetXaxis().SetTitle("Reco #tau_{h} p_{T} (GeV)" )
         else :
@@ -351,8 +351,8 @@ if doRate :
             if 'Stage-2' in rate.GetTitle() and 'all' in rate.GetTitle() : continue
             if 'Stage-2' in rate.GetTitle() and 'runII' in rate.GetTitle() : continue
             title = rate.GetTitle() if not rate.GetTitle() == "L1 Rates" else "Phase2, All"
-            #title = title.replace('barrel', '0 < |#eta| < 1.5')
-            title = title.replace('barrel', '0 < |#eta| < 1.4')
+            title = title.replace('barrel', '0 < |#eta| < 1.5')
+            #title = title.replace('barrel', '0 < |#eta| < 1.4')
             title = title.replace('Stage-2', 'Phase-I')
             title = title.replace('Phase-2 ', 'Calo')
             #title = title.replace('runII', '0 < |#eta| < 2.1')

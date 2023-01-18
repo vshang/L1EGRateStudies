@@ -10,20 +10,20 @@ process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('SimGeneral.MixingModule.mixNoPU_cfi')
-process.load('Configuration.Geometry.GeometryExtended2026D41Reco_cff')
-process.load('Configuration.Geometry.GeometryExtended2026D41_cff')
+process.load('Configuration.Geometry.GeometryExtended2026D49Reco_cff')
+process.load('Configuration.Geometry.GeometryExtended2026D49_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration.StandardSequences.SimL1Emulator_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
-process.MessageLogger.categories = cms.untracked.vstring('L1CaloJets', 'FwkReport')
+process.MessageLogger.L1CaloJets = dict()
 process.MessageLogger.cerr.FwkReport = cms.untracked.PSet(
    reportEvery = cms.untracked.int32(1)
 )
 
 #process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 process.source = cms.Source("PoolSource",
    #fileNames = cms.untracked.vstring(),
@@ -38,6 +38,7 @@ process.source = cms.Source("PoolSource",
                     "drop l1tEMTFHit2016Extras_simEmtfDigis_CSC_HLT",
                     "drop l1tEMTFHit2016Extras_simEmtfDigis_RPC_HLT",
                     "drop l1tEMTFHit2016s_simEmtfDigis__HLT",
+                    "drop l1tTkPrimaryVertexs_L1TkPrimaryVertex_*_*",
                     #"drop l1tEMTFTrack2016Extras_simEmtfDigis__HLT",
                     #"drop l1tEMTFTrack2016s_simEmtfDigis__HLT",
                     #"drop l1tHGCalTowerMapBXVector_hgcalTriggerPrimitiveDigiProducer_towerMap_HLT",
@@ -50,7 +51,8 @@ process.source = cms.Source("PoolSource",
 
 # ---- Global Tag :
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '') 
+#process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '') 
+process.GlobalTag = GlobalTag(process.GlobalTag, '123X_mcRun4_realistic_v3', '') 
 
 
 # Add HCAL Transcoder
@@ -59,17 +61,6 @@ process.load('CalibCalorimetry.CaloTPG.CaloTPGTranscoder_cfi')
 
 
 process.L1simulation_step = cms.Path(process.SimL1Emulator)
-
-### Based on: L1Trigger/L1TCommon/test/reprocess_test_10_4_0_mtd5.py
-### This code is a portion of what is imported and excludes the 'schedule' portion
-### of the two lines below.  It makes the test script run!
-### from L1Trigger.Configuration.customiseUtils import L1TrackTriggerTracklet
-### process = L1TrackTriggerTracklet(process)
-process.load('L1Trigger.TrackFindingTracklet.L1HybridEmulationTracks_cff')
-process.L1TrackTriggerTracklet_step = cms.Path(process.L1HybridTracksWithAssociators)
-
-
-
 
 
 # --------------------------------------------------------------------------------------------

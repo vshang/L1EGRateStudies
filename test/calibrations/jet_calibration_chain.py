@@ -14,13 +14,13 @@ def check_calibration_py_cfg( quantile_map ) :
     for i in range( len(pt_binning_array) ) :
         if i == len(pt_binning_array) - 1 : continue # don't go over the top
         alt_binning.append( (pt_binning_array[i] + pt_binning_array[i+1] )/2. )
-    print pt_binning_array
-    print alt_binning
-    for k, v in quantile_map.iteritems() :
-        print k, v
+    print(pt_binning_arra)
+    print(alt_binning)
+    for k, v in quantile_map.items() :
+        print(k, v)
         for b in alt_binning :
-            print ("%.3f " % v[-1].Eval( b ) ),
-        print "\n"
+            print("%.3f " % v[-1].Eval( b ) ),
+        print("\n")
     
     
 
@@ -28,8 +28,8 @@ def check_calibration_py_cfg( quantile_map ) :
 def prepare_calibration_py_cfg( quantile_map, doTaus=False ) :
     o_file = open('L1CaloJetCalibrations_cfi.py', 'w')
     o_file.write( "import FWCore.ParameterSet.Config as cms\n\n" )
-    for k, v in quantile_map.iteritems() :
-        print k, v
+    for k, v in quantile_map.items() :
+        print(k, v)
 
 
     # Currently Pt binning is constant for all regions
@@ -42,7 +42,7 @@ def prepare_calibration_py_cfg( quantile_map, doTaus=False ) :
         pt_binning.append( val )
         o_file.write( ",%.1f" % val )
     o_file.write( "]),\n" )
-    print pt_binning
+    print(pt_binning)
 
     if not doTaus :
         prepare_calo_region_calibrations( 'Barrel', 0.0, 1.5, o_file, quantile_map )
@@ -59,7 +59,7 @@ def prepare_tau_calo_region_calibrations( calo_region_name, eta_min, eta_max, o_
     # Eta binning
     o_file.write( "\ttauAbsEtaBins%s = cms.vdouble([ %.2f" % (calo_region_name, eta_min) )
     abs_eta_list = [eta_min,]
-    for k, v in quantile_map.iteritems() :
+    for k, v in quantile_map.items() :
 
         # Check this entry is in the correct eta range
         if v[3] < eta_min : continue
@@ -70,7 +70,7 @@ def prepare_tau_calo_region_calibrations( calo_region_name, eta_min, eta_max, o_
         abs_eta_list.append( v[4] )
         o_file.write( ",%.2f" % v[4] )
     o_file.write( "]),\n" )
-    print abs_eta_list
+    print(abs_eta_list)
 
     # L1EG binning
     # EM fraction is unique for each L1EG scenario
@@ -82,7 +82,7 @@ def prepare_tau_calo_region_calibrations( calo_region_name, eta_min, eta_max, o_
         'All' : 0,
     }
     em_frac_map = OrderedDict()
-    for k, v in quantile_map.iteritems() :
+    for k, v in quantile_map.items() :
 
         # Check this entry is in the correct eta range
         if v[3] < eta_min : continue
@@ -98,8 +98,8 @@ def prepare_tau_calo_region_calibrations( calo_region_name, eta_min, eta_max, o_
             em_frac_map[v[0]].append( 1.05 )
         else :
             em_frac_map[v[0]].append( v[2] )
-    for k, v in em_frac_map.iteritems() :
-        print k, v
+    for k, v in em_frac_map.items() :
+        print(k, v)
         float_to_str = [str(i) for i in v]
         to_print = ", ".join(float_to_str)
         o_file.write( "\t\tcms.PSet(\n" )
@@ -113,7 +113,7 @@ def prepare_tau_calo_region_calibrations( calo_region_name, eta_min, eta_max, o_
     x = ROOT.Double(0.)
     y = ROOT.Double(0.)
     cnt = 1
-    for k, v in quantile_map.iteritems() :
+    for k, v in quantile_map.items() :
 
         # Check this entry is in the correct eta range
         if v[3] < eta_min : continue
@@ -144,7 +144,7 @@ def prepare_calo_region_calibrations( calo_region_name, eta_min, eta_max, o_file
     # EM fraction
     o_file.write( "\temFractionBins%s = cms.vdouble([ 0.00" % calo_region_name )
     em_frac_list = [0.0,]
-    for k, v in quantile_map.iteritems() :
+    for k, v in quantile_map.items() :
 
         # Check this entry is in the correct eta range
         if v[2] < eta_min : continue
@@ -158,12 +158,12 @@ def prepare_calo_region_calibrations( calo_region_name, eta_min, eta_max, o_file
         else :
             o_file.write( ",%.2f" % v[1] )
     o_file.write( "]),\n" )
-    print em_frac_list
+    print(em_frac_list)
 
     # Eta binning
     o_file.write( "\tabsEtaBins%s = cms.vdouble([ %.2f" % (calo_region_name, eta_min) )
     abs_eta_list = [eta_min,]
-    for k, v in quantile_map.iteritems() :
+    for k, v in quantile_map.items() :
 
         # Check this entry is in the correct eta range
         if v[2] < eta_min : continue
@@ -174,14 +174,14 @@ def prepare_calo_region_calibrations( calo_region_name, eta_min, eta_max, o_file
         abs_eta_list.append( v[3] )
         o_file.write( ",%.2f" % v[3] )
     o_file.write( "]),\n" )
-    print abs_eta_list
+    print(abs_eta_list)
         
     # Now huge loop of values for each bin
     o_file.write( "\tjetCalibrations%s = cms.vdouble([\n" % calo_region_name )
     x = ROOT.Double(0.)
     y = ROOT.Double(0.)
     cnt = 1
-    for k, v in quantile_map.iteritems() :
+    for k, v in quantile_map.items() :
 
         # Check this entry is in the correct eta range
         if v[2] < eta_min : continue
@@ -210,7 +210,7 @@ def prepare_calo_region_calibrations( calo_region_name, eta_min, eta_max, o_file
 def get_quantile_map( calib_fName ) :
 
     # Open calibration root file and get thresholds from TGraphs
-    print ("Calibrating with file: %s" % calib_fName )
+    print("Calibrating with file: %s" % calib_fName )
     f = ROOT.TFile( calib_fName, 'r' )
 
     keys = []
@@ -259,12 +259,12 @@ def get_quantile_map( calib_fName ) :
             quantile_map[ key ] = [ l1eg, f_low, f_high, eta_low, eta_high, new_f1 ]
 
     else :
-        print "File name %s does not match format of 'jet_em_calibrations_X' or 'tau_pt_calibrations_X'" % calib_fName
+        print("File name %s does not match format of 'jet_em_calibrations_X' or 'tau_pt_calibrations_X'" % calib_fName)
         return
-    #for k, v in quantile_map.iteritems() :
+    #for k, v in quantile_map.items() :
     #    print k, v
 
-    print "\n\n\nFIXME - what happened to ROOT in 10_5_X\nWhy are these errors here?\nThe code appears to work with my fix\n"
+    print("\n\n\nFIXME - what happened to ROOT in 10_5_X\nWhy are these errors here?\nThe code appears to work with my fix\n")
 
     return quantile_map
 
@@ -273,7 +273,7 @@ def get_quantile_map( calib_fName ) :
 def add_jet_calibration( name_in, quantile_map ) :
     jet_pt_binning = get_x_binning(name_in)
     useBinnedPt = True
-    print "Adding Phase-2 calibration branch to ttree. UseBinnedPt = %s" % useBinnedPt
+    print("Adding Phase-2 calibration branch to ttree. UseBinnedPt = %s" % useBinnedPt)
     f_in = ROOT.TFile( name_in, 'UPDATE')
     t = f_in.Get( 'analyzer/tree' )
 
@@ -286,7 +286,7 @@ def add_jet_calibration( name_in, quantile_map ) :
     cnt = 0
     for row in t :
         cnt += 1
-        if cnt % 10000 == 0 : print cnt
+        if cnt % 10000 == 0 : print(cnt)
 
         l1eg_pt = row.l1eg_pt
         ecal_pt = row.ecal_pt
@@ -315,7 +315,7 @@ def add_jet_calibration( name_in, quantile_map ) :
 def add_tau_calibration( name_in, quantile_map ) :
     tau_pt_binning = get_x_binning('Tau')
     useBinnedPt = True
-    print "Adding Phase-2 calibration branch to ttree. UseBinnedPt = %s" % useBinnedPt
+    print("Adding Phase-2 calibration branch to ttree. UseBinnedPt = %s" % useBinnedPt)
     f_in = ROOT.TFile( name_in, 'UPDATE')
     t = f_in.Get( 'analyzer/tree' )
 
@@ -329,8 +329,8 @@ def add_tau_calibration( name_in, quantile_map ) :
     isoTau = array('f', [ 0 ] )
     isoTauB = t.Branch('isoTauHH', isoTau, 'isoTauHH/F')
 
-    for k, v in quantile_map.iteritems() :
-        print k, v
+    for k, v in quantile_map.items() :
+        print(k, v)
 
     # Add isolation WP similar to Run-II IsoTau
     f1Barrel = ROOT.TF1( 'isoTauBarrel', '([0] + [1]*TMath::Exp(-[2]*x))')
@@ -355,7 +355,7 @@ def add_tau_calibration( name_in, quantile_map ) :
     cnt = 0
     for row in t :
         cnt += 1
-        if cnt % 10000 == 0 : print cnt
+        if cnt % 10000 == 0 : print(cnt)
 
         size = '3x5'
         l1eg_pt = getattr( row, 'l1eg_'+size )
@@ -402,7 +402,7 @@ def add_tau_calibration( name_in, quantile_map ) :
 
 
 def add_stage2_calibration( name_in, stage2_calib_file, doTaus=False ) :
-    print "Adding Stage-2 calibration branch to ttree, doTaus = %s, with file %s" % (doTaus, stage2_calib_file)
+    print("Adding Stage-2 calibration branch to ttree, doTaus = %s, with file %s" % (doTaus, stage2_calib_file))
     f_in = ROOT.TFile( name_in, 'UPDATE')
     t = f_in.Get( 'analyzer/tree' )
 
@@ -420,7 +420,7 @@ def add_stage2_calibration( name_in, stage2_calib_file, doTaus=False ) :
     cnt = 0
     for row in t :
         cnt += 1
-        if cnt % 10000 == 0 : print cnt
+        if cnt % 10000 == 0 : print(cnt)
 
         if not doTaus : # doJets
             pt = row.stage2jet_pt
@@ -466,7 +466,7 @@ def calibrate( quantile_map, abs_jet_eta, l1eg_pt, ecal_pt, jet_pt, jet_pt_binni
     #print "EM Frac: ",em_frac
     if em_frac == 2 : return 1.0 # These are non-recoed jets
     if em_frac > 1.0 : em_frac = 1.0 # These are some corner case problems which will be fixed and only range up to 1.05
-    for k, v in quantile_map.iteritems() :
+    for k, v in quantile_map.items() :
         if em_frac >= v[0] and em_frac <= v[1] :
             if abs_jet_eta >= v[2] and abs_jet_eta <= v[3] :
                 #return v[2].Eval( jet_pt )
@@ -486,11 +486,11 @@ def calibrate( quantile_map, abs_jet_eta, l1eg_pt, ecal_pt, jet_pt, jet_pt_binni
                     rtn = v[-1].Eval( jet_pt )
                     if jet_pt > 500 : break
                 #assert(rtn >= 0), "The calibration result is less than zero for range name %s for \
-                if (rtn < 0) : print "The calibration result is less than zero for range name %s for \
-                        EM fraction %.2f and Jet pT %.2f, resulting calibration %.2f" % (k, em_frac, jet_pt, rtn)
+                if (rtn < 0) : print("The calibration result is less than zero for range name %s for \
+                        EM fraction %.2f and Jet pT %.2f, resulting calibration %.2f" % (k, em_frac, jet_pt, rtn))
 
                 return rtn
-    print "Shouldn't get here, em_frac ",em_frac
+    print("Shouldn't get here, em_frac ",em_frac)
     return 1.0
 
 
@@ -501,7 +501,7 @@ def calibrate_tau( quantile_map, abs_jet_eta, n_L1EGs, l1eg_pt, ecal_pt, jet_pt,
     if em_frac == 2 : return 1.0 # These are non-recoed jets
     if em_frac > 1.0 : em_frac = 1.0 # These are some corner case problems which will be fixed and only range up to 1.05
 
-    for k, v in quantile_map.iteritems() :
+    for k, v in quantile_map.items() :
 
         # Choose dict for correct nL1EGs
         if v[0] == '0L1EG' and not n_L1EGs == 0 : continue
@@ -528,15 +528,14 @@ def calibrate_tau( quantile_map, abs_jet_eta, n_L1EGs, l1eg_pt, ecal_pt, jet_pt,
                     rtn = v[-1].Eval( jet_pt )
                     if jet_pt > 500 : break
                 #assert(rtn >= 0), "The calibration result is less than zero for range name %s for \
-                if (rtn < 0) : print "The calibration result is less than zero for range name %s for \
-                        EM fraction %.2f and Jet pT %.2f, resulting calibration %.2f" % (k, em_frac, jet_pt, rtn)
+                if (rtn < 0) : print("The calibration result is less than zero for range name %s for \
+                        EM fraction %.2f and Jet pT %.2f, resulting calibration %.2f" % (k, em_frac, jet_pt, rtn))
 
                 return rtn
-    print "Shouldn't get here, em_frac ",em_frac
+    print("Shouldn't get here, em_frac ",em_frac)
     return 1.0
 
 if '__main__' in __name__ :
-
 
     # Commands
     doJets = False
@@ -557,14 +556,14 @@ if '__main__' in __name__ :
     #prepare_calibration_cfg = True
     #plot_calibrated_results = True
 
-    base = '/afs/hep.wisc.edu/home/vshang/public/test/CMSSW_11_1_3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20210101_r2/'
+    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20221208_r2/'
     #base = '/hdfs/store/user/vshang/l1CaloJets_20210101_r2/'
     #base = '/data/truggles/l1CaloJets_20190417_r2/' # For Jets
 
     shapes = [
         # R2
-        #'output_round2_HiggsTauTauv1',
-        #'output_round2_minBiasv1'
+        #'output_round2_HiggsTauTau',
+        'output_round2_minBias'
         #'output_round2_HiggsTauTau_withTracks_notTrackMatched'
         #'output_round2_minBias_withTracks_trackMatchedwithTrackdR'
         #'output_round2_QCDv1'
@@ -572,7 +571,7 @@ if '__main__' in __name__ :
         #'output_round2_HiggsTauTau_withTracks_passJEFThreshold'
         #'output_round2_TTbarv1'
         #'output_round2_VBFHiggsTauTau_test'
-        'output_round2_minBias_test'
+        #'output_round2_minBias_test'
     ]
 
     for shape in shapes :
@@ -582,7 +581,7 @@ if '__main__' in __name__ :
         jetsF0 = '%s.root' % shape
         date = jetsF0.replace('merged_','').replace('.root','')
         date = base.split('/')[-2].replace('l1CaloJets_','')+shape
-        plotDir = '/afs/hep.wisc.edu/home/vshang/public/test/CMSSW_11_1_3/src/L1Trigger/L1EGRateStudies/test/crab'+date+'Vxy1'
+        plotDir = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab'+date+'Vxy1'
         if not os.path.exists( plotDir ) : os.makedirs( plotDir )
 
         c = ROOT.TCanvas('c', '', 800, 700)
@@ -597,7 +596,7 @@ if '__main__' in __name__ :
         cut = "" # Do all Eta now
         if make_calibrations :
             jetFile = ROOT.TFile( base+jetsF0, 'r' )
-            print jetFile
+            print(jetFile)
             tree = jetFile.Get("analyzer/tree")
 
             if ('qcd' in shape or 'QCD' in shape or True) and doJets :
@@ -655,7 +654,7 @@ if '__main__' in __name__ :
             'hgcal' : '(abs(genJet_eta)<2.9 && abs(genJet_eta)>1.6)',
             'hf' : '(abs(genJet_eta)>3.1)',
             }
-            for k, cut in eta_ranges.iteritems() :
+            for k, cut in eta_ranges.items() :
                 if 'Tau' in jetsF0 and k == 'hf' : continue
 
 
@@ -689,5 +688,3 @@ if '__main__' in __name__ :
                 areaNorm = True
                 #areaNorm = False
                 drawPointsHists3(c.GetTitle(), h1, h2, h3, title1, title2, title3, xaxis, yaxis, areaNorm, plotDir)
-
-

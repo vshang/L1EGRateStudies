@@ -37,7 +37,7 @@ def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, poi
     title1 = "L1EGamma Crystal (Electrons)"
     title2 = "L1EGamma Crystal (Photons)"
     title3 = "L1EGamma Crystal (Fake)"
-    print cut
+    print(cut)
     c.cd(1)
     h1 = ROOT.TH2F("h1", title1, xinfo[0], xinfo[1], xinfo[2], yinfo[0], yinfo[1], yinfo[2])
     tree1.Draw( var + " >> h1", cut )
@@ -481,7 +481,7 @@ def getPoint( h, xVal, percentage, invert ) :
                 yVal = h.GetYaxis().GetBinCenter(invBin)
                 #print "Inverted Reached target of %.3f at ybin %i with yval %.2f" % (percentage, i, yVal )
                 return yVal
-    print "\n\nError, not supposed to get here\nAre you accidently asking for inverted or non-inverted when it should be the opposite?\n"
+    print("\n\nError, not supposed to get here\nAre you accidently asking for inverted or non-inverted when it should be the opposite?\n")
 
 
 
@@ -543,7 +543,7 @@ def get_quantile_em_fraction_list( fName, calo_region, nBins=10, var='(l1eg_pt +
                 # Store first bin but don't add two 0.0 if to_append == 0.0
                 rtn_list.append( 0.0 )
             rtn_list.append( to_append )
-            print index, b, h.GetBinCenter(b), cum
+            print(index, b, h.GetBinCenter(b), cum)
             cum = 0
             index += 1
     # Store final bin
@@ -576,10 +576,10 @@ def make_em_fraction_calibrations( c, fName, cut, plotBase ) :
     quantile_list_barrel = get_quantile_em_fraction_list( fName, 'barrel', 10 ) # last number is nBins
     quantile_list_hgcal = get_quantile_em_fraction_list( fName, 'hgcal', 4 )
     quantile_list_hf = get_quantile_em_fraction_list( fName, 'hf', 2 )
-    print "Quantile Lists:"
-    print quantile_list_barrel
-    print quantile_list_hgcal
-    print quantile_list_hf
+    print("Quantile Lists:")
+    print(quantile_list_barrel)
+    print(quantile_list_hgcal)
+    print(quantile_list_hf)
 
     # Get same file again
     jetFile = ROOT.TFile( fName, 'r' )
@@ -613,7 +613,7 @@ def make_em_fraction_calibrations( c, fName, cut, plotBase ) :
             #if f_low > 0.0 and f_low < 0.1 and f_high > 0.0 and f_high < 0.1 :
             #    x_and_y_bins = [ xBinningAlt, yBinning ]
             frac_cut = cut+"abs(jet_eta)>=%s && abs(jet_eta)<=%s && (((l1eg_pt + ecal_pt)/jet_pt) >= %f && ((l1eg_pt + ecal_pt)/jet_pt) < %f)" % (eta[0], eta[1], f_low, f_high)
-            print frac_cut
+            print(frac_cut)
             to_plot = '(hcal_pt)/genJet_pt:jet_pt'
             #h1 = getTH2( tree, 'qcd1', to_plot, frac_cut, x_and_y_bins )
             h1 = getTH2VarBin( tree, 'qcd1', to_plot, frac_cut, x_and_y_bins )
@@ -634,7 +634,7 @@ def make_em_fraction_calibrations( c, fName, cut, plotBase ) :
             g.SetName('%i_EM_frac_%s_to_%s_absEta_%s_to_%s' % (i, str(f_low).replace('.','p'), str(f_high).replace('.','p'), eta[0].replace('.','p'), eta[1].replace('.','p') ) )
             f.SetTitle('%i_EM_frac_%s_to_%s_absEta_%s_to_%s_fit' % (i, str(f_low).replace('.','p'), str(f_high).replace('.','p'), eta[0].replace('.','p'), eta[1].replace('.','p') ) )
             f.SetName('%i_EM_frac_%s_to_%s_absEta_%s_to_%s_fit' % (i, str(f_low).replace('.','p'), str(f_high).replace('.','p'), eta[0].replace('.','p'), eta[1].replace('.','p') ) )
-            print g
+            print(g)
             g.Write()
             f.Write()
             #x = ROOT.Double(0.)
@@ -657,11 +657,11 @@ def make_tau_calibrations( c, fName, cut, plotBase ) :
     barrel_quantile_map['Gtr1L1EG'] = get_quantile_em_fraction_list( fName, 'barrel', 3, tau_var, ' && n_l1eg_HoverE_Less0p25 > 1' )
     hgcal_quantile_map = OrderedDict()
     hgcal_quantile_map['All'] = get_quantile_em_fraction_list( fName, 'hgcal', 4, tau_var )
-    print "Quantile Lists:"
-    for k, v in barrel_quantile_map.iteritems() :
-        print k, v
-    for k, v in hgcal_quantile_map.iteritems() :
-        print k, v
+    print("Quantile Lists:")
+    for k, v in barrel_quantile_map.items() :
+        print(k, v)
+    for k, v in hgcal_quantile_map.items() :
+        print(k, v)
 
     # Get same file again
     jetFile = ROOT.TFile( fName, 'r' )
@@ -683,7 +683,7 @@ def make_tau_calibrations( c, fName, cut, plotBase ) :
         else :
             quantile_list = hgcal_quantile_map
 
-        for k, v in quantile_list.iteritems() :
+        for k, v in quantile_list.items() :
             for i in range(len(v)-1) :
 
 
@@ -697,7 +697,7 @@ def make_tau_calibrations( c, fName, cut, plotBase ) :
                 if k == '1L1EG' : frac_cut += ' && n_l1eg_HoverE_Less0p25 == 1'
                 if k == 'Gtr1L1EG' : frac_cut += ' && n_l1eg_HoverE_Less0p25 > 1'
                 #if k == 'All' : # nothing required
-                print frac_cut
+                print(frac_cut)
                 to_plot = '(genJet_pt - (l1eg_3x5 + ecal_3x5))/hcal_3x5:'+tau_pt
                 h1 = getTH2VarBin( tree, 'taus1', to_plot, frac_cut, x_and_y_bins )
                 to_plot = 'genJet_pt/'+tau_pt+':'+tau_pt
@@ -714,7 +714,7 @@ def make_tau_calibrations( c, fName, cut, plotBase ) :
                 g.SetName('%i_%s_EM_frac_%s_to_%s_absEta_%s_to_%s' % (i, k, str(f_low).replace('.','p'), str(f_high).replace('.','p'), eta[0].replace('.','p'), eta[1].replace('.','p') ) )
                 f.SetTitle('%i_%s_EM_frac_%s_to_%s_absEta_%s_to_%s_fit' % (i, k, str(f_low).replace('.','p'), str(f_high).replace('.','p'), eta[0].replace('.','p'), eta[1].replace('.','p') ) )
                 f.SetName('%i_%s_EM_frac_%s_to_%s_absEta_%s_to_%s_fit' % (i, k, str(f_low).replace('.','p'), str(f_high).replace('.','p'), eta[0].replace('.','p'), eta[1].replace('.','p') ) )
-                print g
+                print(g)
                 g.Write()
                 f.Write()
                 #x = ROOT.Double(0.)
@@ -775,7 +775,7 @@ if __name__ == '__main__' :
         'hgcal' : '(abs(genJet_eta)<2.9 && abs(genJet_eta)>1.6)',
         'hf' : '(abs(genJet_eta)>3.1)',
         }
-        for k, cut in eta_ranges.iteritems() :
+        for k, cut in eta_ranges.items() :
             to_plot = '(jet_pt)/genJet_pt:genJet_pt'
             #h1 = getTH2( tree3, 'ttbar', to_plot, cut, x_and_y_bins )
             #h2 = getTH2( tree2, 'ttbar', to_plot, cut, x_and_y_bins )
