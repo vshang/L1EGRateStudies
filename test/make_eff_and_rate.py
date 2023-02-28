@@ -14,14 +14,14 @@ ROOT.gStyle.SetOptStat(0)
 doTau = True
 #doTau = False
 
-#doEff = True
-doEff = False
+doEff = True
+#doEff = False
 
-#doPtEff = True
-doPtEff = False
+doPtEff = True
+#doPtEff = False
 
-doRate = True
-#doRate = False
+#doRate = True
+doRate = False
 
 doRateFirstHalf = True
 #doRateFirstHalf = False
@@ -49,12 +49,10 @@ text = 'Jet' if not doTau else 'Tau'
     
 
 if doEff :
-    #fName = 'output_round2_HiggsTauTau_withTracks_trackMatchedwithTrackdR'
-    #fName = 'output_round2_HiggsTauTau_withTracks_passJEFThreshold'
-    fName = 'output_round2_HiggsTauTau'
-    #fName = 'output_round2_QCDv1'
-    date = '20221208'
-    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20221208_r2/'
+    #fName = 'output_round2_HiggsTauTau'
+    fName = 'output_round2_HiggsTauTau_recalibratedIsoTau'
+    date = '20230207'
+    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20230207_r2_recalibratedIsoTau/'
     universalSaveDir = "/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/efficiencies/"+date+"/"+fName+"/"
     checkDir( universalSaveDir )
 
@@ -77,17 +75,17 @@ if doEff :
     """ Pt Eff """
     if doPtEff :
         # Use eta cuts to restrict when doing pT efficiencies
-        #denom_cut = 'abs(genJet_eta)<1.4'
-        denom_cut = 'abs(genJet_eta)>1.6 && abs(genJet_eta)<2.8'
-        #denom_cut_label = '|#eta^{GenTau}| < 1.4'
-        denom_cut_label = '1.6 < |#eta^{GenTau}| < 2.8'
+        denom_cut = 'abs(genJet_eta)<1.4'
+        #denom_cut = 'abs(genJet_eta)>1.6 && abs(genJet_eta)<2.8'
+        denom_cut_label = '|#eta^{GenTau}| < 1.4'
+        #denom_cut_label = '1.6 < |#eta^{GenTau}| < 2.8'
         axis = [160, 0, 400]
         if doTau :
             axis = [150, 0, 150]
             #axis = [40, 0, 200]
 
         gP2 = make_efficiency_graph( t, denom_cut, p2Obj+' > %i' % pt_cut, 'genJet_pt', axis )
-        gP22 = make_efficiency_graph( t, denom_cut, p2Obj+' > %i && isoTauHH > 0.5' % pt_cut, 'genJet_pt', axis )
+        gP22 = make_efficiency_graph( t, denom_cut, p2Obj+' > %i && loose_iso_tau_wp > 0.5' % pt_cut, 'genJet_pt', axis )
         gS2 = make_efficiency_graph( t, denom_cut, s2Obj+' > %i' % pt_cut, 'genJet_pt', axis )
         gS22 = make_efficiency_graph( t, denom_cut, s2Obj+' > %i && stage2tau_isoBit > 0.5' % pt_cut, 'genJet_pt', axis )
 
@@ -100,7 +98,7 @@ if doEff :
         denom_cut_label = 'p_{T}^{GenTau} > %i GeV' % denom_pt
         axis = [100, -5, 5]
         gP2 = make_efficiency_graph( t, denom_cut, p2Obj+' > %i' % pt_cut, 'genJet_eta', axis )
-        gP22 = make_efficiency_graph( t, denom_cut, p2Obj+' > %i && isoTauHH > 0.5' % pt_cut, 'genJet_eta', axis )
+        gP22 = make_efficiency_graph( t, denom_cut, p2Obj+' > %i && loose_iso_tau_wp > 0.5' % pt_cut, 'genJet_eta', axis )
         gS2 = make_efficiency_graph( t, denom_cut, s2Obj+' > %i' % pt_cut, 'genJet_eta', axis )
         gS22 = make_efficiency_graph( t, denom_cut, s2Obj+' > %i && stage2tau_isoBit > 0.5' % pt_cut, 'genJet_eta', axis )
     
@@ -167,18 +165,17 @@ if doEff :
     
     app = 'ptEff' if doPtEff else 'etaEff_ptDenom%i' % denom_pt
     #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_include_S2Iso.png' % (pt_cut, app) )
-    c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s.pdf' % (pt_cut, app) )
-    #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_IsoTaus_NoS2.pdf' % (pt_cut, app) )
+    c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_barrel.png' % (pt_cut, app) )
+    #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_IsoTaus_NoS2.png' % (pt_cut, app) )
     #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_HGCal.png' % (pt_cut, app) )
 
 """ MAKE RATES """
 if doRate :
 
-    #fName = 'output_round2_minBias_withTracks_passJEFThreshold'
-    fName = 'output_round2_minBias'
-    #fName = 'output_round2_minBias_withTracks_trackMatchedwithTrackdR'
-    date = '20221208'
-    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20221208_r2/'
+    #fName = 'output_round2_minBias'
+    fName = 'output_round2_minBias_recalibratedIsoTau'
+    date = '20230207'
+    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20230207_r2_recalibratedIsoTau/'
     #base = '/hdfs/store/user/vshang/l1CaloJets_20210101_r2/'
     universalSaveDir = "/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/rates/"+date+"/"+fName+"/"
     checkDir( universalSaveDir )
@@ -231,8 +228,8 @@ if doRate :
             hP2.SaveAs( 'eff_and_rate_roots/'+fName+'_'+name+'_Phase-2.root' )
             #hP2.SaveAs( 'eff_and_rate_roots2/'+fName+'_'+name+'_Phase-2.root' )
             del hP2
-            hP22 = make_rate_hist( nEvents, t, p2Obj, 1.0, 'jet_eta', thresholds[0], thresholds[1], x_info, 'isoTauHH' ) 
-            #hP22 = make_rate_hist2( nEvents, t, p2Obj, 1.0, 'jet_eta', thresholds[0], thresholds[1], x_info, 'isoTauHH' ) #Uncomment to make double tau rate plot
+            hP22 = make_rate_hist( nEvents, t, p2Obj, 1.0, 'jet_eta', thresholds[0], thresholds[1], x_info, 'loose_iso_tau_wp' ) 
+            #hP22 = make_rate_hist2( nEvents, t, p2Obj, 1.0, 'jet_eta', thresholds[0], thresholds[1], x_info, 'loose_iso_tau_wp' ) #Uncomment to make double tau rate plot
             hP22.SaveAs( 'eff_and_rate_roots/'+fName+'_'+name+'_Phase-2_iso.root' )
             #hP22.SaveAs( 'eff_and_rate_roots2/'+fName+'_'+name+'_Phase-2_iso.root' )
             del hP22
@@ -250,9 +247,8 @@ if doRate :
         assert(0)
     
     colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray+2]
-    #saveName = 'output_round2_minBias_withTracks_trackMatchedwithTrackdR'
-    saveName = 'output_round2_minBias'
-    #saveName = 'output_round2_minBias_withTracks_passJEFThreshold'
+    #saveName = 'output_round2_minBias'
+    saveName = 'output_round2_minBias_recalibratedIsoTau'
     x_info_rebin = [100, 0, 160]
 
     plot_map = OrderedDict()

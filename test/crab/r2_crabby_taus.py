@@ -3,7 +3,6 @@ import FWCore.ParameterSet.Config as cms
 from Configuration.StandardSequences.Eras import eras
 
 process = cms.Process('L1Jets2',eras.Phase2C9)
-
 process.load('Configuration.StandardSequences.Services_cff')
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.load('Configuration.EventContent.EventContent_cff')
@@ -29,10 +28,10 @@ process.source = cms.Source("PoolSource",
 
 
 #out_path = '/nfs_scratch/vshang/'
-out_path = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20221208_r2/'
+out_path = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20230207_r2_recalibratedIsoTau/'
 #name = "HiggsTauTauvL1EGs"
-#name = "HiggsTauTau"
-name = "minBias"
+name = "HiggsTauTau_recalibratedIsoTau"
+#name = "minBias_recalibratedIsoTau"
 # Load samples from external files here:
 from L1Trigger.L1EGRateStudies.loadRound2Files import getSampleFiles
 process.source.fileNames = getSampleFiles( name )

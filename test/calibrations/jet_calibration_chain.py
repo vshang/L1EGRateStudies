@@ -551,27 +551,22 @@ if '__main__' in __name__ :
 
     # Uncomment to run!
     #make_calibrations = True
-    apply_phase2_calibrations = True
+    #apply_phase2_calibrations = True
     apply_stage2_calibrations = True
     #prepare_calibration_cfg = True
     #plot_calibrated_results = True
 
-    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20221208_r2/'
+    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20230207_r2_recalibratedIsoTau/'
     #base = '/hdfs/store/user/vshang/l1CaloJets_20210101_r2/'
     #base = '/data/truggles/l1CaloJets_20190417_r2/' # For Jets
 
     shapes = [
         # R2
         #'output_round2_HiggsTauTau',
-        'output_round2_minBias'
-        #'output_round2_HiggsTauTau_withTracks_notTrackMatched'
-        #'output_round2_minBias_withTracks_trackMatchedwithTrackdR'
+        #'output_round2_minBias'
+        'output_round2_HiggsTauTau_recalibratedIsoTau'
+        #'output_round2_minBias_recalibratedIsoTau'
         #'output_round2_QCDv1'
-        #'output_round2_minBias_withTracks_passJEFThreshold'
-        #'output_round2_HiggsTauTau_withTracks_passJEFThreshold'
-        #'output_round2_TTbarv1'
-        #'output_round2_VBFHiggsTauTau_test'
-        #'output_round2_minBias_test'
     ]
 
     for shape in shapes :

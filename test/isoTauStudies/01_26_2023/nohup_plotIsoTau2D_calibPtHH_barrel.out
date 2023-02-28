@@ -1,0 +1,24 @@
+Info in <TCanvas::MakeDefCanvas>:  created default TCanvas with name c1
+ FCN=0.0214759 FROM MIGRAD    STATUS=CONVERGED      44 CALLS          45 TOTAL
+                     EDM=2.91226e-06    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  y rise       3.00378e-01   1.29483e-01   4.62154e-05  -5.58293e-05
+   2  scale        4.95341e-01   5.66000e+00   6.54046e-04  -1.74498e-04
+   3  decay        5.22500e-02   3.87477e-01   4.10628e-05  -3.72193e-03
+Info in <TCanvas::Print>: file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/isoTauStudies/01_26_2023/isoTauVariable2D_HiggsTauTau_barrel_CMSSW_12_3_0_pre4_calibPtHH.png has been created
+fileName =  HiggsTauTau
+region =  barrel
+Creating histograms...
+Filling histograms...
+Computing efficiency curve for Iso Tau performance...
+Fitting new Iso Tau threshold function...
+old y rise:  0.34
+old scale:  0.35
+old decay:  0.051
+new y rise:  0.3003777572384197
+new scale:  0.49534066558379664
+new decay:  0.052250047429473936
+Drawing histograms...
+Saving histogram...
+Saved histogram
