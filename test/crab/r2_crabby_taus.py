@@ -26,7 +26,6 @@ process.source = cms.Source("PoolSource",
     dropDescendantsOfDroppedBranches=cms.untracked.bool(False),
 )
 
-
 #out_path = '/nfs_scratch/vshang/'
 out_path = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20230207_r2_recalibratedIsoTau/'
 #name = "HiggsTauTauvL1EGs"

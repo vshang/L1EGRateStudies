@@ -3,7 +3,6 @@ import FWCore.ParameterSet.Config as cms
 from Configuration.StandardSequences.Eras import eras
 
 process = cms.Process('L1Jets2',eras.Phase2C9)
-
 process.load('Configuration.StandardSequences.Services_cff')
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.load('Configuration.EventContent.EventContent_cff')
@@ -27,9 +26,9 @@ process.source = cms.Source("PoolSource",
     dropDescendantsOfDroppedBranches=cms.untracked.bool(False),
 )
 
-out_path = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20221208_r2/'
+out_path = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20230206/'
 #name = "QCD"
-name = "TTbar"
+name = "minBias"
 # Load samples from external files here:
 from L1Trigger.L1EGRateStudies.loadRound2Files import getSampleFiles
 process.source.fileNames = getSampleFiles( name )
@@ -89,8 +88,8 @@ process.analyzer = cms.EDAnalyzer('L1CaloJetStudies',
     genMatchRelPtcut = cms.untracked.double(0.5),
     debug = cms.untracked.bool(False),
     doRate = cms.untracked.bool(False), 
-    Stage2JetTag = cms.InputTag("simCaloStage2Digis", "MP", "HLT"),
-    Stage2TauTag = cms.InputTag("simCaloStage2Digis", "MP", "HLT"),
+    Stage2JetTag = cms.InputTag("simCaloStage2Digis", "MP", "RECO"),
+    Stage2TauTag = cms.InputTag("simCaloStage2Digis", "MP", "RECO"),
     puSrc = cms.InputTag("addPileupInfo")
 )
 

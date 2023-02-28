@@ -538,10 +538,10 @@ def calibrate_tau( quantile_map, abs_jet_eta, n_L1EGs, l1eg_pt, ecal_pt, jet_pt,
 if '__main__' in __name__ :
 
     # Commands
-    doJets = False
-    doTaus = True
-    # doJets = True
-    # doTaus = False
+    #doJets = False
+    #doTaus = True
+    doJets = True
+    doTaus = False
 
     make_calibrations = False
     apply_phase2_calibrations = False
@@ -556,17 +556,17 @@ if '__main__' in __name__ :
     #prepare_calibration_cfg = True
     #plot_calibrated_results = True
 
-    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20230207_r2_recalibratedIsoTau/'
+    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20230206_r2/'
     #base = '/hdfs/store/user/vshang/l1CaloJets_20210101_r2/'
     #base = '/data/truggles/l1CaloJets_20190417_r2/' # For Jets
 
     shapes = [
         # R2
+        'output_round2_QCD',
         #'output_round2_HiggsTauTau',
-        #'output_round2_minBias'
-        'output_round2_HiggsTauTau_recalibratedIsoTau'
-        #'output_round2_minBias_recalibratedIsoTau'
-        #'output_round2_QCDv1'
+        'output_round2_minBias',
+        #'output_round2_HiggsTauTau_recalibratedIsoTau',
+        #'output_round2_minBias_recalibratedIsoTau',
     ]
 
     for shape in shapes :
