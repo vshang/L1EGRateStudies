@@ -10,7 +10,7 @@ config.General.transferOutputs = True
 config.General.transferLogs    = True
 
 config.JobType.pluginName      = 'Analysis'
-config.JobType.maxMemoryMB     = 3500
+config.JobType.maxMemoryMB     = 2500
 config.JobType.priority        = 2
 config.Data.splitting      = 'FileBased'
 config.Data.unitsPerJob        = 3 # events / job when using EventAwareLumiBased
@@ -26,9 +26,10 @@ config.Site.ignoreGlobalBlacklist = True # Needed to add this to process the VBF
 config.User.voGroup            = 'uscms'
 
 dataMap = OrderedDict()
-dataMap['minBias-PU200'] = {'das' : '/MinBias_TuneCP5_14TeV-pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_withNewMB_111X_mcRun4_realistic_T15_v1_ext1-v2/FEVT'}
+#dataMap['TTbar-PU200'] = {'das' : '/TT_TuneCP5_14TeV-powheg-pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v2/FEVT'}
+#dataMap['minBias-PU200'] = {'das' : '/MinBias_TuneCP5_14TeV-pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_withNewMB_111X_mcRun4_realistic_T15_v1_ext1-v2/FEVT'}
 #dataMap['VBFHTT-PU200'] = {'das' : '/VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5/Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1/FEVT'}
-#dataMap['QCD-PU200'] = {'das' : '/QCD_Pt-15to3000_TuneCP5_Flat_14TeV-pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_castor_111X_mcRun4_realistic_T15_v1-v1/FEVT'}
+dataMap['QCD-PU200'] = {'das' : '/QCD_Pt-15to3000_TuneCP5_Flat_14TeV-pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_castor_111X_mcRun4_realistic_T15_v1-v1/FEVT'}
 
 # dasgoclient --query="dataset dataset=/*/*PhaseIIMTDTDRAutumn18DR*/FEVT"
 # dasgoclient --query="dataset dataset=/VBFHToTauTau*/Phase2HLTTDR*/FEVT"
@@ -56,7 +57,7 @@ if True:
     for k in dataMap.keys() :
 
         # Normal eff and rate analysis
-        config.General.requestName = '20230207_%s_r1_CMSSW_12_3_0_pre4_recalibratedIsoTau' % k
+        config.General.requestName = '20230330_%s_r1_CMSSW_12_3_0_pre4_PallabiJets' % k
         config.JobType.psetName        = 'r1_crabby_jets.py'
         config.Data.inputDataset = dataMap[ k ][ 'das' ]
         if 'PU200' in k or 'PU140' in k :

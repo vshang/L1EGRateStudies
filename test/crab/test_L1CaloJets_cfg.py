@@ -79,6 +79,7 @@ process.Out = cms.OutputModule( "PoolOutputModule",
      fileName = cms.untracked.string( "l1caloJetTest.root" ),
      fastCloning = cms.untracked.bool( False ),
      outputCommands = cms.untracked.vstring(
+                          "keep *_Phase2L1CaloEGammaEmulatorProducer_*_*", #Added by Pallabi
                           "keep *_L1EGammaClusterEmuProducer_*_*",
                           "keep *_L1CaloJetProducer_*_*",
                           "keep *_L1CaloJetHTTProducer_*_*",

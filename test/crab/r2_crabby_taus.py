@@ -26,11 +26,10 @@ process.source = cms.Source("PoolSource",
     dropDescendantsOfDroppedBranches=cms.untracked.bool(False),
 )
 
-#out_path = '/nfs_scratch/vshang/'
-out_path = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20230207_r2_recalibratedIsoTau/'
+out_path = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_12_3_0_pre4/20230330/'
 #name = "HiggsTauTauvL1EGs"
-name = "HiggsTauTau_recalibratedIsoTau"
-#name = "minBias_recalibratedIsoTau"
+#name = "HiggsTauTau_Pallabi"
+name = "minBias_Pallabi"
 # Load samples from external files here:
 from L1Trigger.L1EGRateStudies.loadRound2Files import getSampleFiles
 process.source.fileNames = getSampleFiles( name )

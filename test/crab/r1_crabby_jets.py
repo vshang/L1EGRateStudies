@@ -116,6 +116,7 @@ process.Out = cms.OutputModule( "PoolOutputModule",
                           # "keep *",
                           "drop *",
                           "keep *_genParticles_*_*",
+                          "keep *_Phase2L1CaloEGammaEmulatorProducer_*_*", #Added by Pallabi
                           #"keep *_L1EGammaClusterEmuProducer_*_*",
                           #"keep *_L1TowerCalibrationProducer_*_*",
                           "keep *_L1CaloJetProducer_*_*",

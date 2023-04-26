@@ -6,6 +6,7 @@ import L1Trigger.L1EGRateStudies.trigHelpers as trigHelpers
 from caloJetPtCalibrations import getTH1, getTH2, getTH2VarBin, \
     drawPointsHists, drawPointsHists3, make_em_fraction_calibrations, \
     get_x_binning, drawPointsSingleHist, make_tau_calibrations
+import ctypes
 
 
 def check_calibration_py_cfg( quantile_map ) :
@@ -110,8 +111,8 @@ def prepare_tau_calo_region_calibrations( calo_region_name, eta_min, eta_max, o_
 
     # Now huge loop of values for each bin
     o_file.write( "\ttauCalibrations%s = cms.vdouble([\n" % calo_region_name )
-    x = ROOT.Double(0.)
-    y = ROOT.Double(0.)
+    x = ctypes.c_double(0.)
+    y = ctypes.c_double(0.)
     cnt = 1
     for k, v in quantile_map.items() :
 
@@ -178,8 +179,8 @@ def prepare_calo_region_calibrations( calo_region_name, eta_min, eta_max, o_file
         
     # Now huge loop of values for each bin
     o_file.write( "\tjetCalibrations%s = cms.vdouble([\n" % calo_region_name )
-    x = ROOT.Double(0.)
-    y = ROOT.Double(0.)
+    x = ctypes.c_double(0.)
+    y = ctypes.c_double(0.)
     cnt = 1
     for k, v in quantile_map.items() :
 
@@ -551,20 +552,21 @@ if '__main__' in __name__ :
 
     # Uncomment to run!
     #make_calibrations = True
-    #apply_phase2_calibrations = True
-    apply_stage2_calibrations = True
+    apply_phase2_calibrations = True
+    #apply_stage2_calibrations = True
     #prepare_calibration_cfg = True
     #plot_calibrated_results = True
 
-    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20230206_r2/'
+    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_12_3_0_pre4/20230330/'
     #base = '/hdfs/store/user/vshang/l1CaloJets_20210101_r2/'
     #base = '/data/truggles/l1CaloJets_20190417_r2/' # For Jets
 
     shapes = [
         # R2
-        'output_round2_QCD',
-        #'output_round2_HiggsTauTau',
-        'output_round2_minBias',
+        #'output_round2_QCD_Pallabi',
+        #'output_round2_TTbar'
+        #'output_round2_HiggsTauTau_Pallabi',
+        'output_round2_minBias_Pallabi',
         #'output_round2_HiggsTauTau_recalibratedIsoTau',
         #'output_round2_minBias_recalibratedIsoTau',
     ]

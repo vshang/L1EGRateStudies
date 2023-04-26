@@ -26,9 +26,10 @@ process.source = cms.Source("PoolSource",
     dropDescendantsOfDroppedBranches=cms.untracked.bool(False),
 )
 
-out_path = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20230206/'
-#name = "QCD"
-name = "minBias"
+out_path = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_12_3_0_pre4/20230330/'
+#name = "QCD_Pallabi"
+name = "minBias_Pallabi"
+#name = 'TTbar'
 # Load samples from external files here:
 from L1Trigger.L1EGRateStudies.loadRound2Files import getSampleFiles
 process.source.fileNames = getSampleFiles( name )
@@ -94,7 +95,7 @@ process.analyzer = cms.EDAnalyzer('L1CaloJetStudies',
 )
 
 
-if "minBias" in name:
+if ("minBias" in name):
     process.analyzer.doRate = cms.untracked.bool(True)
 
 process.panalyzer = cms.Path(process.analyzer)
