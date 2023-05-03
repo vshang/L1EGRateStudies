@@ -2,7 +2,8 @@ import FWCore.ParameterSet.Config as cms
 
 from Configuration.StandardSequences.Eras import eras
 
-process = cms.Process('REPR',eras.Phase2C9)
+#process = cms.Process('REPR',eras.Phase2C9)
+process = cms.Process('REPR',eras.Phase2C17I13M9)
  
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -12,6 +13,8 @@ process.load('Configuration.EventContent.EventContent_cff')
 process.load('SimGeneral.MixingModule.mixNoPU_cfi')
 process.load('Configuration.Geometry.GeometryExtended2026D49Reco_cff')
 process.load('Configuration.Geometry.GeometryExtended2026D49_cff')
+# process.load('Configuration.Geometry.GeometryExtended2026D88Reco_cff')
+# process.load('Configuration.Geometry.GeometryExtended2026D88_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration.StandardSequences.SimL1Emulator_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
@@ -52,7 +55,8 @@ process.source = cms.Source("PoolSource",
 # ---- Global Tag :
 from Configuration.AlCa.GlobalTag import GlobalTag
 #process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '') 
-process.GlobalTag = GlobalTag(process.GlobalTag, '123X_mcRun4_realistic_v3', '') 
+#process.GlobalTag = GlobalTag(process.GlobalTag, '123X_mcRun4_realistic_v3', '') 
+process.GlobalTag = GlobalTag(process.GlobalTag, '125X_mcRun4_realistic_v2', '') 
 
 
 # Add HCAL Transcoder
@@ -102,7 +106,7 @@ process.pGetTaus = cms.Path(
 # ----    Load the L1CaloJet sequence designed to accompany process named "REPR"
 
 process.load('L1Trigger.L1CaloTrigger.L1CaloJets_cff')
-process.l1CaloJets = cms.Path(process.l1CaloJetsSequence)
+process.l1CaloJets = cms.Path(process.L1TCaloJetsSequence)
 
 
 
@@ -116,10 +120,10 @@ process.Out = cms.OutputModule( "PoolOutputModule",
                           # "keep *",
                           "drop *",
                           "keep *_genParticles_*_*",
-                          "keep *_Phase2L1CaloEGammaEmulatorProducer_*_*", #Added by Pallabi
-                          #"keep *_L1EGammaClusterEmuProducer_*_*",
-                          #"keep *_L1TowerCalibrationProducer_*_*",
-                          "keep *_L1CaloJetProducer_*_*",
+                          "keep *_l1tPhase2L1CaloEGammaEmulator_*_*", #Added by Pallabi
+                          #"keep *_l1tEGammaClusterEmuProducer_*_*",
+                          #"keep *_l1tTowerCalibrationProducer_*_*",
+                          "keep *_l1tCaloJetProducer_*_*",
                           "keep *_simCaloStage2Digis_MP_RECO",
                           "keep *_addPileupInfo_*_*",
                           "keep *_ak4GenJetsNoNu__HLT",
