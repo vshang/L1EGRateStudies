@@ -3,20 +3,20 @@ from ROOT import *
 gROOT.SetBatch(True)
 
 #Select and load root files here
-file = 'output_round2_QCD'
-date = '02_06_2023'
+file = 'output_round2_QCD_Pallabi'
+date = '05_18_2023'
 print('Opening Tfile...')
-f1 = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_12_3_0_pre4/20230206/' + file + '.root')
+f1 = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_12_5_2_patch1/20230511/' + file + '.root')
 
 #Set save directory here
-saveDirectory = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/resolutions/CMSSW_12_3_0_pre4/' + date + '/' 
+saveDirectory = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/resolutions/CMSSW_12_5_2_patch1/' + date + '/' 
 checkDir( saveDirectory)
 
 #Set number of histogram bins and maximum value of x and y axis here
 nBins = 50
 xMin = -1
 xMax = 2
-yMax = 0.12
+yMax = 0.5
 
 #Remove stats box from histograms by setting argument to 0
 gStyle.SetOptStat(0)
@@ -31,8 +31,9 @@ eventTree1 = f1.Get('analyzer/tree')
 hist_barrel = TH1F('hist_barrel', '; (reco p_{T} - gen p_{T})/gen p_{T}; Number of jets (normalized)', nBins, xMin, xMax)
 hist_endcap = TH1F('hist_endcap', '; (reco p_{T} - gen p_{T})/gen p_{T}; Number of jets (normalized)', nBins, xMin, xMax)
 hist_HF = TH1F('hist_HF', '; (reco p_{T} - gen p_{T})/gen p_{T}; Number of jets (normalized)', nBins, xMin, xMax)
-var = '(jet_pt_calibration - genJet_pt)/genJet_pt'
+#var = '(jet_pt_calibration - genJet_pt)/genJet_pt'
 #var = '(calibPtHH - genJet_pt)/genJet_pt'
+var = '(jetEt - genJet_pt)/genJet_pt'
 cut_barrel = 'abs(genJet_eta)<1.2'
 cut_endcap = 'abs(genJet_eta)>1.6 && abs(genJet_eta)<2.8'
 cut_HF = 'abs(genJet_eta)>3.0 && abs(genJet_eta)<6.0'
@@ -48,15 +49,15 @@ hist_HF.SetBinContent(nBins, hist_HF.GetBinContent(nBins) + hist_HF.GetBinConten
 
 #Normalize histograms
 hist_barrel.Scale(1/hist_barrel.Integral())
-hist_endcap.Scale(1/hist_endcap.Integral())
-hist_HF.Scale(1/hist_HF.Integral())
+#hist_endcap.Scale(1/hist_endcap.Integral())
+#hist_HF.Scale(1/hist_HF.Integral())
 
 #Draw histogram
 print('Drawing plots')
 canvas = TCanvas('canvas', 'Jet p_{T} resolution')
 hist_barrel.Draw('hist') 
-hist_endcap.Draw('hist same')
-hist_HF.Draw('hist same')
+#hist_endcap.Draw('hist same')
+#hist_HF.Draw('hist same')
 
 #Set histogram settings
 hist_barrel.SetMinimum(0)
@@ -82,6 +83,7 @@ legend.SetFillStyle(0)
 
 #Save histograms
 print('Saving plots...')
-canvas.SaveAs(saveDirectory + file + '_jet_pt_calibration.png')
+#canvas.SaveAs(saveDirectory + file + '_jet_pt_calibration.png')
 #canvas.SaveAs(saveDirectory + file + '_calibPtHH.png')
+canvas.SaveAs(saveDirectory + file + '_jetEt.png')
 print('Saved plots')
