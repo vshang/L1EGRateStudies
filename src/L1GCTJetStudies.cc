@@ -245,7 +245,7 @@ L1GCTJetStudies::L1GCTJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("lumi", &treeinfo.lumi);
     tree->Branch("event", &treeinfo.event);
     tree->Branch("nTruePU", &treeinfo.nTruePU);
-    tree->Branch("jeteT", &treeinfo.jetEt);
+    tree->Branch("jetEt", &treeinfo.jetEt);
     tree->Branch("jetIEta", &treeinfo.jetIEta);
     tree->Branch("jetIPhi", &treeinfo.jetIPhi);
     tree->Branch("jetEta", &treeinfo.jetEta);
@@ -565,7 +565,7 @@ L1GCTJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                     treeinfo.genTau_pt_photons += part->pt();
                 }
             }
-    
+        }
         reco::Candidate::PolarLorentzVector genJetP4(genJet.pt(), genJet.eta(), genJet.phi(), genJet.mass() );
     
     
@@ -685,8 +685,8 @@ L1GCTJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             for(const auto& caloJet : caloJets)
             {
 
-		if ( reco::deltaR(caloJet, genJetP4) < genMatchDeltaRcut )
-
+	      if ( reco::deltaR(caloJet, genJetP4) < genMatchDeltaRcut )
+	      {
                     if ( debug ) std::cout << "using caloJet dr = " << reco::deltaR(caloJet, genJetP4) << std::endl;
                     treeinfo.deltaR = reco::deltaR(caloJet, genJetP4);
                     treeinfo.deltaPhi = reco::deltaPhi(caloJet, genJetP4);
@@ -701,7 +701,7 @@ L1GCTJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                     found_caloJet = true;
                     break;
     
-                } // end passes Pt and dR match
+              } // end passes Pt and dR match
             } // end Calo Jets loop
 
             // if not calo_jets were reconstructed to match the gen obj
