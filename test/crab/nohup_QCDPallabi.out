@@ -1,0 +1,647 @@
+/afs/hep.wisc.edu/user/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/Round2Files/QCD_Pallabi.txt
+
+
+Target Files: QCD_Pallabi
+Loaded Files:
+cms.untracked.vstring(
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_10.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_11.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_12.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_13.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_14.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_15.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_16.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_17.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_18.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_19.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_1.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_20.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_21.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_22.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_23.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_24.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_25.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_26.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_27.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_28.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_29.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_2.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_30.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_31.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_32.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_33.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_3.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_4.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_5.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_6.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_7.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_8.root',
+    'file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_9.root'
+)
+
+
+
+18-May-2023 07:22:41 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_10.root
+18-May-2023 07:22:42 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_10.root
+%MSG-s LegacyModules:  AfterModConstruction 18-May-2023 07:22:43 CDT pre-events
+The following legacy modules are configured. Support for legacy modules
+is going to end soon. These modules need to be converted to have type
+edm::global, edm::stream, edm::one, or in rare cases edm::limited.
+  L1GCTJetStudies analyzer
+%MSG
+Begin processing the 1st record. Run 1, Event 40122, LumiSection 255 on stream 0 at 18-May-2023 07:25:50.121 CDT
+Begin processing the 101st record. Run 1, Event 40225, LumiSection 255 on stream 0 at 18-May-2023 07:25:51.623 CDT
+Begin processing the 201st record. Run 1, Event 11127, LumiSection 71 on stream 0 at 18-May-2023 07:25:52.572 CDT
+Begin processing the 301st record. Run 1, Event 11221, LumiSection 71 on stream 0 at 18-May-2023 07:25:53.580 CDT
+Begin processing the 401st record. Run 1, Event 37201, LumiSection 236 on stream 0 at 18-May-2023 07:25:54.504 CDT
+Begin processing the 501st record. Run 1, Event 6821, LumiSection 44 on stream 0 at 18-May-2023 07:25:55.889 CDT
+Begin processing the 601st record. Run 1, Event 6914, LumiSection 44 on stream 0 at 18-May-2023 07:25:56.803 CDT
+Begin processing the 701st record. Run 1, Event 14624, LumiSection 93 on stream 0 at 18-May-2023 07:25:57.760 CDT
+Begin processing the 801st record. Run 1, Event 8882, LumiSection 57 on stream 0 at 18-May-2023 07:25:58.615 CDT
+Begin processing the 901st record. Run 1, Event 8980, LumiSection 57 on stream 0 at 18-May-2023 07:25:59.459 CDT
+Begin processing the 1001st record. Run 1, Event 29799, LumiSection 189 on stream 0 at 18-May-2023 07:26:00.811 CDT
+Begin processing the 1101st record. Run 1, Event 4943, LumiSection 32 on stream 0 at 18-May-2023 07:26:01.721 CDT
+Begin processing the 1201st record. Run 1, Event 5043, LumiSection 32 on stream 0 at 18-May-2023 07:26:02.641 CDT
+Begin processing the 1301st record. Run 1, Event 36861, LumiSection 234 on stream 0 at 18-May-2023 07:26:03.519 CDT
+Begin processing the 1401st record. Run 1, Event 33481, LumiSection 213 on stream 0 at 18-May-2023 07:26:04.704 CDT
+Begin processing the 1501st record. Run 1, Event 33582, LumiSection 213 on stream 0 at 18-May-2023 07:26:05.610 CDT
+18-May-2023 07:26:06 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_10.root
+18-May-2023 07:26:06 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_11.root
+18-May-2023 07:26:06 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_11.root
+Begin processing the 1601st record. Run 1, Event 33359, LumiSection 212 on stream 0 at 18-May-2023 07:26:07.848 CDT
+Begin processing the 1701st record. Run 1, Event 33450, LumiSection 212 on stream 0 at 18-May-2023 07:26:08.727 CDT
+Begin processing the 1801st record. Run 1, Event 2483, LumiSection 16 on stream 0 at 18-May-2023 07:26:09.738 CDT
+Begin processing the 1901st record. Run 1, Event 44088, LumiSection 280 on stream 0 at 18-May-2023 07:26:10.616 CDT
+Begin processing the 2001st record. Run 1, Event 44195, LumiSection 280 on stream 0 at 18-May-2023 07:26:11.481 CDT
+Begin processing the 2101st record. Run 1, Event 1343, LumiSection 9 on stream 0 at 18-May-2023 07:26:12.909 CDT
+Begin processing the 2201st record. Run 1, Event 10125, LumiSection 65 on stream 0 at 18-May-2023 07:26:13.781 CDT
+Begin processing the 2301st record. Run 1, Event 10227, LumiSection 65 on stream 0 at 18-May-2023 07:26:14.698 CDT
+Begin processing the 2401st record. Run 1, Event 27360, LumiSection 174 on stream 0 at 18-May-2023 07:26:15.588 CDT
+Begin processing the 2501st record. Run 1, Event 27465, LumiSection 174 on stream 0 at 18-May-2023 07:26:17.011 CDT
+Begin processing the 2601st record. Run 1, Event 42884, LumiSection 272 on stream 0 at 18-May-2023 07:26:17.875 CDT
+Begin processing the 2701st record. Run 1, Event 20102, LumiSection 128 on stream 0 at 18-May-2023 07:26:18.748 CDT
+Begin processing the 2801st record. Run 1, Event 20202, LumiSection 128 on stream 0 at 18-May-2023 07:26:19.748 CDT
+Begin processing the 2901st record. Run 1, Event 45385, LumiSection 288 on stream 0 at 18-May-2023 07:26:20.608 CDT
+Begin processing the 3001st record. Run 1, Event 11724, LumiSection 75 on stream 0 at 18-May-2023 07:26:21.759 CDT
+Begin processing the 3101st record. Run 1, Event 11821, LumiSection 75 on stream 0 at 18-May-2023 07:26:22.635 CDT
+18-May-2023 07:26:23 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_11.root
+18-May-2023 07:26:23 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_12.root
+18-May-2023 07:26:23 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_12.root
+Begin processing the 3201st record. Run 1, Event 21685, LumiSection 138 on stream 0 at 18-May-2023 07:26:24.619 CDT
+Begin processing the 3301st record. Run 1, Event 21779, LumiSection 138 on stream 0 at 18-May-2023 07:26:25.511 CDT
+Begin processing the 3401st record. Run 1, Event 31680, LumiSection 201 on stream 0 at 18-May-2023 07:26:26.500 CDT
+Begin processing the 3501st record. Run 1, Event 32573, LumiSection 207 on stream 0 at 18-May-2023 07:26:27.315 CDT
+Begin processing the 3601st record. Run 1, Event 32684, LumiSection 207 on stream 0 at 18-May-2023 07:26:28.208 CDT
+Begin processing the 3701st record. Run 1, Event 41298, LumiSection 262 on stream 0 at 18-May-2023 07:26:29.587 CDT
+Begin processing the 3801st record. Run 1, Event 40443, LumiSection 257 on stream 0 at 18-May-2023 07:26:32.931 CDT
+Begin processing the 3901st record. Run 1, Event 40528, LumiSection 257 on stream 0 at 18-May-2023 07:26:33.834 CDT
+Begin processing the 4001st record. Run 1, Event 22161, LumiSection 141 on stream 0 at 18-May-2023 07:26:34.678 CDT
+Begin processing the 4101st record. Run 1, Event 22265, LumiSection 141 on stream 0 at 18-May-2023 07:26:36.073 CDT
+Begin processing the 4201st record. Run 1, Event 22037, LumiSection 140 on stream 0 at 18-May-2023 07:26:36.965 CDT
+Begin processing the 4301st record. Run 1, Event 47745, LumiSection 303 on stream 0 at 18-May-2023 07:26:37.880 CDT
+Begin processing the 4401st record. Run 1, Event 47838, LumiSection 303 on stream 0 at 18-May-2023 07:26:38.805 CDT
+Begin processing the 4501st record. Run 1, Event 4500, LumiSection 29 on stream 0 at 18-May-2023 07:26:39.711 CDT
+Begin processing the 4601st record. Run 1, Event 9642, LumiSection 62 on stream 0 at 18-May-2023 07:26:40.861 CDT
+Begin processing the 4701st record. Run 1, Event 9742, LumiSection 62 on stream 0 at 18-May-2023 07:26:41.804 CDT
+18-May-2023 07:26:42 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_12.root
+18-May-2023 07:26:42 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_13.root
+18-May-2023 07:26:42 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_13.root
+Begin processing the 4801st record. Run 1, Event 17284, LumiSection 110 on stream 0 at 18-May-2023 07:26:43.898 CDT
+Begin processing the 4901st record. Run 1, Event 17382, LumiSection 110 on stream 0 at 18-May-2023 07:26:44.808 CDT
+Begin processing the 5001st record. Run 1, Event 16199, LumiSection 103 on stream 0 at 18-May-2023 07:26:45.793 CDT
+Begin processing the 5101st record. Run 1, Event 10464, LumiSection 67 on stream 0 at 18-May-2023 07:26:46.668 CDT
+Begin processing the 5201st record. Run 1, Event 10561, LumiSection 67 on stream 0 at 18-May-2023 07:26:47.520 CDT
+Begin processing the 5301st record. Run 1, Event 37023, LumiSection 235 on stream 0 at 18-May-2023 07:26:48.927 CDT
+Begin processing the 5401st record. Run 1, Event 12641, LumiSection 81 on stream 0 at 18-May-2023 07:26:49.780 CDT
+Begin processing the 5501st record. Run 1, Event 12741, LumiSection 81 on stream 0 at 18-May-2023 07:26:50.695 CDT
+Begin processing the 5601st record. Run 1, Event 47444, LumiSection 301 on stream 0 at 18-May-2023 07:26:51.571 CDT
+Begin processing the 5701st record. Run 1, Event 47541, LumiSection 301 on stream 0 at 18-May-2023 07:26:52.928 CDT
+Begin processing the 5801st record. Run 1, Event 43362, LumiSection 275 on stream 0 at 18-May-2023 07:26:53.854 CDT
+Begin processing the 5901st record. Run 1, Event 19302, LumiSection 123 on stream 0 at 18-May-2023 07:26:54.696 CDT
+Begin processing the 6001st record. Run 1, Event 19392, LumiSection 123 on stream 0 at 18-May-2023 07:26:55.697 CDT
+Begin processing the 6101st record. Run 1, Event 10809, LumiSection 69 on stream 0 at 18-May-2023 07:26:56.527 CDT
+Begin processing the 6201st record. Run 1, Event 27808, LumiSection 177 on stream 0 at 18-May-2023 07:26:57.684 CDT
+Begin processing the 6301st record. Run 1, Event 27897, LumiSection 177 on stream 0 at 18-May-2023 07:26:58.576 CDT
+18-May-2023 07:26:59 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_13.root
+18-May-2023 07:26:59 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_14.root
+18-May-2023 07:26:59 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_14.root
+Begin processing the 6401st record. Run 1, Event 31485, LumiSection 200 on stream 0 at 18-May-2023 07:27:00.675 CDT
+Begin processing the 6501st record. Run 1, Event 31587, LumiSection 200 on stream 0 at 18-May-2023 07:27:01.594 CDT
+Begin processing the 6601st record. Run 1, Event 6555, LumiSection 42 on stream 0 at 18-May-2023 07:27:02.576 CDT
+Begin processing the 6701st record. Run 1, Event 7935, LumiSection 51 on stream 0 at 18-May-2023 07:27:03.425 CDT
+Begin processing the 6801st record. Run 1, Event 8045, LumiSection 51 on stream 0 at 18-May-2023 07:27:04.333 CDT
+Begin processing the 6901st record. Run 1, Event 21379, LumiSection 136 on stream 0 at 18-May-2023 07:27:05.676 CDT
+Begin processing the 7001st record. Run 1, Event 18007, LumiSection 115 on stream 0 at 18-May-2023 07:27:06.580 CDT
+Begin processing the 7101st record. Run 1, Event 18103, LumiSection 115 on stream 0 at 18-May-2023 07:27:07.546 CDT
+Begin processing the 7201st record. Run 1, Event 13806, LumiSection 88 on stream 0 at 18-May-2023 07:27:08.449 CDT
+Begin processing the 7301st record. Run 1, Event 13902, LumiSection 88 on stream 0 at 18-May-2023 07:27:09.779 CDT
+Begin processing the 7401st record. Run 1, Event 715, LumiSection 5 on stream 0 at 18-May-2023 07:27:10.620 CDT
+Begin processing the 7501st record. Run 1, Event 39963, LumiSection 254 on stream 0 at 18-May-2023 07:27:11.485 CDT
+Begin processing the 7601st record. Run 1, Event 40081, LumiSection 254 on stream 0 at 18-May-2023 07:27:12.340 CDT
+Begin processing the 7701st record. Run 1, Event 21861, LumiSection 139 on stream 0 at 18-May-2023 07:27:13.196 CDT
+Begin processing the 7801st record. Run 1, Event 47245, LumiSection 300 on stream 0 at 18-May-2023 07:27:14.320 CDT
+Begin processing the 7901st record. Run 1, Event 47344, LumiSection 300 on stream 0 at 18-May-2023 07:27:15.156 CDT
+18-May-2023 07:27:15 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_14.root
+18-May-2023 07:27:15 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_15.root
+18-May-2023 07:27:15 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_15.root
+Begin processing the 8001st record. Run 1, Event 5762, LumiSection 37 on stream 0 at 18-May-2023 07:27:17.207 CDT
+Begin processing the 8101st record. Run 1, Event 5867, LumiSection 37 on stream 0 at 18-May-2023 07:27:18.096 CDT
+Begin processing the 8201st record. Run 1, Event 36243, LumiSection 230 on stream 0 at 18-May-2023 07:27:19.075 CDT
+Begin processing the 8301st record. Run 1, Event 22779, LumiSection 145 on stream 0 at 18-May-2023 07:27:19.962 CDT
+Begin processing the 8401st record. Run 1, Event 22879, LumiSection 145 on stream 0 at 18-May-2023 07:27:20.807 CDT
+Begin processing the 8501st record. Run 1, Event 13662, LumiSection 87 on stream 0 at 18-May-2023 07:27:22.271 CDT
+Begin processing the 8601st record. Run 1, Event 21001, LumiSection 134 on stream 0 at 18-May-2023 07:27:23.217 CDT
+Begin processing the 8701st record. Run 1, Event 21101, LumiSection 134 on stream 0 at 18-May-2023 07:27:24.149 CDT
+Begin processing the 8801st record. Run 1, Event 46322, LumiSection 294 on stream 0 at 18-May-2023 07:27:25.011 CDT
+Begin processing the 8901st record. Run 1, Event 46421, LumiSection 294 on stream 0 at 18-May-2023 07:27:25.949 CDT
+Begin processing the 9001st record. Run 1, Event 27726, LumiSection 176 on stream 0 at 18-May-2023 07:27:27.466 CDT
+Begin processing the 9101st record. Run 1, Event 824, LumiSection 6 on stream 0 at 18-May-2023 07:27:28.355 CDT
+Begin processing the 9201st record. Run 1, Event 918, LumiSection 6 on stream 0 at 18-May-2023 07:27:29.279 CDT
+Begin processing the 9301st record. Run 1, Event 23466, LumiSection 149 on stream 0 at 18-May-2023 07:27:30.135 CDT
+Begin processing the 9401st record. Run 1, Event 28441, LumiSection 181 on stream 0 at 18-May-2023 07:27:31.364 CDT
+Begin processing the 9501st record. Run 1, Event 28526, LumiSection 181 on stream 0 at 18-May-2023 07:27:32.253 CDT
+18-May-2023 07:27:32 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_15.root
+18-May-2023 07:27:32 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_16.root
+18-May-2023 07:27:32 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_16.root
+Begin processing the 9601st record. Run 1, Event 17117, LumiSection 109 on stream 0 at 18-May-2023 07:27:34.307 CDT
+Begin processing the 9701st record. Run 1, Event 17222, LumiSection 109 on stream 0 at 18-May-2023 07:27:35.254 CDT
+Begin processing the 9801st record. Run 1, Event 28675, LumiSection 182 on stream 0 at 18-May-2023 07:27:36.210 CDT
+Begin processing the 9901st record. Run 1, Event 506, LumiSection 4 on stream 0 at 18-May-2023 07:27:37.090 CDT
+Begin processing the 10001st record. Run 1, Event 604, LumiSection 4 on stream 0 at 18-May-2023 07:27:37.998 CDT
+Begin processing the 10101st record. Run 1, Event 37345, LumiSection 237 on stream 0 at 18-May-2023 07:27:39.461 CDT
+Begin processing the 10201st record. Run 1, Event 43124, LumiSection 274 on stream 0 at 18-May-2023 07:27:40.324 CDT
+Begin processing the 10301st record. Run 1, Event 43221, LumiSection 274 on stream 0 at 18-May-2023 07:27:41.313 CDT
+Begin processing the 10401st record. Run 1, Event 34167, LumiSection 217 on stream 0 at 18-May-2023 07:27:42.207 CDT
+Begin processing the 10501st record. Run 1, Event 34262, LumiSection 217 on stream 0 at 18-May-2023 07:27:43.596 CDT
+Begin processing the 10601st record. Run 1, Event 27081, LumiSection 172 on stream 0 at 18-May-2023 07:27:44.481 CDT
+Begin processing the 10701st record. Run 1, Event 1942, LumiSection 13 on stream 0 at 18-May-2023 07:27:45.302 CDT
+Begin processing the 10801st record. Run 1, Event 2039, LumiSection 13 on stream 0 at 18-May-2023 07:27:46.213 CDT
+Begin processing the 10901st record. Run 1, Event 31026, LumiSection 197 on stream 0 at 18-May-2023 07:27:47.132 CDT
+Begin processing the 11001st record. Run 1, Event 26561, LumiSection 169 on stream 0 at 18-May-2023 07:27:48.253 CDT
+Begin processing the 11101st record. Run 1, Event 26663, LumiSection 169 on stream 0 at 18-May-2023 07:27:49.204 CDT
+18-May-2023 07:27:49 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_16.root
+18-May-2023 07:27:49 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_17.root
+18-May-2023 07:27:49 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_17.root
+Begin processing the 11201st record. Run 1, Event 44923, LumiSection 285 on stream 0 at 18-May-2023 07:27:51.344 CDT
+Begin processing the 11301st record. Run 1, Event 31944, LumiSection 203 on stream 0 at 18-May-2023 07:27:52.272 CDT
+Begin processing the 11401st record. Run 1, Event 32043, LumiSection 203 on stream 0 at 18-May-2023 07:27:53.234 CDT
+Begin processing the 11501st record. Run 1, Event 19183, LumiSection 122 on stream 0 at 18-May-2023 07:27:54.130 CDT
+Begin processing the 11601st record. Run 1, Event 42324, LumiSection 269 on stream 0 at 18-May-2023 07:27:55.023 CDT
+Begin processing the 11701st record. Run 1, Event 42417, LumiSection 269 on stream 0 at 18-May-2023 07:27:56.345 CDT
+Begin processing the 11801st record. Run 1, Event 34643, LumiSection 220 on stream 0 at 18-May-2023 07:27:57.214 CDT
+Begin processing the 11901st record. Run 1, Event 34735, LumiSection 220 on stream 0 at 18-May-2023 07:27:58.160 CDT
+Begin processing the 12001st record. Run 1, Event 17969, LumiSection 114 on stream 0 at 18-May-2023 07:27:58.984 CDT
+Begin processing the 12101st record. Run 1, Event 17462, LumiSection 111 on stream 0 at 18-May-2023 07:28:00.379 CDT
+Begin processing the 12201st record. Run 1, Event 22602, LumiSection 144 on stream 0 at 18-May-2023 07:28:01.238 CDT
+Begin processing the 12301st record. Run 1, Event 22698, LumiSection 144 on stream 0 at 18-May-2023 07:28:02.123 CDT
+Begin processing the 12401st record. Run 1, Event 35600, LumiSection 226 on stream 0 at 18-May-2023 07:28:03.040 CDT
+Begin processing the 12501st record. Run 1, Event 35704, LumiSection 226 on stream 0 at 18-May-2023 07:28:03.974 CDT
+Begin processing the 12601st record. Run 1, Event 41159, LumiSection 261 on stream 0 at 18-May-2023 07:28:05.037 CDT
+18-May-2023 07:28:05 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_17.root
+18-May-2023 07:28:05 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_18.root
+18-May-2023 07:28:05 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_18.root
+Begin processing the 12701st record. Run 1, Event 3503, LumiSection 23 on stream 0 at 18-May-2023 07:28:06.558 CDT
+Begin processing the 12801st record. Run 1, Event 3595, LumiSection 23 on stream 0 at 18-May-2023 07:28:07.955 CDT
+Begin processing the 12901st record. Run 1, Event 24060, LumiSection 153 on stream 0 at 18-May-2023 07:28:08.859 CDT
+Begin processing the 13001st record. Run 1, Event 5402, LumiSection 35 on stream 0 at 18-May-2023 07:28:09.892 CDT
+Begin processing the 13101st record. Run 1, Event 5507, LumiSection 35 on stream 0 at 18-May-2023 07:28:10.767 CDT
+Begin processing the 13201st record. Run 1, Event 26122, LumiSection 166 on stream 0 at 18-May-2023 07:28:12.074 CDT
+Begin processing the 13301st record. Run 1, Event 26226, LumiSection 166 on stream 0 at 18-May-2023 07:28:12.909 CDT
+Begin processing the 13401st record. Run 1, Event 23156, LumiSection 147 on stream 0 at 18-May-2023 07:28:13.892 CDT
+Begin processing the 13501st record. Run 1, Event 20745, LumiSection 132 on stream 0 at 18-May-2023 07:28:14.784 CDT
+Begin processing the 13601st record. Run 1, Event 20848, LumiSection 132 on stream 0 at 18-May-2023 07:28:15.628 CDT
+Begin processing the 13701st record. Run 1, Event 9204, LumiSection 59 on stream 0 at 18-May-2023 07:28:17.000 CDT
+Begin processing the 13801st record. Run 1, Event 38882, LumiSection 247 on stream 0 at 18-May-2023 07:28:17.914 CDT
+Begin processing the 13901st record. Run 1, Event 38988, LumiSection 247 on stream 0 at 18-May-2023 07:28:18.806 CDT
+Begin processing the 14001st record. Run 1, Event 10040, LumiSection 64 on stream 0 at 18-May-2023 07:28:19.621 CDT
+Begin processing the 14101st record. Run 1, Event 44265, LumiSection 281 on stream 0 at 18-May-2023 07:28:20.715 CDT
+Begin processing the 14201st record. Run 1, Event 44357, LumiSection 281 on stream 0 at 18-May-2023 07:28:21.617 CDT
+18-May-2023 07:28:22 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_18.root
+18-May-2023 07:28:22 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_19.root
+18-May-2023 07:28:22 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_19.root
+Begin processing the 14301st record. Run 1, Event 2774, LumiSection 18 on stream 0 at 18-May-2023 07:28:23.654 CDT
+Begin processing the 14401st record. Run 1, Event 36643, LumiSection 233 on stream 0 at 18-May-2023 07:28:24.587 CDT
+Begin processing the 14501st record. Run 1, Event 36742, LumiSection 233 on stream 0 at 18-May-2023 07:28:25.564 CDT
+Begin processing the 14601st record. Run 1, Event 18840, LumiSection 120 on stream 0 at 18-May-2023 07:28:26.502 CDT
+Begin processing the 14701st record. Run 1, Event 18939, LumiSection 120 on stream 0 at 18-May-2023 07:28:27.791 CDT
+Begin processing the 14801st record. Run 1, Event 19838, LumiSection 126 on stream 0 at 18-May-2023 07:28:28.760 CDT
+Begin processing the 14901st record. Run 1, Event 39817, LumiSection 253 on stream 0 at 18-May-2023 07:28:29.652 CDT
+Begin processing the 15001st record. Run 1, Event 39914, LumiSection 253 on stream 0 at 18-May-2023 07:28:30.576 CDT
+Begin processing the 15101st record. Run 1, Event 35944, LumiSection 228 on stream 0 at 18-May-2023 07:28:31.478 CDT
+Begin processing the 15201st record. Run 1, Event 20439, LumiSection 130 on stream 0 at 18-May-2023 07:28:32.777 CDT
+Begin processing the 15301st record. Run 1, Event 20527, LumiSection 130 on stream 0 at 18-May-2023 07:28:33.717 CDT
+Begin processing the 15401st record. Run 1, Event 44804, LumiSection 284 on stream 0 at 18-May-2023 07:28:34.656 CDT
+Begin processing the 15501st record. Run 1, Event 34773, LumiSection 221 on stream 0 at 18-May-2023 07:28:35.526 CDT
+Begin processing the 15601st record. Run 1, Event 34886, LumiSection 221 on stream 0 at 18-May-2023 07:28:36.351 CDT
+Begin processing the 15701st record. Run 1, Event 38463, LumiSection 244 on stream 0 at 18-May-2023 07:28:37.471 CDT
+18-May-2023 07:28:38 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_19.root
+18-May-2023 07:28:38 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_1.root
+18-May-2023 07:28:38 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_1.root
+Begin processing the 15801st record. Run 1, Event 48806, LumiSection 310 on stream 0 at 18-May-2023 07:28:39.041 CDT
+Begin processing the 15901st record. Run 1, Event 48898, LumiSection 310 on stream 0 at 18-May-2023 07:28:40.736 CDT
+Begin processing the 16001st record. Run 1, Event 49160, LumiSection 312 on stream 0 at 18-May-2023 07:28:41.670 CDT
+Begin processing the 16101st record. Run 1, Event 49262, LumiSection 312 on stream 0 at 18-May-2023 07:28:42.623 CDT
+Begin processing the 16201st record. Run 1, Event 48235, LumiSection 306 on stream 0 at 18-May-2023 07:28:43.547 CDT
+Begin processing the 16301st record. Run 1, Event 49303, LumiSection 313 on stream 0 at 18-May-2023 07:28:45.174 CDT
+Begin processing the 16401st record. Run 1, Event 49403, LumiSection 313 on stream 0 at 18-May-2023 07:28:46.044 CDT
+Begin processing the 16501st record. Run 1, Event 48535, LumiSection 308 on stream 0 at 18-May-2023 07:28:46.998 CDT
+Begin processing the 16601st record. Run 1, Event 48961, LumiSection 311 on stream 0 at 18-May-2023 07:28:47.879 CDT
+Begin processing the 16701st record. Run 1, Event 49060, LumiSection 311 on stream 0 at 18-May-2023 07:28:48.764 CDT
+Begin processing the 16801st record. Run 1, Event 48686, LumiSection 309 on stream 0 at 18-May-2023 07:28:50.162 CDT
+Begin processing the 16901st record. Run 1, Event 48786, LumiSection 309 on stream 0 at 18-May-2023 07:28:51.050 CDT
+Begin processing the 17001st record. Run 1, Event 48007, LumiSection 305 on stream 0 at 18-May-2023 07:28:51.987 CDT
+Begin processing the 17101st record. Run 1, Event 48099, LumiSection 305 on stream 0 at 18-May-2023 07:28:52.916 CDT
+Begin processing the 17201st record. Run 1, Event 48360, LumiSection 307 on stream 0 at 18-May-2023 07:28:53.974 CDT
+Begin processing the 17301st record. Run 1, Event 48463, LumiSection 307 on stream 0 at 18-May-2023 07:28:54.868 CDT
+18-May-2023 07:28:55 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_1.root
+18-May-2023 07:28:55 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_20.root
+18-May-2023 07:28:55 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_20.root
+Begin processing the 17401st record. Run 1, Event 15725, LumiSection 100 on stream 0 at 18-May-2023 07:28:56.913 CDT
+Begin processing the 17501st record. Run 1, Event 3183, LumiSection 21 on stream 0 at 18-May-2023 07:28:57.839 CDT
+Begin processing the 17601st record. Run 1, Event 3282, LumiSection 21 on stream 0 at 18-May-2023 07:28:58.880 CDT
+Begin processing the 17701st record. Run 1, Event 45867, LumiSection 291 on stream 0 at 18-May-2023 07:28:59.823 CDT
+Begin processing the 17801st record. Run 1, Event 10286, LumiSection 66 on stream 0 at 18-May-2023 07:29:01.231 CDT
+Begin processing the 17901st record. Run 1, Event 10381, LumiSection 66 on stream 0 at 18-May-2023 07:29:02.110 CDT
+Begin processing the 18001st record. Run 1, Event 31806, LumiSection 202 on stream 0 at 18-May-2023 07:29:03.018 CDT
+Begin processing the 18101st record. Run 1, Event 31886, LumiSection 202 on stream 0 at 18-May-2023 07:29:03.909 CDT
+Begin processing the 18201st record. Run 1, Event 28039, LumiSection 178 on stream 0 at 18-May-2023 07:29:04.761 CDT
+Begin processing the 18301st record. Run 1, Event 7783, LumiSection 50 on stream 0 at 18-May-2023 07:29:06.203 CDT
+Begin processing the 18401st record. Run 1, Event 7874, LumiSection 50 on stream 0 at 18-May-2023 07:29:07.066 CDT
+Begin processing the 18501st record. Run 1, Event 13987, LumiSection 89 on stream 0 at 18-May-2023 07:29:07.999 CDT
+Begin processing the 18601st record. Run 1, Event 24644, LumiSection 157 on stream 0 at 18-May-2023 07:29:08.853 CDT
+Begin processing the 18701st record. Run 1, Event 24745, LumiSection 157 on stream 0 at 18-May-2023 07:29:09.714 CDT
+Begin processing the 18801st record. Run 1, Event 4322, LumiSection 28 on stream 0 at 18-May-2023 07:29:10.902 CDT
+Begin processing the 18901st record. Run 1, Event 4425, LumiSection 28 on stream 0 at 18-May-2023 07:29:11.825 CDT
+18-May-2023 07:29:12 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_20.root
+18-May-2023 07:29:12 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_21.root
+18-May-2023 07:29:12 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_21.root
+Begin processing the 19001st record. Run 1, Event 13043, LumiSection 83 on stream 0 at 18-May-2023 07:29:13.970 CDT
+Begin processing the 19101st record. Run 1, Event 341, LumiSection 3 on stream 0 at 18-May-2023 07:29:14.872 CDT
+Begin processing the 19201st record. Run 1, Event 436, LumiSection 3 on stream 0 at 18-May-2023 07:29:15.833 CDT
+Begin processing the 19301st record. Run 1, Event 33064, LumiSection 210 on stream 0 at 18-May-2023 07:29:16.735 CDT
+Begin processing the 19401st record. Run 1, Event 25122, LumiSection 160 on stream 0 at 18-May-2023 07:29:18.144 CDT
+Begin processing the 19501st record. Run 1, Event 25226, LumiSection 160 on stream 0 at 18-May-2023 07:29:19.008 CDT
+Begin processing the 19601st record. Run 1, Event 29443, LumiSection 187 on stream 0 at 18-May-2023 07:29:19.919 CDT
+Begin processing the 19701st record. Run 1, Event 29543, LumiSection 187 on stream 0 at 18-May-2023 07:29:20.843 CDT
+Begin processing the 19801st record. Run 1, Event 6081, LumiSection 39 on stream 0 at 18-May-2023 07:29:21.743 CDT
+Begin processing the 19901st record. Run 1, Event 9, LumiSection 1 on stream 0 at 18-May-2023 07:29:23.192 CDT
+Begin processing the 20001st record. Run 1, Event 123, LumiSection 1 on stream 0 at 18-May-2023 07:29:24.137 CDT
+Begin processing the 20101st record. Run 1, Event 42539, LumiSection 270 on stream 0 at 18-May-2023 07:29:25.066 CDT
+Begin processing the 20201st record. Run 1, Event 2245, LumiSection 15 on stream 0 at 18-May-2023 07:29:25.948 CDT
+Begin processing the 20301st record. Run 1, Event 2330, LumiSection 15 on stream 0 at 18-May-2023 07:29:26.836 CDT
+Begin processing the 20401st record. Run 1, Event 18684, LumiSection 119 on stream 0 at 18-May-2023 07:29:27.992 CDT
+Begin processing the 20501st record. Run 1, Event 18781, LumiSection 119 on stream 0 at 18-May-2023 07:29:28.883 CDT
+18-May-2023 07:29:29 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_21.root
+18-May-2023 07:29:29 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_22.root
+18-May-2023 07:29:29 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_22.root
+Begin processing the 20601st record. Run 1, Event 47964, LumiSection 304 on stream 0 at 18-May-2023 07:29:31.026 CDT
+Begin processing the 20701st record. Run 1, Event 8297, LumiSection 53 on stream 0 at 18-May-2023 07:29:31.915 CDT
+Begin processing the 20801st record. Run 1, Event 15324, LumiSection 98 on stream 0 at 18-May-2023 07:29:32.876 CDT
+Begin processing the 20901st record. Run 1, Event 15426, LumiSection 98 on stream 0 at 18-May-2023 07:29:33.777 CDT
+Begin processing the 21001st record. Run 1, Event 46002, LumiSection 292 on stream 0 at 18-May-2023 07:29:35.214 CDT
+Begin processing the 21101st record. Run 1, Event 46106, LumiSection 292 on stream 0 at 18-May-2023 07:29:36.095 CDT
+Begin processing the 21201st record. Run 1, Event 36565, LumiSection 232 on stream 0 at 18-May-2023 07:29:36.989 CDT
+Begin processing the 21301st record. Run 1, Event 180, LumiSection 2 on stream 0 at 18-May-2023 07:29:37.826 CDT
+Begin processing the 21401st record. Run 1, Event 285, LumiSection 2 on stream 0 at 18-May-2023 07:29:38.744 CDT
+Begin processing the 21501st record. Run 1, Event 36062, LumiSection 229 on stream 0 at 18-May-2023 07:29:40.132 CDT
+Begin processing the 21601st record. Run 1, Event 44405, LumiSection 282 on stream 0 at 18-May-2023 07:29:41.052 CDT
+Begin processing the 21701st record. Run 1, Event 44503, LumiSection 282 on stream 0 at 18-May-2023 07:29:41.964 CDT
+Begin processing the 21801st record. Run 1, Event 37808, LumiSection 240 on stream 0 at 18-May-2023 07:29:42.833 CDT
+Begin processing the 21901st record. Run 1, Event 37905, LumiSection 240 on stream 0 at 18-May-2023 07:29:43.654 CDT
+Begin processing the 22001st record. Run 1, Event 41000, LumiSection 260 on stream 0 at 18-May-2023 07:29:44.787 CDT
+18-May-2023 07:29:45 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_22.root
+18-May-2023 07:29:45 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_23.root
+18-May-2023 07:29:45 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_23.root
+Begin processing the 22101st record. Run 1, Event 41582, LumiSection 264 on stream 0 at 18-May-2023 07:29:46.123 CDT
+Begin processing the 22201st record. Run 1, Event 41683, LumiSection 264 on stream 0 at 18-May-2023 07:29:47.668 CDT
+Begin processing the 22301st record. Run 1, Event 21538, LumiSection 137 on stream 0 at 18-May-2023 07:29:48.565 CDT
+Begin processing the 22401st record. Run 1, Event 33168, LumiSection 211 on stream 0 at 18-May-2023 07:29:49.538 CDT
+Begin processing the 22501st record. Run 1, Event 33264, LumiSection 211 on stream 0 at 18-May-2023 07:29:50.481 CDT
+Begin processing the 22601st record. Run 1, Event 4803, LumiSection 31 on stream 0 at 18-May-2023 07:29:51.836 CDT
+Begin processing the 22701st record. Run 1, Event 4900, LumiSection 31 on stream 0 at 18-May-2023 07:29:52.791 CDT
+Begin processing the 22801st record. Run 1, Event 40354, LumiSection 256 on stream 0 at 18-May-2023 07:29:53.734 CDT
+Begin processing the 22901st record. Run 1, Event 21168, LumiSection 135 on stream 0 at 18-May-2023 07:29:54.627 CDT
+Begin processing the 23001st record. Run 1, Event 21270, LumiSection 135 on stream 0 at 18-May-2023 07:29:55.899 CDT
+Begin processing the 23101st record. Run 1, Event 25027, LumiSection 159 on stream 0 at 18-May-2023 07:29:56.888 CDT
+Begin processing the 23201st record. Run 1, Event 32241, LumiSection 205 on stream 0 at 18-May-2023 07:29:57.751 CDT
+Begin processing the 23301st record. Run 1, Event 32346, LumiSection 205 on stream 0 at 18-May-2023 07:29:58.685 CDT
+Begin processing the 23401st record. Run 1, Event 46486, LumiSection 295 on stream 0 at 18-May-2023 07:29:59.555 CDT
+Begin processing the 23501st record. Run 1, Event 46578, LumiSection 295 on stream 0 at 18-May-2023 07:30:00.719 CDT
+Begin processing the 23601st record. Run 1, Event 1519, LumiSection 10 on stream 0 at 18-May-2023 07:30:01.525 CDT
+18-May-2023 07:30:02 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_23.root
+18-May-2023 07:30:02 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_24.root
+18-May-2023 07:30:02 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_24.root
+Begin processing the 23701st record. Run 1, Event 17574, LumiSection 112 on stream 0 at 18-May-2023 07:30:03.124 CDT
+Begin processing the 23801st record. Run 1, Event 17684, LumiSection 112 on stream 0 at 18-May-2023 07:30:04.646 CDT
+Begin processing the 23901st record. Run 1, Event 15865, LumiSection 101 on stream 0 at 18-May-2023 07:30:05.554 CDT
+Begin processing the 24001st record. Run 1, Event 32883, LumiSection 209 on stream 0 at 18-May-2023 07:30:06.565 CDT
+Begin processing the 24101st record. Run 1, Event 32977, LumiSection 209 on stream 0 at 18-May-2023 07:30:07.416 CDT
+Begin processing the 24201st record. Run 1, Event 9887, LumiSection 63 on stream 0 at 18-May-2023 07:30:08.812 CDT
+Begin processing the 24301st record. Run 1, Event 8587, LumiSection 55 on stream 0 at 18-May-2023 07:30:09.706 CDT
+Begin processing the 24401st record. Run 1, Event 8678, LumiSection 55 on stream 0 at 18-May-2023 07:30:10.614 CDT
+Begin processing the 24501st record. Run 1, Event 18380, LumiSection 117 on stream 0 at 18-May-2023 07:30:11.561 CDT
+Begin processing the 24601st record. Run 1, Event 33642, LumiSection 214 on stream 0 at 18-May-2023 07:30:12.438 CDT
+Begin processing the 24701st record. Run 1, Event 33743, LumiSection 214 on stream 0 at 18-May-2023 07:30:13.833 CDT
+Begin processing the 24801st record. Run 1, Event 40804, LumiSection 259 on stream 0 at 18-May-2023 07:30:14.708 CDT
+Begin processing the 24901st record. Run 1, Event 40900, LumiSection 259 on stream 0 at 18-May-2023 07:30:15.611 CDT
+Begin processing the 25001st record. Run 1, Event 42728, LumiSection 271 on stream 0 at 18-May-2023 07:30:16.569 CDT
+Begin processing the 25101st record. Run 1, Event 1779, LumiSection 12 on stream 0 at 18-May-2023 07:30:17.758 CDT
+Begin processing the 25201st record. Run 1, Event 1880, LumiSection 12 on stream 0 at 18-May-2023 07:30:18.640 CDT
+18-May-2023 07:30:19 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_24.root
+18-May-2023 07:30:19 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_25.root
+18-May-2023 07:30:19 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_25.root
+Begin processing the 25301st record. Run 1, Event 35145, LumiSection 223 on stream 0 at 18-May-2023 07:30:20.674 CDT
+Begin processing the 25401st record. Run 1, Event 15484, LumiSection 99 on stream 0 at 18-May-2023 07:30:21.539 CDT
+Begin processing the 25501st record. Run 1, Event 15581, LumiSection 99 on stream 0 at 18-May-2023 07:30:22.562 CDT
+Begin processing the 25601st record. Run 1, Event 14282, LumiSection 91 on stream 0 at 18-May-2023 07:30:23.433 CDT
+Begin processing the 25701st record. Run 1, Event 14375, LumiSection 91 on stream 0 at 18-May-2023 07:30:24.338 CDT
+Begin processing the 25801st record. Run 1, Event 23965, LumiSection 152 on stream 0 at 18-May-2023 07:30:25.681 CDT
+Begin processing the 25901st record. Run 1, Event 16987, LumiSection 108 on stream 0 at 18-May-2023 07:30:26.580 CDT
+Begin processing the 26001st record. Run 1, Event 23723, LumiSection 151 on stream 0 at 18-May-2023 07:30:27.484 CDT
+Begin processing the 26101st record. Run 1, Event 23823, LumiSection 151 on stream 0 at 18-May-2023 07:30:28.364 CDT
+Begin processing the 26201st record. Run 1, Event 19964, LumiSection 127 on stream 0 at 18-May-2023 07:30:29.724 CDT
+Begin processing the 26301st record. Run 1, Event 20060, LumiSection 127 on stream 0 at 18-May-2023 07:30:30.598 CDT
+Begin processing the 26401st record. Run 1, Event 19683, LumiSection 125 on stream 0 at 18-May-2023 07:30:31.476 CDT
+Begin processing the 26501st record. Run 1, Event 27505, LumiSection 175 on stream 0 at 18-May-2023 07:30:32.428 CDT
+Begin processing the 26601st record. Run 1, Event 27603, LumiSection 175 on stream 0 at 18-May-2023 07:30:33.332 CDT
+Begin processing the 26701st record. Run 1, Event 27224, LumiSection 173 on stream 0 at 18-May-2023 07:30:34.498 CDT
+18-May-2023 07:30:35 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_25.root
+18-May-2023 07:30:35 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_26.root
+18-May-2023 07:30:35 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_26.root
+Begin processing the 26801st record. Run 1, Event 11245, LumiSection 72 on stream 0 at 18-May-2023 07:30:36.099 CDT
+Begin processing the 26901st record. Run 1, Event 11348, LumiSection 72 on stream 0 at 18-May-2023 07:30:37.542 CDT
+Begin processing the 27001st record. Run 1, Event 26766, LumiSection 170 on stream 0 at 18-May-2023 07:30:38.448 CDT
+Begin processing the 27101st record. Run 1, Event 26826, LumiSection 170 on stream 0 at 18-May-2023 07:30:39.369 CDT
+Begin processing the 27201st record. Run 1, Event 39084, LumiSection 248 on stream 0 at 18-May-2023 07:30:40.262 CDT
+Begin processing the 27301st record. Run 1, Event 6981, LumiSection 45 on stream 0 at 18-May-2023 07:30:41.556 CDT
+Begin processing the 27401st record. Run 1, Event 7082, LumiSection 45 on stream 0 at 18-May-2023 07:30:42.473 CDT
+Begin processing the 27501st record. Run 1, Event 25338, LumiSection 161 on stream 0 at 18-May-2023 07:30:43.476 CDT
+Begin processing the 27601st record. Run 1, Event 12003, LumiSection 77 on stream 0 at 18-May-2023 07:30:44.503 CDT
+Begin processing the 27701st record. Run 1, Event 12094, LumiSection 77 on stream 0 at 18-May-2023 07:30:45.516 CDT
+Begin processing the 27801st record. Run 1, Event 24352, LumiSection 155 on stream 0 at 18-May-2023 07:30:47.387 CDT
+Begin processing the 27901st record. Run 1, Event 24466, LumiSection 155 on stream 0 at 18-May-2023 07:30:48.304 CDT
+Begin processing the 28001st record. Run 1, Event 38304, LumiSection 243 on stream 0 at 18-May-2023 07:30:49.209 CDT
+Begin processing the 28101st record. Run 1, Event 18182, LumiSection 116 on stream 0 at 18-May-2023 07:30:50.132 CDT
+Begin processing the 28201st record. Run 1, Event 18280, LumiSection 116 on stream 0 at 18-May-2023 07:30:51.028 CDT
+Begin processing the 28301st record. Run 1, Event 1022, LumiSection 7 on stream 0 at 18-May-2023 07:30:52.140 CDT
+18-May-2023 07:30:52 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_26.root
+18-May-2023 07:30:52 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_27.root
+18-May-2023 07:30:53 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_27.root
+Begin processing the 28401st record. Run 1, Event 19443, LumiSection 124 on stream 0 at 18-May-2023 07:30:53.589 CDT
+Begin processing the 28501st record. Run 1, Event 19544, LumiSection 124 on stream 0 at 18-May-2023 07:30:55.227 CDT
+Begin processing the 28601st record. Run 1, Event 10951, LumiSection 70 on stream 0 at 18-May-2023 07:30:56.179 CDT
+Begin processing the 28701st record. Run 1, Event 11059, LumiSection 70 on stream 0 at 18-May-2023 07:30:57.222 CDT
+Begin processing the 28801st record. Run 1, Event 8483, LumiSection 54 on stream 0 at 18-May-2023 07:30:58.084 CDT
+Begin processing the 28901st record. Run 1, Event 44578, LumiSection 283 on stream 0 at 18-May-2023 07:30:59.410 CDT
+Begin processing the 29001st record. Run 1, Event 44684, LumiSection 283 on stream 0 at 18-May-2023 07:31:00.307 CDT
+Begin processing the 29101st record. Run 1, Event 43024, LumiSection 273 on stream 0 at 18-May-2023 07:31:01.203 CDT
+Begin processing the 29201st record. Run 1, Event 18481, LumiSection 118 on stream 0 at 18-May-2023 07:31:02.102 CDT
+Begin processing the 29301st record. Run 1, Event 18584, LumiSection 118 on stream 0 at 18-May-2023 07:31:03.022 CDT
+Begin processing the 29401st record. Run 1, Event 25482, LumiSection 162 on stream 0 at 18-May-2023 07:31:04.296 CDT
+Begin processing the 29501st record. Run 1, Event 25585, LumiSection 162 on stream 0 at 18-May-2023 07:31:05.261 CDT
+Begin processing the 29601st record. Run 1, Event 41963, LumiSection 266 on stream 0 at 18-May-2023 07:31:06.161 CDT
+Begin processing the 29701st record. Run 1, Event 32144, LumiSection 204 on stream 0 at 18-May-2023 07:31:07.038 CDT
+Begin processing the 29801st record. Run 1, Event 3803, LumiSection 25 on stream 0 at 18-May-2023 07:31:08.090 CDT
+Begin processing the 29901st record. Run 1, Event 3893, LumiSection 25 on stream 0 at 18-May-2023 07:31:08.964 CDT
+18-May-2023 07:31:09 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_27.root
+18-May-2023 07:31:09 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_28.root
+18-May-2023 07:31:09 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_28.root
+Begin processing the 30001st record. Run 1, Event 14124, LumiSection 90 on stream 0 at 18-May-2023 07:31:10.858 CDT
+Begin processing the 30101st record. Run 1, Event 14226, LumiSection 90 on stream 0 at 18-May-2023 07:31:11.805 CDT
+Begin processing the 30201st record. Run 1, Event 38166, LumiSection 242 on stream 0 at 18-May-2023 07:31:12.815 CDT
+Begin processing the 30301st record. Run 1, Event 16302, LumiSection 104 on stream 0 at 18-May-2023 07:31:13.716 CDT
+Begin processing the 30401st record. Run 1, Event 16395, LumiSection 104 on stream 0 at 18-May-2023 07:31:14.668 CDT
+Begin processing the 30501st record. Run 1, Event 30378, LumiSection 193 on stream 0 at 18-May-2023 07:31:16.102 CDT
+Begin processing the 30601st record. Run 1, Event 34444, LumiSection 219 on stream 0 at 18-May-2023 07:31:16.987 CDT
+Begin processing the 30701st record. Run 1, Event 34546, LumiSection 219 on stream 0 at 18-May-2023 07:31:17.942 CDT
+Begin processing the 30801st record. Run 1, Event 39523, LumiSection 251 on stream 0 at 18-May-2023 07:31:18.882 CDT
+Begin processing the 30901st record. Run 1, Event 39616, LumiSection 251 on stream 0 at 18-May-2023 07:31:20.326 CDT
+Begin processing the 31001st record. Run 1, Event 24220, LumiSection 154 on stream 0 at 18-May-2023 07:31:21.141 CDT
+Begin processing the 31101st record. Run 1, Event 37455, LumiSection 238 on stream 0 at 18-May-2023 07:31:22.073 CDT
+Begin processing the 31201st record. Run 1, Event 37565, LumiSection 238 on stream 0 at 18-May-2023 07:31:23.037 CDT
+Begin processing the 31301st record. Run 1, Event 17779, LumiSection 113 on stream 0 at 18-May-2023 07:31:23.872 CDT
+Begin processing the 31401st record. Run 1, Event 10601, LumiSection 68 on stream 0 at 18-May-2023 07:31:25.013 CDT
+Begin processing the 31501st record. Run 1, Event 10706, LumiSection 68 on stream 0 at 18-May-2023 07:31:25.886 CDT
+18-May-2023 07:31:26 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_28.root
+18-May-2023 07:31:26 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_29.root
+18-May-2023 07:31:26 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_29.root
+Begin processing the 31601st record. Run 1, Event 24522, LumiSection 156 on stream 0 at 18-May-2023 07:31:27.796 CDT
+Begin processing the 31701st record. Run 1, Event 24617, LumiSection 156 on stream 0 at 18-May-2023 07:31:28.668 CDT
+Begin processing the 31801st record. Run 1, Event 14805, LumiSection 94 on stream 0 at 18-May-2023 07:31:29.643 CDT
+Begin processing the 31901st record. Run 1, Event 35263, LumiSection 224 on stream 0 at 18-May-2023 07:31:30.476 CDT
+Begin processing the 32001st record. Run 1, Event 35362, LumiSection 224 on stream 0 at 18-May-2023 07:31:31.335 CDT
+Begin processing the 32101st record. Run 1, Event 12849, LumiSection 82 on stream 0 at 18-May-2023 07:31:32.702 CDT
+Begin processing the 32201st record. Run 1, Event 12167, LumiSection 78 on stream 0 at 18-May-2023 07:31:33.631 CDT
+Begin processing the 32301st record. Run 1, Event 12264, LumiSection 78 on stream 0 at 18-May-2023 07:31:34.593 CDT
+Begin processing the 32401st record. Run 1, Event 34003, LumiSection 216 on stream 0 at 18-May-2023 07:31:35.470 CDT
+Begin processing the 32501st record. Run 1, Event 34099, LumiSection 216 on stream 0 at 18-May-2023 07:31:36.354 CDT
+Begin processing the 32601st record. Run 1, Event 45076, LumiSection 286 on stream 0 at 18-May-2023 07:31:37.671 CDT
+Begin processing the 32701st record. Run 1, Event 3650, LumiSection 24 on stream 0 at 18-May-2023 07:31:38.552 CDT
+Begin processing the 32801st record. Run 1, Event 3752, LumiSection 24 on stream 0 at 18-May-2023 07:31:39.491 CDT
+Begin processing the 32901st record. Run 1, Event 34342, LumiSection 218 on stream 0 at 18-May-2023 07:31:40.421 CDT
+Begin processing the 33001st record. Run 1, Event 20881, LumiSection 133 on stream 0 at 18-May-2023 07:31:41.526 CDT
+Begin processing the 33101st record. Run 1, Event 20981, LumiSection 133 on stream 0 at 18-May-2023 07:31:42.393 CDT
+18-May-2023 07:31:42 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_29.root
+18-May-2023 07:31:42 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_2.root
+18-May-2023 07:31:42 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_2.root
+Begin processing the 33201st record. Run 1, Event 49520, LumiSection 314 on stream 0 at 18-May-2023 07:31:44.405 CDT
+Begin processing the 33301st record. Run 1, Event 49627, LumiSection 315 on stream 0 at 18-May-2023 07:31:45.265 CDT
+Begin processing the 33401st record. Run 1, Event 49716, LumiSection 315 on stream 0 at 18-May-2023 07:31:46.177 CDT
+Begin processing the 33501st record. Run 1, Event 49822, LumiSection 316 on stream 0 at 18-May-2023 07:31:47.083 CDT
+18-May-2023 07:31:48 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_2.root
+18-May-2023 07:31:48 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_30.root
+18-May-2023 07:31:48 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_30.root
+Begin processing the 33601st record. Run 1, Event 13284, LumiSection 85 on stream 0 at 18-May-2023 07:31:48.516 CDT
+Begin processing the 33701st record. Run 1, Event 13380, LumiSection 85 on stream 0 at 18-May-2023 07:31:50.050 CDT
+Begin processing the 33801st record. Run 1, Event 38602, LumiSection 245 on stream 0 at 18-May-2023 07:31:50.949 CDT
+Begin processing the 33901st record. Run 1, Event 38701, LumiSection 245 on stream 0 at 18-May-2023 07:31:51.926 CDT
+Begin processing the 34001st record. Run 1, Event 14481, LumiSection 92 on stream 0 at 18-May-2023 07:31:52.878 CDT
+Begin processing the 34101st record. Run 1, Event 5909, LumiSection 38 on stream 0 at 18-May-2023 07:31:54.302 CDT
+Begin processing the 34201st record. Run 1, Event 37605, LumiSection 239 on stream 0 at 18-May-2023 07:31:55.168 CDT
+Begin processing the 34301st record. Run 1, Event 37698, LumiSection 239 on stream 0 at 18-May-2023 07:31:56.172 CDT
+Begin processing the 34401st record. Run 1, Event 8124, LumiSection 52 on stream 0 at 18-May-2023 07:31:57.105 CDT
+Begin processing the 34501st record. Run 1, Event 8226, LumiSection 52 on stream 0 at 18-May-2023 07:31:58.001 CDT
+Begin processing the 34601st record. Run 1, Event 12565, LumiSection 80 on stream 0 at 18-May-2023 07:31:59.380 CDT
+Begin processing the 34701st record. Run 1, Event 13458, LumiSection 86 on stream 0 at 18-May-2023 07:32:00.292 CDT
+Begin processing the 34801st record. Run 1, Event 13565, LumiSection 86 on stream 0 at 18-May-2023 07:32:01.203 CDT
+Begin processing the 34901st record. Run 1, Event 41784, LumiSection 265 on stream 0 at 18-May-2023 07:32:02.159 CDT
+Begin processing the 35001st record. Run 1, Event 47081, LumiSection 299 on stream 0 at 18-May-2023 07:32:03.276 CDT
+Begin processing the 35101st record. Run 1, Event 47181, LumiSection 299 on stream 0 at 18-May-2023 07:32:04.119 CDT
+18-May-2023 07:32:04 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_30.root
+18-May-2023 07:32:04 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_31.root
+18-May-2023 07:32:04 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_31.root
+Begin processing the 35201st record. Run 1, Event 39362, LumiSection 250 on stream 0 at 18-May-2023 07:32:06.260 CDT
+Begin processing the 35301st record. Run 1, Event 39463, LumiSection 250 on stream 0 at 18-May-2023 07:32:07.162 CDT
+Begin processing the 35401st record. Run 1, Event 28844, LumiSection 183 on stream 0 at 18-May-2023 07:32:08.131 CDT
+Begin processing the 35501st record. Run 1, Event 39665, LumiSection 252 on stream 0 at 18-May-2023 07:32:08.975 CDT
+Begin processing the 35601st record. Run 1, Event 39758, LumiSection 252 on stream 0 at 18-May-2023 07:32:09.876 CDT
+Begin processing the 35701st record. Run 1, Event 1665, LumiSection 11 on stream 0 at 18-May-2023 07:32:11.231 CDT
+Begin processing the 35801st record. Run 1, Event 22441, LumiSection 143 on stream 0 at 18-May-2023 07:32:12.093 CDT
+Begin processing the 35901st record. Run 1, Event 22532, LumiSection 143 on stream 0 at 18-May-2023 07:32:13.009 CDT
+Begin processing the 36001st record. Run 1, Event 22315, LumiSection 142 on stream 0 at 18-May-2023 07:32:13.925 CDT
+Begin processing the 36101st record. Run 1, Event 22424, LumiSection 142 on stream 0 at 18-May-2023 07:32:15.388 CDT
+Begin processing the 36201st record. Run 1, Event 41486, LumiSection 263 on stream 0 at 18-May-2023 07:32:16.269 CDT
+Begin processing the 36301st record. Run 1, Event 6344, LumiSection 41 on stream 0 at 18-May-2023 07:32:17.164 CDT
+Begin processing the 36401st record. Run 1, Event 6441, LumiSection 41 on stream 0 at 18-May-2023 07:32:18.068 CDT
+Begin processing the 36501st record. Run 1, Event 7341, LumiSection 47 on stream 0 at 18-May-2023 07:32:18.930 CDT
+Begin processing the 36601st record. Run 1, Event 9322, LumiSection 60 on stream 0 at 18-May-2023 07:32:20.089 CDT
+Begin processing the 36701st record. Run 1, Event 9427, LumiSection 60 on stream 0 at 18-May-2023 07:32:21.017 CDT
+18-May-2023 07:32:21 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_31.root
+18-May-2023 07:32:21 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_32.root
+18-May-2023 07:32:21 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_32.root
+Begin processing the 36801st record. Run 1, Event 3042, LumiSection 20 on stream 0 at 18-May-2023 07:32:23.022 CDT
+Begin processing the 36901st record. Run 1, Event 3144, LumiSection 20 on stream 0 at 18-May-2023 07:32:23.946 CDT
+Begin processing the 37001st record. Run 1, Event 23000, LumiSection 146 on stream 0 at 18-May-2023 07:32:24.945 CDT
+Begin processing the 37101st record. Run 1, Event 23265, LumiSection 148 on stream 0 at 18-May-2023 07:32:25.781 CDT
+Begin processing the 37201st record. Run 1, Event 23362, LumiSection 148 on stream 0 at 18-May-2023 07:32:26.661 CDT
+Begin processing the 37301st record. Run 1, Event 35780, LumiSection 227 on stream 0 at 18-May-2023 07:32:27.942 CDT
+Begin processing the 37401st record. Run 1, Event 8725, LumiSection 56 on stream 0 at 18-May-2023 07:32:28.824 CDT
+Begin processing the 37501st record. Run 1, Event 8823, LumiSection 56 on stream 0 at 18-May-2023 07:32:29.724 CDT
+Begin processing the 37601st record. Run 1, Event 47595, LumiSection 302 on stream 0 at 18-May-2023 07:32:30.694 CDT
+Begin processing the 37701st record. Run 1, Event 47693, LumiSection 302 on stream 0 at 18-May-2023 07:32:32.044 CDT
+Begin processing the 37801st record. Run 1, Event 5643, LumiSection 36 on stream 0 at 18-May-2023 07:32:32.920 CDT
+Begin processing the 37901st record. Run 1, Event 28941, LumiSection 184 on stream 0 at 18-May-2023 07:32:33.817 CDT
+Begin processing the 38001st record. Run 1, Event 29034, LumiSection 184 on stream 0 at 18-May-2023 07:32:34.753 CDT
+Begin processing the 38101st record. Run 1, Event 16664, LumiSection 106 on stream 0 at 18-May-2023 07:32:35.567 CDT
+Begin processing the 38201st record. Run 1, Event 34926, LumiSection 222 on stream 0 at 18-May-2023 07:32:36.731 CDT
+Begin processing the 38301st record. Run 1, Event 35018, LumiSection 222 on stream 0 at 18-May-2023 07:32:37.622 CDT
+18-May-2023 07:32:38 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_32.root
+18-May-2023 07:32:38 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_33.root
+18-May-2023 07:32:38 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_33.root
+Begin processing the 38401st record. Run 1, Event 42035, LumiSection 267 on stream 0 at 18-May-2023 07:32:39.538 CDT
+Begin processing the 38501st record. Run 1, Event 42140, LumiSection 267 on stream 0 at 18-May-2023 07:32:40.432 CDT
+Begin processing the 38601st record. Run 1, Event 26480, LumiSection 168 on stream 0 at 18-May-2023 07:32:41.406 CDT
+Begin processing the 38701st record. Run 1, Event 2901, LumiSection 19 on stream 0 at 18-May-2023 07:32:42.303 CDT
+18-May-2023 07:32:43 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_33.root
+18-May-2023 07:32:43 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_3.root
+18-May-2023 07:32:43 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_3.root
+Begin processing the 38801st record. Run 1, Event 42162, LumiSection 268 on stream 0 at 18-May-2023 07:32:43.795 CDT
+Begin processing the 38901st record. Run 1, Event 42266, LumiSection 268 on stream 0 at 18-May-2023 07:32:45.276 CDT
+Begin processing the 39001st record. Run 1, Event 26923, LumiSection 171 on stream 0 at 18-May-2023 07:32:46.131 CDT
+Begin processing the 39101st record. Run 1, Event 45658, LumiSection 290 on stream 0 at 18-May-2023 07:32:47.117 CDT
+Begin processing the 39201st record. Run 1, Event 45753, LumiSection 290 on stream 0 at 18-May-2023 07:32:47.954 CDT
+Begin processing the 39301st record. Run 1, Event 11461, LumiSection 73 on stream 0 at 18-May-2023 07:32:49.221 CDT
+Begin processing the 39401st record. Run 1, Event 39161, LumiSection 249 on stream 0 at 18-May-2023 07:32:50.115 CDT
+Begin processing the 39501st record. Run 1, Event 39263, LumiSection 249 on stream 0 at 18-May-2023 07:32:50.996 CDT
+Begin processing the 39601st record. Run 1, Event 45525, LumiSection 289 on stream 0 at 18-May-2023 07:32:51.902 CDT
+Begin processing the 39701st record. Run 1, Event 45620, LumiSection 289 on stream 0 at 18-May-2023 07:32:52.771 CDT
+Begin processing the 39801st record. Run 1, Event 32799, LumiSection 208 on stream 0 at 18-May-2023 07:32:54.123 CDT
+Begin processing the 39901st record. Run 1, Event 11897, LumiSection 76 on stream 0 at 18-May-2023 07:32:55.063 CDT
+Begin processing the 40001st record. Run 1, Event 2087, LumiSection 14 on stream 0 at 18-May-2023 07:32:56.002 CDT
+Begin processing the 40101st record. Run 1, Event 2179, LumiSection 14 on stream 0 at 18-May-2023 07:32:56.912 CDT
+Begin processing the 40201st record. Run 1, Event 23592, LumiSection 150 on stream 0 at 18-May-2023 07:32:57.818 CDT
+Begin processing the 40301st record. Run 1, Event 23706, LumiSection 150 on stream 0 at 18-May-2023 07:32:58.923 CDT
+18-May-2023 07:32:59 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_3.root
+18-May-2023 07:32:59 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_4.root
+18-May-2023 07:32:59 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_4.root
+Begin processing the 40401st record. Run 1, Event 30561, LumiSection 194 on stream 0 at 18-May-2023 07:33:01.045 CDT
+Begin processing the 40501st record. Run 1, Event 30824, LumiSection 196 on stream 0 at 18-May-2023 07:33:01.915 CDT
+Begin processing the 40601st record. Run 1, Event 30927, LumiSection 196 on stream 0 at 18-May-2023 07:33:02.887 CDT
+Begin processing the 40701st record. Run 1, Event 4664, LumiSection 30 on stream 0 at 18-May-2023 07:33:03.807 CDT
+Begin processing the 40801st record. Run 1, Event 3961, LumiSection 26 on stream 0 at 18-May-2023 07:33:05.197 CDT
+Begin processing the 40901st record. Run 1, Event 4060, LumiSection 26 on stream 0 at 18-May-2023 07:33:06.031 CDT
+Begin processing the 41001st record. Run 1, Event 9042, LumiSection 58 on stream 0 at 18-May-2023 07:33:06.934 CDT
+Begin processing the 41101st record. Run 1, Event 9145, LumiSection 58 on stream 0 at 18-May-2023 07:33:07.885 CDT
+Begin processing the 41201st record. Run 1, Event 31202, LumiSection 198 on stream 0 at 18-May-2023 07:33:08.747 CDT
+Begin processing the 41301st record. Run 1, Event 29102, LumiSection 185 on stream 0 at 18-May-2023 07:33:10.111 CDT
+Begin processing the 41401st record. Run 1, Event 29207, LumiSection 185 on stream 0 at 18-May-2023 07:33:10.983 CDT
+Begin processing the 41501st record. Run 1, Event 5297, LumiSection 34 on stream 0 at 18-May-2023 07:33:11.900 CDT
+Begin processing the 41601st record. Run 1, Event 36324, LumiSection 231 on stream 0 at 18-May-2023 07:33:12.777 CDT
+Begin processing the 41701st record. Run 1, Event 36418, LumiSection 231 on stream 0 at 18-May-2023 07:33:13.673 CDT
+Begin processing the 41801st record. Run 1, Event 11603, LumiSection 74 on stream 0 at 18-May-2023 07:33:14.848 CDT
+Begin processing the 41901st record. Run 1, Event 11699, LumiSection 74 on stream 0 at 18-May-2023 07:33:15.766 CDT
+18-May-2023 07:33:15 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_4.root
+18-May-2023 07:33:15 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_5.root
+18-May-2023 07:33:16 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_5.root
+Begin processing the 42001st record. Run 1, Event 6237, LumiSection 40 on stream 0 at 18-May-2023 07:33:17.846 CDT
+Begin processing the 42101st record. Run 1, Event 33816, LumiSection 215 on stream 0 at 18-May-2023 07:33:18.768 CDT
+Begin processing the 42201st record. Run 1, Event 33915, LumiSection 215 on stream 0 at 18-May-2023 07:33:19.722 CDT
+Begin processing the 42301st record. Run 1, Event 30705, LumiSection 195 on stream 0 at 18-May-2023 07:33:20.601 CDT
+Begin processing the 42401st record. Run 1, Event 43444, LumiSection 276 on stream 0 at 18-May-2023 07:33:22.179 CDT
+Begin processing the 42501st record. Run 1, Event 43546, LumiSection 276 on stream 0 at 18-May-2023 07:33:23.016 CDT
+Begin processing the 42601st record. Run 1, Event 16804, LumiSection 107 on stream 0 at 18-May-2023 07:33:23.969 CDT
+Begin processing the 42701st record. Run 1, Event 16903, LumiSection 107 on stream 0 at 18-May-2023 07:33:24.947 CDT
+Begin processing the 42801st record. Run 1, Event 4196, LumiSection 27 on stream 0 at 18-May-2023 07:33:25.806 CDT
+Begin processing the 42901st record. Run 1, Event 20258, LumiSection 129 on stream 0 at 18-May-2023 07:33:27.273 CDT
+Begin processing the 43001st record. Run 1, Event 20365, LumiSection 129 on stream 0 at 18-May-2023 07:33:28.207 CDT
+Begin processing the 43101st record. Run 1, Event 2621, LumiSection 17 on stream 0 at 18-May-2023 07:33:29.100 CDT
+Begin processing the 43201st record. Run 1, Event 15002, LumiSection 96 on stream 0 at 18-May-2023 07:33:29.963 CDT
+Begin processing the 43301st record. Run 1, Event 15096, LumiSection 96 on stream 0 at 18-May-2023 07:33:30.912 CDT
+Begin processing the 43401st record. Run 1, Event 35435, LumiSection 225 on stream 0 at 18-May-2023 07:33:32.084 CDT
+Begin processing the 43501st record. Run 1, Event 35543, LumiSection 225 on stream 0 at 18-May-2023 07:33:32.949 CDT
+18-May-2023 07:33:33 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_5.root
+18-May-2023 07:33:33 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_6.root
+18-May-2023 07:33:33 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_6.root
+Begin processing the 43601st record. Run 1, Event 44002, LumiSection 279 on stream 0 at 18-May-2023 07:33:34.801 CDT
+Begin processing the 43701st record. Run 1, Event 15984, LumiSection 102 on stream 0 at 18-May-2023 07:33:35.714 CDT
+Begin processing the 43801st record. Run 1, Event 16082, LumiSection 102 on stream 0 at 18-May-2023 07:33:36.678 CDT
+Begin processing the 43901st record. Run 1, Event 12382, LumiSection 79 on stream 0 at 18-May-2023 07:33:37.482 CDT
+Begin processing the 44001st record. Run 1, Event 29885, LumiSection 190 on stream 0 at 18-May-2023 07:33:38.930 CDT
+Begin processing the 44101st record. Run 1, Event 29980, LumiSection 190 on stream 0 at 18-May-2023 07:33:39.822 CDT
+Begin processing the 44201st record. Run 1, Event 30085, LumiSection 191 on stream 0 at 18-May-2023 07:33:40.750 CDT
+Begin processing the 44301st record. Run 1, Event 14897, LumiSection 95 on stream 0 at 18-May-2023 07:33:41.670 CDT
+Begin processing the 44401st record. Run 1, Event 9485, LumiSection 61 on stream 0 at 18-May-2023 07:33:42.532 CDT
+Begin processing the 44501st record. Run 1, Event 9577, LumiSection 61 on stream 0 at 18-May-2023 07:33:43.951 CDT
+Begin processing the 44601st record. Run 1, Event 5122, LumiSection 33 on stream 0 at 18-May-2023 07:33:44.838 CDT
+Begin processing the 44701st record. Run 1, Event 5222, LumiSection 33 on stream 0 at 18-May-2023 07:33:45.700 CDT
+Begin processing the 44801st record. Run 1, Event 19046, LumiSection 121 on stream 0 at 18-May-2023 07:33:46.548 CDT
+Begin processing the 44901st record. Run 1, Event 1142, LumiSection 8 on stream 0 at 18-May-2023 07:33:47.439 CDT
+Begin processing the 45001st record. Run 1, Event 1241, LumiSection 8 on stream 0 at 18-May-2023 07:33:48.588 CDT
+18-May-2023 07:33:48 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_6.root
+18-May-2023 07:33:48 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_7.root
+18-May-2023 07:33:49 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_7.root
+Begin processing the 45101st record. Run 1, Event 25663, LumiSection 163 on stream 0 at 18-May-2023 07:33:50.731 CDT
+Begin processing the 45201st record. Run 1, Event 20563, LumiSection 131 on stream 0 at 18-May-2023 07:33:51.630 CDT
+Begin processing the 45301st record. Run 1, Event 20664, LumiSection 131 on stream 0 at 18-May-2023 07:33:52.588 CDT
+Begin processing the 45401st record. Run 1, Event 25947, LumiSection 165 on stream 0 at 18-May-2023 07:33:53.486 CDT
+Begin processing the 45501st record. Run 1, Event 26059, LumiSection 165 on stream 0 at 18-May-2023 07:33:54.379 CDT
+Begin processing the 45601st record. Run 1, Event 46684, LumiSection 296 on stream 0 at 18-May-2023 07:33:55.773 CDT
+Begin processing the 45701st record. Run 1, Event 46945, LumiSection 298 on stream 0 at 18-May-2023 07:33:56.614 CDT
+Begin processing the 45801st record. Run 1, Event 47043, LumiSection 298 on stream 0 at 18-May-2023 07:33:57.547 CDT
+Begin processing the 45901st record. Run 1, Event 15220, LumiSection 97 on stream 0 at 18-May-2023 07:33:58.453 CDT
+Begin processing the 46001st record. Run 1, Event 31283, LumiSection 199 on stream 0 at 18-May-2023 07:33:59.912 CDT
+Begin processing the 46101st record. Run 1, Event 31382, LumiSection 199 on stream 0 at 18-May-2023 07:34:00.905 CDT
+Begin processing the 46201st record. Run 1, Event 16477, LumiSection 105 on stream 0 at 18-May-2023 07:34:01.728 CDT
+Begin processing the 46301st record. Run 1, Event 16567, LumiSection 105 on stream 0 at 18-May-2023 07:34:02.623 CDT
+Begin processing the 46401st record. Run 1, Event 46202, LumiSection 293 on stream 0 at 18-May-2023 07:34:03.516 CDT
+Begin processing the 46501st record. Run 1, Event 13142, LumiSection 84 on stream 0 at 18-May-2023 07:34:04.754 CDT
+Begin processing the 46601st record. Run 1, Event 13246, LumiSection 84 on stream 0 at 18-May-2023 07:34:05.656 CDT
+18-May-2023 07:34:06 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_7.root
+18-May-2023 07:34:06 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_8.root
+18-May-2023 07:34:06 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_8.root
+Begin processing the 46701st record. Run 1, Event 7506, LumiSection 48 on stream 0 at 18-May-2023 07:34:07.605 CDT
+Begin processing the 46801st record. Run 1, Event 45162, LumiSection 287 on stream 0 at 18-May-2023 07:34:08.475 CDT
+Begin processing the 46901st record. Run 1, Event 45245, LumiSection 287 on stream 0 at 18-May-2023 07:34:09.350 CDT
+Begin processing the 47001st record. Run 1, Event 46805, LumiSection 297 on stream 0 at 18-May-2023 07:34:10.278 CDT
+Begin processing the 47101st record. Run 1, Event 46895, LumiSection 297 on stream 0 at 18-May-2023 07:34:11.162 CDT
+Begin processing the 47201st record. Run 1, Event 28201, LumiSection 179 on stream 0 at 18-May-2023 07:34:12.663 CDT
+Begin processing the 47301st record. Run 1, Event 43625, LumiSection 277 on stream 0 at 18-May-2023 07:34:13.513 CDT
+Begin processing the 47401st record. Run 1, Event 43720, LumiSection 277 on stream 0 at 18-May-2023 07:34:14.494 CDT
+Begin processing the 47501st record. Run 1, Event 7181, LumiSection 46 on stream 0 at 18-May-2023 07:34:15.411 CDT
+Begin processing the 47601st record. Run 1, Event 26243, LumiSection 167 on stream 0 at 18-May-2023 07:34:16.336 CDT
+Begin processing the 47701st record. Run 1, Event 26332, LumiSection 167 on stream 0 at 18-May-2023 07:34:17.584 CDT
+Begin processing the 47801st record. Run 1, Event 30207, LumiSection 192 on stream 0 at 18-May-2023 07:34:18.495 CDT
+Begin processing the 47901st record. Run 1, Event 30303, LumiSection 192 on stream 0 at 18-May-2023 07:34:19.389 CDT
+Begin processing the 48001st record. Run 1, Event 3403, LumiSection 22 on stream 0 at 18-May-2023 07:34:20.253 CDT
+Begin processing the 48101st record. Run 1, Event 7613, LumiSection 49 on stream 0 at 18-May-2023 07:34:21.337 CDT
+Begin processing the 48201st record. Run 1, Event 7718, LumiSection 49 on stream 0 at 18-May-2023 07:34:22.176 CDT
+18-May-2023 07:34:22 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_8.root
+18-May-2023 07:34:22 CDT  Initiating request to open file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_9.root
+18-May-2023 07:34:22 CDT  Successfully opened file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_9.root
+Begin processing the 48301st record. Run 1, Event 40657, LumiSection 258 on stream 0 at 18-May-2023 07:34:24.123 CDT
+Begin processing the 48401st record. Run 1, Event 32408, LumiSection 206 on stream 0 at 18-May-2023 07:34:24.983 CDT
+Begin processing the 48501st record. Run 1, Event 32498, LumiSection 206 on stream 0 at 18-May-2023 07:34:25.987 CDT
+Begin processing the 48601st record. Run 1, Event 24834, LumiSection 158 on stream 0 at 18-May-2023 07:34:26.857 CDT
+Begin processing the 48701st record. Run 1, Event 24941, LumiSection 158 on stream 0 at 18-May-2023 07:34:27.739 CDT
+Begin processing the 48801st record. Run 1, Event 29643, LumiSection 188 on stream 0 at 18-May-2023 07:34:29.153 CDT
+Begin processing the 48901st record. Run 1, Event 38739, LumiSection 246 on stream 0 at 18-May-2023 07:34:30.052 CDT
+Begin processing the 49001st record. Run 1, Event 38831, LumiSection 246 on stream 0 at 18-May-2023 07:34:30.966 CDT
+Begin processing the 49101st record. Run 1, Event 37979, LumiSection 241 on stream 0 at 18-May-2023 07:34:31.907 CDT
+Begin processing the 49201st record. Run 1, Event 6643, LumiSection 43 on stream 0 at 18-May-2023 07:34:33.605 CDT
+Begin processing the 49301st record. Run 1, Event 6744, LumiSection 43 on stream 0 at 18-May-2023 07:34:34.480 CDT
+Begin processing the 49401st record. Run 1, Event 29283, LumiSection 186 on stream 0 at 18-May-2023 07:34:35.398 CDT
+Begin processing the 49501st record. Run 1, Event 29381, LumiSection 186 on stream 0 at 18-May-2023 07:34:36.321 CDT
+Begin processing the 49601st record. Run 1, Event 43840, LumiSection 278 on stream 0 at 18-May-2023 07:34:37.232 CDT
+Begin processing the 49701st record. Run 1, Event 28299, LumiSection 180 on stream 0 at 18-May-2023 07:34:38.530 CDT
+Begin processing the 49801st record. Run 1, Event 28402, LumiSection 180 on stream 0 at 18-May-2023 07:34:39.476 CDT
+18-May-2023 07:34:39 CDT  Closed file file:/hdfs/store/user/vshang/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/20230511_QCD-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets/230515_182259/0000/output_round1_9.root

@@ -11,10 +11,10 @@ process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('SimGeneral.MixingModule.mixNoPU_cfi')
-process.load('Configuration.Geometry.GeometryExtended2026D49Reco_cff')
-process.load('Configuration.Geometry.GeometryExtended2026D49_cff')
-# process.load('Configuration.Geometry.GeometryExtended2026D88Reco_cff')
-# process.load('Configuration.Geometry.GeometryExtended2026D88_cff')
+#process.load('Configuration.Geometry.GeometryExtended2026D49Reco_cff')
+#process.load('Configuration.Geometry.GeometryExtended2026D49_cff')
+process.load('Configuration.Geometry.GeometryExtended2026D88Reco_cff')
+process.load('Configuration.Geometry.GeometryExtended2026D88_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration.StandardSequences.SimL1Emulator_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
@@ -124,7 +124,8 @@ process.Out = cms.OutputModule( "PoolOutputModule",
                           #"keep *_l1tEGammaClusterEmuProducer_*_*",
                           #"keep *_l1tTowerCalibrationProducer_*_*",
                           "keep *_l1tCaloJetProducer_*_*",
-                          "keep *_simCaloStage2Digis_MP_RECO",
+                          "keep *_l1tPhase2CaloJetEmulator_*_*", #Added by Pallabi
+                          "keep *_simCaloStage2Digis_MP_HLT",
                           "keep *_addPileupInfo_*_*",
                           "keep *_ak4GenJetsNoNu__HLT",
                           "keep *_tauGenJetsSelectorAllHadrons_*_*",

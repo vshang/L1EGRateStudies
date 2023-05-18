@@ -434,3 +434,120 @@ Traceback (most recent call last):
 CRABClient.ClientExceptions.ConfigException: Working area '/afs/hep.wisc.edu/user/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/crab_20221206_VBFHTT-PU200_r1_CMSSW_12_3_0_pre4' already exists 
 Please change the requestName in the config file
 INFO 2022-12-06 13:58:33.012 UTC: 	 Log file is /afs/hep.wisc.edu/user/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/crab.log
+DEBUG 2023-05-04 07:44:22.383 UTC: 	 CRAB Client version: v3.230417
+DEBUG 2023-05-04 07:44:22.383 UTC: 	 Running on: Linux login06.hep.wisc.edu 5.4.236-1.el7.elrepo.x86_64 #1 SMP Mon Mar 13 21:36:53 EDT 2023 x86_64 x86_64 x86_64 GNU/Linux - CentOS Linux 7 (Core)
+DEBUG 2023-05-04 07:44:22.383 UTC: 	 Executing command: 'submit'
+DEBUG 2023-05-04 07:44:22.383 UTC: 	 Found CRAB cache file /afs/hep.wisc.edu/home/vshang/.crab3
+INFO 2023-05-04 07:44:22.384 UTC: 	 Will use CRAB configuration file r1_crabby_jets.py
+DEBUG 2023-05-04 07:44:22.384 UTC: 	 Loading CRAB configuration file.
+ERROR 2023-05-04 07:44:46.900 UTC: 	 Error while loading CRAB configuration:
+Unable to find a Configuration object instance in file:
+/afs/hep.wisc.edu/user/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/r1_crabby_jets.py
+
+Please refer to https://twiki.cern.ch/twiki/bin/view/CMSPublic/CRAB3FAQ
+See the ./crab.log file for more details.
+The documentation about the CRAB configuration file can be found in https://twiki.cern.ch/twiki/bin/view/CMSPublic/CRAB3ConfigurationFile
+ERROR 2023-05-04 07:44:46.900 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/lib/CRABClient/Commands/SubCommand.py", line 55, in loadConfig
+    self.configuration = loadConfigurationFile(os.path.abspath(configname))
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/lib/WMCore/Configuration.py", line 342, in loadConfigurationFile
+    raise RuntimeError(msg)
+RuntimeError: Unable to find a Configuration object instance in file:
+/afs/hep.wisc.edu/user/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/r1_crabby_jets.py
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/bin/crab.py", line 159, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/bin/crab.py", line 144, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/lib/CRABClient/Commands/submit.py", line 36, in __init__
+    SubCommand.__init__(self, logger, cmdargs, disable_interspersed_args=True)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/lib/CRABClient/Commands/SubCommand.py", line 316, in __init__
+    self.loadConfig(self.options.config, self.args)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/lib/CRABClient/Commands/SubCommand.py", line 89, in loadConfig
+    raise ConfigurationException(configmsg)
+CRABClient.ClientExceptions.ConfigurationException: Error while loading CRAB configuration:
+Unable to find a Configuration object instance in file:
+/afs/hep.wisc.edu/user/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/r1_crabby_jets.py
+
+Please refer to https://twiki.cern.ch/twiki/bin/view/CMSPublic/CRAB3FAQ
+See the ./crab.log file for more details.
+The documentation about the CRAB configuration file can be found in https://twiki.cern.ch/twiki/bin/view/CMSPublic/CRAB3ConfigurationFile
+INFO 2023-05-04 07:44:46.913 UTC: 	 Log file is /afs/hep.wisc.edu/user/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/crab.log
+DEBUG 2023-05-11 15:35:05.508 UTC: 	 CRAB Client version: v3.230417
+DEBUG 2023-05-11 15:35:05.508 UTC: 	 Running on: Linux login06.hep.wisc.edu 5.4.236-1.el7.elrepo.x86_64 #1 SMP Mon Mar 13 21:36:53 EDT 2023 x86_64 x86_64 x86_64 GNU/Linux - CentOS Linux 7 (Core)
+DEBUG 2023-05-11 15:35:05.509 UTC: 	 Executing command: 'kill'
+DEBUG 2023-05-11 15:35:05.509 UTC: 	 Found CRAB cache file /afs/hep.wisc.edu/home/vshang/.crab3
+ERROR 2023-05-11 15:35:05.510 UTC: 	 Cannot find .requestcache file in CRAB project directory /afs/hep.wisc.edu/user/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/crab_20230511_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1
+ERROR 2023-05-11 15:35:05.510 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/bin/crab.py", line 159, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/bin/crab.py", line 144, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/lib/CRABClient/Commands/SubCommand.py", line 275, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/lib/CRABClient/Commands/SubCommand.py", line 646, in validateOptions
+    self.loadLocalCache()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/lib/CRABClient/Commands/SubCommand.py", line 508, in loadLocalCache
+    raise ex
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/lib/CRABClient/Commands/SubCommand.py", line 502, in loadLocalCache
+    self.cachedinfo, self.logfile = loadCache(self.requestarea, self.logger)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/lib/CRABClient/ClientUtilities.py", line 440, in loadCache
+    raise CachefileNotFoundException(msg)
+CRABClient.ClientExceptions.CachefileNotFoundException: Cannot find .requestcache file in CRAB project directory /afs/hep.wisc.edu/user/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/crab_20230511_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1
+INFO 2023-05-11 15:35:05.538 UTC: 	 Log file is /afs/hep.wisc.edu/user/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/crab.log
+DEBUG 2023-05-11 15:37:25.430 UTC: 	 CRAB Client version: v3.230417
+DEBUG 2023-05-11 15:37:25.430 UTC: 	 Running on: Linux login06.hep.wisc.edu 5.4.236-1.el7.elrepo.x86_64 #1 SMP Mon Mar 13 21:36:53 EDT 2023 x86_64 x86_64 x86_64 GNU/Linux - CentOS Linux 7 (Core)
+DEBUG 2023-05-11 15:37:25.430 UTC: 	 Executing command: 'status'
+DEBUG 2023-05-11 15:37:25.430 UTC: 	 Found CRAB cache file /afs/hep.wisc.edu/home/vshang/.crab3
+ERROR 2023-05-11 15:37:25.432 UTC: 	 Cannot find .requestcache file in CRAB project directory /afs/hep.wisc.edu/user/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/crab_20230511_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1
+ERROR 2023-05-11 15:37:25.432 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/bin/crab.py", line 159, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/bin/crab.py", line 144, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/lib/CRABClient/Commands/status.py", line 48, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/lib/CRABClient/Commands/SubCommand.py", line 275, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/lib/CRABClient/Commands/SubCommand.py", line 646, in validateOptions
+    self.loadLocalCache()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/lib/CRABClient/Commands/SubCommand.py", line 508, in loadLocalCache
+    raise ex
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/lib/CRABClient/Commands/SubCommand.py", line 502, in loadLocalCache
+    self.cachedinfo, self.logfile = loadCache(self.requestarea, self.logger)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/lib/CRABClient/ClientUtilities.py", line 440, in loadCache
+    raise CachefileNotFoundException(msg)
+CRABClient.ClientExceptions.CachefileNotFoundException: Cannot find .requestcache file in CRAB project directory /afs/hep.wisc.edu/user/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/crab_20230511_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1
+INFO 2023-05-11 15:37:25.436 UTC: 	 Log file is /afs/hep.wisc.edu/user/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/crab.log
+DEBUG 2023-05-11 16:37:05.860 UTC: 	 CRAB Client version: v3.230417
+DEBUG 2023-05-11 16:37:05.860 UTC: 	 Running on: Linux login06.hep.wisc.edu 5.4.236-1.el7.elrepo.x86_64 #1 SMP Mon Mar 13 21:36:53 EDT 2023 x86_64 x86_64 x86_64 GNU/Linux - CentOS Linux 7 (Core)
+DEBUG 2023-05-11 16:37:05.860 UTC: 	 Executing command: 'status'
+DEBUG 2023-05-11 16:37:05.862 UTC: 	 Found CRAB cache file /afs/hep.wisc.edu/home/vshang/.crab3
+ERROR 2023-05-11 16:37:05.867 UTC: 	 Cannot find .requestcache file in CRAB project directory /afs/hep.wisc.edu/user/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/crab_20230511_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1
+ERROR 2023-05-11 16:37:05.867 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/bin/crab.py", line 159, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/bin/crab.py", line 144, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/lib/CRABClient/Commands/status.py", line 48, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/lib/CRABClient/Commands/SubCommand.py", line 275, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/lib/CRABClient/Commands/SubCommand.py", line 646, in validateOptions
+    self.loadLocalCache()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/lib/CRABClient/Commands/SubCommand.py", line 508, in loadLocalCache
+    raise ex
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/lib/CRABClient/Commands/SubCommand.py", line 502, in loadLocalCache
+    self.cachedinfo, self.logfile = loadCache(self.requestarea, self.logger)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230417.00/lib/CRABClient/ClientUtilities.py", line 440, in loadCache
+    raise CachefileNotFoundException(msg)
+CRABClient.ClientExceptions.CachefileNotFoundException: Cannot find .requestcache file in CRAB project directory /afs/hep.wisc.edu/user/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/crab_20230511_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1
+INFO 2023-05-11 16:37:05.877 UTC: 	 Log file is /afs/hep.wisc.edu/user/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/crab.log
