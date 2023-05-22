@@ -158,9 +158,9 @@ class L1GCTJetStudies : public edm::EDAnalyzer {
             float nTruePU;
 
 	    float jetEt;
-	    float jetIEta;
+	    int jetIEta;
 	    int jetIPhi;
-	    int jetEta;
+	    float jetEta;
 	    float jetPhi;
 	    float towerEt;
 	    int towerIEta;
