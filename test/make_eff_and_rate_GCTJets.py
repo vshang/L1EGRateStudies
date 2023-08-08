@@ -23,8 +23,8 @@ doPtEff = False
 doRate = True
 #doRate = False
 
-doRateFirstHalf = True
-#doRateFirstHalf = False
+#doRateFirstHalf = True
+doRateFirstHalf = False
 doRateSecondHalf = True
 #doRateSecondHalf = False
 
@@ -37,7 +37,7 @@ p2Obj = 'jetEt'
 s2Obj = 'stage2jet_pt_calib'
 s2ObjEta = 'stage2jet_eta'
 if doTau :
-    p2Obj = 'tau_pt'
+    p2Obj = 'tauEt'
     #p2Obj = 'calibPtHH'
     s2Obj = 'stage2tau_pt'
     #s2Obj = 'stage2tau_pt_calibration3'
@@ -48,12 +48,12 @@ dirName = 'jets' if not doTau else 'taus'
     
 
 if doEff :
-    fName = 'output_round2_QCD_Pallabi'
+    fName = 'output_round2_QCD'
     #fName = 'output_round2_TTbar'
-    #fName = 'output_round2_HiggsTauTau'
+    #fName = 'output_round2_HiggsTauTauCross'
     #fName = 'output_round2_HiggsTauTau_Pallabi'
-    date = '20230511'
-    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_12_5_2_patch1/20230511/'
+    date = '20230709'
+    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_12_5_2_patch1/20230709/'
     universalSaveDir = "/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/efficiencies/CMSSW_12_5_2_patch1/"+dirName+"/"+date+"/"+fName+"/"
     checkDir( universalSaveDir )
 
@@ -64,6 +64,7 @@ if doEff :
     # Threshold cuts for passing region
     if doTau:
         pt_cut = 32
+        #pt_cut = 0
     else:
         if doPtEff:
             #pt_cut = 100
@@ -88,8 +89,8 @@ if doEff :
         #axis = [45, 0, 900] #L1 Trigger Menu Validation settings for Endcap
         if doTau :
             axis = [150, 0, 150]
-            denom_cut_label = '|#eta^{GenTau}| < 1.4'
-            #denom_cut_label = '1.6 < |#eta^{GenTau}| < 2.8'
+            #denom_cut_label = '|#eta^{GenTau}| < 1.4'
+            denom_cut_label = '1.6 < |#eta^{GenTau}| < 2.8'
 
         gP2 = make_efficiency_graph( t, denom_cut, p2Obj+' > %i' % pt_cut, 'genJet_pt', axis )
         #gP22 = make_efficiency_graph( t, denom_cut, p2Obj+' > %i && loose_iso_tau_wp > 0.5' % pt_cut, 'genJet_pt', axis )
@@ -107,7 +108,7 @@ if doEff :
         denom_cut = '(genJet_pt > %i)' % denom_pt
         #denom_cut = '(genJet_pt > %i && genJet_pt < 100)' % denom_pt
         denom_cut_label = 'p_{T}^{GenJet} > %i GeV' % denom_pt
-        #denom_cut_label = '%i < p_{T}^{GenJet} < 100' % denom_pt
+        #denom_cut_label = '%i < p_{T}^{GenJet} < 100 GeV' % denom_pt
         if doTau:
             denom_cut_label = 'p_{T}^{GenTau} > %i GeV' % denom_pt
         axis = [100, -5, 5]
@@ -130,8 +131,8 @@ if doEff :
     #mg = ROOT.TMultiGraph("mg", "L1 %s Efficiency" % text)
     mg = ROOT.TMultiGraph("mg", "")
     mg.Add( gP2 )
-    if doTau:
-        mg.Add( gP22 )
+    #if doTau:
+        #mg.Add( gP22 )
     #mg.Add( gS2 )
     #mg.Add( gS22 )
     mg.SetMinimum( 0. )
@@ -177,8 +178,8 @@ if doEff :
     #leg.AddEntry(gS2, "Phase-I %s" % text,"lpe")
     #leg.AddEntry(gS22, "Phase-I Iso %s" % text,"lpe")
     leg.AddEntry(gP2, "GCT%s" % text,"lpe")
-    if doTau:
-        leg.AddEntry(gP22, "CaloIso%s" % text,"lpe")
+    #if doTau:
+        #leg.AddEntry(gP22, "CaloIso%s" % text,"lpe")
     leg.Draw("same")
     c.Update()
     
@@ -194,8 +195,8 @@ if doRate :
 
     fName = 'output_round2_minBias_Pallabi'
     #fName = 'output_round2_minBias'
-    date = '20230511'
-    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_12_5_2_patch1/20230511/'
+    date = '20230601'
+    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_12_5_2_patch1/20230601/'
     #base = '/hdfs/store/user/vshang/l1CaloJets_20210101_r2/'
     universalSaveDir = "/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/rates/CMSSW_12_5_2_patch1/"+dirName+"/"+date+"/"+fName+"/"
     checkDir( universalSaveDir )
@@ -216,19 +217,19 @@ if doRate :
 
     # Min and Max eta thresholds for barrel, HGCal, HF rates
     eta_thresholds = OrderedDict()
-    if doTau :
-        eta_thresholds['all']    = [0., 2.8, ROOT.kBlack]
-        #eta_thresholds['runII']  = [0., 2.1, ROOT.kBlue]
-        #eta_thresholds['runII']  = [0., 2.172, ROOT.kBlue]
-    else :
-        eta_thresholds['all']    = [0., 2.8, ROOT.kBlack]
-        #eta_thresholds['all']    = [0., 6.0, ROOT.kBlack]
+    # if doTau :
+    #     eta_thresholds['all']    = [0., 2.8, ROOT.kBlack]
+    #     #eta_thresholds['runII']  = [0., 2.1, ROOT.kBlue]
+    #     #eta_thresholds['runII']  = [0., 2.172, ROOT.kBlue]
+    # else :
+    #     eta_thresholds['all']    = [0., 2.8, ROOT.kBlack]
+    #     #eta_thresholds['all']    = [0., 6.0, ROOT.kBlack]
     eta_thresholds['barrel'] = [0., 1.5, ROOT.kRed]
     #eta_thresholds['barrel'] = [0., 1.4, ROOT.kRed]
     #eta_thresholds['hgcal']  = [1.5, 3.0, ROOT.kBlue]
-    if not doTau :
-        eta_thresholds['hgcal']  = [1.5, 3.0, ROOT.kBlue]
-        eta_thresholds['hf']     = [3.0, 6.0, ROOT.kGreen+3]
+    # if not doTau :
+    #     eta_thresholds['hgcal']  = [1.5, 3.0, ROOT.kBlue]
+    #     eta_thresholds['hf']     = [3.0, 6.0, ROOT.kGreen+3]
 
     #Victor's edit: redefined eta_thresholds to plot track matched and unmatched rates on same plot
     # eta_thresholds['trackMatched_barrel'] = [0., 1.5, ROOT.kRed]
@@ -250,20 +251,20 @@ if doRate :
             hP2.SaveAs( 'eff_and_rate_roots_'+dirName+'/'+fName+'_'+name+'_Phase-2.root' )
             #hP2.SaveAs( 'eff_and_rate_roots2/'+fName+'_'+name+'_Phase-2.root' )
             del hP2
-            if doTau:
-                hP22 = make_rate_hist( nEvents, t, p2Obj, 1.0, 'jetEta', thresholds[0], thresholds[1], x_info, 'loose_iso_tau_wp' ) 
-                #hP22 = make_rate_hist2( nEvents, t, p2Obj, 1.0, 'jetEta', thresholds[0], thresholds[1], x_info, 'loose_iso_tau_wp' ) #Uncomment to make double tau rate plot
-                hP22.SaveAs( 'eff_and_rate_roots_'+dirName+'/'+fName+'_'+name+'_Phase-2_iso.root' )
-                #hP22.SaveAs( 'eff_and_rate_roots2/'+fName+'_'+name+'_Phase-2_iso.root' )
-                del hP22
-                #hS2 = make_rate_hist( nEvents, t, s2Obj, 1.0, s2ObjEta, thresholds[0], thresholds[1], x_info )
-                #hS2 = make_rate_hist2( nEvents, t, s2Obj, 1.0, s2ObjEta, thresholds[0], thresholds[1], x_info ) #Uncomment to make double tau rate plot
-                #hS2.SaveAs( 'eff_and_rate_roots_'+dirName+'/'+fName+'_'+name+'_Stage-2.root' )
-                #hS2.SaveAs( 'eff_and_rate_roots2/'+fName+'_'+name+'_Stage-2.root' )
-                #del hS2
-                #hS22 = make_rate_hist( nEvents, t, s2Obj, 1.0, s2ObjEta, thresholds[0], thresholds[1], x_info, 'stage2tau_isoBit' )
-                #hS22.SaveAs( 'eff_and_rate_roots_'+dirName+'/'+fName+'_'+name+'_Stage-2_iso.root' )
-                #del hS22
+            # if doTau:
+            #     hP22 = make_rate_hist( nEvents, t, p2Obj, 1.0, 'jetEta', thresholds[0], thresholds[1], x_info, 'loose_iso_tau_wp' ) 
+            #     #hP22 = make_rate_hist2( nEvents, t, p2Obj, 1.0, 'jetEta', thresholds[0], thresholds[1], x_info, 'loose_iso_tau_wp' ) #Uncomment to make double tau rate plot
+            #     hP22.SaveAs( 'eff_and_rate_roots_'+dirName+'/'+fName+'_'+name+'_Phase-2_iso.root' )
+            #     #hP22.SaveAs( 'eff_and_rate_roots2/'+fName+'_'+name+'_Phase-2_iso.root' )
+            #     del hP22
+            #     #hS2 = make_rate_hist( nEvents, t, s2Obj, 1.0, s2ObjEta, thresholds[0], thresholds[1], x_info )
+            #     #hS2 = make_rate_hist2( nEvents, t, s2Obj, 1.0, s2ObjEta, thresholds[0], thresholds[1], x_info ) #Uncomment to make double tau rate plot
+            #     #hS2.SaveAs( 'eff_and_rate_roots_'+dirName+'/'+fName+'_'+name+'_Stage-2.root' )
+            #     #hS2.SaveAs( 'eff_and_rate_roots2/'+fName+'_'+name+'_Stage-2.root' )
+            #     #del hS2
+            #     #hS22 = make_rate_hist( nEvents, t, s2Obj, 1.0, s2ObjEta, thresholds[0], thresholds[1], x_info, 'stage2tau_isoBit' )
+            #     #hS22.SaveAs( 'eff_and_rate_roots_'+dirName+'/'+fName+'_'+name+'_Stage-2_iso.root' )
+            #     #del hS22
 
     if not doRateSecondHalf :
         print("Skip second half of rate code")
@@ -271,7 +272,7 @@ if doRate :
     
     colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray+2]
     saveName = 'output_round2_minBias_Pallabi'
-    #saveName = 'output_round2_minBias_recalibratedIsoTau'
+    #saveName = 'output_round2_minBias'
     x_info_rebin = [100, 0, 160]
 
     plot_map = OrderedDict()
@@ -284,7 +285,7 @@ if doRate :
         # plot_map['nominal']['Stage-2'] = ['Tau', 2]
         plot_map['phase2_All'] = OrderedDict()
         plot_map['phase2_All']['Phase-2'] = ['Tau', 0]
-        plot_map['phase2_All']['Phase-2_iso'] = ['IsoTau', 2]
+        # plot_map['phase2_All']['Phase-2_iso'] = ['IsoTau', 2]
         # plot_map['phase2_endcap'] = OrderedDict()
         # plot_map['phase2_endcap']['Phase-2'] = ['Tau', 0]
         # plot_map['phase2_endcap']['Phase-2_iso'] = ['IsoTau', 2]
@@ -380,7 +381,8 @@ if doRate :
             title = title.replace('barrel', '0 < |#eta| < 1.5')
             #title = title.replace('barrel', '0 < |#eta| < 1.4')
             title = title.replace('Stage-2', 'Phase-I')
-            title = title.replace('Phase-2 ', 'Calo')
+            #title = title.replace('Phase-2 ', 'Calo')
+            title = title.replace('Phase-2 ', 'GCT')
             #title = title.replace('runII', '0 < |#eta| < 2.1')
             title = title.replace('runII', '0 < |#eta| < 2.172')
             title = title.replace('all', '0 < |#eta| < 2.8')
@@ -395,5 +397,5 @@ if doRate :
         c.Update()
         
         
-        c.SaveAs( universalSaveDir + fName +  '_Calib_rate_'+plot+'.png' )
+        c.SaveAs( universalSaveDir + fName +  '_Calib_rate_'+plot+'_barrel.png' )
         #c.SaveAs( universalSaveDir + saveName +  '_Calib_double_rate_'+plot+'.pdf' ) ##Uncomment when making double tau rate plot

@@ -11,20 +11,20 @@ if not os.path.exists( 'eff_and_rate_roots_taus/' ) : os.makedirs( 'eff_and_rate
 ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
 
-doTau = True
-#doTau = False
+#doTau = True
+doTau = False
 
 #doEff = True
 doEff = False
 
-#doPtEff = True
-doPtEff = False
+doPtEff = True
+#doPtEff = False
 
 doRate = True
 #doRate = False
 
-doRateFirstHalf = True
-#doRateFirstHalf = False
+#doRateFirstHalf = True
+doRateFirstHalf = False
 doRateSecondHalf = True
 #doRateSecondHalf = False
 
@@ -50,12 +50,12 @@ dirName = 'jets' if not doTau else 'taus'
     
 
 if doEff :
-    #fName = 'output_round2_QCD'
+    fName = 'output_round2_QCD'
     #fName = 'output_round2_TTbar'
-    fName = 'output_round2_HiggsTauTau'
+    #fName = 'output_round2_HiggsTauTau'
     #fName = 'output_round2_HiggsTauTau_Pallabi'
     date = '20230511'
-    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_12_5_2_patch1/20230511/'
+    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_12_5_2_patch1/20230511/'
     universalSaveDir = "/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/efficiencies/CMSSW_12_5_2_patch1/"+dirName+"/"+date+"/"+fName+"/"
     checkDir( universalSaveDir )
 
@@ -77,17 +77,17 @@ if doEff :
     """ Pt Eff """
     if doPtEff :
         # Use eta cuts to restrict when doing pT efficiencies
-        denom_cut = 'abs(genJet_eta)<1.4'
+        #denom_cut = 'abs(genJet_eta)<1.4'
         #denom_cut = 'abs(genJet_eta)>1.6 && abs(genJet_eta)<2.8'
-        #denom_cut = 'abs(genJet_eta)<1.5 && abs(jet_eta)<5.0'
+        denom_cut = 'abs(genJet_eta)<1.5 && abs(jet_eta)<5.0'
         #denom_cut = 'abs(genJet_eta)>1.5 && abs(genJet_eta)<2.4 && abs(jet_eta)<5.0'
         #denom_cut = 'abs(genJet_eta)>2.4 && abs(genJet_eta)<5.0 && abs(jet_eta)<5.0'
-        denom_cut_label = '|#eta^{GenJet}| < 1.4'
+        denom_cut_label = '|#eta^{GenJet}| < 1.5'
         #denom_cut_label = '1.5 < |#eta^{GenJet}| < 2.4'
         #denom_cut_label = '2.4 < |#eta^{GenJet}| < 5.0'
         #axis = [160, 0, 400]
-        #axis = [70, 0, 700] #L1 Trigger Menu Validation settings for Barrel and HF
-        axis = [45, 0, 900] #L1 Trigger Menu Validation settings for Endcap
+        axis = [70, 0, 700] #L1 Trigger Menu Validation settings for Barrel and HF
+        #axis = [45, 0, 900] #L1 Trigger Menu Validation settings for Endcap
         if doTau :
             axis = [150, 0, 150]
             denom_cut_label = '|#eta^{GenTau}| < 1.4'
@@ -109,7 +109,7 @@ if doEff :
         denom_cut = '(genJet_pt > %i)' % denom_pt
         #denom_cut = '(genJet_pt > %i && genJet_pt < 100)' % denom_pt
         denom_cut_label = 'p_{T}^{GenJet} > %i GeV' % denom_pt
-        #denom_cut_label = '%i < p_{T}^{GenJet} < 100' % denom_pt
+        #denom_cut_label = '%i < p_{T}^{GenJet} < 100 GeV' % denom_pt
         if doTau:
             denom_cut_label = 'p_{T}^{GenTau} > %i GeV' % denom_pt
         axis = [100, -5, 5]
@@ -187,7 +187,7 @@ if doEff :
     
     app = 'ptEff' if doPtEff else 'etaEff_ptDenom%i' % denom_pt
     #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_include_S2Iso.png' % (pt_cut, app) )
-    c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s.png' % (pt_cut, app) )
+    c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_barrel.png' % (pt_cut, app) )
     #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_IsoTaus_NoS2.png' % (pt_cut, app) )
     #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_HGCal.png' % (pt_cut, app) )
 
@@ -197,7 +197,7 @@ if doRate :
     #fName = 'output_round2_minBias_Pallabi'
     fName = 'output_round2_minBias'
     date = '20230511'
-    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_12_5_2_patch1/20230511/'
+    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_12_5_2_patch1/20230511/'
     #base = '/hdfs/store/user/vshang/l1CaloJets_20210101_r2/'
     universalSaveDir = "/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/rates/CMSSW_12_5_2_patch1/"+dirName+"/"+date+"/"+fName+"/"
     checkDir( universalSaveDir )
@@ -218,19 +218,19 @@ if doRate :
 
     # Min and Max eta thresholds for barrel, HGCal, HF rates
     eta_thresholds = OrderedDict()
-    if doTau :
-        eta_thresholds['all']    = [0., 2.8, ROOT.kBlack]
-        #eta_thresholds['runII']  = [0., 2.1, ROOT.kBlue]
-        #eta_thresholds['runII']  = [0., 2.172, ROOT.kBlue]
-    else :
-        eta_thresholds['all']    = [0., 2.8, ROOT.kBlack]
-        #eta_thresholds['all']    = [0., 6.0, ROOT.kBlack]
+    # if doTau :
+    #     eta_thresholds['all']    = [0., 2.8, ROOT.kBlack]
+    #     #eta_thresholds['runII']  = [0., 2.1, ROOT.kBlue]
+    #     #eta_thresholds['runII']  = [0., 2.172, ROOT.kBlue]
+    # else :
+    #     eta_thresholds['all']    = [0., 2.8, ROOT.kBlack]
+    #     #eta_thresholds['all']    = [0., 6.0, ROOT.kBlack]
     eta_thresholds['barrel'] = [0., 1.5, ROOT.kRed]
     #eta_thresholds['barrel'] = [0., 1.4, ROOT.kRed]
     #eta_thresholds['hgcal']  = [1.5, 3.0, ROOT.kBlue]
-    if not doTau :
-        eta_thresholds['hgcal']  = [1.5, 3.0, ROOT.kBlue]
-        eta_thresholds['hf']     = [3.0, 6.0, ROOT.kGreen+3]
+    # if not doTau :
+    #     eta_thresholds['hgcal']  = [1.5, 3.0, ROOT.kBlue]
+    #     eta_thresholds['hf']     = [3.0, 6.0, ROOT.kGreen+3]
 
     #Victor's edit: redefined eta_thresholds to plot track matched and unmatched rates on same plot
     # eta_thresholds['trackMatched_barrel'] = [0., 1.5, ROOT.kRed]
@@ -397,5 +397,5 @@ if doRate :
         c.Update()
         
         
-        c.SaveAs( universalSaveDir + fName +  '_Calib_rate_'+plot+'.png' )
+        c.SaveAs( universalSaveDir + fName +  '_Calib_rate_'+plot+'_barrel.png' )
         #c.SaveAs( universalSaveDir + saveName +  '_Calib_double_rate_'+plot+'.pdf' ) ##Uncomment when making double tau rate plot

@@ -158,6 +158,7 @@ class L1GCTJetStudies : public edm::EDAnalyzer {
             float nTruePU;
 
 	    float jetEt;
+	    float tauEt;
 	    int jetIEta;
 	    int jetIPhi;
 	    float jetEta;
@@ -246,6 +247,7 @@ L1GCTJetStudies::L1GCTJetStudies(const edm::ParameterSet& iConfig) :
     tree->Branch("event", &treeinfo.event);
     tree->Branch("nTruePU", &treeinfo.nTruePU);
     tree->Branch("jetEt", &treeinfo.jetEt);
+    tree->Branch("tauEt", &treeinfo.tauEt);
     tree->Branch("jetIEta", &treeinfo.jetIEta);
     tree->Branch("jetIPhi", &treeinfo.jetIPhi);
     tree->Branch("jetEta", &treeinfo.jetEta);
@@ -486,8 +488,14 @@ L1GCTJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
         // CaloJets/Taus
         if ( caloJets.size() > 0 )
         {
+	  reco::Candidate::PolarLorentzVector testp4(0, 0, 0, 0);
+
             for(const auto& caloJet : caloJets) 
 	    {
+	        // std::cout << "CaloJet.pt = " << caloJet.pt() << " | caloJet.jetEt = " << caloJet.jetEt() << std::endl;
+		// std::cout << "CaloJet.eta = " << caloJet.eta() << " | caloJet.jetEta = " << caloJet.jetEta() << std::endl;
+		// std::cout << "CaloJet.phi = " << caloJet.phi() << " | caloJet.jetPhi = " << caloJet.jetPhi() << std::endl;
+		// std::cout << "deltaRv1 = " << reco::deltaR(caloJet, testp4) << " | deltaRv2 = " << reco::deltaR(caloJet.p4(), testp4) << " | deltaRv3 " << reco::deltaR(caloJet.jetEta(), caloJet.jetPhi(), 0, 0) << std::endl;
 		if (use_gen_taus && fabs(caloJet.eta()) > 3.0) continue;
 	        if (caloJet.pt() < 10) continue;
 
@@ -533,7 +541,6 @@ L1GCTJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     }
 
 
-    int cnt = 0;
     for (auto& genJet : *genCollection ) 
     {
 
@@ -542,7 +549,6 @@ L1GCTJetStudies::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
         if (use_gen_taus && fabs(genJet.eta()) > 3.5) continue; // HGCal ends at 3.0, so go a little further
         // HGCal detector stops at abs(eta)=3.0, keep gen jets up to 3.5
         //if ( fabs(genJet.eta())  > 3.5) continue;
-        ++cnt;
 
 
         // Record DM (essentially) for the taus
@@ -783,6 +789,7 @@ L1GCTJetStudies::fillDescriptions(edm::ConfigurationDescriptions& descriptions) 
 void
 L1GCTJetStudies::fill_tree(const l1tp2::Phase2L1CaloJet& caloJet) {
     treeinfo.jetEt = caloJet.jetEt();
+    treeinfo.tauEt = caloJet.tauEt();
     treeinfo.jetIEta = caloJet.jetIEta();
     treeinfo.jetIPhi = caloJet.jetIPhi();
     treeinfo.jetEta = caloJet.jetEta();
@@ -800,6 +807,7 @@ void
 L1GCTJetStudies::fill_tree_null() {
     // Fill with -9 with no CaloJet found
     treeinfo.jetEt = -9;
+    treeinfo.tauEt = -9;
     treeinfo.jetIEta = -9;
     treeinfo.jetIPhi = -9;
     treeinfo.jetEta = -9;

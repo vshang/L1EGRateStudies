@@ -1,0 +1,1015 @@
+/afs/hep.wisc.edu/user/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/Round2Files/minBiasCross.txt
+
+
+Target Files: minBiasCross
+Loaded Files:
+cms.untracked.vstring(
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_10.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_11.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_12.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_13.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_14.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_15.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_16.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_17.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_18.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_19.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_1.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_20.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_21.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_22.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_23.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_24.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_25.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_26.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_27.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_28.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_29.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_2.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_30.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_31.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_32.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_33.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_34.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_35.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_36.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_37.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_38.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_39.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_3.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_40.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_41.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_42.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_43.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_44.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_45.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_46.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_47.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_48.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_49.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_4.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_50.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_5.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_6.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_7.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_8.root',
+    'file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_9.root'
+)
+
+
+
+23-Jul-2023 14:40:10 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_10.root
+23-Jul-2023 14:40:11 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_10.root
+%MSG-s LegacyModules:  AfterModConstruction 23-Jul-2023 14:40:12 CDT pre-events
+The following legacy modules are configured. Support for legacy modules
+is going to end soon. These modules need to be converted to have type
+edm::global, edm::stream, edm::one, or in rare cases edm::limited.
+  L1GCTJetStudies analyzer
+%MSG
+Begin processing the 1st record. Run 1, Event 12642, LumiSection 80 on stream 0 at 23-Jul-2023 14:43:16.275 CDT
+Begin processing the 101st record. Run 1, Event 12731, LumiSection 80 on stream 0 at 23-Jul-2023 14:43:17.278 CDT
+Begin processing the 201st record. Run 1, Event 27044, LumiSection 170 on stream 0 at 23-Jul-2023 14:43:17.600 CDT
+Begin processing the 301st record. Run 1, Event 27146, LumiSection 170 on stream 0 at 23-Jul-2023 14:43:17.908 CDT
+Begin processing the 401st record. Run 1, Event 24368, LumiSection 153 on stream 0 at 23-Jul-2023 14:43:18.314 CDT
+Begin processing the 501st record. Run 1, Event 7388, LumiSection 47 on stream 0 at 23-Jul-2023 14:43:18.624 CDT
+Begin processing the 601st record. Run 1, Event 7477, LumiSection 47 on stream 0 at 23-Jul-2023 14:43:18.987 CDT
+Begin processing the 701st record. Run 1, Event 42428, LumiSection 266 on stream 0 at 23-Jul-2023 14:43:19.395 CDT
+Begin processing the 801st record. Run 1, Event 1193323, LumiSection 7472 on stream 0 at 23-Jul-2023 14:43:19.737 CDT
+Begin processing the 901st record. Run 1, Event 1193427, LumiSection 7472 on stream 0 at 23-Jul-2023 14:43:19.995 CDT
+Begin processing the 1001st record. Run 1, Event 5007, LumiSection 32 on stream 0 at 23-Jul-2023 14:43:20.373 CDT
+Begin processing the 1101st record. Run 1, Event 5105, LumiSection 32 on stream 0 at 23-Jul-2023 14:43:21.039 CDT
+Begin processing the 1201st record. Run 1, Event 33328, LumiSection 209 on stream 0 at 23-Jul-2023 14:43:21.322 CDT
+Begin processing the 1301st record. Run 1, Event 9304, LumiSection 59 on stream 0 at 23-Jul-2023 14:43:21.695 CDT
+Begin processing the 1401st record. Run 1, Event 9409, LumiSection 59 on stream 0 at 23-Jul-2023 14:43:22.031 CDT
+Begin processing the 1501st record. Run 1, Event 17668, LumiSection 111 on stream 0 at 23-Jul-2023 14:43:22.300 CDT
+23-Jul-2023 14:43:22 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_10.root
+23-Jul-2023 14:43:22 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_11.root
+23-Jul-2023 14:43:22 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_11.root
+Begin processing the 1601st record. Run 1, Event 12003, LumiSection 76 on stream 0 at 23-Jul-2023 14:43:23.470 CDT
+Begin processing the 1701st record. Run 1, Event 12107, LumiSection 76 on stream 0 at 23-Jul-2023 14:43:24.419 CDT
+Begin processing the 1801st record. Run 1, Event 12845, LumiSection 81 on stream 0 at 23-Jul-2023 14:43:24.729 CDT
+Begin processing the 1901st record. Run 1, Event 12942, LumiSection 81 on stream 0 at 23-Jul-2023 14:43:25.127 CDT
+Begin processing the 2001st record. Run 1, Event 1974446, LumiSection 12362 on stream 0 at 23-Jul-2023 14:43:25.491 CDT
+Begin processing the 2101st record. Run 1, Event 157705, LumiSection 988 on stream 0 at 23-Jul-2023 14:43:25.812 CDT
+Begin processing the 2201st record. Run 1, Event 157796, LumiSection 988 on stream 0 at 23-Jul-2023 14:43:26.135 CDT
+Begin processing the 2301st record. Run 1, Event 151823, LumiSection 951 on stream 0 at 23-Jul-2023 14:43:26.493 CDT
+Begin processing the 2401st record. Run 1, Event 8163, LumiSection 52 on stream 0 at 23-Jul-2023 14:43:26.788 CDT
+Begin processing the 2501st record. Run 1, Event 8259, LumiSection 52 on stream 0 at 23-Jul-2023 14:43:27.092 CDT
+Begin processing the 2601st record. Run 1, Event 145088, LumiSection 909 on stream 0 at 23-Jul-2023 14:43:27.842 CDT
+Begin processing the 2701st record. Run 1, Event 145173, LumiSection 909 on stream 0 at 23-Jul-2023 14:43:28.135 CDT
+Begin processing the 2801st record. Run 1, Event 5840, LumiSection 37 on stream 0 at 23-Jul-2023 14:43:28.474 CDT
+Begin processing the 2901st record. Run 1, Event 14105, LumiSection 89 on stream 0 at 23-Jul-2023 14:43:28.778 CDT
+Begin processing the 3001st record. Run 1, Event 14197, LumiSection 89 on stream 0 at 23-Jul-2023 14:43:29.132 CDT
+Begin processing the 3101st record. Run 1, Event 141101, LumiSection 884 on stream 0 at 23-Jul-2023 14:43:29.406 CDT
+23-Jul-2023 14:43:29 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_11.root
+23-Jul-2023 14:43:29 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_12.root
+23-Jul-2023 14:43:29 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_12.root
+Begin processing the 3201st record. Run 1, Event 43162, LumiSection 271 on stream 0 at 23-Jul-2023 14:43:30.371 CDT
+Begin processing the 3301st record. Run 1, Event 43268, LumiSection 271 on stream 0 at 23-Jul-2023 14:43:31.356 CDT
+Begin processing the 3401st record. Run 1, Event 153232, LumiSection 960 on stream 0 at 23-Jul-2023 14:43:31.724 CDT
+Begin processing the 3501st record. Run 1, Event 153345, LumiSection 960 on stream 0 at 23-Jul-2023 14:43:32.033 CDT
+Begin processing the 3601st record. Run 1, Event 4405, LumiSection 28 on stream 0 at 23-Jul-2023 14:43:32.420 CDT
+Begin processing the 3701st record. Run 1, Event 20183, LumiSection 127 on stream 0 at 23-Jul-2023 14:43:32.737 CDT
+Begin processing the 3801st record. Run 1, Event 20281, LumiSection 127 on stream 0 at 23-Jul-2023 14:43:33.018 CDT
+Begin processing the 3901st record. Run 1, Event 152948, LumiSection 958 on stream 0 at 23-Jul-2023 14:43:33.378 CDT
+Begin processing the 4001st record. Run 1, Event 17442, LumiSection 110 on stream 0 at 23-Jul-2023 14:43:33.742 CDT
+Begin processing the 4101st record. Run 1, Event 17547, LumiSection 110 on stream 0 at 23-Jul-2023 14:43:34.087 CDT
+Begin processing the 4201st record. Run 1, Event 152764, LumiSection 957 on stream 0 at 23-Jul-2023 14:43:34.422 CDT
+Begin processing the 4301st record. Run 1, Event 152868, LumiSection 957 on stream 0 at 23-Jul-2023 14:43:35.153 CDT
+Begin processing the 4401st record. Run 1, Event 152007, LumiSection 952 on stream 0 at 23-Jul-2023 14:43:35.478 CDT
+Begin processing the 4501st record. Run 1, Event 155943, LumiSection 977 on stream 0 at 23-Jul-2023 14:43:35.815 CDT
+Begin processing the 4601st record. Run 1, Event 156042, LumiSection 977 on stream 0 at 23-Jul-2023 14:43:36.174 CDT
+Begin processing the 4701st record. Run 1, Event 39384, LumiSection 247 on stream 0 at 23-Jul-2023 14:43:36.494 CDT
+23-Jul-2023 14:43:36 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_12.root
+23-Jul-2023 14:43:36 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_13.root
+23-Jul-2023 14:43:37 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_13.root
+Begin processing the 4801st record. Run 1, Event 32441, LumiSection 204 on stream 0 at 23-Jul-2023 14:43:37.513 CDT
+Begin processing the 4901st record. Run 1, Event 32540, LumiSection 204 on stream 0 at 23-Jul-2023 14:43:38.511 CDT
+Begin processing the 5001st record. Run 1, Event 2421, LumiSection 16 on stream 0 at 23-Jul-2023 14:43:38.823 CDT
+Begin processing the 5101st record. Run 1, Event 2541, LumiSection 16 on stream 0 at 23-Jul-2023 14:43:39.148 CDT
+Begin processing the 5201st record. Run 1, Event 16241, LumiSection 102 on stream 0 at 23-Jul-2023 14:43:39.499 CDT
+Begin processing the 5301st record. Run 1, Event 9623, LumiSection 61 on stream 0 at 23-Jul-2023 14:43:39.805 CDT
+Begin processing the 5401st record. Run 1, Event 9724, LumiSection 61 on stream 0 at 23-Jul-2023 14:43:40.115 CDT
+Begin processing the 5501st record. Run 1, Event 40972, LumiSection 257 on stream 0 at 23-Jul-2023 14:43:40.550 CDT
+Begin processing the 5601st record. Run 1, Event 45082, LumiSection 283 on stream 0 at 23-Jul-2023 14:43:40.892 CDT
+Begin processing the 5701st record. Run 1, Event 45181, LumiSection 283 on stream 0 at 23-Jul-2023 14:43:41.165 CDT
+Begin processing the 5801st record. Run 1, Event 20522, LumiSection 129 on stream 0 at 23-Jul-2023 14:43:41.518 CDT
+Begin processing the 5901st record. Run 1, Event 20626, LumiSection 129 on stream 0 at 23-Jul-2023 14:43:42.262 CDT
+Begin processing the 6001st record. Run 1, Event 44505, LumiSection 279 on stream 0 at 23-Jul-2023 14:43:42.614 CDT
+Begin processing the 6101st record. Run 1, Event 5140, LumiSection 33 on stream 0 at 23-Jul-2023 14:43:42.969 CDT
+Begin processing the 6201st record. Run 1, Event 5248, LumiSection 33 on stream 0 at 23-Jul-2023 14:43:43.290 CDT
+Begin processing the 6301st record. Run 1, Event 23694, LumiSection 149 on stream 0 at 23-Jul-2023 14:43:43.581 CDT
+23-Jul-2023 14:43:43 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_13.root
+23-Jul-2023 14:43:43 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_14.root
+23-Jul-2023 14:43:44 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_14.root
+Begin processing the 6401st record. Run 1, Event 39963, LumiSection 251 on stream 0 at 23-Jul-2023 14:43:44.654 CDT
+Begin processing the 6501st record. Run 1, Event 40067, LumiSection 251 on stream 0 at 23-Jul-2023 14:43:45.642 CDT
+Begin processing the 6601st record. Run 1, Event 16528, LumiSection 104 on stream 0 at 23-Jul-2023 14:43:45.933 CDT
+Begin processing the 6701st record. Run 1, Event 16628, LumiSection 104 on stream 0 at 23-Jul-2023 14:43:46.260 CDT
+Begin processing the 6801st record. Run 1, Event 141256, LumiSection 885 on stream 0 at 23-Jul-2023 14:43:46.625 CDT
+Begin processing the 6901st record. Run 1, Event 141708, LumiSection 888 on stream 0 at 23-Jul-2023 14:43:46.931 CDT
+Begin processing the 7001st record. Run 1, Event 141805, LumiSection 888 on stream 0 at 23-Jul-2023 14:43:47.239 CDT
+Begin processing the 7101st record. Run 1, Event 154213, LumiSection 966 on stream 0 at 23-Jul-2023 14:43:47.589 CDT
+Begin processing the 7201st record. Run 1, Event 30682, LumiSection 193 on stream 0 at 23-Jul-2023 14:43:47.924 CDT
+Begin processing the 7301st record. Run 1, Event 30779, LumiSection 193 on stream 0 at 23-Jul-2023 14:43:48.208 CDT
+Begin processing the 7401st record. Run 1, Event 20688, LumiSection 130 on stream 0 at 23-Jul-2023 14:43:48.499 CDT
+Begin processing the 7501st record. Run 1, Event 20782, LumiSection 130 on stream 0 at 23-Jul-2023 14:43:49.272 CDT
+Begin processing the 7601st record. Run 1, Event 153118, LumiSection 959 on stream 0 at 23-Jul-2023 14:43:49.558 CDT
+Begin processing the 7701st record. Run 1, Event 1175258, LumiSection 7359 on stream 0 at 23-Jul-2023 14:43:49.876 CDT
+Begin processing the 7801st record. Run 1, Event 1175360, LumiSection 7359 on stream 0 at 23-Jul-2023 14:43:50.228 CDT
+Begin processing the 7901st record. Run 1, Event 548, LumiSection 4 on stream 0 at 23-Jul-2023 14:43:50.511 CDT
+23-Jul-2023 14:43:50 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_14.root
+23-Jul-2023 14:43:50 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_15.root
+23-Jul-2023 14:43:50 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_15.root
+Begin processing the 8001st record. Run 1, Event 1976921, LumiSection 12378 on stream 0 at 23-Jul-2023 14:43:51.478 CDT
+Begin processing the 8101st record. Run 1, Event 1977028, LumiSection 12378 on stream 0 at 23-Jul-2023 14:43:52.419 CDT
+Begin processing the 8201st record. Run 1, Event 21322, LumiSection 134 on stream 0 at 23-Jul-2023 14:43:52.803 CDT
+Begin processing the 8301st record. Run 1, Event 21428, LumiSection 134 on stream 0 at 23-Jul-2023 14:43:53.132 CDT
+Begin processing the 8401st record. Run 1, Event 144477, LumiSection 905 on stream 0 at 23-Jul-2023 14:43:53.554 CDT
+Begin processing the 8501st record. Run 1, Event 34067, LumiSection 214 on stream 0 at 23-Jul-2023 14:43:53.914 CDT
+Begin processing the 8601st record. Run 1, Event 34149, LumiSection 214 on stream 0 at 23-Jul-2023 14:43:54.271 CDT
+Begin processing the 8701st record. Run 1, Event 16708, LumiSection 105 on stream 0 at 23-Jul-2023 14:43:54.633 CDT
+Begin processing the 8801st record. Run 1, Event 7045, LumiSection 45 on stream 0 at 23-Jul-2023 14:43:54.948 CDT
+Begin processing the 8901st record. Run 1, Event 7147, LumiSection 45 on stream 0 at 23-Jul-2023 14:43:55.239 CDT
+Begin processing the 9001st record. Run 1, Event 4520, LumiSection 29 on stream 0 at 23-Jul-2023 14:43:55.922 CDT
+Begin processing the 9101st record. Run 1, Event 4617, LumiSection 29 on stream 0 at 23-Jul-2023 14:43:56.297 CDT
+Begin processing the 9201st record. Run 1, Event 29487, LumiSection 185 on stream 0 at 23-Jul-2023 14:43:56.622 CDT
+Begin processing the 9301st record. Run 1, Event 13308, LumiSection 84 on stream 0 at 23-Jul-2023 14:43:56.952 CDT
+Begin processing the 9401st record. Run 1, Event 13400, LumiSection 84 on stream 0 at 23-Jul-2023 14:43:57.346 CDT
+Begin processing the 9501st record. Run 1, Event 18769, LumiSection 118 on stream 0 at 23-Jul-2023 14:43:57.642 CDT
+23-Jul-2023 14:43:57 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_15.root
+23-Jul-2023 14:43:57 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_16.root
+23-Jul-2023 14:43:58 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_16.root
+Begin processing the 9601st record. Run 1, Event 44283, LumiSection 278 on stream 0 at 23-Jul-2023 14:43:58.586 CDT
+Begin processing the 9701st record. Run 1, Event 44382, LumiSection 278 on stream 0 at 23-Jul-2023 14:43:59.718 CDT
+Begin processing the 9801st record. Run 1, Event 31359, LumiSection 197 on stream 0 at 23-Jul-2023 14:43:59.995 CDT
+Begin processing the 9901st record. Run 1, Event 31463, LumiSection 197 on stream 0 at 23-Jul-2023 14:44:00.309 CDT
+Begin processing the 10001st record. Run 1, Event 36687, LumiSection 230 on stream 0 at 23-Jul-2023 14:44:00.764 CDT
+Begin processing the 10101st record. Run 1, Event 28304, LumiSection 178 on stream 0 at 23-Jul-2023 14:44:01.040 CDT
+Begin processing the 10201st record. Run 1, Event 28405, LumiSection 178 on stream 0 at 23-Jul-2023 14:44:01.421 CDT
+Begin processing the 10301st record. Run 1, Event 1343, LumiSection 9 on stream 0 at 23-Jul-2023 14:44:01.818 CDT
+Begin processing the 10401st record. Run 1, Event 13122, LumiSection 83 on stream 0 at 23-Jul-2023 14:44:02.115 CDT
+Begin processing the 10501st record. Run 1, Event 13215, LumiSection 83 on stream 0 at 23-Jul-2023 14:44:02.367 CDT
+Begin processing the 10601st record. Run 1, Event 154837, LumiSection 970 on stream 0 at 23-Jul-2023 14:44:02.702 CDT
+Begin processing the 10701st record. Run 1, Event 154947, LumiSection 970 on stream 0 at 23-Jul-2023 14:44:03.446 CDT
+Begin processing the 10801st record. Run 1, Event 13522, LumiSection 85 on stream 0 at 23-Jul-2023 14:44:03.790 CDT
+Begin processing the 10901st record. Run 1, Event 19544, LumiSection 123 on stream 0 at 23-Jul-2023 14:44:04.164 CDT
+Begin processing the 11001st record. Run 1, Event 19643, LumiSection 123 on stream 0 at 23-Jul-2023 14:44:04.505 CDT
+Begin processing the 11101st record. Run 1, Event 38907, LumiSection 244 on stream 0 at 23-Jul-2023 14:44:04.803 CDT
+23-Jul-2023 14:44:05 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_16.root
+23-Jul-2023 14:44:05 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_17.root
+23-Jul-2023 14:44:05 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_17.root
+Begin processing the 11201st record. Run 1, Event 157363, LumiSection 986 on stream 0 at 23-Jul-2023 14:44:05.636 CDT
+Begin processing the 11301st record. Run 1, Event 157464, LumiSection 986 on stream 0 at 23-Jul-2023 14:44:06.614 CDT
+Begin processing the 11401st record. Run 1, Event 33448, LumiSection 210 on stream 0 at 23-Jul-2023 14:44:06.929 CDT
+Begin processing the 11501st record. Run 1, Event 33548, LumiSection 210 on stream 0 at 23-Jul-2023 14:44:07.227 CDT
+Begin processing the 11601st record. Run 1, Event 150566, LumiSection 943 on stream 0 at 23-Jul-2023 14:44:07.605 CDT
+Begin processing the 11701st record. Run 1, Event 150988, LumiSection 946 on stream 0 at 23-Jul-2023 14:44:07.904 CDT
+Begin processing the 11801st record. Run 1, Event 151077, LumiSection 946 on stream 0 at 23-Jul-2023 14:44:08.176 CDT
+Begin processing the 11901st record. Run 1, Event 6301, LumiSection 40 on stream 0 at 23-Jul-2023 14:44:08.583 CDT
+Begin processing the 12001st record. Run 1, Event 38042, LumiSection 239 on stream 0 at 23-Jul-2023 14:44:08.936 CDT
+Begin processing the 12101st record. Run 1, Event 38142, LumiSection 239 on stream 0 at 23-Jul-2023 14:44:09.180 CDT
+Begin processing the 12201st record. Run 1, Event 9150, LumiSection 58 on stream 0 at 23-Jul-2023 14:44:09.574 CDT
+Begin processing the 12301st record. Run 1, Event 9268, LumiSection 58 on stream 0 at 23-Jul-2023 14:44:10.175 CDT
+Begin processing the 12401st record. Run 1, Event 8404, LumiSection 53 on stream 0 at 23-Jul-2023 14:44:10.490 CDT
+Begin processing the 12501st record. Run 1, Event 154665, LumiSection 969 on stream 0 at 23-Jul-2023 14:44:10.838 CDT
+Begin processing the 12601st record. Run 1, Event 154762, LumiSection 969 on stream 0 at 23-Jul-2023 14:44:11.146 CDT
+Begin processing the 12701st record. Run 1, Event 1958561, LumiSection 12263 on stream 0 at 23-Jul-2023 14:44:11.436 CDT
+23-Jul-2023 14:44:11 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_17.root
+23-Jul-2023 14:44:11 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_18.root
+23-Jul-2023 14:44:16 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_18.root
+Begin processing the 12801st record. Run 1, Event 19361, LumiSection 122 on stream 0 at 23-Jul-2023 14:44:17.175 CDT
+Begin processing the 12901st record. Run 1, Event 19446, LumiSection 122 on stream 0 at 23-Jul-2023 14:44:18.199 CDT
+Begin processing the 13001st record. Run 1, Event 139649, LumiSection 875 on stream 0 at 23-Jul-2023 14:44:18.518 CDT
+Begin processing the 13101st record. Run 1, Event 139747, LumiSection 875 on stream 0 at 23-Jul-2023 14:44:18.925 CDT
+Begin processing the 13201st record. Run 1, Event 31883, LumiSection 200 on stream 0 at 23-Jul-2023 14:44:19.316 CDT
+Begin processing the 13301st record. Run 1, Event 45746, LumiSection 287 on stream 0 at 23-Jul-2023 14:44:19.588 CDT
+Begin processing the 13401st record. Run 1, Event 45845, LumiSection 287 on stream 0 at 23-Jul-2023 14:44:19.927 CDT
+Begin processing the 13501st record. Run 1, Event 138067, LumiSection 865 on stream 0 at 23-Jul-2023 14:44:20.282 CDT
+Begin processing the 13601st record. Run 1, Event 148082, LumiSection 928 on stream 0 at 23-Jul-2023 14:44:20.613 CDT
+Begin processing the 13701st record. Run 1, Event 148169, LumiSection 928 on stream 0 at 23-Jul-2023 14:44:20.920 CDT
+Begin processing the 13801st record. Run 1, Event 141880, LumiSection 889 on stream 0 at 23-Jul-2023 14:44:21.231 CDT
+Begin processing the 13901st record. Run 1, Event 141987, LumiSection 889 on stream 0 at 23-Jul-2023 14:44:21.937 CDT
+Begin processing the 14001st record. Run 1, Event 138408, LumiSection 867 on stream 0 at 23-Jul-2023 14:44:22.229 CDT
+Begin processing the 14101st record. Run 1, Event 10742, LumiSection 68 on stream 0 at 23-Jul-2023 14:44:22.560 CDT
+Begin processing the 14201st record. Run 1, Event 10842, LumiSection 68 on stream 0 at 23-Jul-2023 14:44:22.920 CDT
+Begin processing the 14301st record. Run 1, Event 140615, LumiSection 881 on stream 0 at 23-Jul-2023 14:44:23.212 CDT
+23-Jul-2023 14:44:23 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_18.root
+23-Jul-2023 14:44:23 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_19.root
+23-Jul-2023 14:44:23 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_19.root
+Begin processing the 14401st record. Run 1, Event 1956123, LumiSection 12248 on stream 0 at 23-Jul-2023 14:44:24.372 CDT
+Begin processing the 14501st record. Run 1, Event 1956207, LumiSection 12248 on stream 0 at 23-Jul-2023 14:44:25.476 CDT
+Begin processing the 14601st record. Run 1, Event 13643, LumiSection 86 on stream 0 at 23-Jul-2023 14:44:25.852 CDT
+Begin processing the 14701st record. Run 1, Event 13745, LumiSection 86 on stream 0 at 23-Jul-2023 14:44:26.159 CDT
+Begin processing the 14801st record. Run 1, Event 25648, LumiSection 161 on stream 0 at 23-Jul-2023 14:44:26.518 CDT
+Begin processing the 14901st record. Run 1, Event 985, LumiSection 7 on stream 0 at 23-Jul-2023 14:44:26.898 CDT
+Begin processing the 15001st record. Run 1, Event 1077, LumiSection 7 on stream 0 at 23-Jul-2023 14:44:27.252 CDT
+Begin processing the 15101st record. Run 1, Event 26908, LumiSection 169 on stream 0 at 23-Jul-2023 14:44:27.564 CDT
+Begin processing the 15201st record. Run 1, Event 28603, LumiSection 180 on stream 0 at 23-Jul-2023 14:44:27.918 CDT
+Begin processing the 15301st record. Run 1, Event 28691, LumiSection 180 on stream 0 at 23-Jul-2023 14:44:28.270 CDT
+Begin processing the 15401st record. Run 1, Event 140445, LumiSection 880 on stream 0 at 23-Jul-2023 14:44:28.593 CDT
+Begin processing the 15501st record. Run 1, Event 140548, LumiSection 880 on stream 0 at 23-Jul-2023 14:44:29.288 CDT
+Begin processing the 15601st record. Run 1, Event 151192, LumiSection 947 on stream 0 at 23-Jul-2023 14:44:29.552 CDT
+Begin processing the 15701st record. Run 1, Event 144905, LumiSection 908 on stream 0 at 23-Jul-2023 14:44:29.875 CDT
+Begin processing the 15801st record. Run 1, Event 145006, LumiSection 908 on stream 0 at 23-Jul-2023 14:44:30.210 CDT
+Begin processing the 15901st record. Run 1, Event 158226, LumiSection 991 on stream 0 at 23-Jul-2023 14:44:30.483 CDT
+23-Jul-2023 14:44:30 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_19.root
+23-Jul-2023 14:44:30 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_1.root
+23-Jul-2023 14:44:30 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_1.root
+Begin processing the 16001st record. Run 1, Event 1329883, LumiSection 8327 on stream 0 at 23-Jul-2023 14:44:31.381 CDT
+Begin processing the 16101st record. Run 1, Event 1329968, LumiSection 8327 on stream 0 at 23-Jul-2023 14:44:32.529 CDT
+Begin processing the 16201st record. Run 1, Event 147644, LumiSection 925 on stream 0 at 23-Jul-2023 14:44:32.846 CDT
+Begin processing the 16301st record. Run 1, Event 147745, LumiSection 925 on stream 0 at 23-Jul-2023 14:44:33.168 CDT
+Begin processing the 16401st record. Run 1, Event 43887, LumiSection 275 on stream 0 at 23-Jul-2023 14:44:33.688 CDT
+Begin processing the 16501st record. Run 1, Event 5308, LumiSection 34 on stream 0 at 23-Jul-2023 14:44:33.974 CDT
+Begin processing the 16601st record. Run 1, Event 5407, LumiSection 34 on stream 0 at 23-Jul-2023 14:44:34.309 CDT
+Begin processing the 16701st record. Run 1, Event 142387, LumiSection 892 on stream 0 at 23-Jul-2023 14:44:34.632 CDT
+Begin processing the 16801st record. Run 1, Event 147282, LumiSection 923 on stream 0 at 23-Jul-2023 14:44:34.945 CDT
+Begin processing the 16901st record. Run 1, Event 147366, LumiSection 923 on stream 0 at 23-Jul-2023 14:44:35.273 CDT
+Begin processing the 17001st record. Run 1, Event 138846, LumiSection 870 on stream 0 at 23-Jul-2023 14:44:36.003 CDT
+Begin processing the 17101st record. Run 1, Event 138933, LumiSection 870 on stream 0 at 23-Jul-2023 14:44:36.293 CDT
+Begin processing the 17201st record. Run 1, Event 148638, LumiSection 931 on stream 0 at 23-Jul-2023 14:44:36.628 CDT
+Begin processing the 17301st record. Run 1, Event 15531, LumiSection 98 on stream 0 at 23-Jul-2023 14:44:36.991 CDT
+Begin processing the 17401st record. Run 1, Event 15641, LumiSection 98 on stream 0 at 23-Jul-2023 14:44:37.368 CDT
+Begin processing the 17501st record. Run 1, Event 1826, LumiSection 12 on stream 0 at 23-Jul-2023 14:44:37.635 CDT
+23-Jul-2023 14:44:38 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_1.root
+23-Jul-2023 14:44:38 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_20.root
+23-Jul-2023 14:44:38 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_20.root
+Begin processing the 17601st record. Run 1, Event 1123, LumiSection 8 on stream 0 at 23-Jul-2023 14:44:38.742 CDT
+Begin processing the 17701st record. Run 1, Event 1227, LumiSection 8 on stream 0 at 23-Jul-2023 14:44:40.581 CDT
+Begin processing the 17801st record. Run 1, Event 146687, LumiSection 919 on stream 0 at 23-Jul-2023 14:44:40.900 CDT
+Begin processing the 17901st record. Run 1, Event 146782, LumiSection 919 on stream 0 at 23-Jul-2023 14:44:41.254 CDT
+Begin processing the 18001st record. Run 1, Event 151686, LumiSection 950 on stream 0 at 23-Jul-2023 14:44:41.677 CDT
+Begin processing the 18101st record. Run 1, Event 42066, LumiSection 264 on stream 0 at 23-Jul-2023 14:44:41.950 CDT
+Begin processing the 18201st record. Run 1, Event 42145, LumiSection 264 on stream 0 at 23-Jul-2023 14:44:42.265 CDT
+Begin processing the 18301st record. Run 1, Event 1190988, LumiSection 7457 on stream 0 at 23-Jul-2023 14:44:42.616 CDT
+Begin processing the 18401st record. Run 1, Event 22882, LumiSection 144 on stream 0 at 23-Jul-2023 14:44:42.931 CDT
+Begin processing the 18501st record. Run 1, Event 22977, LumiSection 144 on stream 0 at 23-Jul-2023 14:44:43.199 CDT
+Begin processing the 18601st record. Run 1, Event 30446, LumiSection 191 on stream 0 at 23-Jul-2023 14:44:43.563 CDT
+Begin processing the 18701st record. Run 1, Event 21142, LumiSection 133 on stream 0 at 23-Jul-2023 14:44:44.326 CDT
+Begin processing the 18801st record. Run 1, Event 21242, LumiSection 133 on stream 0 at 23-Jul-2023 14:44:44.618 CDT
+Begin processing the 18901st record. Run 1, Event 30106, LumiSection 189 on stream 0 at 23-Jul-2023 14:44:44.985 CDT
+Begin processing the 19001st record. Run 1, Event 13763, LumiSection 87 on stream 0 at 23-Jul-2023 14:44:45.416 CDT
+Begin processing the 19101st record. Run 1, Event 13866, LumiSection 87 on stream 0 at 23-Jul-2023 14:44:45.699 CDT
+23-Jul-2023 14:44:45 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_20.root
+23-Jul-2023 14:44:45 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_21.root
+23-Jul-2023 14:44:45 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_21.root
+Begin processing the 19201st record. Run 1, Event 1202287, LumiSection 7528 on stream 0 at 23-Jul-2023 14:44:47.211 CDT
+Begin processing the 19301st record. Run 1, Event 1202369, LumiSection 7528 on stream 0 at 23-Jul-2023 14:44:47.531 CDT
+Begin processing the 19401st record. Run 1, Event 15287, LumiSection 96 on stream 0 at 23-Jul-2023 14:44:47.926 CDT
+Begin processing the 19501st record. Run 1, Event 28784, LumiSection 181 on stream 0 at 23-Jul-2023 14:44:48.359 CDT
+Begin processing the 19601st record. Run 1, Event 28887, LumiSection 181 on stream 0 at 23-Jul-2023 14:44:48.653 CDT
+Begin processing the 19701st record. Run 1, Event 152144, LumiSection 953 on stream 0 at 23-Jul-2023 14:44:48.926 CDT
+Begin processing the 19801st record. Run 1, Event 14563, LumiSection 92 on stream 0 at 23-Jul-2023 14:44:49.286 CDT
+Begin processing the 19901st record. Run 1, Event 14668, LumiSection 92 on stream 0 at 23-Jul-2023 14:44:49.671 CDT
+Begin processing the 20001st record. Run 1, Event 1215877, LumiSection 7613 on stream 0 at 23-Jul-2023 14:44:49.982 CDT
+Begin processing the 20101st record. Run 1, Event 1215974, LumiSection 7613 on stream 0 at 23-Jul-2023 14:44:50.300 CDT
+Begin processing the 20201st record. Run 1, Event 27853, LumiSection 175 on stream 0 at 23-Jul-2023 14:44:50.983 CDT
+Begin processing the 20301st record. Run 1, Event 144104, LumiSection 903 on stream 0 at 23-Jul-2023 14:44:51.313 CDT
+Begin processing the 20401st record. Run 1, Event 144205, LumiSection 903 on stream 0 at 23-Jul-2023 14:44:51.595 CDT
+Begin processing the 20501st record. Run 1, Event 380, LumiSection 3 on stream 0 at 23-Jul-2023 14:44:51.974 CDT
+Begin processing the 20601st record. Run 1, Event 42202, LumiSection 265 on stream 0 at 23-Jul-2023 14:44:52.298 CDT
+Begin processing the 20701st record. Run 1, Event 42308, LumiSection 265 on stream 0 at 23-Jul-2023 14:44:52.572 CDT
+23-Jul-2023 14:44:52 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_21.root
+23-Jul-2023 14:44:52 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_22.root
+23-Jul-2023 14:44:52 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_22.root
+Begin processing the 20801st record. Run 1, Event 687, LumiSection 5 on stream 0 at 23-Jul-2023 14:44:54.223 CDT
+Begin processing the 20901st record. Run 1, Event 786, LumiSection 5 on stream 0 at 23-Jul-2023 14:44:54.597 CDT
+Begin processing the 21001st record. Run 1, Event 8085, LumiSection 51 on stream 0 at 23-Jul-2023 14:44:54.916 CDT
+Begin processing the 21101st record. Run 1, Event 1242986, LumiSection 7783 on stream 0 at 23-Jul-2023 14:44:55.333 CDT
+Begin processing the 21201st record. Run 1, Event 1243079, LumiSection 7783 on stream 0 at 23-Jul-2023 14:44:55.654 CDT
+Begin processing the 21301st record. Run 1, Event 18469, LumiSection 116 on stream 0 at 23-Jul-2023 14:44:55.954 CDT
+Begin processing the 21401st record. Run 1, Event 45243, LumiSection 284 on stream 0 at 23-Jul-2023 14:44:56.281 CDT
+Begin processing the 21501st record. Run 1, Event 45348, LumiSection 284 on stream 0 at 23-Jul-2023 14:44:56.633 CDT
+Begin processing the 21601st record. Run 1, Event 10442, LumiSection 66 on stream 0 at 23-Jul-2023 14:44:56.919 CDT
+Begin processing the 21701st record. Run 1, Event 10548, LumiSection 66 on stream 0 at 23-Jul-2023 14:44:57.263 CDT
+Begin processing the 21801st record. Run 1, Event 149286, LumiSection 935 on stream 0 at 23-Jul-2023 14:44:57.937 CDT
+Begin processing the 21901st record. Run 1, Event 42850, LumiSection 269 on stream 0 at 23-Jul-2023 14:44:58.222 CDT
+Begin processing the 22001st record. Run 1, Event 42961, LumiSection 269 on stream 0 at 23-Jul-2023 14:44:58.546 CDT
+Begin processing the 22101st record. Run 1, Event 32339, LumiSection 203 on stream 0 at 23-Jul-2023 14:44:58.923 CDT
+Begin processing the 22201st record. Run 1, Event 26042, LumiSection 164 on stream 0 at 23-Jul-2023 14:44:59.245 CDT
+Begin processing the 22301st record. Run 1, Event 26144, LumiSection 164 on stream 0 at 23-Jul-2023 14:44:59.512 CDT
+23-Jul-2023 14:44:59 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_22.root
+23-Jul-2023 14:44:59 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_23.root
+23-Jul-2023 14:44:59 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_23.root
+Begin processing the 22401st record. Run 1, Event 37602, LumiSection 236 on stream 0 at 23-Jul-2023 14:45:01.206 CDT
+Begin processing the 22501st record. Run 1, Event 37708, LumiSection 236 on stream 0 at 23-Jul-2023 14:45:01.506 CDT
+Begin processing the 22601st record. Run 1, Event 152325, LumiSection 954 on stream 0 at 23-Jul-2023 14:45:01.851 CDT
+Begin processing the 22701st record. Run 1, Event 44149, LumiSection 277 on stream 0 at 23-Jul-2023 14:45:02.194 CDT
+Begin processing the 22801st record. Run 1, Event 44250, LumiSection 277 on stream 0 at 23-Jul-2023 14:45:02.554 CDT
+Begin processing the 22901st record. Run 1, Event 158067, LumiSection 990 on stream 0 at 23-Jul-2023 14:45:02.856 CDT
+Begin processing the 23001st record. Run 1, Event 30521, LumiSection 192 on stream 0 at 23-Jul-2023 14:45:03.225 CDT
+Begin processing the 23101st record. Run 1, Event 30628, LumiSection 192 on stream 0 at 23-Jul-2023 14:45:03.545 CDT
+Begin processing the 23201st record. Run 1, Event 43687, LumiSection 274 on stream 0 at 23-Jul-2023 14:45:03.888 CDT
+Begin processing the 23301st record. Run 1, Event 43788, LumiSection 274 on stream 0 at 23-Jul-2023 14:45:04.269 CDT
+Begin processing the 23401st record. Run 1, Event 1260312, LumiSection 7891 on stream 0 at 23-Jul-2023 14:45:04.930 CDT
+Begin processing the 23501st record. Run 1, Event 156261, LumiSection 979 on stream 0 at 23-Jul-2023 14:45:05.215 CDT
+Begin processing the 23601st record. Run 1, Event 156366, LumiSection 979 on stream 0 at 23-Jul-2023 14:45:05.536 CDT
+Begin processing the 23701st record. Run 1, Event 145749, LumiSection 913 on stream 0 at 23-Jul-2023 14:45:05.862 CDT
+Begin processing the 23801st record. Run 1, Event 22722, LumiSection 143 on stream 0 at 23-Jul-2023 14:45:06.256 CDT
+Begin processing the 23901st record. Run 1, Event 22829, LumiSection 143 on stream 0 at 23-Jul-2023 14:45:06.597 CDT
+23-Jul-2023 14:45:06 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_23.root
+23-Jul-2023 14:45:06 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_24.root
+23-Jul-2023 14:45:06 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_24.root
+Begin processing the 24001st record. Run 1, Event 139005, LumiSection 871 on stream 0 at 23-Jul-2023 14:45:08.227 CDT
+Begin processing the 24101st record. Run 1, Event 139105, LumiSection 871 on stream 0 at 23-Jul-2023 14:45:08.568 CDT
+Begin processing the 24201st record. Run 1, Event 25969, LumiSection 163 on stream 0 at 23-Jul-2023 14:45:08.911 CDT
+Begin processing the 24301st record. Run 1, Event 155624, LumiSection 975 on stream 0 at 23-Jul-2023 14:45:09.338 CDT
+Begin processing the 24401st record. Run 1, Event 155726, LumiSection 975 on stream 0 at 23-Jul-2023 14:45:09.632 CDT
+Begin processing the 24501st record. Run 1, Event 36826, LumiSection 231 on stream 0 at 23-Jul-2023 14:45:09.954 CDT
+Begin processing the 24601st record. Run 1, Event 2887, LumiSection 19 on stream 0 at 23-Jul-2023 14:45:10.283 CDT
+Begin processing the 24701st record. Run 1, Event 2961, LumiSection 19 on stream 0 at 23-Jul-2023 14:45:10.628 CDT
+Begin processing the 24801st record. Run 1, Event 159324, LumiSection 998 on stream 0 at 23-Jul-2023 14:45:10.982 CDT
+Begin processing the 24901st record. Run 1, Event 159427, LumiSection 998 on stream 0 at 23-Jul-2023 14:45:11.329 CDT
+Begin processing the 25001st record. Run 1, Event 246, LumiSection 2 on stream 0 at 23-Jul-2023 14:45:12.065 CDT
+Begin processing the 25101st record. Run 1, Event 1191251, LumiSection 7459 on stream 0 at 23-Jul-2023 14:45:12.348 CDT
+Begin processing the 25201st record. Run 1, Event 1191363, LumiSection 7459 on stream 0 at 23-Jul-2023 14:45:12.698 CDT
+Begin processing the 25301st record. Run 1, Event 153563, LumiSection 962 on stream 0 at 23-Jul-2023 14:45:13.017 CDT
+Begin processing the 25401st record. Run 1, Event 29563, LumiSection 186 on stream 0 at 23-Jul-2023 14:45:13.419 CDT
+Begin processing the 25501st record. Run 1, Event 29669, LumiSection 186 on stream 0 at 23-Jul-2023 14:45:13.758 CDT
+23-Jul-2023 14:45:14 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_24.root
+23-Jul-2023 14:45:14 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_25.root
+23-Jul-2023 14:45:14 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_25.root
+Begin processing the 25601st record. Run 1, Event 22586, LumiSection 142 on stream 0 at 23-Jul-2023 14:45:15.284 CDT
+Begin processing the 25701st record. Run 1, Event 22707, LumiSection 142 on stream 0 at 23-Jul-2023 14:45:15.548 CDT
+Begin processing the 25801st record. Run 1, Event 10305, LumiSection 65 on stream 0 at 23-Jul-2023 14:45:15.889 CDT
+Begin processing the 25901st record. Run 1, Event 12344, LumiSection 78 on stream 0 at 23-Jul-2023 14:45:16.219 CDT
+Begin processing the 26001st record. Run 1, Event 12447, LumiSection 78 on stream 0 at 23-Jul-2023 14:45:16.597 CDT
+Begin processing the 26101st record. Run 1, Event 156624, LumiSection 981 on stream 0 at 23-Jul-2023 14:45:16.893 CDT
+Begin processing the 26201st record. Run 1, Event 11201, LumiSection 71 on stream 0 at 23-Jul-2023 14:45:17.270 CDT
+Begin processing the 26301st record. Run 1, Event 11302, LumiSection 71 on stream 0 at 23-Jul-2023 14:45:17.601 CDT
+Begin processing the 26401st record. Run 1, Event 142987, LumiSection 896 on stream 0 at 23-Jul-2023 14:45:17.911 CDT
+Begin processing the 26501st record. Run 1, Event 143098, LumiSection 896 on stream 0 at 23-Jul-2023 14:45:18.199 CDT
+Begin processing the 26601st record. Run 1, Event 3766, LumiSection 24 on stream 0 at 23-Jul-2023 14:45:18.815 CDT
+Begin processing the 26701st record. Run 1, Event 7548, LumiSection 48 on stream 0 at 23-Jul-2023 14:45:19.149 CDT
+Begin processing the 26801st record. Run 1, Event 7648, LumiSection 48 on stream 0 at 23-Jul-2023 14:45:19.497 CDT
+Begin processing the 26901st record. Run 1, Event 25307, LumiSection 159 on stream 0 at 23-Jul-2023 14:45:19.810 CDT
+Begin processing the 27001st record. Run 1, Event 40601, LumiSection 255 on stream 0 at 23-Jul-2023 14:45:20.214 CDT
+Begin processing the 27101st record. Run 1, Event 40706, LumiSection 255 on stream 0 at 23-Jul-2023 14:45:20.501 CDT
+23-Jul-2023 14:45:20 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_25.root
+23-Jul-2023 14:45:20 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_26.root
+23-Jul-2023 14:45:20 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_26.root
+Begin processing the 27201st record. Run 1, Event 139168, LumiSection 872 on stream 0 at 23-Jul-2023 14:45:22.084 CDT
+Begin processing the 27301st record. Run 1, Event 139255, LumiSection 872 on stream 0 at 23-Jul-2023 14:45:22.404 CDT
+Begin processing the 27401st record. Run 1, Event 1973326, LumiSection 12355 on stream 0 at 23-Jul-2023 14:45:22.744 CDT
+Begin processing the 27501st record. Run 1, Event 143949, LumiSection 902 on stream 0 at 23-Jul-2023 14:45:23.163 CDT
+Begin processing the 27601st record. Run 1, Event 144047, LumiSection 902 on stream 0 at 23-Jul-2023 14:45:23.563 CDT
+Begin processing the 27701st record. Run 1, Event 156466, LumiSection 980 on stream 0 at 23-Jul-2023 14:45:23.871 CDT
+Begin processing the 27801st record. Run 1, Event 144243, LumiSection 904 on stream 0 at 23-Jul-2023 14:45:24.244 CDT
+Begin processing the 27901st record. Run 1, Event 144345, LumiSection 904 on stream 0 at 23-Jul-2023 14:45:24.626 CDT
+Begin processing the 28001st record. Run 1, Event 30246, LumiSection 190 on stream 0 at 23-Jul-2023 14:45:24.943 CDT
+Begin processing the 28101st record. Run 1, Event 30348, LumiSection 190 on stream 0 at 23-Jul-2023 14:45:25.259 CDT
+Begin processing the 28201st record. Run 1, Event 31729, LumiSection 199 on stream 0 at 23-Jul-2023 14:45:25.968 CDT
+Begin processing the 28301st record. Run 1, Event 34534, LumiSection 217 on stream 0 at 23-Jul-2023 14:45:26.310 CDT
+Begin processing the 28401st record. Run 1, Event 34647, LumiSection 217 on stream 0 at 23-Jul-2023 14:45:26.671 CDT
+Begin processing the 28501st record. Run 1, Event 26403, LumiSection 166 on stream 0 at 23-Jul-2023 14:45:27.042 CDT
+Begin processing the 28601st record. Run 1, Event 19202, LumiSection 121 on stream 0 at 23-Jul-2023 14:45:27.452 CDT
+Begin processing the 28701st record. Run 1, Event 19305, LumiSection 121 on stream 0 at 23-Jul-2023 14:45:27.761 CDT
+23-Jul-2023 14:45:28 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_26.root
+23-Jul-2023 14:45:28 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_27.root
+23-Jul-2023 14:45:28 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_27.root
+Begin processing the 28801st record. Run 1, Event 8523, LumiSection 54 on stream 0 at 23-Jul-2023 14:45:29.525 CDT
+Begin processing the 28901st record. Run 1, Event 8623, LumiSection 54 on stream 0 at 23-Jul-2023 14:45:29.875 CDT
+Begin processing the 29001st record. Run 1, Event 150725, LumiSection 944 on stream 0 at 23-Jul-2023 14:45:30.154 CDT
+Begin processing the 29101st record. Run 1, Event 23826, LumiSection 150 on stream 0 at 23-Jul-2023 14:45:30.614 CDT
+Begin processing the 29201st record. Run 1, Event 23928, LumiSection 150 on stream 0 at 23-Jul-2023 14:45:30.967 CDT
+Begin processing the 29301st record. Run 1, Event 35359, LumiSection 222 on stream 0 at 23-Jul-2023 14:45:31.270 CDT
+Begin processing the 29401st record. Run 1, Event 11041, LumiSection 70 on stream 0 at 23-Jul-2023 14:45:31.623 CDT
+Begin processing the 29501st record. Run 1, Event 11147, LumiSection 70 on stream 0 at 23-Jul-2023 14:45:31.947 CDT
+Begin processing the 29601st record. Run 1, Event 1487, LumiSection 10 on stream 0 at 23-Jul-2023 14:45:32.269 CDT
+Begin processing the 29701st record. Run 1, Event 1569, LumiSection 10 on stream 0 at 23-Jul-2023 14:45:32.592 CDT
+Begin processing the 29801st record. Run 1, Event 44820, LumiSection 281 on stream 0 at 23-Jul-2023 14:45:33.639 CDT
+Begin processing the 29901st record. Run 1, Event 2267, LumiSection 15 on stream 0 at 23-Jul-2023 14:45:34.005 CDT
+Begin processing the 30001st record. Run 1, Event 2367, LumiSection 15 on stream 0 at 23-Jul-2023 14:45:34.378 CDT
+Begin processing the 30101st record. Run 1, Event 45465, LumiSection 285 on stream 0 at 23-Jul-2023 14:45:34.685 CDT
+Begin processing the 30201st record. Run 1, Event 36443, LumiSection 229 on stream 0 at 23-Jul-2023 14:45:35.158 CDT
+Begin processing the 30301st record. Run 1, Event 36518, LumiSection 229 on stream 0 at 23-Jul-2023 14:45:35.442 CDT
+23-Jul-2023 14:45:35 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_27.root
+23-Jul-2023 14:45:35 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_28.root
+23-Jul-2023 14:45:35 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_28.root
+Begin processing the 30401st record. Run 1, Event 40166, LumiSection 252 on stream 0 at 23-Jul-2023 14:45:37.034 CDT
+Begin processing the 30501st record. Run 1, Event 40267, LumiSection 252 on stream 0 at 23-Jul-2023 14:45:37.341 CDT
+Begin processing the 30601st record. Run 1, Event 33806, LumiSection 212 on stream 0 at 23-Jul-2023 14:45:37.652 CDT
+Begin processing the 30701st record. Run 1, Event 156101, LumiSection 978 on stream 0 at 23-Jul-2023 14:45:38.009 CDT
+Begin processing the 30801st record. Run 1, Event 156207, LumiSection 978 on stream 0 at 23-Jul-2023 14:45:38.395 CDT
+Begin processing the 30901st record. Run 1, Event 143828, LumiSection 901 on stream 0 at 23-Jul-2023 14:45:38.721 CDT
+Begin processing the 31001st record. Run 1, Event 1244883, LumiSection 7795 on stream 0 at 23-Jul-2023 14:45:39.061 CDT
+Begin processing the 31101st record. Run 1, Event 1244987, LumiSection 7795 on stream 0 at 23-Jul-2023 14:45:39.384 CDT
+Begin processing the 31201st record. Run 1, Event 41283, LumiSection 259 on stream 0 at 23-Jul-2023 14:45:39.642 CDT
+Begin processing the 31301st record. Run 1, Event 41377, LumiSection 259 on stream 0 at 23-Jul-2023 14:45:39.908 CDT
+Begin processing the 31401st record. Run 1, Event 14807, LumiSection 93 on stream 0 at 23-Jul-2023 14:45:40.599 CDT
+Begin processing the 31501st record. Run 1, Event 148908, LumiSection 933 on stream 0 at 23-Jul-2023 14:45:40.938 CDT
+Begin processing the 31601st record. Run 1, Event 149008, LumiSection 933 on stream 0 at 23-Jul-2023 14:45:41.215 CDT
+Begin processing the 31701st record. Run 1, Event 7748, LumiSection 49 on stream 0 at 23-Jul-2023 14:45:41.562 CDT
+Begin processing the 31801st record. Run 1, Event 7203, LumiSection 46 on stream 0 at 23-Jul-2023 14:45:42.022 CDT
+Begin processing the 31901st record. Run 1, Event 7307, LumiSection 46 on stream 0 at 23-Jul-2023 14:45:42.340 CDT
+23-Jul-2023 14:45:42 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_28.root
+23-Jul-2023 14:45:42 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_29.root
+23-Jul-2023 14:45:42 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_29.root
+Begin processing the 32001st record. Run 1, Event 153696, LumiSection 963 on stream 0 at 23-Jul-2023 14:45:43.840 CDT
+Begin processing the 32101st record. Run 1, Event 153829, LumiSection 963 on stream 0 at 23-Jul-2023 14:45:44.214 CDT
+Begin processing the 32201st record. Run 1, Event 24687, LumiSection 155 on stream 0 at 23-Jul-2023 14:45:44.532 CDT
+Begin processing the 32301st record. Run 1, Event 29746, LumiSection 187 on stream 0 at 23-Jul-2023 14:45:44.933 CDT
+Begin processing the 32401st record. Run 1, Event 29846, LumiSection 187 on stream 0 at 23-Jul-2023 14:45:45.208 CDT
+Begin processing the 32501st record. Run 1, Event 35547, LumiSection 223 on stream 0 at 23-Jul-2023 14:45:45.528 CDT
+Begin processing the 32601st record. Run 1, Event 16002, LumiSection 101 on stream 0 at 23-Jul-2023 14:45:45.905 CDT
+Begin processing the 32701st record. Run 1, Event 16102, LumiSection 101 on stream 0 at 23-Jul-2023 14:45:46.245 CDT
+Begin processing the 32801st record. Run 1, Event 11568, LumiSection 73 on stream 0 at 23-Jul-2023 14:45:46.538 CDT
+Begin processing the 32901st record. Run 1, Event 11664, LumiSection 73 on stream 0 at 23-Jul-2023 14:45:46.939 CDT
+Begin processing the 33001st record. Run 1, Event 37801, LumiSection 237 on stream 0 at 23-Jul-2023 14:45:47.663 CDT
+Begin processing the 33101st record. Run 1, Event 2587, LumiSection 17 on stream 0 at 23-Jul-2023 14:45:48.006 CDT
+Begin processing the 33201st record. Run 1, Event 2684, LumiSection 17 on stream 0 at 23-Jul-2023 14:45:48.325 CDT
+Begin processing the 33301st record. Run 1, Event 149738, LumiSection 938 on stream 0 at 23-Jul-2023 14:45:48.679 CDT
+Begin processing the 33401st record. Run 1, Event 39801, LumiSection 250 on stream 0 at 23-Jul-2023 14:45:49.035 CDT
+Begin processing the 33501st record. Run 1, Event 39902, LumiSection 250 on stream 0 at 23-Jul-2023 14:45:49.306 CDT
+23-Jul-2023 14:45:49 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_29.root
+23-Jul-2023 14:45:49 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_2.root
+23-Jul-2023 14:45:49 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_2.root
+Begin processing the 33601st record. Run 1, Event 145889, LumiSection 914 on stream 0 at 23-Jul-2023 14:45:51.238 CDT
+Begin processing the 33701st record. Run 1, Event 145983, LumiSection 914 on stream 0 at 23-Jul-2023 14:45:51.511 CDT
+Begin processing the 33801st record. Run 1, Event 41157, LumiSection 258 on stream 0 at 23-Jul-2023 14:45:51.829 CDT
+Begin processing the 33901st record. Run 1, Event 23507, LumiSection 148 on stream 0 at 23-Jul-2023 14:45:52.187 CDT
+Begin processing the 34001st record. Run 1, Event 23608, LumiSection 148 on stream 0 at 23-Jul-2023 14:45:52.611 CDT
+Begin processing the 34101st record. Run 1, Event 146380, LumiSection 917 on stream 0 at 23-Jul-2023 14:45:52.898 CDT
+Begin processing the 34201st record. Run 1, Event 25721, LumiSection 162 on stream 0 at 23-Jul-2023 14:45:53.250 CDT
+Begin processing the 34301st record. Run 1, Event 25827, LumiSection 162 on stream 0 at 23-Jul-2023 14:45:53.589 CDT
+Begin processing the 34401st record. Run 1, Event 18106, LumiSection 114 on stream 0 at 23-Jul-2023 14:45:53.918 CDT
+Begin processing the 34501st record. Run 1, Event 18223, LumiSection 114 on stream 0 at 23-Jul-2023 14:45:54.301 CDT
+Begin processing the 34601st record. Run 1, Event 157280, LumiSection 985 on stream 0 at 23-Jul-2023 14:45:55.072 CDT
+Begin processing the 34701st record. Run 1, Event 19705, LumiSection 124 on stream 0 at 23-Jul-2023 14:45:55.402 CDT
+Begin processing the 34801st record. Run 1, Event 19805, LumiSection 124 on stream 0 at 23-Jul-2023 14:45:55.732 CDT
+Begin processing the 34901st record. Run 1, Event 40505, LumiSection 254 on stream 0 at 23-Jul-2023 14:45:56.028 CDT
+Begin processing the 35001st record. Run 1, Event 24922, LumiSection 157 on stream 0 at 23-Jul-2023 14:45:56.416 CDT
+Begin processing the 35101st record. Run 1, Event 25016, LumiSection 157 on stream 0 at 23-Jul-2023 14:45:56.709 CDT
+23-Jul-2023 14:45:56 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_2.root
+23-Jul-2023 14:45:56 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_30.root
+23-Jul-2023 14:45:57 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_30.root
+Begin processing the 35201st record. Run 1, Event 37126, LumiSection 233 on stream 0 at 23-Jul-2023 14:45:58.232 CDT
+Begin processing the 35301st record. Run 1, Event 37228, LumiSection 233 on stream 0 at 23-Jul-2023 14:45:58.565 CDT
+Begin processing the 35401st record. Run 1, Event 150246, LumiSection 941 on stream 0 at 23-Jul-2023 14:45:58.933 CDT
+Begin processing the 35501st record. Run 1, Event 13928, LumiSection 88 on stream 0 at 23-Jul-2023 14:45:59.358 CDT
+Begin processing the 35601st record. Run 1, Event 14034, LumiSection 88 on stream 0 at 23-Jul-2023 14:45:59.692 CDT
+Begin processing the 35701st record. Run 1, Event 11907, LumiSection 75 on stream 0 at 23-Jul-2023 14:46:00.000 CDT
+Begin processing the 35801st record. Run 1, Event 23322, LumiSection 147 on stream 0 at 23-Jul-2023 14:46:00.341 CDT
+Begin processing the 35901st record. Run 1, Event 23421, LumiSection 147 on stream 0 at 23-Jul-2023 14:46:00.695 CDT
+Begin processing the 36001st record. Run 1, Event 29126, LumiSection 183 on stream 0 at 23-Jul-2023 14:46:00.988 CDT
+Begin processing the 36101st record. Run 1, Event 29217, LumiSection 183 on stream 0 at 23-Jul-2023 14:46:01.297 CDT
+Begin processing the 36201st record. Run 1, Event 11411, LumiSection 72 on stream 0 at 23-Jul-2023 14:46:01.967 CDT
+Begin processing the 36301st record. Run 1, Event 10588, LumiSection 67 on stream 0 at 23-Jul-2023 14:46:02.294 CDT
+Begin processing the 36401st record. Run 1, Event 10684, LumiSection 67 on stream 0 at 23-Jul-2023 14:46:02.617 CDT
+Begin processing the 36501st record. Run 1, Event 3872, LumiSection 25 on stream 0 at 23-Jul-2023 14:46:02.974 CDT
+Begin processing the 36601st record. Run 1, Event 8801, LumiSection 56 on stream 0 at 23-Jul-2023 14:46:03.281 CDT
+Begin processing the 36701st record. Run 1, Event 8905, LumiSection 56 on stream 0 at 23-Jul-2023 14:46:03.575 CDT
+23-Jul-2023 14:46:03 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_30.root
+23-Jul-2023 14:46:03 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_31.root
+23-Jul-2023 14:46:03 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_31.root
+Begin processing the 36801st record. Run 1, Event 4683, LumiSection 30 on stream 0 at 23-Jul-2023 14:46:05.140 CDT
+Begin processing the 36901st record. Run 1, Event 4758, LumiSection 30 on stream 0 at 23-Jul-2023 14:46:05.443 CDT
+Begin processing the 37001st record. Run 1, Event 36366, LumiSection 228 on stream 0 at 23-Jul-2023 14:46:05.870 CDT
+Begin processing the 37101st record. Run 1, Event 43027, LumiSection 270 on stream 0 at 23-Jul-2023 14:46:06.363 CDT
+Begin processing the 37201st record. Run 1, Event 43116, LumiSection 270 on stream 0 at 23-Jul-2023 14:46:06.656 CDT
+Begin processing the 37301st record. Run 1, Event 45619, LumiSection 286 on stream 0 at 23-Jul-2023 14:46:06.978 CDT
+Begin processing the 37401st record. Run 1, Event 144722, LumiSection 907 on stream 0 at 23-Jul-2023 14:46:07.306 CDT
+Begin processing the 37501st record. Run 1, Event 144812, LumiSection 907 on stream 0 at 23-Jul-2023 14:46:07.601 CDT
+Begin processing the 37601st record. Run 1, Event 14286, LumiSection 90 on stream 0 at 23-Jul-2023 14:46:07.898 CDT
+Begin processing the 37701st record. Run 1, Event 14388, LumiSection 90 on stream 0 at 23-Jul-2023 14:46:08.235 CDT
+Begin processing the 37801st record. Run 1, Event 21525, LumiSection 135 on stream 0 at 23-Jul-2023 14:46:08.937 CDT
+Begin processing the 37901st record. Run 1, Event 142014, LumiSection 890 on stream 0 at 23-Jul-2023 14:46:09.245 CDT
+Begin processing the 38001st record. Run 1, Event 142114, LumiSection 890 on stream 0 at 23-Jul-2023 14:46:09.555 CDT
+Begin processing the 38101st record. Run 1, Event 19900, LumiSection 125 on stream 0 at 23-Jul-2023 14:46:09.876 CDT
+Begin processing the 38201st record. Run 1, Event 40281, LumiSection 253 on stream 0 at 23-Jul-2023 14:46:10.203 CDT
+Begin processing the 38301st record. Run 1, Event 40388, LumiSection 253 on stream 0 at 23-Jul-2023 14:46:10.500 CDT
+23-Jul-2023 14:46:10 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_31.root
+23-Jul-2023 14:46:10 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_32.root
+23-Jul-2023 14:46:10 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_32.root
+Begin processing the 38401st record. Run 1, Event 32165, LumiSection 202 on stream 0 at 23-Jul-2023 14:46:11.976 CDT
+Begin processing the 38501st record. Run 1, Event 32247, LumiSection 202 on stream 0 at 23-Jul-2023 14:46:12.318 CDT
+Begin processing the 38601st record. Run 1, Event 35243, LumiSection 221 on stream 0 at 23-Jul-2023 14:46:12.648 CDT
+Begin processing the 38701st record. Run 1, Event 157056, LumiSection 984 on stream 0 at 23-Jul-2023 14:46:13.069 CDT
+Begin processing the 38801st record. Run 1, Event 157168, LumiSection 984 on stream 0 at 23-Jul-2023 14:46:13.364 CDT
+Begin processing the 38901st record. Run 1, Event 11745, LumiSection 74 on stream 0 at 23-Jul-2023 14:46:13.646 CDT
+Begin processing the 39001st record. Run 1, Event 139282, LumiSection 873 on stream 0 at 23-Jul-2023 14:46:13.962 CDT
+Begin processing the 39101st record. Run 1, Event 139388, LumiSection 873 on stream 0 at 23-Jul-2023 14:46:14.276 CDT
+Begin processing the 39201st record. Run 1, Event 6741, LumiSection 43 on stream 0 at 23-Jul-2023 14:46:14.581 CDT
+Begin processing the 39301st record. Run 1, Event 6868, LumiSection 43 on stream 0 at 23-Jul-2023 14:46:14.868 CDT
+Begin processing the 39401st record. Run 1, Event 143369, LumiSection 898 on stream 0 at 23-Jul-2023 14:46:15.557 CDT
+Begin processing the 39501st record. Run 1, Event 7858, LumiSection 50 on stream 0 at 23-Jul-2023 14:46:15.869 CDT
+Begin processing the 39601st record. Run 1, Event 7964, LumiSection 50 on stream 0 at 23-Jul-2023 14:46:16.177 CDT
+Begin processing the 39701st record. Run 1, Event 38425, LumiSection 241 on stream 0 at 23-Jul-2023 14:46:16.528 CDT
+Begin processing the 39801st record. Run 1, Event 146161, LumiSection 916 on stream 0 at 23-Jul-2023 14:46:16.915 CDT
+Begin processing the 39901st record. Run 1, Event 146261, LumiSection 916 on stream 0 at 23-Jul-2023 14:46:17.168 CDT
+23-Jul-2023 14:46:17 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_32.root
+23-Jul-2023 14:46:17 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_33.root
+23-Jul-2023 14:46:17 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_33.root
+Begin processing the 40001st record. Run 1, Event 18289, LumiSection 115 on stream 0 at 23-Jul-2023 14:46:18.801 CDT
+Begin processing the 40101st record. Run 1, Event 18348, LumiSection 115 on stream 0 at 23-Jul-2023 14:46:19.105 CDT
+Begin processing the 40201st record. Run 1, Event 147527, LumiSection 924 on stream 0 at 23-Jul-2023 14:46:19.448 CDT
+Begin processing the 40301st record. Run 1, Event 155140, LumiSection 972 on stream 0 at 23-Jul-2023 14:46:19.892 CDT
+Begin processing the 40401st record. Run 1, Event 155248, LumiSection 972 on stream 0 at 23-Jul-2023 14:46:20.158 CDT
+Begin processing the 40501st record. Run 1, Event 139504, LumiSection 874 on stream 0 at 23-Jul-2023 14:46:20.434 CDT
+Begin processing the 40601st record. Run 1, Event 21763, LumiSection 137 on stream 0 at 23-Jul-2023 14:46:20.788 CDT
+Begin processing the 40701st record. Run 1, Event 21864, LumiSection 137 on stream 0 at 23-Jul-2023 14:46:21.134 CDT
+Begin processing the 40801st record. Run 1, Event 39039, LumiSection 245 on stream 0 at 23-Jul-2023 14:46:21.458 CDT
+Begin processing the 40901st record. Run 1, Event 39143, LumiSection 245 on stream 0 at 23-Jul-2023 14:46:21.813 CDT
+Begin processing the 41001st record. Run 1, Event 33166, LumiSection 208 on stream 0 at 23-Jul-2023 14:46:22.421 CDT
+Begin processing the 41101st record. Run 1, Event 152584, LumiSection 956 on stream 0 at 23-Jul-2023 14:46:22.747 CDT
+Begin processing the 41201st record. Run 1, Event 152687, LumiSection 956 on stream 0 at 23-Jul-2023 14:46:23.099 CDT
+Begin processing the 41301st record. Run 1, Event 140783, LumiSection 882 on stream 0 at 23-Jul-2023 14:46:23.403 CDT
+Begin processing the 41401st record. Run 1, Event 28122, LumiSection 177 on stream 0 at 23-Jul-2023 14:46:23.809 CDT
+Begin processing the 41501st record. Run 1, Event 28229, LumiSection 177 on stream 0 at 23-Jul-2023 14:46:24.132 CDT
+23-Jul-2023 14:46:24 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_33.root
+23-Jul-2023 14:46:24 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_34.root
+23-Jul-2023 14:46:24 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_34.root
+Begin processing the 41601st record. Run 1, Event 1639, LumiSection 11 on stream 0 at 23-Jul-2023 14:46:25.730 CDT
+Begin processing the 41701st record. Run 1, Event 1744, LumiSection 11 on stream 0 at 23-Jul-2023 14:46:26.075 CDT
+Begin processing the 41801st record. Run 1, Event 9843, LumiSection 62 on stream 0 at 23-Jul-2023 14:46:26.425 CDT
+Begin processing the 41901st record. Run 1, Event 30853, LumiSection 194 on stream 0 at 23-Jul-2023 14:46:26.888 CDT
+Begin processing the 42001st record. Run 1, Event 30950, LumiSection 194 on stream 0 at 23-Jul-2023 14:46:27.190 CDT
+Begin processing the 42101st record. Run 1, Event 23227, LumiSection 146 on stream 0 at 23-Jul-2023 14:46:27.570 CDT
+Begin processing the 42201st record. Run 1, Event 16323, LumiSection 103 on stream 0 at 23-Jul-2023 14:46:27.957 CDT
+Begin processing the 42301st record. Run 1, Event 16426, LumiSection 103 on stream 0 at 23-Jul-2023 14:46:28.270 CDT
+Begin processing the 42401st record. Run 1, Event 35043, LumiSection 220 on stream 0 at 23-Jul-2023 14:46:28.833 CDT
+Begin processing the 42501st record. Run 1, Event 35149, LumiSection 220 on stream 0 at 23-Jul-2023 14:46:29.098 CDT
+Begin processing the 42601st record. Run 1, Event 24209, LumiSection 152 on stream 0 at 23-Jul-2023 14:46:29.828 CDT
+Begin processing the 42701st record. Run 1, Event 5947, LumiSection 38 on stream 0 at 23-Jul-2023 14:46:30.152 CDT
+Begin processing the 42801st record. Run 1, Event 6048, LumiSection 38 on stream 0 at 23-Jul-2023 14:46:30.483 CDT
+Begin processing the 42901st record. Run 1, Event 153419, LumiSection 961 on stream 0 at 23-Jul-2023 14:46:30.853 CDT
+Begin processing the 43001st record. Run 1, Event 158803, LumiSection 995 on stream 0 at 23-Jul-2023 14:46:31.131 CDT
+Begin processing the 43101st record. Run 1, Event 158904, LumiSection 995 on stream 0 at 23-Jul-2023 14:46:31.379 CDT
+23-Jul-2023 14:46:31 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_34.root
+23-Jul-2023 14:46:31 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_35.root
+23-Jul-2023 14:46:31 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_35.root
+Begin processing the 43201st record. Run 1, Event 24005, LumiSection 151 on stream 0 at 23-Jul-2023 14:46:32.919 CDT
+Begin processing the 43301st record. Run 1, Event 24102, LumiSection 151 on stream 0 at 23-Jul-2023 14:46:33.237 CDT
+Begin processing the 43401st record. Run 1, Event 39726, LumiSection 249 on stream 0 at 23-Jul-2023 14:46:33.565 CDT
+Begin processing the 43501st record. Run 1, Event 14905, LumiSection 94 on stream 0 at 23-Jul-2023 14:46:34.020 CDT
+Begin processing the 43601st record. Run 1, Event 15005, LumiSection 94 on stream 0 at 23-Jul-2023 14:46:34.311 CDT
+Begin processing the 43701st record. Run 1, Event 138536, LumiSection 868 on stream 0 at 23-Jul-2023 14:46:34.613 CDT
+Begin processing the 43801st record. Run 1, Event 23002, LumiSection 145 on stream 0 at 23-Jul-2023 14:46:34.989 CDT
+Begin processing the 43901st record. Run 1, Event 23109, LumiSection 145 on stream 0 at 23-Jul-2023 14:46:35.321 CDT
+Begin processing the 44001st record. Run 1, Event 29929, LumiSection 188 on stream 0 at 23-Jul-2023 14:46:35.630 CDT
+Begin processing the 44101st record. Run 1, Event 30008, LumiSection 188 on stream 0 at 23-Jul-2023 14:46:35.955 CDT
+Begin processing the 44201st record. Run 1, Event 141602, LumiSection 887 on stream 0 at 23-Jul-2023 14:46:36.747 CDT
+Begin processing the 44301st record. Run 1, Event 10908, LumiSection 69 on stream 0 at 23-Jul-2023 14:46:37.081 CDT
+Begin processing the 44401st record. Run 1, Event 10992, LumiSection 69 on stream 0 at 23-Jul-2023 14:46:37.382 CDT
+Begin processing the 44501st record. Run 1, Event 142225, LumiSection 891 on stream 0 at 23-Jul-2023 14:46:37.773 CDT
+Begin processing the 44601st record. Run 1, Event 32762, LumiSection 206 on stream 0 at 23-Jul-2023 14:46:38.147 CDT
+Begin processing the 44701st record. Run 1, Event 32866, LumiSection 206 on stream 0 at 23-Jul-2023 14:46:38.422 CDT
+23-Jul-2023 14:46:38 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_35.root
+23-Jul-2023 14:46:38 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_36.root
+23-Jul-2023 14:46:38 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_36.root
+Begin processing the 44801st record. Run 1, Event 37927, LumiSection 238 on stream 0 at 23-Jul-2023 14:46:39.959 CDT
+Begin processing the 44901st record. Run 1, Event 38001, LumiSection 238 on stream 0 at 23-Jul-2023 14:46:40.311 CDT
+Begin processing the 45001st record. Run 1, Event 18964, LumiSection 119 on stream 0 at 23-Jul-2023 14:46:40.594 CDT
+Begin processing the 45101st record. Run 1, Event 145227, LumiSection 910 on stream 0 at 23-Jul-2023 14:46:40.898 CDT
+Begin processing the 45201st record. Run 1, Event 145327, LumiSection 910 on stream 0 at 23-Jul-2023 14:46:41.338 CDT
+Begin processing the 45301st record. Run 1, Event 31542, LumiSection 198 on stream 0 at 23-Jul-2023 14:46:41.627 CDT
+Begin processing the 45401st record. Run 1, Event 8642, LumiSection 55 on stream 0 at 23-Jul-2023 14:46:41.984 CDT
+Begin processing the 45501st record. Run 1, Event 8745, LumiSection 55 on stream 0 at 23-Jul-2023 14:46:42.334 CDT
+Begin processing the 45601st record. Run 1, Event 2118, LumiSection 14 on stream 0 at 23-Jul-2023 14:46:42.726 CDT
+Begin processing the 45701st record. Run 1, Event 2225, LumiSection 14 on stream 0 at 23-Jul-2023 14:46:43.070 CDT
+Begin processing the 45801st record. Run 1, Event 148328, LumiSection 929 on stream 0 at 23-Jul-2023 14:46:43.790 CDT
+Begin processing the 45901st record. Run 1, Event 150027, LumiSection 940 on stream 0 at 23-Jul-2023 14:46:44.112 CDT
+Begin processing the 46001st record. Run 1, Event 150121, LumiSection 940 on stream 0 at 23-Jul-2023 14:46:44.420 CDT
+Begin processing the 46101st record. Run 1, Event 159021, LumiSection 996 on stream 0 at 23-Jul-2023 14:46:44.711 CDT
+Begin processing the 46201st record. Run 1, Event 6883, LumiSection 44 on stream 0 at 23-Jul-2023 14:46:45.078 CDT
+Begin processing the 46301st record. Run 1, Event 6984, LumiSection 44 on stream 0 at 23-Jul-2023 14:46:45.383 CDT
+23-Jul-2023 14:46:45 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_36.root
+23-Jul-2023 14:46:45 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_37.root
+23-Jul-2023 14:46:45 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_37.root
+Begin processing the 46401st record. Run 1, Event 5486, LumiSection 35 on stream 0 at 23-Jul-2023 14:46:47.632 CDT
+Begin processing the 46501st record. Run 1, Event 5584, LumiSection 35 on stream 0 at 23-Jul-2023 14:46:47.925 CDT
+Begin processing the 46601st record. Run 1, Event 140167, LumiSection 878 on stream 0 at 23-Jul-2023 14:46:48.257 CDT
+Begin processing the 46701st record. Run 1, Event 24777, LumiSection 156 on stream 0 at 23-Jul-2023 14:46:48.586 CDT
+Begin processing the 46801st record. Run 1, Event 24880, LumiSection 156 on stream 0 at 23-Jul-2023 14:46:48.939 CDT
+Begin processing the 46901st record. Run 1, Event 148463, LumiSection 930 on stream 0 at 23-Jul-2023 14:46:49.200 CDT
+Begin processing the 47001st record. Run 1, Event 158323, LumiSection 992 on stream 0 at 23-Jul-2023 14:46:49.522 CDT
+Begin processing the 47101st record. Run 1, Event 158425, LumiSection 992 on stream 0 at 23-Jul-2023 14:46:49.862 CDT
+Begin processing the 47201st record. Run 1, Event 38722, LumiSection 243 on stream 0 at 23-Jul-2023 14:46:50.211 CDT
+Begin processing the 47301st record. Run 1, Event 38810, LumiSection 243 on stream 0 at 23-Jul-2023 14:46:50.540 CDT
+Begin processing the 47401st record. Run 1, Event 4229, LumiSection 27 on stream 0 at 23-Jul-2023 14:46:51.706 CDT
+Begin processing the 47501st record. Run 1, Event 1329747, LumiSection 8326 on stream 0 at 23-Jul-2023 14:46:52.066 CDT
+Begin processing the 47601st record. Run 1, Event 1329848, LumiSection 8326 on stream 0 at 23-Jul-2023 14:46:52.430 CDT
+Begin processing the 47701st record. Run 1, Event 31228, LumiSection 196 on stream 0 at 23-Jul-2023 14:46:52.769 CDT
+Begin processing the 47801st record. Run 1, Event 17762, LumiSection 112 on stream 0 at 23-Jul-2023 14:46:53.076 CDT
+Begin processing the 47901st record. Run 1, Event 17855, LumiSection 112 on stream 0 at 23-Jul-2023 14:46:53.357 CDT
+23-Jul-2023 14:46:53 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_37.root
+23-Jul-2023 14:46:53 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_38.root
+23-Jul-2023 14:46:53 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_38.root
+Begin processing the 48001st record. Run 1, Event 149886, LumiSection 939 on stream 0 at 23-Jul-2023 14:46:54.880 CDT
+Begin processing the 48101st record. Run 1, Event 149986, LumiSection 939 on stream 0 at 23-Jul-2023 14:46:55.213 CDT
+Begin processing the 48201st record. Run 1, Event 32688, LumiSection 205 on stream 0 at 23-Jul-2023 14:46:55.476 CDT
+Begin processing the 48301st record. Run 1, Event 17147, LumiSection 108 on stream 0 at 23-Jul-2023 14:46:55.789 CDT
+Begin processing the 48401st record. Run 1, Event 17246, LumiSection 108 on stream 0 at 23-Jul-2023 14:46:56.196 CDT
+Begin processing the 48501st record. Run 1, Event 151348, LumiSection 948 on stream 0 at 23-Jul-2023 14:46:56.507 CDT
+Begin processing the 48601st record. Run 1, Event 28923, LumiSection 182 on stream 0 at 23-Jul-2023 14:46:56.905 CDT
+Begin processing the 48701st record. Run 1, Event 29027, LumiSection 182 on stream 0 at 23-Jul-2023 14:46:57.251 CDT
+Begin processing the 48801st record. Run 1, Event 159164, LumiSection 997 on stream 0 at 23-Jul-2023 14:46:57.550 CDT
+Begin processing the 48901st record. Run 1, Event 159268, LumiSection 997 on stream 0 at 23-Jul-2023 14:46:57.821 CDT
+Begin processing the 49001st record. Run 1, Event 6458, LumiSection 41 on stream 0 at 23-Jul-2023 14:46:58.522 CDT
+Begin processing the 49101st record. Run 1, Event 15707, LumiSection 99 on stream 0 at 23-Jul-2023 14:46:58.835 CDT
+Begin processing the 49201st record. Run 1, Event 15807, LumiSection 99 on stream 0 at 23-Jul-2023 14:46:59.116 CDT
+Begin processing the 49301st record. Run 1, Event 140301, LumiSection 879 on stream 0 at 23-Jul-2023 14:46:59.453 CDT
+Begin processing the 49401st record. Run 1, Event 156882, LumiSection 983 on stream 0 at 23-Jul-2023 14:46:59.809 CDT
+Begin processing the 49501st record. Run 1, Event 156975, LumiSection 983 on stream 0 at 23-Jul-2023 14:47:00.094 CDT
+23-Jul-2023 14:47:00 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_38.root
+23-Jul-2023 14:47:00 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_39.root
+23-Jul-2023 14:47:00 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_39.root
+Begin processing the 49601st record. Run 1, Event 34398, LumiSection 216 on stream 0 at 23-Jul-2023 14:47:01.644 CDT
+Begin processing the 49701st record. Run 1, Event 34508, LumiSection 216 on stream 0 at 23-Jul-2023 14:47:01.954 CDT
+Begin processing the 49801st record. Run 1, Event 22326, LumiSection 140 on stream 0 at 23-Jul-2023 14:47:02.282 CDT
+Begin processing the 49901st record. Run 1, Event 10101, LumiSection 64 on stream 0 at 23-Jul-2023 14:47:02.579 CDT
+Begin processing the 50001st record. Run 1, Event 10203, LumiSection 64 on stream 0 at 23-Jul-2023 14:47:02.972 CDT
+Begin processing the 50101st record. Run 1, Event 4867, LumiSection 31 on stream 0 at 23-Jul-2023 14:47:03.262 CDT
+Begin processing the 50201st record. Run 1, Event 21601, LumiSection 136 on stream 0 at 23-Jul-2023 14:47:03.672 CDT
+Begin processing the 50301st record. Run 1, Event 21708, LumiSection 136 on stream 0 at 23-Jul-2023 14:47:03.990 CDT
+Begin processing the 50401st record. Run 1, Event 139966, LumiSection 877 on stream 0 at 23-Jul-2023 14:47:04.273 CDT
+Begin processing the 50501st record. Run 1, Event 140059, LumiSection 877 on stream 0 at 23-Jul-2023 14:47:04.579 CDT
+Begin processing the 50601st record. Run 1, Event 155366, LumiSection 973 on stream 0 at 23-Jul-2023 14:47:05.211 CDT
+Begin processing the 50701st record. Run 1, Event 45908, LumiSection 288 on stream 0 at 23-Jul-2023 14:47:05.550 CDT
+Begin processing the 50801st record. Run 1, Event 36923, LumiSection 232 on stream 0 at 23-Jul-2023 14:47:05.933 CDT
+Begin processing the 50901st record. Run 1, Event 36983, LumiSection 232 on stream 0 at 23-Jul-2023 14:47:06.250 CDT
+Begin processing the 51001st record. Run 1, Event 15858, LumiSection 100 on stream 0 at 23-Jul-2023 14:47:06.671 CDT
+Begin processing the 51101st record. Run 1, Event 15983, LumiSection 100 on stream 0 at 23-Jul-2023 14:47:06.958 CDT
+23-Jul-2023 14:47:07 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_39.root
+23-Jul-2023 14:47:07 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_3.root
+23-Jul-2023 14:47:07 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_3.root
+Begin processing the 51201st record. Run 1, Event 20888, LumiSection 131 on stream 0 at 23-Jul-2023 14:47:08.491 CDT
+Begin processing the 51301st record. Run 1, Event 33587, LumiSection 211 on stream 0 at 23-Jul-2023 14:47:08.839 CDT
+Begin processing the 51401st record. Run 1, Event 33652, LumiSection 211 on stream 0 at 23-Jul-2023 14:47:09.216 CDT
+Begin processing the 51501st record. Run 1, Event 36025, LumiSection 226 on stream 0 at 23-Jul-2023 14:47:09.654 CDT
+Begin processing the 51601st record. Run 1, Event 151441, LumiSection 949 on stream 0 at 23-Jul-2023 14:47:09.996 CDT
+Begin processing the 51701st record. Run 1, Event 151543, LumiSection 949 on stream 0 at 23-Jul-2023 14:47:10.336 CDT
+Begin processing the 51801st record. Run 1, Event 155008, LumiSection 971 on stream 0 at 23-Jul-2023 14:47:10.679 CDT
+Begin processing the 51901st record. Run 1, Event 155101, LumiSection 971 on stream 0 at 23-Jul-2023 14:47:10.955 CDT
+Begin processing the 52001st record. Run 1, Event 24522, LumiSection 154 on stream 0 at 23-Jul-2023 14:47:11.283 CDT
+Begin processing the 52101st record. Run 1, Event 26704, LumiSection 168 on stream 0 at 23-Jul-2023 14:47:11.608 CDT
+Begin processing the 52201st record. Run 1, Event 26803, LumiSection 168 on stream 0 at 23-Jul-2023 14:47:12.236 CDT
+Begin processing the 52301st record. Run 1, Event 3265, LumiSection 21 on stream 0 at 23-Jul-2023 14:47:12.547 CDT
+Begin processing the 52401st record. Run 1, Event 17281, LumiSection 109 on stream 0 at 23-Jul-2023 14:47:12.879 CDT
+Begin processing the 52501st record. Run 1, Event 17380, LumiSection 109 on stream 0 at 23-Jul-2023 14:47:13.186 CDT
+Begin processing the 52601st record. Run 1, Event 143468, LumiSection 899 on stream 0 at 23-Jul-2023 14:47:13.514 CDT
+Begin processing the 52701st record. Run 1, Event 143586, LumiSection 899 on stream 0 at 23-Jul-2023 14:47:13.849 CDT
+23-Jul-2023 14:47:13 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_3.root
+23-Jul-2023 14:47:13 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_40.root
+23-Jul-2023 14:47:14 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_40.root
+Begin processing the 52801st record. Run 1, Event 147205, LumiSection 922 on stream 0 at 23-Jul-2023 14:47:15.509 CDT
+Begin processing the 52901st record. Run 1, Event 34227, LumiSection 215 on stream 0 at 23-Jul-2023 14:47:15.834 CDT
+Begin processing the 53001st record. Run 1, Event 34327, LumiSection 215 on stream 0 at 23-Jul-2023 14:47:16.192 CDT
+Begin processing the 53101st record. Run 1, Event 2788, LumiSection 18 on stream 0 at 23-Jul-2023 14:47:16.573 CDT
+Begin processing the 53201st record. Run 1, Event 20003, LumiSection 126 on stream 0 at 23-Jul-2023 14:47:16.914 CDT
+Begin processing the 53301st record. Run 1, Event 20106, LumiSection 126 on stream 0 at 23-Jul-2023 14:47:17.204 CDT
+Begin processing the 53401st record. Run 1, Event 35685, LumiSection 224 on stream 0 at 23-Jul-2023 14:47:17.613 CDT
+Begin processing the 53501st record. Run 1, Event 35778, LumiSection 224 on stream 0 at 23-Jul-2023 14:47:17.945 CDT
+Begin processing the 53601st record. Run 1, Event 3604, LumiSection 23 on stream 0 at 23-Jul-2023 14:47:18.237 CDT
+Begin processing the 53701st record. Run 1, Event 33909, LumiSection 213 on stream 0 at 23-Jul-2023 14:47:18.545 CDT
+Begin processing the 53801st record. Run 1, Event 34008, LumiSection 213 on stream 0 at 23-Jul-2023 14:47:19.220 CDT
+Begin processing the 53901st record. Run 1, Event 41781, LumiSection 262 on stream 0 at 23-Jul-2023 14:47:19.541 CDT
+Begin processing the 54001st record. Run 1, Event 27963, LumiSection 176 on stream 0 at 23-Jul-2023 14:47:19.879 CDT
+Begin processing the 54101st record. Run 1, Event 28021, LumiSection 176 on stream 0 at 23-Jul-2023 14:47:20.190 CDT
+Begin processing the 54201st record. Run 1, Event 158685, LumiSection 994 on stream 0 at 23-Jul-2023 14:47:20.481 CDT
+Begin processing the 54301st record. Run 1, Event 158776, LumiSection 994 on stream 0 at 23-Jul-2023 14:47:20.783 CDT
+23-Jul-2023 14:47:20 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_40.root
+23-Jul-2023 14:47:20 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_41.root
+23-Jul-2023 14:47:20 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_41.root
+Begin processing the 54401st record. Run 1, Event 156807, LumiSection 982 on stream 0 at 23-Jul-2023 14:47:22.518 CDT
+Begin processing the 54501st record. Run 1, Event 41575, LumiSection 261 on stream 0 at 23-Jul-2023 14:47:22.822 CDT
+Begin processing the 54601st record. Run 1, Event 41681, LumiSection 261 on stream 0 at 23-Jul-2023 14:47:23.115 CDT
+Begin processing the 54701st record. Run 1, Event 157908, LumiSection 989 on stream 0 at 23-Jul-2023 14:47:23.534 CDT
+Begin processing the 54801st record. Run 1, Event 142803, LumiSection 895 on stream 0 at 23-Jul-2023 14:47:23.887 CDT
+Begin processing the 54901st record. Run 1, Event 142904, LumiSection 895 on stream 0 at 23-Jul-2023 14:47:24.191 CDT
+Begin processing the 55001st record. Run 1, Event 39196, LumiSection 246 on stream 0 at 23-Jul-2023 14:47:24.561 CDT
+Begin processing the 55101st record. Run 1, Event 39307, LumiSection 246 on stream 0 at 23-Jul-2023 14:47:24.947 CDT
+Begin processing the 55201st record. Run 1, Event 1327405, LumiSection 8311 on stream 0 at 23-Jul-2023 14:47:25.271 CDT
+Begin processing the 55301st record. Run 1, Event 25427, LumiSection 160 on stream 0 at 23-Jul-2023 14:47:25.632 CDT
+Begin processing the 55401st record. Run 1, Event 25528, LumiSection 160 on stream 0 at 23-Jul-2023 14:47:26.306 CDT
+Begin processing the 55501st record. Run 1, Event 9025, LumiSection 57 on stream 0 at 23-Jul-2023 14:47:26.561 CDT
+Begin processing the 55601st record. Run 1, Event 15043, LumiSection 95 on stream 0 at 23-Jul-2023 14:47:26.873 CDT
+Begin processing the 55701st record. Run 1, Event 15132, LumiSection 95 on stream 0 at 23-Jul-2023 14:47:27.208 CDT
+Begin processing the 55801st record. Run 1, Event 167101, LumiSection 1047 on stream 0 at 23-Jul-2023 14:47:27.507 CDT
+Begin processing the 55901st record. Run 1, Event 167227, LumiSection 1047 on stream 0 at 23-Jul-2023 14:47:27.796 CDT
+23-Jul-2023 14:47:27 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_41.root
+23-Jul-2023 14:47:27 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_42.root
+23-Jul-2023 14:47:27 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_42.root
+Begin processing the 56001st record. Run 1, Event 222926, LumiSection 1396 on stream 0 at 23-Jul-2023 14:47:29.406 CDT
+Begin processing the 56101st record. Run 1, Event 234988, LumiSection 1472 on stream 0 at 23-Jul-2023 14:47:29.721 CDT
+Begin processing the 56201st record. Run 1, Event 235082, LumiSection 1472 on stream 0 at 23-Jul-2023 14:47:30.033 CDT
+Begin processing the 56301st record. Run 1, Event 209296, LumiSection 1311 on stream 0 at 23-Jul-2023 14:47:30.473 CDT
+Begin processing the 56401st record. Run 1, Event 42683, LumiSection 268 on stream 0 at 23-Jul-2023 14:47:30.849 CDT
+Begin processing the 56501st record. Run 1, Event 42775, LumiSection 268 on stream 0 at 23-Jul-2023 14:47:31.171 CDT
+Begin processing the 56601st record. Run 1, Event 144607, LumiSection 906 on stream 0 at 23-Jul-2023 14:47:31.560 CDT
+Begin processing the 56701st record. Run 1, Event 144705, LumiSection 906 on stream 0 at 23-Jul-2023 14:47:31.871 CDT
+Begin processing the 56801st record. Run 1, Event 250566, LumiSection 1569 on stream 0 at 23-Jul-2023 14:47:32.145 CDT
+Begin processing the 56901st record. Run 1, Event 167426, LumiSection 1049 on stream 0 at 23-Jul-2023 14:47:32.462 CDT
+Begin processing the 57001st record. Run 1, Event 167515, LumiSection 1049 on stream 0 at 23-Jul-2023 14:47:33.203 CDT
+Begin processing the 57101st record. Run 1, Event 147825, LumiSection 926 on stream 0 at 23-Jul-2023 14:47:33.497 CDT
+Begin processing the 57201st record. Run 1, Event 250001, LumiSection 1566 on stream 0 at 23-Jul-2023 14:47:33.904 CDT
+Begin processing the 57301st record. Run 1, Event 250105, LumiSection 1566 on stream 0 at 23-Jul-2023 14:47:34.246 CDT
+Begin processing the 57401st record. Run 1, Event 236926, LumiSection 1484 on stream 0 at 23-Jul-2023 14:47:34.568 CDT
+Begin processing the 57501st record. Run 1, Event 237000, LumiSection 1484 on stream 0 at 23-Jul-2023 14:47:34.920 CDT
+23-Jul-2023 14:47:35 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_42.root
+23-Jul-2023 14:47:35 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_43.root
+23-Jul-2023 14:47:35 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_43.root
+Begin processing the 57601st record. Run 1, Event 227718, LumiSection 1426 on stream 0 at 23-Jul-2023 14:47:36.488 CDT
+Begin processing the 57701st record. Run 1, Event 181007, LumiSection 1134 on stream 0 at 23-Jul-2023 14:47:36.864 CDT
+Begin processing the 57801st record. Run 1, Event 181121, LumiSection 1134 on stream 0 at 23-Jul-2023 14:47:37.183 CDT
+Begin processing the 57901st record. Run 1, Event 145581, LumiSection 912 on stream 0 at 23-Jul-2023 14:47:37.622 CDT
+Begin processing the 58001st record. Run 1, Event 221081, LumiSection 1385 on stream 0 at 23-Jul-2023 14:47:37.946 CDT
+Begin processing the 58101st record. Run 1, Event 221180, LumiSection 1385 on stream 0 at 23-Jul-2023 14:47:38.302 CDT
+Begin processing the 58201st record. Run 1, Event 155462, LumiSection 974 on stream 0 at 23-Jul-2023 14:47:38.661 CDT
+Begin processing the 58301st record. Run 1, Event 155574, LumiSection 974 on stream 0 at 23-Jul-2023 14:47:38.979 CDT
+Begin processing the 58401st record. Run 1, Event 141447, LumiSection 886 on stream 0 at 23-Jul-2023 14:47:39.315 CDT
+Begin processing the 58501st record. Run 1, Event 178147, LumiSection 1116 on stream 0 at 23-Jul-2023 14:47:39.634 CDT
+Begin processing the 58601st record. Run 1, Event 178248, LumiSection 1116 on stream 0 at 23-Jul-2023 14:47:40.321 CDT
+Begin processing the 58701st record. Run 1, Event 26264, LumiSection 165 on stream 0 at 23-Jul-2023 14:47:40.581 CDT
+Begin processing the 58801st record. Run 1, Event 177642, LumiSection 1113 on stream 0 at 23-Jul-2023 14:47:40.951 CDT
+Begin processing the 58901st record. Run 1, Event 177745, LumiSection 1113 on stream 0 at 23-Jul-2023 14:47:41.306 CDT
+Begin processing the 59001st record. Run 1, Event 176567, LumiSection 1106 on stream 0 at 23-Jul-2023 14:47:41.578 CDT
+Begin processing the 59101st record. Run 1, Event 176668, LumiSection 1106 on stream 0 at 23-Jul-2023 14:47:41.886 CDT
+23-Jul-2023 14:47:42 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_43.root
+23-Jul-2023 14:47:42 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_44.root
+23-Jul-2023 14:47:42 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_44.root
+Begin processing the 59201st record. Run 1, Event 240966, LumiSection 1509 on stream 0 at 23-Jul-2023 14:47:43.480 CDT
+Begin processing the 59301st record. Run 1, Event 29268, LumiSection 184 on stream 0 at 23-Jul-2023 14:47:43.836 CDT
+Begin processing the 59401st record. Run 1, Event 29367, LumiSection 184 on stream 0 at 23-Jul-2023 14:47:44.204 CDT
+Begin processing the 59501st record. Run 1, Event 159503, LumiSection 999 on stream 0 at 23-Jul-2023 14:47:44.643 CDT
+Begin processing the 59601st record. Run 1, Event 183241, LumiSection 1148 on stream 0 at 23-Jul-2023 14:47:44.953 CDT
+Begin processing the 59701st record. Run 1, Event 183345, LumiSection 1148 on stream 0 at 23-Jul-2023 14:47:45.267 CDT
+Begin processing the 59801st record. Run 1, Event 164722, LumiSection 1032 on stream 0 at 23-Jul-2023 14:47:45.585 CDT
+Begin processing the 59901st record. Run 1, Event 164827, LumiSection 1032 on stream 0 at 23-Jul-2023 14:47:45.877 CDT
+Begin processing the 60001st record. Run 1, Event 183008, LumiSection 1146 on stream 0 at 23-Jul-2023 14:47:46.151 CDT
+Begin processing the 60101st record. Run 1, Event 28470, LumiSection 179 on stream 0 at 23-Jul-2023 14:47:46.521 CDT
+Begin processing the 60201st record. Run 1, Event 28561, LumiSection 179 on stream 0 at 23-Jul-2023 14:47:47.169 CDT
+Begin processing the 60301st record. Run 1, Event 37465, LumiSection 235 on stream 0 at 23-Jul-2023 14:47:47.481 CDT
+Begin processing the 60401st record. Run 1, Event 241363, LumiSection 1512 on stream 0 at 23-Jul-2023 14:47:47.800 CDT
+Begin processing the 60501st record. Run 1, Event 241432, LumiSection 1512 on stream 0 at 23-Jul-2023 14:47:48.149 CDT
+Begin processing the 60601st record. Run 1, Event 243473, LumiSection 1525 on stream 0 at 23-Jul-2023 14:47:48.485 CDT
+Begin processing the 60701st record. Run 1, Event 243586, LumiSection 1525 on stream 0 at 23-Jul-2023 14:47:48.850 CDT
+23-Jul-2023 14:47:48 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_44.root
+23-Jul-2023 14:47:48 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_45.root
+23-Jul-2023 14:47:49 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_45.root
+Begin processing the 60801st record. Run 1, Event 171647, LumiSection 1075 on stream 0 at 23-Jul-2023 14:47:50.532 CDT
+Begin processing the 60901st record. Run 1, Event 162298, LumiSection 1017 on stream 0 at 23-Jul-2023 14:47:50.845 CDT
+Begin processing the 61001st record. Run 1, Event 162404, LumiSection 1017 on stream 0 at 23-Jul-2023 14:47:51.153 CDT
+Begin processing the 61101st record. Run 1, Event 174334, LumiSection 1092 on stream 0 at 23-Jul-2023 14:47:51.561 CDT
+Begin processing the 61201st record. Run 1, Event 211963, LumiSection 1328 on stream 0 at 23-Jul-2023 14:47:51.875 CDT
+Begin processing the 61301st record. Run 1, Event 212059, LumiSection 1328 on stream 0 at 23-Jul-2023 14:47:52.119 CDT
+Begin processing the 61401st record. Run 1, Event 214724, LumiSection 1345 on stream 0 at 23-Jul-2023 14:47:52.409 CDT
+Begin processing the 61501st record. Run 1, Event 214827, LumiSection 1345 on stream 0 at 23-Jul-2023 14:47:52.752 CDT
+Begin processing the 61601st record. Run 1, Event 250248, LumiSection 1567 on stream 0 at 23-Jul-2023 14:47:53.024 CDT
+Begin processing the 61701st record. Run 1, Event 180706, LumiSection 1132 on stream 0 at 23-Jul-2023 14:47:53.367 CDT
+Begin processing the 61801st record. Run 1, Event 180807, LumiSection 1132 on stream 0 at 23-Jul-2023 14:47:54.000 CDT
+Begin processing the 61901st record. Run 1, Event 176747, LumiSection 1107 on stream 0 at 23-Jul-2023 14:47:54.317 CDT
+Begin processing the 62001st record. Run 1, Event 214841, LumiSection 1346 on stream 0 at 23-Jul-2023 14:47:54.633 CDT
+Begin processing the 62101st record. Run 1, Event 214946, LumiSection 1346 on stream 0 at 23-Jul-2023 14:47:54.972 CDT
+Begin processing the 62201st record. Run 1, Event 180406, LumiSection 1130 on stream 0 at 23-Jul-2023 14:47:55.232 CDT
+Begin processing the 62301st record. Run 1, Event 180496, LumiSection 1130 on stream 0 at 23-Jul-2023 14:47:55.588 CDT
+23-Jul-2023 14:47:55 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_45.root
+23-Jul-2023 14:47:55 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_46.root
+23-Jul-2023 14:47:55 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_46.root
+Begin processing the 62401st record. Run 1, Event 245125, LumiSection 1535 on stream 0 at 23-Jul-2023 14:47:57.032 CDT
+Begin processing the 62501st record. Run 1, Event 250345, LumiSection 1568 on stream 0 at 23-Jul-2023 14:47:57.367 CDT
+Begin processing the 62601st record. Run 1, Event 250423, LumiSection 1568 on stream 0 at 23-Jul-2023 14:47:57.745 CDT
+Begin processing the 62701st record. Run 1, Event 252943, LumiSection 1584 on stream 0 at 23-Jul-2023 14:47:58.158 CDT
+Begin processing the 62801st record. Run 1, Event 44967, LumiSection 282 on stream 0 at 23-Jul-2023 14:47:58.426 CDT
+Begin processing the 62901st record. Run 1, Event 45066, LumiSection 282 on stream 0 at 23-Jul-2023 14:47:58.710 CDT
+Begin processing the 63001st record. Run 1, Event 238728, LumiSection 1495 on stream 0 at 23-Jul-2023 14:47:59.124 CDT
+Begin processing the 63101st record. Run 1, Event 216288, LumiSection 1355 on stream 0 at 23-Jul-2023 14:47:59.397 CDT
+Begin processing the 63201st record. Run 1, Event 216407, LumiSection 1355 on stream 0 at 23-Jul-2023 14:47:59.716 CDT
+Begin processing the 63301st record. Run 1, Event 212506, LumiSection 1331 on stream 0 at 23-Jul-2023 14:48:00.031 CDT
+Begin processing the 63401st record. Run 1, Event 167241, LumiSection 1048 on stream 0 at 23-Jul-2023 14:48:00.753 CDT
+Begin processing the 63501st record. Run 1, Event 167345, LumiSection 1048 on stream 0 at 23-Jul-2023 14:48:01.067 CDT
+Begin processing the 63601st record. Run 1, Event 232102, LumiSection 1454 on stream 0 at 23-Jul-2023 14:48:01.445 CDT
+Begin processing the 63701st record. Run 1, Event 232219, LumiSection 1454 on stream 0 at 23-Jul-2023 14:48:01.861 CDT
+Begin processing the 63801st record. Run 1, Event 252806, LumiSection 1583 on stream 0 at 23-Jul-2023 14:48:02.216 CDT
+23-Jul-2023 14:48:02 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_46.root
+23-Jul-2023 14:48:02 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_47.root
+23-Jul-2023 14:48:02 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_47.root
+Begin processing the 63901st record. Run 1, Event 237068, LumiSection 1485 on stream 0 at 23-Jul-2023 14:48:03.094 CDT
+Begin processing the 64001st record. Run 1, Event 237168, LumiSection 1485 on stream 0 at 23-Jul-2023 14:48:04.027 CDT
+Begin processing the 64101st record. Run 1, Event 243668, LumiSection 1526 on stream 0 at 23-Jul-2023 14:48:04.385 CDT
+Begin processing the 64201st record. Run 1, Event 41403, LumiSection 260 on stream 0 at 23-Jul-2023 14:48:04.770 CDT
+Begin processing the 64301st record. Run 1, Event 41500, LumiSection 260 on stream 0 at 23-Jul-2023 14:48:05.134 CDT
+Begin processing the 64401st record. Run 1, Event 167595, LumiSection 1050 on stream 0 at 23-Jul-2023 14:48:05.456 CDT
+Begin processing the 64501st record. Run 1, Event 167708, LumiSection 1050 on stream 0 at 23-Jul-2023 14:48:08.509 CDT
+Begin processing the 64601st record. Run 1, Event 159688, LumiSection 1000 on stream 0 at 23-Jul-2023 14:48:08.856 CDT
+Begin processing the 64701st record. Run 1, Event 43988, LumiSection 276 on stream 0 at 23-Jul-2023 14:48:09.146 CDT
+Begin processing the 64801st record. Run 1, Event 44084, LumiSection 276 on stream 0 at 23-Jul-2023 14:48:09.495 CDT
+Begin processing the 64901st record. Run 1, Event 159980, LumiSection 1002 on stream 0 at 23-Jul-2023 14:48:10.121 CDT
+Begin processing the 65001st record. Run 1, Event 159762, LumiSection 1001 on stream 0 at 23-Jul-2023 14:48:10.455 CDT
+Begin processing the 65101st record. Run 1, Event 159868, LumiSection 1001 on stream 0 at 23-Jul-2023 14:48:10.710 CDT
+Begin processing the 65201st record. Run 1, Event 171125, LumiSection 1072 on stream 0 at 23-Jul-2023 14:48:11.053 CDT
+Begin processing the 65301st record. Run 1, Event 171206, LumiSection 1072 on stream 0 at 23-Jul-2023 14:48:11.414 CDT
+Begin processing the 65401st record. Run 1, Event 221320, LumiSection 1386 on stream 0 at 23-Jul-2023 14:48:11.723 CDT
+23-Jul-2023 14:48:12 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_47.root
+23-Jul-2023 14:48:12 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_48.root
+23-Jul-2023 14:48:12 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_48.root
+Begin processing the 65501st record. Run 1, Event 215347, LumiSection 1349 on stream 0 at 23-Jul-2023 14:48:12.616 CDT
+Begin processing the 65601st record. Run 1, Event 215429, LumiSection 1349 on stream 0 at 23-Jul-2023 14:48:13.557 CDT
+Begin processing the 65701st record. Run 1, Event 225627, LumiSection 1413 on stream 0 at 23-Jul-2023 14:48:13.879 CDT
+Begin processing the 65801st record. Run 1, Event 160083, LumiSection 1003 on stream 0 at 23-Jul-2023 14:48:14.266 CDT
+Begin processing the 65901st record. Run 1, Event 160181, LumiSection 1003 on stream 0 at 23-Jul-2023 14:48:14.643 CDT
+Begin processing the 66001st record. Run 1, Event 162487, LumiSection 1018 on stream 0 at 23-Jul-2023 14:48:14.966 CDT
+Begin processing the 66101st record. Run 1, Event 162588, LumiSection 1018 on stream 0 at 23-Jul-2023 14:48:15.312 CDT
+Begin processing the 66201st record. Run 1, Event 212830, LumiSection 1333 on stream 0 at 23-Jul-2023 14:48:15.647 CDT
+Begin processing the 66301st record. Run 1, Event 208297, LumiSection 1305 on stream 0 at 23-Jul-2023 14:48:15.916 CDT
+Begin processing the 66401st record. Run 1, Event 208408, LumiSection 1305 on stream 0 at 23-Jul-2023 14:48:16.226 CDT
+Begin processing the 66501st record. Run 1, Event 32021, LumiSection 201 on stream 0 at 23-Jul-2023 14:48:16.936 CDT
+Begin processing the 66601st record. Run 1, Event 165162, LumiSection 1035 on stream 0 at 23-Jul-2023 14:48:17.264 CDT
+Begin processing the 66701st record. Run 1, Event 165265, LumiSection 1035 on stream 0 at 23-Jul-2023 14:48:17.567 CDT
+Begin processing the 66801st record. Run 1, Event 212163, LumiSection 1329 on stream 0 at 23-Jul-2023 14:48:17.897 CDT
+Begin processing the 66901st record. Run 1, Event 212260, LumiSection 1329 on stream 0 at 23-Jul-2023 14:48:18.295 CDT
+Begin processing the 67001st record. Run 1, Event 225164, LumiSection 1410 on stream 0 at 23-Jul-2023 14:48:18.579 CDT
+23-Jul-2023 14:48:18 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_48.root
+23-Jul-2023 14:48:18 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_49.root
+23-Jul-2023 14:48:18 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_49.root
+Begin processing the 67101st record. Run 1, Event 234813, LumiSection 1471 on stream 0 at 23-Jul-2023 14:48:19.489 CDT
+Begin processing the 67201st record. Run 1, Event 234925, LumiSection 1471 on stream 0 at 23-Jul-2023 14:48:20.435 CDT
+Begin processing the 67301st record. Run 1, Event 6625, LumiSection 42 on stream 0 at 23-Jul-2023 14:48:20.865 CDT
+Begin processing the 67401st record. Run 1, Event 143121, LumiSection 897 on stream 0 at 23-Jul-2023 14:48:21.255 CDT
+Begin processing the 67501st record. Run 1, Event 143229, LumiSection 897 on stream 0 at 23-Jul-2023 14:48:21.625 CDT
+Begin processing the 67601st record. Run 1, Event 173845, LumiSection 1089 on stream 0 at 23-Jul-2023 14:48:21.906 CDT
+Begin processing the 67701st record. Run 1, Event 173948, LumiSection 1089 on stream 0 at 23-Jul-2023 14:48:22.196 CDT
+Begin processing the 67801st record. Run 1, Event 218768, LumiSection 1370 on stream 0 at 23-Jul-2023 14:48:22.592 CDT
+Begin processing the 67901st record. Run 1, Event 230508, LumiSection 1444 on stream 0 at 23-Jul-2023 14:48:22.922 CDT
+Begin processing the 68001st record. Run 1, Event 230574, LumiSection 1444 on stream 0 at 23-Jul-2023 14:48:23.257 CDT
+Begin processing the 68101st record. Run 1, Event 243826, LumiSection 1527 on stream 0 at 23-Jul-2023 14:48:23.965 CDT
+Begin processing the 68201st record. Run 1, Event 218527, LumiSection 1369 on stream 0 at 23-Jul-2023 14:48:24.243 CDT
+Begin processing the 68301st record. Run 1, Event 218628, LumiSection 1369 on stream 0 at 23-Jul-2023 14:48:24.537 CDT
+Begin processing the 68401st record. Run 1, Event 246364, LumiSection 1543 on stream 0 at 23-Jul-2023 14:48:24.887 CDT
+Begin processing the 68501st record. Run 1, Event 246465, LumiSection 1543 on stream 0 at 23-Jul-2023 14:48:25.189 CDT
+Begin processing the 68601st record. Run 1, Event 27567, LumiSection 173 on stream 0 at 23-Jul-2023 14:48:25.479 CDT
+23-Jul-2023 14:48:25 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_49.root
+23-Jul-2023 14:48:25 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_4.root
+23-Jul-2023 14:48:25 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_4.root
+Begin processing the 68701st record. Run 1, Event 146027, LumiSection 915 on stream 0 at 23-Jul-2023 14:48:26.332 CDT
+Begin processing the 68801st record. Run 1, Event 146124, LumiSection 915 on stream 0 at 23-Jul-2023 14:48:27.372 CDT
+Begin processing the 68901st record. Run 1, Event 22467, LumiSection 141 on stream 0 at 23-Jul-2023 14:48:27.686 CDT
+Begin processing the 69001st record. Run 1, Event 147923, LumiSection 927 on stream 0 at 23-Jul-2023 14:48:28.086 CDT
+Begin processing the 69101st record. Run 1, Event 148026, LumiSection 927 on stream 0 at 23-Jul-2023 14:48:28.462 CDT
+Begin processing the 69201st record. Run 1, Event 36168, LumiSection 227 on stream 0 at 23-Jul-2023 14:48:28.781 CDT
+Begin processing the 69301st record. Run 1, Event 36254, LumiSection 227 on stream 0 at 23-Jul-2023 14:48:29.127 CDT
+Begin processing the 69401st record. Run 1, Event 21998, LumiSection 138 on stream 0 at 23-Jul-2023 14:48:29.482 CDT
+Begin processing the 69501st record. Run 1, Event 12980, LumiSection 82 on stream 0 at 23-Jul-2023 14:48:29.770 CDT
+Begin processing the 69601st record. Run 1, Event 13084, LumiSection 82 on stream 0 at 23-Jul-2023 14:48:30.068 CDT
+Begin processing the 69701st record. Run 1, Event 148785, LumiSection 932 on stream 0 at 23-Jul-2023 14:48:30.732 CDT
+Begin processing the 69801st record. Run 1, Event 154001, LumiSection 965 on stream 0 at 23-Jul-2023 14:48:31.051 CDT
+Begin processing the 69901st record. Run 1, Event 154106, LumiSection 965 on stream 0 at 23-Jul-2023 14:48:31.329 CDT
+Begin processing the 70001st record. Run 1, Event 38564, LumiSection 242 on stream 0 at 23-Jul-2023 14:48:31.642 CDT
+Begin processing the 70101st record. Run 1, Event 38665, LumiSection 242 on stream 0 at 23-Jul-2023 14:48:32.019 CDT
+Begin processing the 70201st record. Run 1, Event 881, LumiSection 6 on stream 0 at 23-Jul-2023 14:48:32.319 CDT
+23-Jul-2023 14:48:32 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_4.root
+23-Jul-2023 14:48:32 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_50.root
+23-Jul-2023 14:48:32 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_50.root
+Begin processing the 70301st record. Run 1, Event 173988, LumiSection 1090 on stream 0 at 23-Jul-2023 14:48:33.247 CDT
+Begin processing the 70401st record. Run 1, Event 174083, LumiSection 1090 on stream 0 at 23-Jul-2023 14:48:34.307 CDT
+Begin processing the 70501st record. Run 1, Event 4063, LumiSection 26 on stream 0 at 23-Jul-2023 14:48:34.608 CDT
+Begin processing the 70601st record. Run 1, Event 234321, LumiSection 1468 on stream 0 at 23-Jul-2023 14:48:34.963 CDT
+Begin processing the 70701st record. Run 1, Event 234412, LumiSection 1468 on stream 0 at 23-Jul-2023 14:48:35.356 CDT
+Begin processing the 70801st record. Run 1, Event 164554, LumiSection 1031 on stream 0 at 23-Jul-2023 14:48:35.655 CDT
+Begin processing the 70901st record. Run 1, Event 164667, LumiSection 1031 on stream 0 at 23-Jul-2023 14:48:35.987 CDT
+Begin processing the 71001st record. Run 1, Event 234566, LumiSection 1469 on stream 0 at 23-Jul-2023 14:48:36.405 CDT
+Begin processing the 71101st record. Run 1, Event 227825, LumiSection 1427 on stream 0 at 23-Jul-2023 14:48:39.440 CDT
+Begin processing the 71201st record. Run 1, Event 227924, LumiSection 1427 on stream 0 at 23-Jul-2023 14:48:39.764 CDT
+Begin processing the 71301st record. Run 1, Event 174185, LumiSection 1091 on stream 0 at 23-Jul-2023 14:48:40.500 CDT
+Begin processing the 71401st record. Run 1, Event 221401, LumiSection 1387 on stream 0 at 23-Jul-2023 14:48:40.847 CDT
+Begin processing the 71501st record. Run 1, Event 221485, LumiSection 1387 on stream 0 at 23-Jul-2023 14:48:41.148 CDT
+Begin processing the 71601st record. Run 1, Event 149089, LumiSection 934 on stream 0 at 23-Jul-2023 14:48:41.485 CDT
+Begin processing the 71701st record. Run 1, Event 149170, LumiSection 934 on stream 0 at 23-Jul-2023 14:48:41.837 CDT
+Begin processing the 71801st record. Run 1, Event 234245, LumiSection 1467 on stream 0 at 23-Jul-2023 14:48:42.157 CDT
+23-Jul-2023 14:48:42 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_50.root
+23-Jul-2023 14:48:42 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_5.root
+23-Jul-2023 14:48:42 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_5.root
+Begin processing the 71901st record. Run 1, Event 146986, LumiSection 921 on stream 0 at 23-Jul-2023 14:48:43.113 CDT
+Begin processing the 72001st record. Run 1, Event 147085, LumiSection 921 on stream 0 at 23-Jul-2023 14:48:43.999 CDT
+Begin processing the 72101st record. Run 1, Event 43544, LumiSection 273 on stream 0 at 23-Jul-2023 14:48:44.289 CDT
+Begin processing the 72201st record. Run 1, Event 34843, LumiSection 219 on stream 0 at 23-Jul-2023 14:48:44.594 CDT
+Begin processing the 72301st record. Run 1, Event 34949, LumiSection 219 on stream 0 at 23-Jul-2023 14:48:44.929 CDT
+Begin processing the 72401st record. Run 1, Event 20358, LumiSection 128 on stream 0 at 23-Jul-2023 14:48:45.248 CDT
+Begin processing the 72501st record. Run 1, Event 20465, LumiSection 128 on stream 0 at 23-Jul-2023 14:48:45.600 CDT
+Begin processing the 72601st record. Run 1, Event 18008, LumiSection 113 on stream 0 at 23-Jul-2023 14:48:46.019 CDT
+Begin processing the 72701st record. Run 1, Event 31029, LumiSection 195 on stream 0 at 23-Jul-2023 14:48:46.311 CDT
+Begin processing the 72801st record. Run 1, Event 31123, LumiSection 195 on stream 0 at 23-Jul-2023 14:48:46.638 CDT
+Begin processing the 72901st record. Run 1, Event 149588, LumiSection 937 on stream 0 at 23-Jul-2023 14:48:46.953 CDT
+Begin processing the 73001st record. Run 1, Event 42521, LumiSection 267 on stream 0 at 23-Jul-2023 14:48:47.631 CDT
+Begin processing the 73101st record. Run 1, Event 42627, LumiSection 267 on stream 0 at 23-Jul-2023 14:48:47.941 CDT
+Begin processing the 73201st record. Run 1, Event 26559, LumiSection 167 on stream 0 at 23-Jul-2023 14:48:48.231 CDT
+Begin processing the 73301st record. Run 1, Event 26666, LumiSection 167 on stream 0 at 23-Jul-2023 14:48:48.598 CDT
+Begin processing the 73401st record. Run 1, Event 155845, LumiSection 976 on stream 0 at 23-Jul-2023 14:48:48.878 CDT
+23-Jul-2023 14:48:49 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_5.root
+23-Jul-2023 14:48:49 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_6.root
+23-Jul-2023 14:48:49 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_6.root
+Begin processing the 73501st record. Run 1, Event 16976, LumiSection 107 on stream 0 at 23-Jul-2023 14:48:49.885 CDT
+Begin processing the 73601st record. Run 1, Event 17084, LumiSection 107 on stream 0 at 23-Jul-2023 14:48:50.908 CDT
+Begin processing the 73701st record. Run 1, Event 149407, LumiSection 936 on stream 0 at 23-Jul-2023 14:48:51.226 CDT
+Begin processing the 73801st record. Run 1, Event 157521, LumiSection 987 on stream 0 at 23-Jul-2023 14:48:51.530 CDT
+Begin processing the 73901st record. Run 1, Event 157618, LumiSection 987 on stream 0 at 23-Jul-2023 14:48:51.862 CDT
+Begin processing the 74001st record. Run 1, Event 138687, LumiSection 869 on stream 0 at 23-Jul-2023 14:48:52.170 CDT
+Begin processing the 74101st record. Run 1, Event 138785, LumiSection 869 on stream 0 at 23-Jul-2023 14:48:52.494 CDT
+Begin processing the 74201st record. Run 1, Event 39557, LumiSection 248 on stream 0 at 23-Jul-2023 14:48:52.859 CDT
+Begin processing the 74301st record. Run 1, Event 34707, LumiSection 218 on stream 0 at 23-Jul-2023 14:48:53.165 CDT
+Begin processing the 74401st record. Run 1, Event 34801, LumiSection 218 on stream 0 at 23-Jul-2023 14:48:53.415 CDT
+Begin processing the 74501st record. Run 1, Event 12542, LumiSection 79 on stream 0 at 23-Jul-2023 14:48:54.062 CDT
+Begin processing the 74601st record. Run 1, Event 25081, LumiSection 158 on stream 0 at 23-Jul-2023 14:48:54.431 CDT
+Begin processing the 74701st record. Run 1, Event 25161, LumiSection 158 on stream 0 at 23-Jul-2023 14:48:54.701 CDT
+Begin processing the 74801st record. Run 1, Event 5645, LumiSection 36 on stream 0 at 23-Jul-2023 14:48:54.995 CDT
+Begin processing the 74901st record. Run 1, Event 5748, LumiSection 36 on stream 0 at 23-Jul-2023 14:48:55.370 CDT
+Begin processing the 75001st record. Run 1, Event 16888, LumiSection 106 on stream 0 at 23-Jul-2023 14:48:55.664 CDT
+23-Jul-2023 14:48:55 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_6.root
+23-Jul-2023 14:48:55 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_7.root
+23-Jul-2023 14:48:56 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_7.root
+Begin processing the 75101st record. Run 1, Event 19052, LumiSection 120 on stream 0 at 23-Jul-2023 14:48:56.590 CDT
+Begin processing the 75201st record. Run 1, Event 19164, LumiSection 120 on stream 0 at 23-Jul-2023 14:48:57.632 CDT
+Begin processing the 75301st record. Run 1, Event 142530, LumiSection 893 on stream 0 at 23-Jul-2023 14:48:57.928 CDT
+Begin processing the 75401st record. Run 1, Event 1923, LumiSection 13 on stream 0 at 23-Jul-2023 14:48:58.327 CDT
+Begin processing the 75501st record. Run 1, Event 2025, LumiSection 13 on stream 0 at 23-Jul-2023 14:48:58.707 CDT
+Begin processing the 75601st record. Run 1, Event 9966, LumiSection 63 on stream 0 at 23-Jul-2023 14:48:58.973 CDT
+Begin processing the 75701st record. Run 1, Event 10068, LumiSection 63 on stream 0 at 23-Jul-2023 14:48:59.329 CDT
+Begin processing the 75801st record. Run 1, Event 138249, LumiSection 866 on stream 0 at 23-Jul-2023 14:48:59.697 CDT
+Begin processing the 75901st record. Run 1, Event 24, LumiSection 1 on stream 0 at 23-Jul-2023 14:48:59.995 CDT
+Begin processing the 76001st record. Run 1, Event 125, LumiSection 1 on stream 0 at 23-Jul-2023 14:49:00.321 CDT
+Begin processing the 76101st record. Run 1, Event 146546, LumiSection 918 on stream 0 at 23-Jul-2023 14:49:01.004 CDT
+Begin processing the 76201st record. Run 1, Event 32923, LumiSection 207 on stream 0 at 23-Jul-2023 14:49:01.288 CDT
+Begin processing the 76301st record. Run 1, Event 32995, LumiSection 207 on stream 0 at 23-Jul-2023 14:49:01.577 CDT
+Begin processing the 76401st record. Run 1, Event 21006, LumiSection 132 on stream 0 at 23-Jul-2023 14:49:01.902 CDT
+Begin processing the 76501st record. Run 1, Event 21105, LumiSection 132 on stream 0 at 23-Jul-2023 14:49:02.318 CDT
+Begin processing the 76601st record. Run 1, Event 1327567, LumiSection 8312 on stream 0 at 23-Jul-2023 14:49:02.656 CDT
+23-Jul-2023 14:49:02 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_7.root
+23-Jul-2023 14:49:02 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_8.root
+23-Jul-2023 14:49:03 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_8.root
+Begin processing the 76701st record. Run 1, Event 18587, LumiSection 117 on stream 0 at 23-Jul-2023 14:49:03.604 CDT
+Begin processing the 76801st record. Run 1, Event 18686, LumiSection 117 on stream 0 at 23-Jul-2023 14:49:04.557 CDT
+Begin processing the 76901st record. Run 1, Event 139828, LumiSection 876 on stream 0 at 23-Jul-2023 14:49:04.891 CDT
+Begin processing the 77001st record. Run 1, Event 44603, LumiSection 280 on stream 0 at 23-Jul-2023 14:49:05.241 CDT
+Begin processing the 77101st record. Run 1, Event 44702, LumiSection 280 on stream 0 at 23-Jul-2023 14:49:05.644 CDT
+Begin processing the 77201st record. Run 1, Event 140911, LumiSection 883 on stream 0 at 23-Jul-2023 14:49:05.915 CDT
+Begin processing the 77301st record. Run 1, Event 141026, LumiSection 883 on stream 0 at 23-Jul-2023 14:49:06.245 CDT
+Begin processing the 77401st record. Run 1, Event 142720, LumiSection 894 on stream 0 at 23-Jul-2023 14:49:06.648 CDT
+Begin processing the 77501st record. Run 1, Event 9467, LumiSection 60 on stream 0 at 23-Jul-2023 14:49:06.921 CDT
+Begin processing the 77601st record. Run 1, Event 9566, LumiSection 60 on stream 0 at 23-Jul-2023 14:49:07.289 CDT
+Begin processing the 77701st record. Run 1, Event 40826, LumiSection 256 on stream 0 at 23-Jul-2023 14:49:07.950 CDT
+Begin processing the 77801st record. Run 1, Event 27323, LumiSection 172 on stream 0 at 23-Jul-2023 14:49:08.217 CDT
+Begin processing the 77901st record. Run 1, Event 27419, LumiSection 172 on stream 0 at 23-Jul-2023 14:49:08.513 CDT
+Begin processing the 78001st record. Run 1, Event 27687, LumiSection 174 on stream 0 at 23-Jul-2023 14:49:08.815 CDT
+Begin processing the 78101st record. Run 1, Event 27788, LumiSection 174 on stream 0 at 23-Jul-2023 14:49:09.126 CDT
+Begin processing the 78201st record. Run 1, Event 1195007, LumiSection 7482 on stream 0 at 23-Jul-2023 14:49:09.450 CDT
+23-Jul-2023 14:49:09 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_8.root
+23-Jul-2023 14:49:09 CDT  Initiating request to open file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_9.root
+23-Jul-2023 14:49:09 CDT  Successfully opened file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_9.root
+Begin processing the 78301st record. Run 1, Event 35829, LumiSection 225 on stream 0 at 23-Jul-2023 14:49:10.459 CDT
+Begin processing the 78401st record. Run 1, Event 35925, LumiSection 225 on stream 0 at 23-Jul-2023 14:49:11.334 CDT
+Begin processing the 78501st record. Run 1, Event 154538, LumiSection 968 on stream 0 at 23-Jul-2023 14:49:11.646 CDT
+Begin processing the 78601st record. Run 1, Event 3361, LumiSection 22 on stream 0 at 23-Jul-2023 14:49:12.029 CDT
+Begin processing the 78701st record. Run 1, Event 3455, LumiSection 22 on stream 0 at 23-Jul-2023 14:49:12.411 CDT
+Begin processing the 78801st record. Run 1, Event 43368, LumiSection 272 on stream 0 at 23-Jul-2023 14:49:12.714 CDT
+Begin processing the 78901st record. Run 1, Event 43460, LumiSection 272 on stream 0 at 23-Jul-2023 14:49:13.021 CDT
+Begin processing the 79001st record. Run 1, Event 3123, LumiSection 20 on stream 0 at 23-Jul-2023 14:49:13.380 CDT
+Begin processing the 79101st record. Run 1, Event 1242666, LumiSection 7781 on stream 0 at 23-Jul-2023 14:49:13.662 CDT
+Begin processing the 79201st record. Run 1, Event 1242761, LumiSection 7781 on stream 0 at 23-Jul-2023 14:49:14.048 CDT
+Begin processing the 79301st record. Run 1, Event 41946, LumiSection 263 on stream 0 at 23-Jul-2023 14:49:14.666 CDT
+Begin processing the 79401st record. Run 1, Event 150322, LumiSection 942 on stream 0 at 23-Jul-2023 14:49:14.995 CDT
+Begin processing the 79501st record. Run 1, Event 150426, LumiSection 942 on stream 0 at 23-Jul-2023 14:49:15.272 CDT
+Begin processing the 79601st record. Run 1, Event 150847, LumiSection 945 on stream 0 at 23-Jul-2023 14:49:15.564 CDT
+Begin processing the 79701st record. Run 1, Event 150945, LumiSection 945 on stream 0 at 23-Jul-2023 14:49:15.961 CDT
+Begin processing the 79801st record. Run 1, Event 14485, LumiSection 91 on stream 0 at 23-Jul-2023 14:49:16.298 CDT
+23-Jul-2023 14:49:16 CDT  Closed file file:/hdfs/store/user/vshang/MinBias_TuneCP5_14TeV-pythia8/20230709_minBias-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tauCross/230720_122908/0000/output_round1_9.root

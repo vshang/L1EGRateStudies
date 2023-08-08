@@ -29,7 +29,7 @@ process.source = cms.Source("PoolSource",
     dropDescendantsOfDroppedBranches=cms.untracked.bool(False),
 )
 
-out_path = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_12_5_2_patch1/20230511/'
+out_path = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_12_5_2_patch1/20230709/'
 #name = "HiggsTauTauvL1EGs"
 #name = "HiggsTauTau"
 name = "minBias"
@@ -62,9 +62,6 @@ process.tauGenJets = cms.EDProducer(
 
 process.tauGenJetsSelectorAllHadrons = cms.EDFilter("TauGenJetDecayModeSelector",
      src = cms.InputTag("tauGenJets"),
-
-
-
      select = cms.vstring('oneProng0Pi0', 
                           'oneProng1Pi0', 
                           'oneProng2Pi0', 
@@ -88,8 +85,10 @@ process.pL1Objs = cms.Path(
 # 
 # Analyzer starts here
 
-process.analyzer = cms.EDAnalyzer('L1CaloJetStudies',
-    L1CaloJetsInputTag = cms.InputTag("l1tCaloJetProducer","L1CaloJetsNoCuts"),
+#process.analyzer = cms.EDAnalyzer('L1CaloJetStudies',
+#    L1CaloJetsInputTag = cms.InputTag("l1tCaloJetProducer","L1CaloJetsNoCuts"),
+process.analyzer = cms.EDAnalyzer('L1GCTJetStudies',
+    GCTJetsInputTag = cms.InputTag("l1tPhase2CaloJetEmulator","GCTJet"),
     genJets = cms.InputTag("ak4GenJetsNoNu", "", "HLT"),
     genHadronicTauSrc = cms.InputTag("tauGenJetsSelectorAllHadrons"),
     genMatchDeltaRcut = cms.untracked.double(0.3),
@@ -102,7 +101,7 @@ process.analyzer = cms.EDAnalyzer('L1CaloJetStudies',
     puSrc = cms.InputTag("addPileupInfo")
 )
 
-if "minBias" in name:
+if ("minBias" in name):
     process.analyzer.doRate = cms.untracked.bool(True)
 
 process.panalyzer = cms.Path(process.analyzer)
