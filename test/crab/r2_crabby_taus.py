@@ -2,12 +2,15 @@ import FWCore.ParameterSet.Config as cms
 
 from Configuration.StandardSequences.Eras import eras
 
-process = cms.Process('L1Jets2',eras.Phase2C9)
+#process = cms.Process('L1Jets2',eras.Phase2C9)
+process = cms.Process('L1Jets2',eras.Phase2C17I13M9)
 process.load('Configuration.StandardSequences.Services_cff')
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.load('Configuration.EventContent.EventContent_cff')
-process.load('Configuration.Geometry.GeometryExtended2026D49Reco_cff')
-process.load('Configuration.Geometry.GeometryExtended2026D49_cff')
+#process.load('Configuration.Geometry.GeometryExtended2026D49Reco_cff')
+#process.load('Configuration.Geometry.GeometryExtended2026D49_cff')
+process.load('Configuration.Geometry.GeometryExtended2026D88Reco_cff')
+process.load('Configuration.Geometry.GeometryExtended2026D88_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
@@ -26,10 +29,11 @@ process.source = cms.Source("PoolSource",
     dropDescendantsOfDroppedBranches=cms.untracked.bool(False),
 )
 
-out_path = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_12_3_0_pre4/20230330/'
+out_path = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_12_5_2_patch1/20230913/'
 #name = "HiggsTauTauvL1EGs"
-#name = "HiggsTauTau_Pallabi"
-name = "minBias_Pallabi"
+#name = "HiggsTauTau"
+name = "VBFHiggsTauTau1x3"
+#name = "minBias1x3"
 # Load samples from external files here:
 from L1Trigger.L1EGRateStudies.loadRound2Files import getSampleFiles
 process.source.fileNames = getSampleFiles( name )
@@ -40,7 +44,8 @@ process.source.fileNames = getSampleFiles( name )
 # ---- Global Tag :
 from Configuration.AlCa.GlobalTag import GlobalTag
 #process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '') 
-process.GlobalTag = GlobalTag(process.GlobalTag, '123X_mcRun4_realistic_v3', '')
+#process.GlobalTag = GlobalTag(process.GlobalTag, '123X_mcRun4_realistic_v3', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, '125X_mcRun4_realistic_v2', '') 
 
 
 # --------------------------------------------------------------------------------------------
@@ -58,9 +63,6 @@ process.tauGenJets = cms.EDProducer(
 
 process.tauGenJetsSelectorAllHadrons = cms.EDFilter("TauGenJetDecayModeSelector",
      src = cms.InputTag("tauGenJets"),
-
-
-
      select = cms.vstring('oneProng0Pi0', 
                           'oneProng1Pi0', 
                           'oneProng2Pi0', 
@@ -84,8 +86,10 @@ process.pL1Objs = cms.Path(
 # 
 # Analyzer starts here
 
-process.analyzer = cms.EDAnalyzer('L1CaloJetStudies',
-    L1CaloJetsInputTag = cms.InputTag("L1CaloJetProducer","L1CaloJetsNoCuts"),
+#process.analyzer = cms.EDAnalyzer('L1CaloJetStudies',
+#    L1CaloJetsInputTag = cms.InputTag("l1tCaloJetProducer","L1CaloJetsNoCuts"),
+process.analyzer = cms.EDAnalyzer('L1GCTJetStudies',
+    GCTJetsInputTag = cms.InputTag("l1tPhase2CaloJetEmulator","GCTJet"),
     genJets = cms.InputTag("ak4GenJetsNoNu", "", "HLT"),
     genHadronicTauSrc = cms.InputTag("tauGenJetsSelectorAllHadrons"),
     genMatchDeltaRcut = cms.untracked.double(0.3),
@@ -93,12 +97,12 @@ process.analyzer = cms.EDAnalyzer('L1CaloJetStudies',
     debug = cms.untracked.bool(False),
     doRate = cms.untracked.bool(False),
     use_gen_taus = cms.untracked.bool(True),
-    Stage2JetTag = cms.InputTag("simCaloStage2Digis", "MP", "RECO"),
-    Stage2TauTag = cms.InputTag("simCaloStage2Digis", "MP", "RECO"),
+    Stage2JetTag = cms.InputTag("simCaloStage2Digis", "MP", "HLT"),
+    Stage2TauTag = cms.InputTag("simCaloStage2Digis", "MP", "HLT"),
     puSrc = cms.InputTag("addPileupInfo")
 )
 
-if "minBias" in name:
+if ("minBias" in name):
     process.analyzer.doRate = cms.untracked.bool(True)
 
 process.panalyzer = cms.Path(process.analyzer)
