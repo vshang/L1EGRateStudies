@@ -28,11 +28,11 @@ config.User.voGroup            = 'uscms'
 dataMap = OrderedDict()
 #dataMap['TTbar-PU200'] = {'das' : '/TT_TuneCP5_14TeV-powheg-pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v2/FEVT'}
 #dataMap['minBias-PU200'] = {'das' : '/MinBias_TuneCP5_14TeV-pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_withNewMB_111X_mcRun4_realistic_T15_v1_ext1-v2/FEVT'}
-dataMap['minBias-PU200_v27'] = {'das' : '/MinBias_TuneCP5_14TeV-pythia8/Phase2Fall22DRMiniAOD-PU200_125X_mcRun4_realistic_v2-v1/GEN-SIM-DIGI-RAW-MINIAOD'}
+#dataMap['minBias-PU200_v27'] = {'das' : '/MinBias_TuneCP5_14TeV-pythia8/Phase2Fall22DRMiniAOD-PU200_125X_mcRun4_realistic_v2-v1/GEN-SIM-DIGI-RAW-MINIAOD'}
 #dataMap['VBFHTT-PU200'] = {'das' : '/VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5/Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1/FEVT'}
 #dataMap['VBFHTT-PU200_v27'] = {'das' : '/VBFHToTauTau_M-125_TuneCP5_14TeV-powheg-pythia8/Phase2Fall22DRMiniAOD-PU200_125X_mcRun4_realistic_v2-v1/GEN-SIM-DIGI-RAW-MINIAOD'}
 #dataMap['QCD-PU200'] = {'das' : '/QCD_Pt-15to3000_TuneCP5_Flat_14TeV-pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_castor_111X_mcRun4_realistic_T15_v1-v1/FEVT'}
-#dataMap['QCD-PU200_v27'] = {'das' : '/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/Phase2Fall22DRMiniAOD-PU200_125X_mcRun4_realistic_v2-v1/GEN-SIM-DIGI-RAW-MINIAOD'}
+dataMap['QCD-PU200_v27'] = {'das' : '/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/Phase2Fall22DRMiniAOD-PU200_125X_mcRun4_realistic_v2-v1/GEN-SIM-DIGI-RAW-MINIAOD'}
 
 # dasgoclient --query="dataset dataset=/*/*PhaseIIMTDTDRAutumn18DR*/FEVT"
 # dasgoclient --query="dataset dataset=/VBFHToTauTau*/Phase2HLTTDR*/FEVT"
@@ -60,12 +60,12 @@ if True:
     for k in dataMap.keys() :
 
         # Normal eff and rate analysis
-        config.General.requestName = '20230709_%s_r1_CMSSW_12_5_2_patch1_PallabiJets' % k
+        config.General.requestName = '20230913_%s_r1_CMSSW_12_5_2_patch1_GCTJets' % k
         config.JobType.psetName        = 'r1_crabby_jets.py'
         config.Data.inputDataset = dataMap[ k ][ 'das' ]
-        config.Data.inputBlocks = [
-            dataMap[ k ][ 'das' ] + '#0b9c9825-909a-4fe3-bb4b-80a429017a82',
-        ]
+        # config.Data.inputBlocks = [
+        #     dataMap[ k ][ 'das' ] + '#0b9c9825-909a-4fe3-bb4b-80a429017a82',
+        # ]
         if 'PU200' in k or 'PU140' in k :
             #config.Data.unitsPerJob        = 3 # events / job when using EventAwareLumiBased
             config.Data.unitsPerJob        = 5 # files / job, takes ~ 60min based on 10_5_X MTD samples, 90m for QCD PU200

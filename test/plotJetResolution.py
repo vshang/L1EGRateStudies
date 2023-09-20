@@ -3,10 +3,12 @@ from ROOT import *
 gROOT.SetBatch(True)
 
 #Select and load root files here
-file = 'output_round2_HiggsTauTau'
-date = '05_11_2023'
+#file = 'output_round2_VBFHiggsTauTau1x3'
+file = 'output_round2_QCD'
+date = '09_13_2023'
 print('Opening Tfile...')
-f1 = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_12_5_2_patch1/20230511/' + file + '.root')
+#f1 = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_12_5_2_patch1/20230913/' + file + '.root')
+f1 = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_12_5_2_patch1/20230913/' + file + '.root')
 
 #Set save directory here
 saveDirectory = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/resolutions/CMSSW_12_5_2_patch1/' + date + '/' 
@@ -16,8 +18,8 @@ checkDir( saveDirectory)
 nBins = 50
 xMin = -1
 xMax = 2
-#yMax = 0.2
-yMax = 0.12
+yMax = 0.2
+#yMax = 0.12
 
 #Remove stats box from histograms by setting argument to 0
 gStyle.SetOptStat(0)
@@ -34,13 +36,17 @@ hist_endcap = TH1F('hist_endcap', '; (reco p_{T} - gen p_{T})/gen p_{T}; Number 
 hist_HF = TH1F('hist_HF', '; (reco p_{T} - gen p_{T})/gen p_{T}; Number of jets (normalized)', nBins, xMin, xMax)
 #var = '(jet_pt_calibration - genJet_pt)/genJet_pt'
 #var = '(calibPtHH - genJet_pt)/genJet_pt'
-var = '(tau_pt - genJet_pt)/genJet_pt'
-#var = '(jetEt - genJet_pt)/genJet_pt'
+#var = '(tau_pt - genJet_pt)/genJet_pt'
+var = '(jetEt - genJet_pt)/genJet_pt'
 #var = '(tauEt - genJet_pt)/genJet_pt'
-cut_barrel = 'abs(genJet_eta)<1.2'
+#var = '(calibPtHH - genJet_pt)/genJet_pt'
+#cut_barrel = 'abs(genJet_eta)<1.2'
 #cut_barrel = 'abs(genJet_eta)<1.2 && (genJet_pt > 40 && genJet_pt < 100)'
 #cut_barrel= 'abs(genJet_eta)<1.2 && genJet_pt > 100'
-cut_endcap = 'abs(genJet_eta)>1.6 && abs(genJet_eta)<2.8'
+#cut_endcap = 'abs(genJet_eta)>1.6 && abs(genJet_eta)<2.8'
+#cut_HF = 'abs(genJet_eta)>3.0 && abs(genJet_eta)<6.0'
+cut_barrel = 'abs(genJet_eta)<1.5'
+cut_endcap = 'abs(genJet_eta)>1.5 && abs(genJet_eta)<3.0'
 cut_HF = 'abs(genJet_eta)>3.0 && abs(genJet_eta)<6.0'
 
 #denom_cut_label = '40 < p_{T}^{GenJet} < 100'
@@ -82,8 +88,11 @@ hist_HF.SetLineColor(kRed)
 
 #Draw legend
 legend = TLegend(0.55, 0.65, 0.85, 0.85)
-legend.AddEntry(hist_barrel, '| #eta | < 1.2', 'l')
-legend.AddEntry(hist_endcap, '1.6 < | #eta | < 2.8', 'l')
+# legend.AddEntry(hist_barrel, '| #eta | < 1.2', 'l')
+# legend.AddEntry(hist_endcap, '1.6 < | #eta | < 2.8', 'l')
+# legend.AddEntry(hist_HF, '3.0 < | #eta | < 6.0', 'l')
+legend.AddEntry(hist_barrel, '| #eta | < 1.5', 'l')
+legend.AddEntry(hist_endcap, '1.5 < | #eta | < 3.0', 'l')
 legend.AddEntry(hist_HF, '3.0 < | #eta | < 6.0', 'l')
 legend.Draw('same')
 legend.SetBorderSize(0)
@@ -97,8 +106,7 @@ legend.SetFillStyle(0)
 #Save histograms
 print('Saving plots...')
 #canvas.SaveAs(saveDirectory + file + '_jet_pt_calibration.png')
-#canvas.SaveAs(saveDirectory + file + '_calibPtHH.png')
-canvas.SaveAs(saveDirectory + file + '_tau_pt.png')
-#canvas.SaveAs(saveDirectory + file + '_jetEt_40to100GeV.png')
-#canvas.SaveAs(saveDirectory + file + '_tauEt.png')
+#canvas.SaveAs(saveDirectory + file + '_calibPtHHv2.png')
+canvas.SaveAs(saveDirectory + file + '_jetEtv2.png')
+#canvas.SaveAs(saveDirectory + file + '_tauEtv2.png')
 print('Saved plots')

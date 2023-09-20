@@ -594,3 +594,46 @@ Traceback (most recent call last):
     raise ConfigurationException(msg)
 CRABClient.ClientExceptions.ConfigurationException: [91mError[0m: crab_20230709_VBFHTT-PU200_v27_r1_CMSSW_12_5_2_patch1_PallabiJets_tau is not a valid CRAB project directory.
 INFO 2023-07-10 15:01:50.960 UTC: 	 Log file is /afs/hep.wisc.edu/user/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/crab.log
+DEBUG 2023-08-24 02:16:22.344 UTC: 	 CRAB Client version: v3.230612
+DEBUG 2023-08-24 02:16:22.345 UTC: 	 Running on: Linux login01.hep.wisc.edu 5.4.246-1.el7.elrepo.x86_64 #1 SMP Fri Jun 9 14:57:29 EDT 2023 x86_64 x86_64 x86_64 GNU/Linux - CentOS Linux 7 (Core)
+DEBUG 2023-08-24 02:16:22.345 UTC: 	 Executing command: 'status'
+DEBUG 2023-08-24 02:16:22.346 UTC: 	 Found CRAB cache file /afs/hep.wisc.edu/home/vshang/.crab3
+ERROR 2023-08-24 02:16:22.348 UTC: 	 Error: crab_20230808_VBFHTT-PU200_v27_r1_CMSSW_12_5_2_patch1_GCTTaus_3 is not a valid CRAB project directory.
+ERROR 2023-08-24 02:16:22.348 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230612.00/bin/crab.py", line 159, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230612.00/bin/crab.py", line 144, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230612.00/lib/CRABClient/Commands/status.py", line 48, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230612.00/lib/CRABClient/Commands/SubCommand.py", line 275, in __init__
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230612.00/lib/CRABClient/Commands/SubCommand.py", line 642, in validateOptions
+    raise ConfigurationException(msg)
+CRABClient.ClientExceptions.ConfigurationException: [91mError[0m: crab_20230808_VBFHTT-PU200_v27_r1_CMSSW_12_5_2_patch1_GCTTaus_3 is not a valid CRAB project directory.
+INFO 2023-08-24 02:16:22.382 UTC: 	 Log file is /afs/hep.wisc.edu/user/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/crab.log
+DEBUG 2023-09-13 13:19:19.629 UTC: 	 CRAB Client version: v3.230612
+DEBUG 2023-09-13 13:19:19.630 UTC: 	 Running on: Linux login01.hep.wisc.edu 5.4.246-1.el7.elrepo.x86_64 #1 SMP Fri Jun 9 14:57:29 EDT 2023 x86_64 x86_64 x86_64 GNU/Linux - CentOS Linux 7 (Core)
+DEBUG 2023-09-13 13:19:19.630 UTC: 	 Executing command: 'submit'
+DEBUG 2023-09-13 13:19:19.632 UTC: 	 Found CRAB cache file /afs/hep.wisc.edu/home/vshang/.crab3
+INFO 2023-09-13 13:19:19.637 UTC: 	 Will use CRAB configuration file r1_submit_crab.py
+DEBUG 2023-09-13 13:19:19.637 UTC: 	 Loading CRAB configuration file.
+DEBUG 2023-09-13 13:19:19.683 UTC: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+ERROR 2023-09-13 13:19:19.684 UTC: 	 Working area '/afs/hep.wisc.edu/user/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/crab_20230808_VBFHTT-PU200_v27_r1_CMSSW_12_5_2_patch1_GCTTaus_Cross' already exists 
+Please change the requestName in the config file
+ERROR 2023-09-13 13:19:19.685 UTC: 	 Caught ClientException exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230612.00/bin/crab.py", line 159, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230612.00/bin/crab.py", line 144, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230612.00/lib/CRABClient/Commands/submit.py", line 36, in __init__
+    SubCommand.__init__(self, logger, cmdargs, disable_interspersed_args=True)
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230612.00/lib/CRABClient/Commands/SubCommand.py", line 318, in __init__
+    self.requestarea, self.requestname, self.logfile = createWorkArea(
+  File "/cvmfs/cms.cern.ch/share/cms/crab-prod/v3.230612.00/lib/CRABClient/ClientUtilities.py", line 387, in createWorkArea
+    raise ConfigException("Working area '%s' already exists \nPlease change the requestName in the config file" % fullpath)
+CRABClient.ClientExceptions.ConfigException: Working area '/afs/hep.wisc.edu/user/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/crab_20230808_VBFHTT-PU200_v27_r1_CMSSW_12_5_2_patch1_GCTTaus_Cross' already exists 
+Please change the requestName in the config file
+INFO 2023-09-13 13:19:19.708 UTC: 	 Log file is /afs/hep.wisc.edu/user/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/crab.log
