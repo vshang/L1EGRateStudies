@@ -24,7 +24,7 @@
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -69,7 +69,7 @@
 // 
 // class declaration
 //
-class L1GCTJetStudies : public edm::EDAnalyzer {
+class L1GCTJetStudies : public edm::one::EDAnalyzer<edm::one::SharedResources, edm::one::WatchRuns, edm::one::WatchLuminosityBlocks> {
     typedef BXVector<l1t::Jet> JetBxCollection;
     typedef std::vector<l1t::Jet> JetCollection;
     typedef std::vector<reco::GenJet> GenJetCollection;
@@ -77,18 +77,22 @@ class L1GCTJetStudies : public edm::EDAnalyzer {
     typedef std::vector<l1t::Tau> TauCollection;
 
     public:
-        explicit L1GCTJetStudies(const edm::ParameterSet&);
+        explicit L1GCTJetStudies(const edm::ParameterSet& iConfig);
         ~L1GCTJetStudies();
 
         static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
 
     private:
+        //----edm control---
         virtual void beginJob() ;
         virtual void analyze(const edm::Event&, const edm::EventSetup&);
         virtual void endJob() ;
 
         virtual void beginRun(edm::Run const&, edm::EventSetup const&);
+        virtual void endRun(edm::Run const&, edm::EventSetup const&);
+        virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
+        virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
 
         // -- user functions
         void fill_tree(const l1tp2::Phase2L1CaloJet& caloJet);
@@ -751,28 +755,25 @@ L1GCTJetStudies::beginRun(edm::Run const& run, edm::EventSetup const& es)
 }
 
 // ------------ method called when ending the processing of a run  ------------
-/*
+
 void 
 L1GCTJetStudies::endRun(edm::Run const&, edm::EventSetup const&)
 {
 }
-*/
 
 // ------------ method called when starting to processes a luminosity block  ------------
-/*
+
 void 
 L1GCTJetStudies::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
-*/
 
 // ------------ method called when ending the processing of a luminosity block  ------------
-/*
+
 void 
 L1GCTJetStudies::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
-*/
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void
