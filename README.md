@@ -8,9 +8,9 @@ https://twiki.cern.ch/twiki/bin/view/CMS/Phase2L1CaloJetsAndTaus
 
 #Checkout
 
-First follow the instructions in the main Phase-2 L1Trigger twiki for setting up the CMSSW_12_5_2_patch1 area:
+First follow the instructions in the main Phase-2 L1Trigger twiki for setting up the CMSSW_13_3_0_pre3 area:
 ```
-https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideL1TPhase2Instructions#CMSSW_12_5_2_patch1
+https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideL1TPhase2Instructions#CMSSW_13_3_0_pre3
 ```
 
 Then checkout this analysis code:
