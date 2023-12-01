@@ -29,9 +29,9 @@ process.source = cms.Source("PoolSource",
     dropDescendantsOfDroppedBranches=cms.untracked.bool(False),
 )
 
-out_path = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_12_5_2_patch1/20230913/'
-name = "QCD"
-#name = "minBias1x3"
+out_path = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_13_2_0/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_13_2_0/20231105/'
+name = "QCD_WithEMfrac"
+#name = "minBias"
 #name = 'TTbar'
 # Load samples from external files here:
 from L1Trigger.L1EGRateStudies.loadRound2Files import getSampleFiles
@@ -87,7 +87,7 @@ process.pL1Objs = cms.Path(
 
 #process.analyzer = cms.EDAnalyzer('L1CaloJetStudies',
     #L1CaloJetsInputTag = cms.InputTag("l1tCaloJetProducer","L1CaloJetsNoCuts"),
-process.analyzer = cms.EDAnalyzer('L1GCTJetStudies',
+process.analyzer = cms.EDAnalyzer('L1GCTJetStudiesv2',
     GCTJetsInputTag = cms.InputTag("l1tPhase2CaloJetEmulator","GCTJet"),
     genJets = cms.InputTag("ak4GenJetsNoNu", "", "HLT"),
     genHadronicTauSrc = cms.InputTag("tauGenJetsSelectorAllHadrons"),

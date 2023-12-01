@@ -31,7 +31,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 process.source = cms.Source("PoolSource",
    #fileNames = cms.untracked.vstring(),
    # dasgoclient --query="dataset dataset=/*/*PhaseIIMTDTDRAutumn18DR*/FEVT"
-   #fileNames = cms.untracked.vstring('root://cms-xrd-global.cern.ch//store/mc/PhaseIIMTDTDRAutumn18DR/VBFHToTauTau_M125_14TeV_powheg_pythia8/FEVT/PU200_103X_upgrade2023_realistic_v2-v1/280000/EFC8271A-8026-6A43-AF18-4CB7609B3348.root'),
+   # fileNames = cms.untracked.vstring('root://cms-xrd-global.cern.ch//store/mc/Phase2Fall22DRMiniAOD/SinglePion_Pt-0To200-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/30000/004d15e3-a12f-4ba9-a2f3-4b7277ffa418.root'),
    dropDescendantsOfDroppedBranches=cms.untracked.bool(False),
    inputCommands = cms.untracked.vstring(
                     "keep *",
@@ -52,6 +52,10 @@ process.source = cms.Source("PoolSource",
    )
 )
 
+# ---- For specifying specific event range
+# process.source.eventsToProcess = cms.untracked.VEventRange("1:10722")
+
+
 # ---- Global Tag :
 from Configuration.AlCa.GlobalTag import GlobalTag
 #process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '') 
@@ -65,6 +69,10 @@ process.load('CalibCalorimetry.CaloTPG.CaloTPGTranscoder_cfi')
 
 
 process.L1simulation_step = cms.Path(process.SimL1Emulator)
+
+# Add HGCal module energy splitting
+from L1Trigger.L1THGCal.customTowers import custom_towers_energySplit
+process = custom_towers_energySplit(process)
 
 
 # --------------------------------------------------------------------------------------------

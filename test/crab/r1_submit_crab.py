@@ -60,7 +60,7 @@ if True:
     for k in dataMap.keys() :
 
         # Normal eff and rate analysis
-        config.General.requestName = '20231101_%s_r1_CMSSW_13_2_0_GCTJets' % k
+        config.General.requestName = '20231129_%s_r1_CMSSW_13_2_0_GCTJetsWithHoe' % k
         config.JobType.psetName        = 'r1_crabby_jets.py'
         config.Data.inputDataset = dataMap[ k ][ 'das' ]
         # config.Data.inputBlocks = [
