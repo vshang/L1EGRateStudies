@@ -11,17 +11,17 @@ if not os.path.exists( 'eff_and_rate_roots_taus/' ) : os.makedirs( 'eff_and_rate
 ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
 
-#doTau = True
-doTau = False
+doTau = True
+#doTau = False
 
-#doEff = True
-doEff = False
+doEff = True
+#doEff = False
 
-doPtEff = True
-#doPtEff = False
+#doPtEff = True
+doPtEff = False
 
-doRate = True
-#doRate = False
+#doRate = True
+doRate = False
 
 doRateFirstHalf = True
 #doRateFirstHalf = False
@@ -49,14 +49,14 @@ dirName = 'jets' if not doTau else 'taus'
     
 
 if doEff :
-    #fName = 'output_round2_QCD'
-    fName = 'output_round2_VBFHiggsTauTau'
+    #fName = 'output_round2_QCD_13_1X'
+    fName = 'output_round2_VBFHiggsTauTau_13_1X'
     #fName = 'output_round2_HiggsTauTauCross'
     #fName = 'output_round2_HiggsTauTau_Pallabi'
-    date = '20231101'
-    #base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_13_2_0/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_13_2_0/20231101/'
-    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_13_2_0/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_13_2_0/20231101/'
-    universalSaveDir = "/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_13_2_0/src/L1Trigger/L1EGRateStudies/test/efficiencies/CMSSW_13_2_0/"+dirName+"/"+date+"/"+fName+"/"
+    date = '20240131'
+    #base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/Pallabi/CMSSW_13_2_0/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_13_2_0/20240131/'
+    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/Pallabi/CMSSW_13_2_0/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_13_2_0/20240131/'
+    universalSaveDir = "/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/Pallabi/CMSSW_13_2_0/src/L1Trigger/L1EGRateStudies/test/efficiencies/CMSSW_13_2_0/"+dirName+"/"+date+"/"+fName+"/"
     checkDir( universalSaveDir )
 
     f = ROOT.TFile( base+fName+'.root', 'r' )
@@ -72,29 +72,29 @@ if doEff :
             #pt_cut = 100
             pt_cut = 50
         else:
-            #pt_cut = 80
-            pt_cut = 0
+            pt_cut = 80
+            #pt_cut = 0
 
     """ Pt Eff """
     if doPtEff :
         # Use eta cuts to restrict when doing pT efficiencies
-        #denom_cut = 'abs(genJet_eta)<1.4'
-        #denom_cut = 'abs(genJet_eta)>1.6 && abs(genJet_eta)<2.8'
-        denom_cut = 'abs(genJet_eta)>2.8 && abs(genJet_eta)<5.0'
+        denom_cut = 'abs(genJet_eta)<1.4'
+        #denom_cut2 = 'abs(genJet_eta)>1.6 && abs(genJet_eta)<2.8'
+        #denom_cut2 = 'abs(genJet_eta)>2.8 && abs(genJet_eta)<5.0'
         #denom_cut = 'abs(genJet_eta)<1.5 && abs(jetEta)<5.0'
-        #denom_cut = 'abs(genJet_eta)>1.5 && abs(genJet_eta)<2.4 && abs(jetEta)<5.0'
-        #denom_cut = 'abs(genJet_eta)>2.4 && abs(genJet_eta)<5.0 && abs(jetEta)<5.0'
+        #denom_cut2 = 'abs(genJet_eta)>1.5 && abs(genJet_eta)<2.4 && abs(jetEta)<5.0'
+        #denom_cut3 = 'abs(genJet_eta)>2.4 && abs(genJet_eta)<5.0 && abs(jetEta)<5.0'
         #denom_cut_label = '|#eta^{GenJet}| < 1.5'
-        #denom_cut_label = '1.5 < |#eta^{GenJet}| < 2.4'
-        denom_cut_label = '2.4 < |#eta^{GenJet}| < 5.0'
+        #denom_cut_label2 = '1.5 < |#eta^{GenJet}| < 2.4'
+        #denom_cut_label3 = '2.4 < |#eta^{GenJet}| < 5.0'
         #axis = [160, 0, 400]
         axis = [70, 0, 700] #L1 Trigger Menu Validation settings for Barrel and HF
         #axis = [45, 0, 900] #L1 Trigger Menu Validation settings for Endcap
         if doTau :
             axis = [150, 0, 150]
-            #denom_cut_label = '|#eta^{GenTau}| < 1.4'
-            #denom_cut_label = '1.6 < |#eta^{GenTau}| < 2.8'
-            denom_cut_label = '2.8 < |#eta^{GenTau}| < 5.0'
+            denom_cut_label = '|#eta^{GenTau}| < 1.4'
+            #denom_cut_label2 = '1.6 < |#eta^{GenTau}| < 2.8'
+            #denom_cut_label = '2.8 < |#eta^{GenTau}| < 5.0'
 
         gP2 = make_efficiency_graph( t, denom_cut, p2Obj+' > %i' % pt_cut, 'genJet_pt', axis )
         #gP22 = make_efficiency_graph( t, denom_cut2, p2Obj+' > %i' % pt_cut, 'genJet_pt', axis )
@@ -109,8 +109,8 @@ if doEff :
         if doTau:
             denom_pt = 40
         else:
-            #denom_pt = 100
-            denom_pt = 40
+            denom_pt = 100
+            #denom_pt = 40
         denom_cut = '(genJet_pt > %i)' % denom_pt
         #denom_cut = '(genJet_pt > %i && genJet_pt < 100)' % denom_pt
         denom_cut_label = 'p_{T}^{GenJet} > %i GeV' % denom_pt
@@ -128,10 +128,10 @@ if doEff :
     gP2.SetLineWidth(2)
     #gP22.SetLineColor(ROOT.kBlue)
     #gP22.SetLineWidth(2)
-    #gS2.SetLineColor(ROOT.kBlack)
+    #gS2.SetLineColor(ROOT.kGreen)
     #gS2.SetLineWidth(2)
-    #gS22.SetLineColor(ROOT.kBlue)
-    #gS22.SetLineWidth(2)
+    # gS22.SetLineColor(ROOT.kBlue)
+    # gS22.SetLineWidth(2)
     
 
     #mg = ROOT.TMultiGraph("mg", "L1 %s Efficiency" % text)
@@ -170,12 +170,9 @@ if doEff :
     
     txt = ROOT.TLatex()
     txt.SetTextSize(0.045)
-    #txt.DrawLatexNDC(.12, .85,  "Baseline:")
-    #txt.DrawLatexNDC(.12, .81,  "   %s" % denom_cut)
     txt.DrawLatexNDC(.12, .83,  "%s" % denom_cut_label)
-    #txt.DrawLatexNDC(.12, .81,  " 1.6<abs(genJet_eta)<2.8") 
     if doTau:
-        txt.DrawLatexNDC(.12, .76, "p_{T}^{CaloTau} > %i GeV" % pt_cut)
+        txt.DrawLatexNDC(.12, .76, "p_{T}^{GCTTau} > %i GeV" % pt_cut)
     else:
         txt.DrawLatexNDC(.12, .76, "p_{T}^{GCTJet} > %i GeV" % pt_cut)
     #txt.DrawLatexNDC(.12, .69, "|#eta^{CaloJet}| < 5.0")
@@ -183,10 +180,8 @@ if doEff :
     #leg = setLegStyle(0.5,0.3,0.9,0.7)
     leg = setLegStyle(0.55,0.74,0.88,0.88)
     leg.SetFillStyle(0)
-    #leg.AddEntry(gS2, "Phase-I %s" % text,"lpe")
-    #leg.AddEntry(gS22, "Phase-I Iso %s" % text,"lpe")
     leg.AddEntry(gP2, "GCT%s" % text,"lpe")
-    #leg.AddEntry(gP2, "GCT%s, " % text + denom_cut_label1,"lpe")
+    #leg.AddEntry(gP2, "GCT%s, " % text + denom_cut_label,"lpe")
     #leg.AddEntry(gP22, "GCT%s, " % text + denom_cut_label2,"lpe")
     #leg.AddEntry(gS2, "GCT%s, " % text + denom_cut_label3,"lpe")
     #if doTau:
@@ -197,19 +192,19 @@ if doEff :
     
     app = 'ptEff' if doPtEff else 'etaEff_ptDenom%i' % denom_pt
     #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_include_S2Iso.png' % (pt_cut, app) )
-    c.SaveAs( universalSaveDir + fName + '_'+p2Obj+'_ptThreshold%i_%s_HF.png' % (pt_cut, app) )
+    c.SaveAs( universalSaveDir + fName + '_'+p2Obj+'_ptThreshold%i_%s.pdf' % (pt_cut, app) )
     #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_IsoTaus_NoS2.png' % (pt_cut, app) )
     #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_HGCal.png' % (pt_cut, app) )
 
 """ MAKE RATES """
 if doRate :
 
-    fName = 'output_round2_minBias'
+    fName = 'output_round2_minBias_13_1X'
     #fName = 'output_round2_minBias1x3'
-    date = '20231101'
-    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_13_2_0/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_13_2_0/20231101/'
-    #base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_13_2_0/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_13_2_0/20231101/'
-    universalSaveDir = "/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_13_2_0/src/L1Trigger/L1EGRateStudies/test/rates/CMSSW_13_2_0/"+dirName+"/"+date+"/"+fName+"/"
+    date = '20240131'
+    #base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/Pallabi/CMSSW_13_2_0/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_13_2_0/20240131/'
+    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/Pallabi/CMSSW_13_2_0/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_13_2_0/20240131/'
+    universalSaveDir = "/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/Pallabi/CMSSW_13_2_0/src/L1Trigger/L1EGRateStudies/test/rates/CMSSW_13_2_0/"+dirName+"/"+date+"/"+fName+"/"
     checkDir( universalSaveDir )
 
 
@@ -239,7 +234,7 @@ if doRate :
     eta_thresholds['barrel'] = [0., 1.5, ROOT.kRed]
     #eta_thresholds['barrel'] = [0., 1.4, ROOT.kRed]
     eta_thresholds['hgcal']  = [1.5, 3.0, ROOT.kBlue]
-    if True:#if not doTau :
+    if not doTau :
         eta_thresholds['hf']     = [3.0, 6.0, ROOT.kGreen+3]
 
     #Victor's edit: redefined eta_thresholds to plot track matched and unmatched rates on same plot
@@ -282,7 +277,7 @@ if doRate :
         assert(0)
     
     colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kGreen, ROOT.kOrange, ROOT.kGray+2]
-    saveName = 'output_round2_minBias'
+    saveName = 'output_round2_minBias_13_1X'
     #saveName = 'output_round2_minBias1x3'
     x_info_rebin = [100, 0, 160]
 
@@ -409,6 +404,6 @@ if doRate :
         
         
         #c.SaveAs( universalSaveDir + fName +  '_CalibPtHH_rate_'+plot+'.png' )
-        c.SaveAs( universalSaveDir + fName +  '_tauEt_rate_'+plot+'.png' )
-        #c.SaveAs( universalSaveDir + fName +  '_jetEt_rate_'+plot+'.png' )
+        c.SaveAs( universalSaveDir + fName +  '_tauEt_rate_'+plot+'.pdf' )
+        #c.SaveAs( universalSaveDir + fName +  '_jetEt_rate_'+plot+'.pdf' )
         #c.SaveAs( universalSaveDir + saveName +  '_Calib_double_rate_'+plot+'.pdf' ) ##Uncomment when making double tau rate plot

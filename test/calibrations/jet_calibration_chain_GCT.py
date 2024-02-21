@@ -27,7 +27,11 @@ def check_calibration_py_cfg( quantile_map ) :
 
 
 def prepare_calibration_py_cfg( quantile_map, doTaus=False ) :
-    o_file = open('L1CaloJetCalibrations_cfi.py', 'w')
+    if doTaus:
+        fileName = 'L1CaloTauCalibrations_cfi.py'
+    else:
+        fileName = 'L1CaloJetCalibrations_cfi.py'
+    o_file = open(fileName, 'w')
     o_file.write( "import FWCore.ParameterSet.Config as cms\n\n" )
     for k, v in quantile_map.items() :
         print(k, v)
@@ -63,51 +67,51 @@ def prepare_tau_calo_region_calibrations( calo_region_name, eta_min, eta_max, o_
     for k, v in quantile_map.items() :
 
         # Check this entry is in the correct eta range
-        if v[3] < eta_min : continue
-        if v[4] > eta_max : continue
+        if v[0] < eta_min : continue
+        if v[1] > eta_max : continue
 
         # continue if not increasing value
-        if v[4] <= abs_eta_list[-1] : continue
-        abs_eta_list.append( v[4] )
-        o_file.write( ",%.2f" % v[4] )
+        if v[1] <= abs_eta_list[-1] : continue
+        abs_eta_list.append( v[1] )
+        o_file.write( ",%.2f" % v[1] )
     o_file.write( "]),\n" )
     print(abs_eta_list)
 
-    # L1EG binning
-    # EM fraction is unique for each L1EG scenario
-    o_file.write( "\ttauL1egInfo%s = cms.VPSet(\n" % calo_region_name )
-    l1eg_map = {
-        '0L1EG' : 0,
-        '1L1EG' : 1,
-        'Gtr1L1EG' : 2,
-        'All' : 0,
-    }
-    em_frac_map = OrderedDict()
-    for k, v in quantile_map.items() :
+    # # L1EG binning
+    # # EM fraction is unique for each L1EG scenario
+    # o_file.write( "\ttauL1egInfo%s = cms.VPSet(\n" % calo_region_name )
+    # l1eg_map = {
+    #     '0L1EG' : 0,
+    #     '1L1EG' : 1,
+    #     'Gtr1L1EG' : 2,
+    #     'All' : 0,
+    # }
+    # em_frac_map = OrderedDict()
+    # for k, v in quantile_map.items() :
 
-        # Check this entry is in the correct eta range
-        if v[3] < eta_min : continue
-        if v[4] > eta_max : continue
+    #     # Check this entry is in the correct eta range
+    #     if v[3] < eta_min : continue
+    #     if v[4] > eta_max : continue
 
-        # Check that this L1EG scenario has been added to map
-        if v[0] not in em_frac_map.keys() :
-            em_frac_map[ v[0] ] = [0.0,]
+    #     # Check that this L1EG scenario has been added to map
+    #     if v[0] not in em_frac_map.keys() :
+    #         em_frac_map[ v[0] ] = [0.0,]
 
-        # continue if not increasing value
-        if v[2] <= em_frac_map[v[0]][-1] : continue
-        if v[2] == 1.0 : # Need to go a little higher to catch rounding issues
-            em_frac_map[v[0]].append( 1.05 )
-        else :
-            em_frac_map[v[0]].append( v[2] )
-    for k, v in em_frac_map.items() :
-        print(k, v)
-        float_to_str = [str(i) for i in v]
-        to_print = ", ".join(float_to_str)
-        o_file.write( "\t\tcms.PSet(\n" )
-        o_file.write( "\t\t\tl1egCount = cms.double( %.1f ),\n" % l1eg_map[k] )
-        o_file.write( "\t\t\tl1egEmFractions = cms.vdouble([ %s]),\n" % to_print )
-        o_file.write( "\t\t),\n" )
-    o_file.write( "\t),\n" )
+    #     # continue if not increasing value
+    #     if v[2] <= em_frac_map[v[0]][-1] : continue
+    #     if v[2] == 1.0 : # Need to go a little higher to catch rounding issues
+    #         em_frac_map[v[0]].append( 1.05 )
+    #     else :
+    #         em_frac_map[v[0]].append( v[2] )
+    # for k, v in em_frac_map.items() :
+    #     print(k, v)
+    #     float_to_str = [str(i) for i in v]
+    #     to_print = ", ".join(float_to_str)
+    #     o_file.write( "\t\tcms.PSet(\n" )
+    #     o_file.write( "\t\t\tl1egCount = cms.double( %.1f ),\n" % l1eg_map[k] )
+    #     o_file.write( "\t\t\tl1egEmFractions = cms.vdouble([ %s]),\n" % to_print )
+    #     o_file.write( "\t\t),\n" )
+    # o_file.write( "\t),\n" )
 
     # Now huge loop of values for each bin
     o_file.write( "\ttauCalibrations%s = cms.vdouble([\n" % calo_region_name )
@@ -117,8 +121,8 @@ def prepare_tau_calo_region_calibrations( calo_region_name, eta_min, eta_max, o_
     for k, v in quantile_map.items() :
 
         # Check this entry is in the correct eta range
-        if v[3] < eta_min : continue
-        if v[4] > eta_max : continue
+        if v[0] < eta_min : continue
+        if v[1] > eta_max : continue
 
         val_string = ''
         # Use this version when grabbing the value from the fit TF1
@@ -142,24 +146,24 @@ def prepare_tau_calo_region_calibrations( calo_region_name, eta_min, eta_max, o_
 
 def prepare_calo_region_calibrations( calo_region_name, eta_min, eta_max, o_file, quantile_map ) :
     pt_binning_array = get_x_binning()
-    # EM fraction
-    o_file.write( "\temFractionBins%s = cms.vdouble([ 0.00" % calo_region_name )
-    em_frac_list = [0.0,]
-    for k, v in quantile_map.items() :
+    # # EM fraction
+    # o_file.write( "\temFractionBins%s = cms.vdouble([ 0.00" % calo_region_name )
+    # em_frac_list = [0.0,]
+    # for k, v in quantile_map.items() :
 
-        # Check this entry is in the correct eta range
-        if v[2] < eta_min : continue
-        if v[3] > eta_max : continue
+    #     # Check this entry is in the correct eta range
+    #     if v[2] < eta_min : continue
+    #     if v[3] > eta_max : continue
 
-        # continue if not increasing value
-        if v[1] <= em_frac_list[-1] : continue
-        em_frac_list.append( v[1] )
-        if v[1] == 1.0 : # Need to go a little higher to catch rounding issues
-            o_file.write( ",1.05" )
-        else :
-            o_file.write( ",%.2f" % v[1] )
-    o_file.write( "]),\n" )
-    print(em_frac_list)
+    #     # continue if not increasing value
+    #     if v[1] <= em_frac_list[-1] : continue
+    #     em_frac_list.append( v[1] )
+    #     if v[1] == 1.0 : # Need to go a little higher to catch rounding issues
+    #         o_file.write( ",1.05" )
+    #     else :
+    #         o_file.write( ",%.2f" % v[1] )
+    # o_file.write( "]),\n" )
+    # print(em_frac_list)
 
     # Eta binning
     o_file.write( "\tabsEtaBins%s = cms.vdouble([ %.2f" % (calo_region_name, eta_min) )
@@ -167,13 +171,13 @@ def prepare_calo_region_calibrations( calo_region_name, eta_min, eta_max, o_file
     for k, v in quantile_map.items() :
 
         # Check this entry is in the correct eta range
-        if v[2] < eta_min : continue
-        if v[3] > eta_max : continue
+        if v[0] < eta_min : continue
+        if v[1] > eta_max : continue
 
         # continue if not increasing value
-        if v[3] <= abs_eta_list[-1] : continue
-        abs_eta_list.append( v[3] )
-        o_file.write( ",%.2f" % v[3] )
+        if v[1] <= abs_eta_list[-1] : continue
+        abs_eta_list.append( v[1] )
+        o_file.write( ",%.2f" % v[1] )
     o_file.write( "]),\n" )
     print(abs_eta_list)
         
@@ -185,8 +189,8 @@ def prepare_calo_region_calibrations( calo_region_name, eta_min, eta_max, o_file
     for k, v in quantile_map.items() :
 
         # Check this entry is in the correct eta range
-        if v[2] < eta_min : continue
-        if v[3] > eta_max : continue
+        if v[0] < eta_min : continue
+        if v[1] > eta_max : continue
 
         val_string = ''
         # Use this version when grabbing the value from the fit TF1
@@ -466,10 +470,10 @@ def calibrate_tau( quantile_map, abs_jet_eta, jet_pt, jet_pt_binning, useBins=Fa
 if '__main__' in __name__ :
 
     # Commands
-    #doJets = False
-    #doTaus = True
-    doJets = True
-    doTaus = False
+    doJets = False
+    doTaus = True
+    #doJets = True
+    #doTaus = False
 
     make_calibrations = False
     apply_phase2_calibrations = False
@@ -479,21 +483,21 @@ if '__main__' in __name__ :
 
     # Uncomment to run!
     #make_calibrations = True
-    apply_phase2_calibrations = True
+    #apply_phase2_calibrations = True
     #apply_stage2_calibrations = True
-    #prepare_calibration_cfg = True
+    prepare_calibration_cfg = True
     #plot_calibrated_results = True
 
-    #base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_12_5_2_patch1/20230913/'
-    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_12_5_2_patch1/20230913/'
+    #base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/Pallabi/CMSSW_13_2_0/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_13_2_0/20231203/'
+    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/Pallabi/CMSSW_13_2_0/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_13_2_0/20231203/'
 
     shapes = [
         # R2
         #'output_round2_QCD',
-        #'output_round2_VBFHiggsTauTau1x3',
+        #'output_round2_VBFHiggsTauTau',
         #'output_round2_TTbar'
         #'output_round2_HiggsTauTau_Pallabi',
-        'output_round2_minBias1x3',
+        'output_round2_minBias',
     ]
 
     for shape in shapes :
@@ -503,7 +507,7 @@ if '__main__' in __name__ :
         jetsF0 = '%s.root' % shape
         date = jetsF0.replace('merged_','').replace('.root','')
         date = base.split('/')[-2].replace('l1CaloJets_','')+shape
-        plotDir = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab'+date+'Vxy1'
+        plotDir = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/Pallabi/CMSSW_13_2_0/src/L1Trigger/L1EGRateStudies/test/crab'+date+'Vxy1'
         if not os.path.exists( plotDir ) : os.makedirs( plotDir )
 
         c = ROOT.TCanvas('c', '', 800, 700)
@@ -535,7 +539,7 @@ if '__main__' in __name__ :
                 quantile_map = get_quantile_map( 'jet_em_calibrations_'+version+'.root' )
                 add_jet_calibration( base+jetsF0, quantile_map )
             if doTaus :
-                version = 'VBFHiggsTauTau1x3'
+                version = 'VBFHiggsTauTau'
                 quantile_map = get_quantile_map( 'tau_pt_calibrations_'+version+'.root ')
                 add_tau_calibration( base+jetsF0, quantile_map )
         """ Prepare cfg calibration code snippet """
@@ -543,8 +547,10 @@ if '__main__' in __name__ :
             version = shape.split('_')[-1]
             ###version = 'v7'
             if doJets :
+                version = 'QCD'
                 quantile_map = get_quantile_map( 'jet_em_calibrations_'+version+'.root' )
             if doTaus :
+                version = 'VBFHiggsTauTau'
                 quantile_map = get_quantile_map( 'tau_pt_calibrations_'+version+'.root ')
             ####check_calibration_py_cfg( quantile_map )
             prepare_calibration_py_cfg( quantile_map, doTaus )
