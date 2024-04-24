@@ -1,0 +1,140 @@
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =   0.00617424
+NDf                       =           12
+Edm                       =  1.80873e-06
+NCalls                    =          115
+y rise                    =      1.11453   +/-   0.0114782   
+scale                     =      1.17152   +/-   0.100617    
+decay                     =    0.0610536   +/-   0.00565526  
+Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240404output_round2_VBFHiggsTauTau_13_1X_nocalib3GeVmaxTT12jetsVxy1/tauEt_Calibrations_absEta0p0_to_0p3.png has been created
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =    0.0051753
+NDf                       =           12
+Edm                       =  4.45353e-06
+NCalls                    =          107
+y rise                    =      1.09383   +/-   0.011406    
+scale                     =      1.06983   +/-   0.0745496   
+decay                     =    0.0536515   +/-   0.00455369  
+Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240404output_round2_VBFHiggsTauTau_13_1X_nocalib3GeVmaxTT12jetsVxy1/tauEt_Calibrations_absEta0p3_to_0p6.png has been created
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =     0.010692
+NDf                       =           12
+Edm                       =  7.50135e-07
+NCalls                    =          119
+y rise                    =      1.10554   +/-   0.0162973   
+scale                     =       1.1717   +/-   0.120533    
+decay                     =    0.0565735   +/-   0.00681935  
+Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240404output_round2_VBFHiggsTauTau_13_1X_nocalib3GeVmaxTT12jetsVxy1/tauEt_Calibrations_absEta0p6_to_1p0.png has been created
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =    0.0133593
+NDf                       =           12
+Edm                       =  9.34341e-06
+NCalls                    =          131
+y rise                    =      1.14814   +/-   0.016413    
+scale                     =      2.18547   +/-   0.158507    
+decay                     =    0.0640931   +/-   0.00482093  
+Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240404output_round2_VBFHiggsTauTau_13_1X_nocalib3GeVmaxTT12jetsVxy1/tauEt_Calibrations_absEta1p0_to_1p5.png has been created
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =    0.0631391
+NDf                       =           12
+Edm                       =  5.51205e-06
+NCalls                    =          160
+y rise                    =      1.28195   +/-   0.0308254   
+scale                     =      3.53814   +/-   0.733791    
+decay                     =    0.0908777   +/-   0.0144684   
+Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240404output_round2_VBFHiggsTauTau_13_1X_nocalib3GeVmaxTT12jetsVxy1/tauEt_Calibrations_absEta1p5_to_1p9.png has been created
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =    0.0764526
+NDf                       =           12
+Edm                       =  1.27595e-07
+NCalls                    =          169
+y rise                    =       1.3532   +/-   0.0355112   
+scale                     =      2.81934   +/-   0.752514    
+decay                     =    0.0849971   +/-   0.0181734   
+Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240404output_round2_VBFHiggsTauTau_13_1X_nocalib3GeVmaxTT12jetsVxy1/tauEt_Calibrations_absEta1p9_to_2p4.png has been created
+****************************************
+Minimizer is Minuit2 / Migrad
+Chi2                      =     0.039709
+NDf                       =           12
+Edm                       =  8.34204e-06
+NCalls                    =          152
+y rise                    =      1.05128   +/-   0.0200428   
+scale                     =      8.45475   +/-   0.761486    
+decay                     =     0.113828   +/-   0.00633183  
+Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240404output_round2_VBFHiggsTauTau_13_1X_nocalib3GeVmaxTT12jetsVxy1/tauEt_Calibrations_absEta2p4_to_3p0.png has been created
+Name: /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_14_0_0_pre3/20240404/output_round2_VBFHiggsTauTau_13_1X_nocalib3GeVmaxTT12jets.root Title: 
+Quantile List:
+[0, 1.0]
+abs(jetEta)>=0.0 && abs(jetEta)<=0.3
+Hello1
+helloTau
+Name: 0_absEta_0p0_to_0p3 Title: 0_absEta_0p0_to_0p3
+abs(jetEta)>=0.3 && abs(jetEta)<=0.6
+Hello1
+helloTau
+Name: 0_absEta_0p3_to_0p6 Title: 0_absEta_0p3_to_0p6
+abs(jetEta)>=0.6 && abs(jetEta)<=1.0
+Hello1
+helloTau
+Name: 0_absEta_0p6_to_1p0 Title: 0_absEta_0p6_to_1p0
+abs(jetEta)>=1.0 && abs(jetEta)<=1.5
+Hello1
+helloTau
+Name: 0_absEta_1p0_to_1p5 Title: 0_absEta_1p0_to_1p5
+abs(jetEta)>=1.5 && abs(jetEta)<=1.9
+Hello1
+helloTau
+Name: 0_absEta_1p5_to_1p9 Title: 0_absEta_1p5_to_1p9
+abs(jetEta)>=1.9 && abs(jetEta)<=2.4
+Hello1
+helloTau
+Name: 0_absEta_1p9_to_2p4 Title: 0_absEta_1p9_to_2p4
+abs(jetEta)>=2.4 && abs(jetEta)<=3.0
+Hello1
+helloTau
+Name: 0_absEta_2p4_to_3p0 Title: 0_absEta_2p4_to_3p0
+Calibrating with file: tau_pt_calibrations_nocalib3GeVmaxTT12jets.root 
+
+
+
+FIXME - what happened to ROOT in 10_5_X
+Why are these errors here?
+The code appears to work with my fix
+
+Adding Phase-2 calibration branch to ttree. UseBinnedPt = True
+10000
+20000
+30000
+40000
+50000
+60000
+70000
+80000
+90000
+100000
+110000
+120000
+Calibrating with file: tau_pt_calibrations_nocalib3GeVmaxTT12jets.root 
+
+
+
+FIXME - what happened to ROOT in 10_5_X
+Why are these errors here?
+The code appears to work with my fix
+
+0_absEta_0p0_to_0p3_fit [0.0, 0.3, <cppyy.gbl.TF1 object at 0x742b670>]
+0_absEta_0p3_to_0p6_fit [0.3, 0.6, <cppyy.gbl.TF1 object at 0x7472e90>]
+0_absEta_0p6_to_1p0_fit [0.6, 1.0, <cppyy.gbl.TF1 object at 0x73ca2e0>]
+0_absEta_1p0_to_1p5_fit [1.0, 1.5, <cppyy.gbl.TF1 object at 0x7816bb0>]
+0_absEta_1p5_to_1p9_fit [1.5, 1.9, <cppyy.gbl.TF1 object at 0x742ab50>]
+0_absEta_1p9_to_2p4_fit [1.9, 2.4, <cppyy.gbl.TF1 object at 0x8e77330>]
+0_absEta_2p4_to_3p0_fit [2.4, 3.0, <cppyy.gbl.TF1 object at 0x7472350>]
+[10.0, 15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0, 50.0, 55.0, 60.0, 70.0, 80.0, 100.0, 150.0, 200.0]
+[0.0, 0.3, 0.6, 1.0, 1.5]
+[1.5, 1.9, 2.4, 3.0]

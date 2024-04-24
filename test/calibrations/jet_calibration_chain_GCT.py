@@ -1,10 +1,11 @@
+
 import ROOT
 import os
 from array import array
 from collections import OrderedDict
 import L1Trigger.L1EGRateStudies.trigHelpers as trigHelpers
 from caloJetPtCalibrationsGCT import getTH1, getTH2, getTH2VarBin, \
-    drawPointsHists, drawPointsHists3, make_jet_calibrations, \
+    drawPointsHists, drawPointsHists2, make_jet_calibrations, \
     get_x_binning, drawPointsSingleHist, make_tau_calibrations
 import ctypes
 
@@ -60,7 +61,7 @@ def prepare_calibration_py_cfg( quantile_map, doTaus=False ) :
     o_file.close()
 
 def prepare_tau_calo_region_calibrations( calo_region_name, eta_min, eta_max, o_file, quantile_map ) :
-    pt_binning_array = get_x_binning('Tau')
+    pt_binning_array = get_x_binning('tau')
     # Eta binning
     o_file.write( "\ttauAbsEtaBins%s = cms.vdouble([ %.2f" % (calo_region_name, eta_min) )
     abs_eta_list = [eta_min,]
@@ -470,10 +471,10 @@ def calibrate_tau( quantile_map, abs_jet_eta, jet_pt, jet_pt_binning, useBins=Fa
 if '__main__' in __name__ :
 
     # Commands
-    doJets = False
-    doTaus = True
-    #doJets = True
-    #doTaus = False
+    # doJets = False
+    # doTaus = True
+    doJets = True
+    doTaus = False
 
     make_calibrations = False
     apply_phase2_calibrations = False
@@ -483,21 +484,23 @@ if '__main__' in __name__ :
 
     # Uncomment to run!
     #make_calibrations = True
-    #apply_phase2_calibrations = True
+    apply_phase2_calibrations = True
     #apply_stage2_calibrations = True
-    prepare_calibration_cfg = True
+    #prepare_calibration_cfg = True
     #plot_calibrated_results = True
 
-    #base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/Pallabi/CMSSW_13_2_0/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_13_2_0/20231203/'
-    base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/Pallabi/CMSSW_13_2_0/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_13_2_0/20231203/'
+    if doTaus:
+        base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_14_0_0_pre3/20240404/'
+    else:
+        base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_14_0_0_pre3/20240404/'
 
     shapes = [
         # R2
-        #'output_round2_QCD',
-        #'output_round2_VBFHiggsTauTau',
+        #'output_round2_QCD_13_1X_nocalib3GeVmaxTT12jets',
+        #'output_round2_VBFHiggsTauTau_13_1X_nocalib3GeVmaxTT12jets',
         #'output_round2_TTbar'
         #'output_round2_HiggsTauTau_Pallabi',
-        'output_round2_minBias',
+        'output_round2_minBias_13_1X_nocalib3GeVmaxTT12jets',
     ]
 
     for shape in shapes :
@@ -507,7 +510,7 @@ if '__main__' in __name__ :
         jetsF0 = '%s.root' % shape
         date = jetsF0.replace('merged_','').replace('.root','')
         date = base.split('/')[-2].replace('l1CaloJets_','')+shape
-        plotDir = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/Pallabi/CMSSW_13_2_0/src/L1Trigger/L1EGRateStudies/test/crab'+date+'Vxy1'
+        plotDir = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab'+date+'Vxy1'
         if not os.path.exists( plotDir ) : os.makedirs( plotDir )
 
         c = ROOT.TCanvas('c', '', 800, 700)
@@ -535,11 +538,11 @@ if '__main__' in __name__ :
         if apply_phase2_calibrations :
             version = shape.split('_')[-1]
             if doJets :
-                version = 'QCD'
+                version = 'nocalib3GeVmaxTT12jets'
                 quantile_map = get_quantile_map( 'jet_em_calibrations_'+version+'.root' )
                 add_jet_calibration( base+jetsF0, quantile_map )
             if doTaus :
-                version = 'VBFHiggsTauTau'
+                version = 'nocalib3GeVmaxTT12jets'
                 quantile_map = get_quantile_map( 'tau_pt_calibrations_'+version+'.root ')
                 add_tau_calibration( base+jetsF0, quantile_map )
         """ Prepare cfg calibration code snippet """
@@ -547,10 +550,10 @@ if '__main__' in __name__ :
             version = shape.split('_')[-1]
             ###version = 'v7'
             if doJets :
-                version = 'QCD'
+                version = 'nocalib3GeVmaxTT12jets'
                 quantile_map = get_quantile_map( 'jet_em_calibrations_'+version+'.root' )
             if doTaus :
-                version = 'VBFHiggsTauTau'
+                version = 'nocalib3GeVmaxTT12jets'
                 quantile_map = get_quantile_map( 'tau_pt_calibrations_'+version+'.root ')
             ####check_calibration_py_cfg( quantile_map )
             prepare_calibration_py_cfg( quantile_map, doTaus )
@@ -587,33 +590,27 @@ if '__main__' in __name__ :
                 if 'Tau' in jetsF0 and k == 'hf' : continue
 
 
-                tau_pt = "(ecal_3x5 + l1eg_3x5 + hcal_3x5)"
+                tau_pt = "tauEt"
                 if 'Tau' in jetsF0 :
                     to_plot = tau_pt+'/genJet_pt:genJet_pt'
                     h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
                     to_plot = '( calibPtHH )/genJet_pt:genJet_pt'
                     h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
-                    #to_plot = '(stage2tau_pt)/genJet_pt:genJet_pt'
-                    to_plot = '(stage2tau_pt_calibration3)/genJet_pt:genJet_pt'
-                    h3 = getTH2( tree, 's2', to_plot, cut, x_and_y_bins )
-                    title1 = "Phase-II CaloTau, raw "+k
-                    title2 = "Phase-II CaloTau, Calib "+k
-                    title3 = "Phase-I CaloTau, Calib "+k
+                    title1 = "Phase-2 GCTTau, raw "+k
+                    title2 = "Phase-2 GCTTau, Calib "+k
                 else :
-                    to_plot = '(jet_pt)/genJet_pt:genJet_pt'
+                    to_plot = '(jetEt)/genJet_pt:genJet_pt'
                     h1 = getTH2( tree, 'qcd1', to_plot, cut, x_and_y_bins )
-                    #to_plot = '(jet_pt_calibration)/genJet_pt:genJet_pt'
                     to_plot = '( calibPtHH )/genJet_pt:genJet_pt'
                     h2 = getTH2( tree, 'qcd2', to_plot, cut, x_and_y_bins )
-                    #to_plot = '(stage2jet_pt)/genJet_pt:genJet_pt'
-                    to_plot = '(stage2jet_pt_calib)/genJet_pt:genJet_pt'
-                    h3 = getTH2( tree, 's2', to_plot, cut, x_and_y_bins )
-                    title1 = "Phase-II CaloJet, raw "+k
-                    title2 = "Phase-II CaloJet, EM Frac Calib "+k
-                    title3 = "Phase-I CaloJet "+k
+                    title1 = "Phase-2 GCTJet, raw "+k
+                    title2 = "Phase-2 GCTJet, Calib "+k
                 xaxis = "Gen Jet P_{T} (GeV)"
                 yaxis = "Relative Error in P_{T} reco/gen"
-                c.SetTitle("genJetPt_Tau_"+k)
+                if 'Tau' in jetsF0:
+                    c.SetTitle("genTauEt_"+k)
+                else:
+                    c.SetTitle("genJetEt_"+k)
                 areaNorm = True
                 #areaNorm = False
-                drawPointsHists3(c.GetTitle(), h1, h2, h3, title1, title2, title3, xaxis, yaxis, areaNorm, plotDir)
+                drawPointsHists2(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis, areaNorm, plotDir)

@@ -379,7 +379,7 @@ def drawPointsHists(saveName, h1, h2, title1, title2, xaxis, yaxis, new=False, p
     c2.cd(2)
     ROOT.gPad.SetRightMargin( ROOT.gPad.GetRightMargin() * 1.4 )
     h2.SetTitle( title2 )
-    h2.Draw("colz")
+    h2.Daw("colz")
     ROOT.gPad.SetGrid()
     h2.GetXaxis().SetTitle( xaxis )
     h2.GetYaxis().SetTitle( yaxis )
@@ -703,9 +703,9 @@ def make_tau_calibrations( c, fName, cut, plotBase ) :
                 to_plot = 'genJet_pt/'+tau_pt+':'+tau_pt
                 h2 = getTH2VarBin( tree, 'taus2', to_plot, frac_cut, x_and_y_bins )
                 xaxis = "Tau 3x5 P_{T} (GeV)"
-                yaxis = "Gen Jet pT - (ECAL+L1EG) / [ HCAL ]"
-                title1 = "(genJet_pt - (l1eg_3x5 + ecal_3x5))/hcal_3x5"# - EM %.2f to %.2f" % (f_low, f_high)
-                title2 = "genJet_pt/tau_pt"
+                yaxis = "Gen Tau pT - (ECAL+L1EG) / [ HCAL ]"
+                title1 = "(genTau_pt - (l1eg_3x5 + ecal_3x5))/hcal_3x5"# - EM %.2f to %.2f" % (f_low, f_high)
+                title2 = "genTau_pt/tau_pt"
                 c.SetTitle("tauPt_HTT_%s_absEta%s_to_%s_EM_frac_%s_to_%s" % (k, eta[0].replace('.','p'), eta[1].replace('.','p'), str(f_low).replace('.','p'), str(f_high).replace('.','p')))
                 g_and_fit = drawPointsHists(c.GetTitle(), h1, h2, title1, title2, xaxis, yaxis, False, plotBase, True)
                 g = g_and_fit[0]

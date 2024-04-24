@@ -5,12 +5,12 @@ gROOT.SetBatch(True)
 #Select and load root files here
 #file = 'output_round2_QCD'
 #file = 'output_round2_QCD_Pallabi'
-file = 'output_round2_minBias_Pallabi_5GeVthreshold'
-#file = 'output_round2_minBias_Pallabi'
-date = '06_01_2023'
+#file = 'output_round2_minBias_13_1X_nocalib5GeVseed12jets'
+file = 'output_round2_minBias_13_1X_nocalib5GeVmaxTT12jets'
+date = '03_21_2024'
 print('Opening Tfile...')
-f1 = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_12_5_2_patch1/20230601/' + file + '.root')
-
+#f1 = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_14_0_0_pre3/20240319/' + file + '.root')
+f1 = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_14_0_0_pre3/20240321/' + file + '.root')
 #Set save directory here
 saveDirectory = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_5_2_patch1/src/L1Trigger/L1EGRateStudies/test/jetpT/CMSSW_12_5_2_patch1/' + date + '/' 
 checkDir( saveDirectory)
@@ -36,14 +36,15 @@ hist_barrel = TH1F('hist_barrel', '; reco p_{T}; Number of jets (normalized)', n
 #hist_endcap = TH1F('hist_endcap', '; reco p_{T}; Number of jets (normalized)', nBins, xMin, xMax)
 #hist_HF = TH1F('hist_HF', '; reco p_{T}; Number of jets (normalized)', nBins, xMin, xMax)
 #var = 'jet_pt_calibration'
-#var = 'calibPtHH'
-var = 'jetEt'
+var = 'calibPtHH'
+#var = 'jetEt'
 cut_barrel = 'abs(genJet_eta)<1.5'# && ((jet_pt_calibration - genJet_pt)/genJet_pt)>0'
 #cut_endcap = 'abs(genJet_eta)>1.6 && abs(genJet_eta)<2.8'
 #cut_HF = 'abs(genJet_eta)>3.0 && abs(genJet_eta)<6.0'
 print('Filling histograms...')
 previous_event = -1
 max_pt = 0
+count = 0
 for row in eventTree1:
     evt = row.event
     # Initial row
@@ -53,6 +54,7 @@ for row in eventTree1:
         if max_pt > 0. :
             hist_barrel.Fill( max_pt )
             max_pt = 0.
+            count += 1
         previous_event = evt
 
     # Skip jets outside of eta threshold region
@@ -110,6 +112,9 @@ legend.SetFillStyle(0)
 #Save histograms
 print('Saving plots...')
 #canvas.SaveAs(saveDirectory + file + '_jet_pt_calibration_maxEventpT.png')
-#canvas.SaveAs(saveDirectory + file + '_calibPtHH.png')
-canvas.SaveAs(saveDirectory + file + '_jetEt_maxEventpT.png')
+canvas.SaveAs(saveDirectory + file + '_calibPtHH_maxEventpT.png')
+#canvas.SaveAs(saveDirectory + file + '_jetEt_maxEventpT.png')
+#canvas.SaveAs(file+'_calibPtHH_maxEventpT.png')
 print('Saved plots')
+
+print ('Final event count = ' + str(count))

@@ -1,0 +1,96 @@
+Info in <TH1F::SaveAs>: ROOT file eff_and_rate_roots_jets/output_round2_minBias_13_1X_nocalib3GeVmaxTT12jets_all_Phase-2.root has been created
+Info in <TH1F::SaveAs>: ROOT file eff_and_rate_roots_jets/output_round2_minBias_13_1X_nocalib3GeVmaxTT12jets_barrel_Phase-2.root has been created
+Info in <TH1F::SaveAs>: ROOT file eff_and_rate_roots_jets/output_round2_minBias_13_1X_nocalib3GeVmaxTT12jets_hgcal_Phase-2.root has been created
+Info in <TH1F::SaveAs>: ROOT file eff_and_rate_roots_jets/output_round2_minBias_13_1X_nocalib3GeVmaxTT12jets_hf_Phase-2.root has been created
+Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/rates/CMSSW_14_0_0_pre3/jets/20240404/output_round2_minBias_13_1X_nocalib3GeVmaxTT12jets/output_round2_minBias_13_1X_nocalib3GeVmaxTT12jets_CalibPtHH_rate_phase2_All.png has been created
+Name: /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_14_0_0_pre3/20240404/output_round2_minBias_13_1X_nocalib3GeVmaxTT12jets.root Title: 
+Name: /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_14_0_0_pre3/20240404/output_round2_minBias_13_1X_nocalib3GeVmaxTT12jets.root Title: 
+Making rate for x_var calibPtHH,
+ x_var_calib 1.000000,
+ eta_var jetEta,
+ eta_min 0.00,
+ eta_max 2.80,
+ wp 
+100000
+200000
+300000
+400000
+500000
+600000
+700000
+800000
+900000
+1000000
+1100000
+1200000
+1300000
+1400000
+Making rate for x_var calibPtHH,
+ x_var_calib 1.000000,
+ eta_var jetEta,
+ eta_min 0.00,
+ eta_max 1.50,
+ wp 
+100000
+200000
+300000
+400000
+500000
+600000
+700000
+800000
+900000
+1000000
+1100000
+1200000
+1300000
+1400000
+Making rate for x_var calibPtHH,
+ x_var_calib 1.000000,
+ eta_var jetEta,
+ eta_min 1.50,
+ eta_max 3.00,
+ wp 
+100000
+200000
+300000
+400000
+500000
+600000
+700000
+800000
+900000
+1000000
+1100000
+1200000
+1300000
+1400000
+Making rate for x_var calibPtHH,
+ x_var_calib 1.000000,
+ eta_var jetEta,
+ eta_min 3.00,
+ eta_max 6.00,
+ wp 
+100000
+200000
+300000
+400000
+500000
+600000
+700000
+800000
+900000
+1000000
+1100000
+1200000
+1300000
+1400000
+Phase-2 ['Jet', 0] all
+Name: eff_and_rate_roots_jets/output_round2_minBias_13_1X_nocalib3GeVmaxTT12jets_all_Phase-2.root Title: 
+Phase-2 ['Jet', 0] barrel
+Name: eff_and_rate_roots_jets/output_round2_minBias_13_1X_nocalib3GeVmaxTT12jets_barrel_Phase-2.root Title: 
+Phase-2 ['Jet', 0] hgcal
+Name: eff_and_rate_roots_jets/output_round2_minBias_13_1X_nocalib3GeVmaxTT12jets_hgcal_Phase-2.root Title: 
+Phase-2 ['Jet', 0] hf
+Name: eff_and_rate_roots_jets/output_round2_minBias_13_1X_nocalib3GeVmaxTT12jets_hf_Phase-2.root Title: 
+Name: Phase-2 Jet, all Title: Phase-2 Jet, all NbinsX: 100

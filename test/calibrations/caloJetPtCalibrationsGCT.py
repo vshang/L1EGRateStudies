@@ -161,10 +161,10 @@ def drawPoints(c, tree1, var, cut, tree2, tree3, xaxis, xinfo, yaxis, yinfo, poi
     del h1, h2, h3, g1
 
 
-def drawPointsHists3(saveName, h1, h2, h3, title1, title2, title3, xaxis, yaxis, areaNorm=False, plotDir='.') :
+def drawPointsHists2(saveName, h1, h2, title1, title2, xaxis, yaxis, areaNorm=False, plotDir='.') :
     doFit = False
     c2 = ROOT.TCanvas('c2', 'c2', 1600, 600)
-    c2.Divide(3)
+    c2.Divide(2)
     c2.cd(1)
     ROOT.gPad.SetRightMargin( ROOT.gPad.GetRightMargin() * 1.4 )
     h1.GetXaxis().SetTitle( xaxis )
@@ -195,15 +195,29 @@ def drawPointsHists3(saveName, h1, h2, h3, title1, title2, title3, xaxis, yaxis,
     g1.SetLineWidth(2)
     g1.Draw('SAME')
     if doFit :
-        mini = points[0]
+        #mini = points[0]
+        mini = 9.
         maxi = points[-1]
-        f1 = ROOT.TF1( 'f1', '([0] + [1]*TMath::Exp(-[2]*x))', mini, maxi)
-        f1.SetParName( 0, "y rise" )
-        f1.SetParName( 1, "scale" )
-        f1.SetParName( 2, "decay" )
-        f1.SetParameter( 0, .5 )
-        f1.SetParameter( 1, 2.5 )
-        f1.SetParameter( 2, .15 )
+        if 'tau' in saveName or 'Tau' in saveName :
+            print("helloTau1")
+            f1 = ROOT.TF1( 'f1', '([0] + [1]*TMath::Exp(-[2]*x))', mini, maxi)
+            f1.SetParName( 0, "y rise" )
+            f1.SetParName( 1, "scale" )
+            f1.SetParName( 2, "decay" )
+            f1.SetParameter( 0, .5 )
+            f1.SetParameter( 1, 2.5 )
+            f1.SetParameter( 2, .15 )
+        else : # probably for CaloJets
+            print("helloJet1")
+            f1 = ROOT.TF1( 'f1', '([0] + [1]*x + [2]*TMath::Exp(-[3]*x))', mini, maxi)
+            f1.SetParName( 0, "y rise" )
+            f1.SetParName( 1, "linear" )
+            f1.SetParName( 2, "scale" )
+            f1.SetParName( 3, "decay" )
+            f1.SetParameter( 0, .5 )
+            f1.SetParameter( 1, .01 )
+            f1.SetParameter( 2, 2.5 )
+            f1.SetParameter( 3, .15 )
         fit1 = g1.Fit('f1', 'R S')
     
     c2.cd(2)
@@ -227,45 +241,30 @@ def drawPointsHists3(saveName, h1, h2, h3, title1, title2, title3, xaxis, yaxis,
     g2.SetLineWidth(2)
     g2.Draw('SAME')
     if doFit :
-        f2 = ROOT.TF1( 'f2', '([0] + [1]*TMath::Exp(-[2]*x))', mini, maxi)
-        f2.SetParName( 0, "y rise" )
-        f2.SetParName( 1, "scale" )
-        f2.SetParName( 2, "decay" )
-        f2.SetParameter( 0, .5 )
-        f2.SetParameter( 1, 2.5 )
-        f2.SetParameter( 2, .15 )
+        #mini = points[0]
+        mini = 9.
+        maxi = points[-1]
+        if 'tau' in saveName or 'Tau' in saveName :
+            print("helloTau2")
+            f2 = ROOT.TF1( 'f2', '([0] + [1]*TMath::Exp(-[2]*x))', mini, maxi)
+            f2.SetParName( 0, "y rise" )
+            f2.SetParName( 1, "scale" )
+            f2.SetParName( 2, "decay" )
+            f2.SetParameter( 0, .5 )
+            f2.SetParameter( 1, 2.5 )
+            f2.SetParameter( 2, .15 )
+        else : # probably for CaloJets
+            print("helloJet2")
+            f2 = ROOT.TF1( 'f2', '([0] + [1]*x + [2]*TMath::Exp(-[3]*x))', mini, maxi)
+            f2.SetParName( 0, "y rise" )
+            f2.SetParName( 1, "linear" )
+            f2.SetParName( 2, "scale" )
+            f2.SetParName( 3, "decay" )
+            f2.SetParameter( 0, .5 )
+            f2.SetParameter( 1, .01 )
+            f2.SetParameter( 2, 2.5 )
+            f2.SetParameter( 3, .15 )
         fit2 = g2.Fit('f2', 'R S')
-
-    
-    c2.cd(3)
-    ROOT.gPad.SetRightMargin( ROOT.gPad.GetRightMargin() * 1.4 )
-    h3.SetTitle( title3 )
-    if areaNorm :
-        h3.Scale( 1. / h3.Integral() )
-        h3.SetMaximum( max_ )
-    h3.Draw("colz")
-    ROOT.gPad.SetGrid()
-    h3.GetXaxis().SetTitle( xaxis )
-    h3.GetYaxis().SetTitle( yaxis )
-    xVals3 = array('f', [])
-    yVals3 = array('f', [])
-    for point in points :
-        xVals3.append( point )
-        yVals3.append( getAverage( h3, point ) )
-    #print xVals3
-    #print yVals3
-    g3 = ROOT.TGraph(len(xVals3), xVals3, yVals3)
-    g3.SetLineWidth(2)
-    g3.Draw('SAME')
-    if doFit :
-        f3 = ROOT.TF1( 'f3', '([0] + [1]*TMath::Exp(-[2]*x))', mini, maxi)
-        f3.SetParName( 0, "y rise" )
-        f3.SetParName( 1, "scale" )
-        f3.SetParName( 2, "decay" )
-        f3.SetParameter( 0, .5 )
-        f3.SetParameter( 1, 2.5 )
-        f3.SetParameter( 2, .15 )
-        fit3 = g3.Fit('f3', 'R S')
 
     # Just to show the resulting fit
     c2.Print(plotDir+"/"+saveName+".png")
@@ -350,11 +349,13 @@ def drawPointsHists(saveName, h1, title1, xaxis, yaxis, new=False, plotDir='.', 
     g1 = ROOT.TGraph(len(xVals1), xVals1, yVals1)
     g1.SetLineWidth(2)
     g1.Draw('SAME')
+    print("Hello1")
     if doFit :
         #mini = points[0]
         mini = 9.
         maxi = points[-1]
         if 'tau' in saveName or 'Tau' in saveName :
+            print("helloTau")
             f1 = ROOT.TF1( 'f1', '([0] + [1]*TMath::Exp(-[2]*x))', mini, maxi)
             f1.SetParName( 0, "y rise" )
             f1.SetParName( 1, "scale" )
@@ -363,6 +364,7 @@ def drawPointsHists(saveName, h1, title1, xaxis, yaxis, new=False, plotDir='.', 
             f1.SetParameter( 1, 2.5 )
             f1.SetParameter( 2, .15 )
         else : # probably for CaloJets
+            print("helloJet")
             f1 = ROOT.TF1( 'f1', '([0] + [1]*x + [2]*TMath::Exp(-[3]*x))', mini, maxi)
             f1.SetParName( 0, "y rise" )
             f1.SetParName( 1, "linear" )
@@ -515,11 +517,11 @@ def get_quantile_em_fraction_list( fName, calo_region, nBins=10, var='(l1eg_pt +
 def get_x_binning(fName='') :
     #xBinning = array('f', [0.,15,17.5,20,22.5,25,27.5,30, \
     # Worked xBinning = array('f', [0.,20,22.5,25,27.5,30, \
-    xBinning = array('f', [0.,5.,7.5,10.,12.5,15.,17.5,20,22.5,25,27.5,30, \
+    xBinning = array('f', [0.,20,25,30, \
         35,40,45,50,55,60,65,70,75,80,85,90,95,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300, \
         325,400,500]) # x binning
-    if 'Tau' in fName or 'tau' in fName :
-        xBinning = array('f', [0.,5.,7.5,10.,12.5,15.,20,25,30, \
+    if 'TauTau' in fName or 'tau' in fName:
+        xBinning = array('f', [0.,10,15,20,25,30, \
             35,40,45,50,55,60,70,80,100,150,200]) # x binning
     #xBinningAlt = array('f', [0.,30, \
     #    35,40,45,50,55,60,65,70,75,80,85,90,95,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300, \
@@ -660,7 +662,7 @@ def make_tau_calibrations( c, fName, cut, plotBase ) :
             #yaxis = "Relative Error in P_{T} reco/gen"
             yaxis = "Gen Jet pT / Tau P_{T}"
             title1 = "L1GCTTau Calibration vs Reco Tau P_{T}"
-            c.SetTitle("jetEt_Calibrations_absEta%s_to_%s" % (eta[0].replace('.','p'), eta[1].replace('.','p')))
+            c.SetTitle("tauEt_Calibrations_absEta%s_to_%s" % (eta[0].replace('.','p'), eta[1].replace('.','p')))
             g_and_fit = drawPointsHists(c.GetTitle(), h1, title1, xaxis, yaxis, False, plotBase, True)
             g = g_and_fit[0]
             f = g_and_fit[1]

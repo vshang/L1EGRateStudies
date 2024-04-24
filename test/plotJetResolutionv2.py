@@ -3,15 +3,15 @@ from ROOT import *
 gROOT.SetBatch(True)
 
 #Select and load root files here
-#file = 'output_round2_VBFHiggsTauTau_test'
-file = 'output_round2_QCD'
-date = '01_31_2024'
+#file = 'output_round2_VBFHiggsTauTau_13_1X_nocalib'
+file = 'output_round2_QCD_13_1X_nocalib'
+date = '02_21_2024'
 print('Opening Tfile...')
-#f1 = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/Pallabi/CMSSW_13_2_0/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_11_1_3/20210101/' + file + '.root')
-f1 = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/Pallabi/CMSSW_13_2_0/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_11_1_3/20230309/' + file + '.root')
+#f1 = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_14_0_0_pre3/20240221/' + file + '.root')
+f1 = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_14_0_0_pre3/20240221/' + file + '.root')
 
 #Set save directory here
-saveDirectory = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/Pallabi/CMSSW_13_2_0/src/L1Trigger/L1EGRateStudies/test/resolutions/CMSSW_11_1_3/' + date + '/' 
+saveDirectory = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/resolutions/CMSSW_14_0_0_pre3/' + date + '/' 
 checkDir( saveDirectory)
 
 #Set number of histogram bins and maximum value of x and y axis here
@@ -34,11 +34,11 @@ eventTree1 = f1.Get('analyzer/tree')
 hist_barrel = TH1F('hist_barrel', '; (reco p_{T} - gen p_{T})/gen p_{T}; Number of jets (normalized)', nBins, xMin, xMax)
 hist_endcap = TH1F('hist_endcap', '; (reco p_{T} - gen p_{T})/gen p_{T}; Number of jets (normalized)', nBins, xMin, xMax)
 hist_HF = TH1F('hist_HF', '; (reco p_{T} - gen p_{T})/gen p_{T}; Number of jets (normalized)', nBins, xMin, xMax)
-var = '(jet_pt_calibration - genJet_pt)/genJet_pt'
+#var = '(jet_pt_calibration - genJet_pt)/genJet_pt'
 #var = '(tau_pt - genJet_pt)/genJet_pt'
 #var = '(jetEt - genJet_pt)/genJet_pt'
 #var = '(tauEt - genJet_pt)/genJet_pt'
-#var = '(calibPtHH - genJet_pt)/genJet_pt'
+var = '(calibPtHH - genJet_pt)/genJet_pt'
 #cut_barrel = 'abs(genJet_eta)<1.2'
 #cut_barrel = 'abs(genJet_eta)<1.2 && (genJet_pt > 40 && genJet_pt < 100)'
 #cut_barrel= 'abs(genJet_eta)<1.2 && genJet_pt > 100'
@@ -104,7 +104,8 @@ legend.SetFillStyle(0)
 
 #Save histograms
 print('Saving plots...')
-canvas.SaveAs(saveDirectory + file + '_jet_pt_calibration.png')
+#canvas.SaveAs(saveDirectory + file + '_jet_pt_calibration.png')
 #canvas.SaveAs(saveDirectory + file + '_tau_pt.png')
 #canvas.SaveAs(saveDirectory + file + '_calibPtHH.png')
+canvas.SaveAs(file + '_test.png')
 print('Saved plots')
