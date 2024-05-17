@@ -3,8 +3,8 @@ from ROOT import *
 gROOT.SetBatch(True)
 
 #Select and load root files here
-doTau = False
-#doTau = True
+#doTau = False
+doTau = True
 if doTau:
     file = 'output_round2_VBFHiggsTauTau_13_1X_calib3GeVmaxTT12jets'
     genObj = 'Gen #tau'
@@ -48,9 +48,12 @@ hist_endcap = TH1F('hist_endcap', '; (p_{T}^{'+GCTObj+'} - p_{T}^{'+genObj+'}) /
 hist_HF = TH1F('hist_HF', '; (p_{T}^{'+GCTObj+'} - p_{T}^{'+genObj+'}) / p_{T}^{'+genObj+'}; Fraction of Events', nBins, xMin, xMax)
 #var = '(jet_pt_calibration - genJet_pt)/genJet_pt'
 #var = '(tau_pt - genJet_pt)/genJet_pt'
-var = '(jetEt - genJet_pt)/genJet_pt'
-#var = '(tauEt - genJet_pt)/genJet_pt'
-#var = '(calibPtHH - genJet_pt)/genJet_pt'
+if doTau:
+    var = '(tauEt - genJet_pt)/genJet_pt'
+    #var = '(calibPtHH - genJet_pt)/genJet_pt'
+else:
+    var = '(jetEt - genJet_pt)/genJet_pt'
+    #var = '(calibPtHH - genJet_pt)/genJet_pt'
 cut_barrel = 'abs(genJet_eta)<1.5 && genJet_pt>20'
 cut_endcap = 'abs(genJet_eta)>1.5 && abs(genJet_eta)<3.0 && genJet_pt>20'
 cut_HF = 'abs(genJet_eta)>3.0 && abs(genJet_eta)<6.0 && genJet_pt>20'
@@ -105,6 +108,10 @@ hist_barrel.SetLineColor(kRed)
 hist_endcap.SetLineColor(kBlue)
 hist_HF.SetLineColor(kGreen)
 
+hist_barrel.GetXaxis().SetTitleOffset(1.3)
+hist_endcap.GetXaxis().SetTitleOffset(1.3)
+hist_HF.GetXaxis().SetTitleOffset(1.2)
+
 #Draw legend
 legend = TLegend(0.57, 0.7, 0.87, 0.9)
 # legend.AddEntry(hist_barrel, '| #eta | < 1.2', 'l')
@@ -123,7 +130,7 @@ title = TLatex()
 title.SetTextSize(0.045)
 title.DrawLatexNDC(.1, .91, "CMS")
 title.SetTextSize(0.030)
-title.DrawLatexNDC(.18, .91, "Phase-2 Simulation")
+title.DrawLatexNDC(.18, .91, "Phase-2 Simulation Preliminary")
 title.SetTextSize(0.035)
 title.DrawLatexNDC(.73, .91, "14 TeV, 200 PU")
 
@@ -135,8 +142,8 @@ txt.DrawLatexNDC(.12, .83,  "%s" % denom_cut_label)
 #Save histograms
 print('Saving plots...')
 #canvas.SaveAs(saveDirectory + file + '_jet_pt_calibration.png')
-canvas.SaveAs(saveDirectory + file + '_jetEt.pdf')
-#canvas.SaveAs(saveDirectory + file + '_tauEt.pdf')
+#canvas.SaveAs(saveDirectory + file + '_jetEt.pdf')
+canvas.SaveAs(saveDirectory + file + '_tauEt.png')
 #canvas.SaveAs(saveDirectory + file + '_calibPtHH.png')
 #canvas.SaveAs(file + '_test.png')
 print('Saved plots')

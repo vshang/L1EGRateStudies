@@ -1,7 +1,7 @@
 Info in <TH1F::SaveAs>: ROOT file eff_and_rate_roots_taus/output_round2_minBias_13_1X_calib3GeVmaxTT12jets_all_Phase-2.root has been created
 Info in <TH1F::SaveAs>: ROOT file eff_and_rate_roots_taus/output_round2_minBias_13_1X_calib3GeVmaxTT12jets_barrel_Phase-2.root has been created
 Info in <TH1F::SaveAs>: ROOT file eff_and_rate_roots_taus/output_round2_minBias_13_1X_calib3GeVmaxTT12jets_hgcal_Phase-2.root has been created
-Info in <TCanvas::Print>: pdf file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/rates/CMSSW_14_0_0_pre3/taus/20240404/output_round2_minBias_13_1X_calib3GeVmaxTT12jets/output_round2_minBias_13_1X_calib3GeVmaxTT12jets_tauEt_rate_phase2_All.pdf has been created
+Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/rates/CMSSW_14_0_0_pre3/taus/20240404/output_round2_minBias_13_1X_calib3GeVmaxTT12jets/output_round2_minBias_13_1X_calib3GeVmaxTT12jets_tauEt_rate_phase2_All.png has been created
 Name: /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_14_0_0_pre3/20240404/output_round2_minBias_13_1X_calib3GeVmaxTT12jets.root Title: 
 Name: /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_14_0_0_pre3/20240404/output_round2_minBias_13_1X_calib3GeVmaxTT12jets.root Title: 
 Making rate for x_var tauEt,

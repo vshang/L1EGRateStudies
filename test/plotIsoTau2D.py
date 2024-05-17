@@ -3,22 +3,16 @@ from ROOT import *
 from array import array
 
 #Select and load root files here
-date = '01_26_2023'
-#fileName = 'VBF'
-fileName = 'HiggsTauTau'
-#fileName = 'minBias'
-region = 'barrel'
-#region = 'endcap'
+date = '04_04_2024'
+file = 'output_round2_VBFHiggsTauTau_13_1X_calib3GeVmaxTT12jets'
+#region = 'barrel'
+region = 'endcap'
 
-if fileName == 'VBF':
-    f = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20221208_r2/output_round2_VBFHiggsTauTau.root', '')
-elif fileName == 'HiggsTauTau':
-    f = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20221208_r2/output_round2_HiggsTauTau.root', '')
-elif fileName == 'minBias':
-    f = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_20221208_r2/output_round2_minBias.root', '')
+print('Opening Tfile...')
+f = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_14_0_0_pre3/20240404/' + file + '.root')
 
 #Set save directory here
-saveDirectory = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_12_3_0_pre4/src/L1Trigger/L1EGRateStudies/test/isoTauStudies/'+date+'/'
+saveDirectory = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/isoTauStudies/CMSSW_14_0_0_pre3/' + date + '/' + file + '/'
 checkDir( saveDirectory )
 
 
@@ -40,11 +34,11 @@ eventTree = f.Get('analyzer/tree')
 ##-----------------------------------------------------------------------------------------------
 
 #Define histograms
-print('fileName = ', fileName)
+print('file = ', file)
 print('region = ', region)
 print('Creating histograms...')
-hist = TH2F('hist', fileName + ' ' + region + '; Tau p_{T} (3x5 p_{T}); (7x7 p_{T} - 3x5 p_{T})/(3x5 p_{T})', nbinsx, xMin, xMax, nbinsy, yMin, yMax)
-hist_eff = TH1F('hist_eff', '; Tau p_{T} (3x5 p_{T}); (7x7 p_{T} - 3x5 p_{T})/(3x5 p_{T})', nbinsx, xMin, xMax)
+hist = TH2F('hist', file + ' ' + region + '; Tau p_{T}; (Jet p_{T} - Tau p_{T})/(Tau p_{T})', nbinsx, xMin, xMax, nbinsy, yMin, yMax)
+hist_eff = TH1F('hist_eff', '; Tau p_{T}; (Jet p_{T} - Tau p_{T})/(Tau p_{T})', nbinsx, xMin, xMax)
 
 #Fill histograms
 print('Filling histograms...')
@@ -52,25 +46,25 @@ nEntries = eventTree.GetEntries()
 for i in range(nEntries):
     eventTree.GetEntry(i)
     if region == 'barrel':
-        if fileName == 'minBias':
-            passRegion = abs(eventTree.jet_eta) < 1.4
+        if 'minBias' in file:
+            passRegion = abs(eventTree.jetEta) < 1.4
         else:
             passRegion = abs(eventTree.genJet_eta) < 1.4
     elif region == 'endcap':
-        if fileName == 'minBias':
-            passRegion = 1.6 < abs(eventTree.jet_eta) < 2.6
+        if 'minBias' in file:
+            passRegion = 1.6 < abs(eventTree.jetEta) < 2.6
         else:
             passRegion = 1.6 < abs(eventTree.genJet_eta) < 2.6
-    if passRegion and eventTree.tau_pt > 0:
-        #pt_3x5 = eventTree.calibPtHH
-        #pt_7x7 = eventTree.calibIsoRegionPtHH
-        #isoTauVariable = (pt_7x7 - pt_3x5)/pt_3x5
-        isoTauVariable = eventTree.tau_iso_et/eventTree.tau_pt
-        hist.Fill(pt_3x5, isoTauVariable)
+    if passRegion and eventTree.tauEt > 0:
+        tau_pt = eventTree.tauEt
+        jet_pt = eventTree.jetEt
+        isoTauVariable = (jet_pt - tau_pt)/tau_pt
+        #isoTauVariable = eventTree.tau_iso_et/eventTree.tauEt
+        hist.Fill(tau_pt, isoTauVariable)
 
 #Define 90% efficiency threshold
 # for x in range(nbinsx):
-#     if xMin + x*(xMax-xMin)/nbinsx < 100: #Only use Iso Tau variable for tau_pt < 100 GeV
+#     if xMin + x*(xMax-xMin)/nbinsx < 100: #Only use Iso Tau variable for tauEt < 100 GeV
 #         events_total = hist.Integral(x, x, 0, nbinsy)
 #         # print 'x = ', x
 #         # print 'events_total', events_total
@@ -200,7 +194,7 @@ for y in reversed(range(nbinsy)):
 #Define efficiency curve Tgraph
 graph_eff = TGraph(hist_eff)
         
-#Define Iso Tau threshold cut as function of Tau 3x5 pT
+#Define Iso Tau threshold cut as function of Tau pT
 f1Barrel = TF1( 'isoTauBarrel', '([0] + [1]*TMath::Exp(-[2]*x))', 20, 200)
 f1Barrel.SetParName( 0, "y rise" )
 f1Barrel.SetParName( 1, "scale" )
@@ -298,5 +292,5 @@ legend.Draw('same')
 legend.SetBorderSize(0)
 #Save histogram
 print('Saving histogram...')
-canvas.SaveAs(saveDirectory+'isoTauVariable2D_' + fileName + '_' + region + '_CMSSW_12_3_0_pre4.png')
+canvas.SaveAs(saveDirectory+'isoTauVariable2D_' + file + '_' + region + '.png')
 print('Saved histogram')

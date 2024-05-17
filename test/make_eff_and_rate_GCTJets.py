@@ -11,8 +11,8 @@ if not os.path.exists( 'eff_and_rate_roots_taus/' ) : os.makedirs( 'eff_and_rate
 ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
 
-#doTau = True
-doTau = False
+doTau = True
+#doTau = False
 
 doEff = True
 #doEff = False
@@ -23,8 +23,8 @@ doPtEff = True
 #doRate = True
 doRate = False
 
-doRateFirstHalf = True
-#doRateFirstHalf = False
+#doRateFirstHalf = True
+doRateFirstHalf = False
 doRateSecondHalf = True
 #doRateSecondHalf = False
 
@@ -49,8 +49,10 @@ dirName = 'jets' if not doTau else 'taus'
     
 
 if doEff :
-    fName = 'output_round2_QCD_13_1X_calib3GeVmaxTT12jets'
-    #fName = 'output_round2_VBFHiggsTauTau_13_1X_calib3GeVmaxTT12jets'
+    if doTau:
+        fName = 'output_round2_VBFHiggsTauTau_13_1X_calib3GeVmaxTT12jets'
+    else:
+        fName = 'output_round2_QCD_13_1X_calib3GeVmaxTT12jets'
     #fName = 'output_round2_HiggsTauTauCross'
     #fName = 'output_round2_HiggsTauTau_Pallabi'
     date = '20240404'
@@ -96,9 +98,9 @@ if doEff :
         #axis = [25, 0, 150] #Custom for comparing to Emry's plots
         if doTau :
             axis = [150, 0, 150]
-            denom_cut_label = '|#eta^{GenTau}| < 1.5'
-            denom_cut_label2 = '1.5 < |#eta^{GenTau}| < 3.0'
-            #denom_cut_label = '2.8 < |#eta^{GenTau}| < 5.0'
+            denom_cut_label = '|#eta^{Gen #tau}| < 1.5'
+            denom_cut_label2 = '1.5 < |#eta^{Gen #tau}| < 3.0'
+            #denom_cut_label = '2.8 < |#eta^{Gen tau}| < 5.0'
 
         gP2 = make_efficiency_graph( t, denom_cut, p2Obj+' > %i' % pt_cut, 'genJet_pt', axis )
         gP22 = make_efficiency_graph( t, denom_cut2, p2Obj+' > %i' % pt_cut, 'genJet_pt', axis )
@@ -120,7 +122,7 @@ if doEff :
         denom_cut_label = 'p_{T}^{GenJet} > %i GeV' % denom_pt
         #denom_cut_label = '%i < p_{T}^{GenJet} < 100 GeV' % denom_pt
         if doTau:
-            denom_cut_label = 'p_{T}^{GenTau} > %i GeV' % denom_pt
+            denom_cut_label = 'p_{T}^{Gen #tau} > %i GeV' % denom_pt
         axis = [100, -5, 5]
         gP2 = make_efficiency_graph( t, denom_cut, p2Obj+' > %i' % pt_cut, 'genJet_eta', axis )
         #gP22 = make_efficiency_graph( t, denom_cut, p2Obj+' > %i && loose_iso_tau_wp > 0.5' % pt_cut, 'genJet_eta', axis )
@@ -130,23 +132,22 @@ if doEff :
     gP2.SetMinimum( 0. )
     gP2.SetLineColor(ROOT.kRed)
     gP2.SetLineWidth(2)
-    gP22.SetLineColor(ROOT.kBlue)
-    gP22.SetLineWidth(2)
-    gS2.SetLineColor(ROOT.kGreen)
-    gS2.SetLineWidth(2)
-    # gS22.SetLineColor(ROOT.kBlue)
-    # gS22.SetLineWidth(2)
-    
+    if doPtEff:
+        gP22.SetLineColor(ROOT.kBlue)
+        gP22.SetLineWidth(2)
+        if not doTau:
+            gS2.SetLineColor(ROOT.kGreen)
+            gS2.SetLineWidth(2)
+        
 
     #mg = ROOT.TMultiGraph("mg", "L1 %s Efficiency" % text)
     mg = ROOT.TMultiGraph("mg", "")
     mg.Add( gP2 )
-    mg.Add( gP22 )
-    mg.Add( gS2 )
-    #if doTau:
-        #mg.Add( gP22 )
-    #mg.Add( gS2 )
-    #mg.Add( gS22 )
+    if doPtEff:
+        mg.Add( gP22 )
+        if not doTau:
+            mg.Add( gS2 )
+    mg.GetXaxis().SetTitleOffset(1.3)
     mg.SetMinimum( 0. )
     mg.Draw("aplez")
     if doPtEff :
@@ -166,28 +167,37 @@ if doEff :
     #cmsString = drawCMSString("#bf{CMS Simulation}  <PU>=200  ggH+qqH, H#rightarrow#tau#tau")
     title = ROOT.TLatex()
     title.SetTextSize(0.045)
-    title.DrawLatexNDC(.12, .91, "CMS")
+    title.DrawLatexNDC(.1, .91, "CMS")
     title.SetTextSize(0.030)
-    title.DrawLatexNDC(.22, .91, "Phase-2 Simulation")
+    title.DrawLatexNDC(.2, .91, "Phase-2 Simulation Preliminary")
     title.SetTextSize(0.035)
-    title.DrawLatexNDC(.67, .91, "14 TeV, 200 PU")
+    title.DrawLatexNDC(.68, .91, "14 TeV, 200 PU")
     
     txt = ROOT.TLatex()
-    txt.SetTextSize(0.045)
-    # txt.DrawLatexNDC(.12, .83,  "%s" % denom_cut_label) #Comment out when plotting multiple efficiency histograms on same plot
-    if doTau:
-        txt.DrawLatexNDC(.12, .76, "p_{T}^{GCTTau} > %i GeV" % pt_cut)
+    txt.SetTextSize(0.03)
+    if doPtEff:
+        if doTau:                                         
+            txt.DrawLatexNDC(.15, .83, "p_{T}^{GCTTau} > %i GeV" % pt_cut)
+        else:
+            txt.DrawLatexNDC(.15, .83, "p_{T}^{GCTJet} > %i GeV" % pt_cut) 
     else:
-        txt.DrawLatexNDC(.12, .76, "p_{T}^{GCTJet} > %i GeV" % pt_cut)
+        txt.DrawLatexNDC(.15, .83,  "%s" % denom_cut_label) 
+        if doTau:
+            txt.DrawLatexNDC(.15, .76, "p_{T}^{GCTTau} > %i GeV" % pt_cut)
+        else:
+            txt.DrawLatexNDC(.15, .76, "p_{T}^{GCTJet} > %i GeV" % pt_cut) #End of comment out
     #txt.DrawLatexNDC(.12, .69, "|#eta^{CaloJet}| < 5.0")
     
     #leg = setLegStyle(0.5,0.3,0.9,0.7)
-    leg = setLegStyle(0.55,0.74,0.88,0.88)
+    leg = setLegStyle(0.45,0.74,0.88,0.88)
     leg.SetFillStyle(0)
-    # leg.AddEntry(gP2, "GCT%s" % text,"lpe") #Comment out when plotting multiple efficiency histograms on same plot
-    leg.AddEntry(gP2, "GCT%s, " % text + denom_cut_label,"lpe")
-    leg.AddEntry(gP22, "GCT%s, " % text + denom_cut_label2,"lpe")
-    leg.AddEntry(gS2, "GCT%s, " % text + denom_cut_label3,"lpe")
+    if doPtEff:
+        leg.AddEntry(gP2, "GCT%s, " % text + denom_cut_label,"lpe")
+        leg.AddEntry(gP22, "GCT%s, " % text + denom_cut_label2,"lpe")
+        if not doTau:
+            leg.AddEntry(gS2, "GCT%s, " % text + denom_cut_label3,"lpe")
+    else:
+        leg.AddEntry(gP2, "GCT%s" % text,"lpe") 
     #if doTau:
         #leg.AddEntry(gP22, "CaloIso%s" % text,"lpe")
     leg.Draw("same")
@@ -196,7 +206,7 @@ if doEff :
     
     app = 'ptEff' if doPtEff else 'etaEff_ptDenom%i' % denom_pt
     #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_include_S2Iso.png' % (pt_cut, app) )
-    c.SaveAs( universalSaveDir + fName + '_'+p2Obj+'_ptThreshold%i_%s.pdf' % (pt_cut, app) )
+    c.SaveAs( universalSaveDir + fName + '_'+p2Obj+'_ptThreshold%i_%s.pnd' % (pt_cut, app) )
     #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_IsoTaus_NoS2.png' % (pt_cut, app) )
     #c.SaveAs( universalSaveDir + fName + '_Calib_ptThreshold%i_%s_HGCal.png' % (pt_cut, app) )
     #c.SaveAs( fName + '_'+p2Obj+'_ptThreshold%i_%s_noMatching.png' % (pt_cut, app) )
@@ -352,22 +362,23 @@ if doRate :
         
         print(rates[0])
         if doTau :
-            rates[0].GetXaxis().SetTitle("Reco #tau_{h} p_{T} (GeV)" )
+            rates[0].GetXaxis().SetTitle("GCT #tau_{h} p_{T} (GeV)" )
         else :
-            rates[0].GetXaxis().SetTitle("Reco %s p_{T} (GeV)" % text )
+            rates[0].GetXaxis().SetTitle("GCT %s p_{T} (GeV)" % text )
         rates[0].GetYaxis().SetTitle("L1 Rate (kHz)")
         rates[0].SetMaximum( 40000 ) 
         rates[0].SetMinimum( 5 ) 
+        rates[0].GetXaxis().SetTitleOffset(1.3)
         rates[0].Draw()
 
         #cmsString = drawCMSString("#bf{CMS Simulation}  <PU>=200  Minimum Bias")
         title = ROOT.TLatex()
         title.SetTextSize(0.045)
-        title.DrawLatexNDC(.12, .91, "CMS")
+        title.DrawLatexNDC(.13, .91, "CMS")
         title.SetTextSize(0.030)
-        title.DrawLatexNDC(.22, .91, "Phase-2 Simulation")
+        title.DrawLatexNDC(.23, .91, "Phase-2 Simulation Preliminary")
         title.SetTextSize(0.035)
-        title.DrawLatexNDC(.67, .91, "14 TeV, 200 PU")
+        title.DrawLatexNDC(.68, .91, "14 TeV, 200 PU")
 
         cnt = 0
         for rate in rates :
@@ -385,7 +396,8 @@ if doRate :
         p.SetBottomMargin( .1 )
         
         
-        leg = setLegStyle(0.5,0.55,0.88,0.85)
+        leg = setLegStyle(0.53,0.61,0.86,0.88)
+        leg.SetFillStyle(0)
         for rate in rates :
             if 'Stage-2' in rate.GetTitle() and 'hgcal' in rate.GetTitle() : continue
             if 'Stage-2' in rate.GetTitle() and 'all' in rate.GetTitle() : continue
@@ -411,7 +423,7 @@ if doRate :
         
         
         #c.SaveAs( universalSaveDir + fName +  '_CalibPtHH_rate_'+plot+'.png' )
-        #c.SaveAs( universalSaveDir + fName +  '_tauEt_rate_'+plot+'.pdf' )
-        c.SaveAs( universalSaveDir + fName +  '_jetEt_rate_'+plot+'.pdf' )
+        #c.SaveAs( universalSaveDir + fName +  '_tauEt_rate_'+plot+'.png' )
+        c.SaveAs( universalSaveDir + fName +  '_jetEt_rate_'+plot+'.png' )
         #c.SaveAs( universalSaveDir + saveName +  '_Calib_double_rate_'+plot+'.pdf' ) ##Uncomment when making double tau rate plot
         #c.SaveAs( fName + '_CalibPtHH_rate_'+plot+'.png' )
