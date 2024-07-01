@@ -3,10 +3,11 @@ from ROOT import *
 from array import array
 
 #Select and load root files here
-date = '04_04_2024'
-file = 'output_round2_VBFHiggsTauTau_13_1X_calib3GeVmaxTT12jets'
-#region = 'barrel'
-region = 'endcap'
+date = '05_23_2024'
+#file = 'output_round2_VBFHiggsTauTau_13_1X_calib3GeVmaxTT12jets'
+file = 'output_round2_minBias_13_1X_calib3GeVmaxTT12jets'
+region = 'barrel'
+#region = 'endcap'
 
 print('Opening Tfile...')
 f = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_14_0_0_pre3/20240404/' + file + '.root')
@@ -23,6 +24,9 @@ xMax = 200
 nbinsy = 100
 yMin = 0.05
 yMax = 5.05
+# nbinsy = 50
+# yMin = 0.
+# yMax = 1.0
 
 #Remove stats box from histograms by setting argument to 0
 gStyle.SetOptStat(0)
@@ -39,6 +43,9 @@ print('region = ', region)
 print('Creating histograms...')
 hist = TH2F('hist', file + ' ' + region + '; Tau p_{T}; (Jet p_{T} - Tau p_{T})/(Tau p_{T})', nbinsx, xMin, xMax, nbinsy, yMin, yMax)
 hist_eff = TH1F('hist_eff', '; Tau p_{T}; (Jet p_{T} - Tau p_{T})/(Tau p_{T})', nbinsx, xMin, xMax)
+# hist = TH2F('hist', file + ' ' + region + '; Tau p_{T}; (Tau p_{T} - seed TT p_{T})/(Tau p_{T})', nbinsx, xMin, xMax, nbinsy, yMin, yMax)
+# hist_eff = TH1F('hist_eff', '; Tau p_{T}; (Tau p_{T} - seed TT p_{T})/(Tau p_{T})', nbinsx, xMin, xMax)
+
 
 #Fill histograms
 print('Filling histograms...')
@@ -58,7 +65,9 @@ for i in range(nEntries):
     if passRegion and eventTree.tauEt > 0:
         tau_pt = eventTree.tauEt
         jet_pt = eventTree.jetEt
+        seed_pt = eventTree.towerEt
         isoTauVariable = (jet_pt - tau_pt)/tau_pt
+        #isoTauVariable = (tau_pt - seed_pt)/tau_pt
         #isoTauVariable = eventTree.tau_iso_et/eventTree.tauEt
         hist.Fill(tau_pt, isoTauVariable)
 
@@ -265,10 +274,10 @@ canvas = TCanvas('canvas', 'Tau Relative Isolation Variable')
 hist.Draw('Colz')
 graph_eff.Draw('same')
 if region == 'barrel':
-    f1Barrel.Draw('same')
+    #f1Barrel.Draw('same')
     f1Barrel_new.Draw('same')
 elif region =='endcap':
-    f1HGCal.Draw('same')
+    #f1HGCal.Draw('same')
     f1HGCal_new.Draw('same')
 #Set histogram settings
 graph_eff.SetLineColor(kBlack)
@@ -277,20 +286,22 @@ if region == 'barrel':
     f1Barrel_new.SetLineColor(kBlue)
 elif region == 'endcap':
     f1HGCal_new.SetLineColor(kBlue)
-canvas.SetLogy(1)
-canvas.SetLogz(1)
+#canvas.SetLogy(1)
+#canvas.SetLogz(1)
 #Add legend
 legend = TLegend(0.52, 0.57, 0.82, 0.87)
+#legend = TLegend(0.12, 0.17, 0.42, 0.37)
 legend.AddEntry(graph_eff, 'Run-II IsoTau efficiency', 'l')
 if region == 'barrel':
-    legend.AddEntry(f1Barrel, 'Old IsoTau threshold curve', 'l')
+    #legend.AddEntry(f1Barrel, 'Old IsoTau threshold curve', 'l')
     legend.AddEntry(f1Barrel_new, 'New IsoTau threshold curve', 'l')
 elif region == 'endcap':
-    legend.AddEntry(f1HGCal, 'Old IsoTau threshold curve', 'l')
+    #legend.AddEntry(f1HGCal, 'Old IsoTau threshold curve', 'l')
     legend.AddEntry(f1HGCal_new, 'New IsoTau threshold curve', 'l')
 legend.Draw('same')
 legend.SetBorderSize(0)
 #Save histogram
 print('Saving histogram...')
 canvas.SaveAs(saveDirectory+'isoTauVariable2D_' + file + '_' + region + '.png')
+#canvas.SaveAs(saveDirectory+'IsoSeedTTVariable2D_' + file + '_' + region + '.png')
 print('Saved histogram')

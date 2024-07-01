@@ -1,103 +1,103 @@
 ****************************************
 Minimizer is Minuit2 / Migrad
-Chi2                      =    0.0264309
+Chi2                      =    0.0460223
 NDf                       =           30
-Edm                       =  9.14555e-06
-NCalls                    =          409
-y rise                    =      1.53083   +/-   0.0277569   
-linear                    = -0.000526923   +/-   0.0001042   
-scale                     =     0.919711   +/-   0.0433142   
-decay                     =    0.0279662   +/-   0.00290536  
-Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240404output_round2_QCD_13_1X_nocalib3GeVmaxTT12jetsVxy1/jetEt_Calibrations_absEta0p0_to_0p3.png has been created
+Edm                       =  9.52987e-06
+NCalls                    =          421
+y rise                    =       1.5654   +/-   0.0327154   
+linear                    = -0.000642951   +/-   0.00012831  
+scale                     =     0.959884   +/-   0.0713029   
+decay                     =    0.0334071   +/-   0.00486683  
+Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240626output_round2_QCD_13_1X_nocalibnoMinSeedSTVxy1/jetEt_Calibrations_absEta0p0_to_0p3.png has been created
 ****************************************
 Minimizer is Minuit2 / Migrad
-Chi2                      =    0.0206263
+Chi2                      =    0.0354795
 NDf                       =           30
-Edm                       =  5.73967e-07
-NCalls                    =          508
-y rise                    =      1.37211   +/-   0.0337175   
-linear                    = -0.000344543   +/-   0.000114708 
-scale                     =     0.640782   +/-   0.0323547   
-decay                     =     0.021412   +/-   0.00298523  
-Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240404output_round2_QCD_13_1X_nocalib3GeVmaxTT12jetsVxy1/jetEt_Calibrations_absEta0p3_to_0p6.png has been created
+Edm                       =  5.13256e-06
+NCalls                    =          492
+y rise                    =      1.37574   +/-   0.0505296   
+linear                    = -0.000355485   +/-   0.00016814  
+scale                     =     0.592859   +/-   0.0423042   
+decay                     =    0.0210354   +/-   0.00475797  
+Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240626output_round2_QCD_13_1X_nocalibnoMinSeedSTVxy1/jetEt_Calibrations_absEta0p3_to_0p6.png has been created
 ****************************************
 Minimizer is Minuit2 / Migrad
-Chi2                      =    0.0352873
+Chi2                      =    0.0402602
 NDf                       =           30
-Edm                       =  4.26154e-06
-NCalls                    =          423
-y rise                    =      1.47386   +/-   0.0274936   
-linear                    = -0.000657467   +/-   0.000109832 
-scale                     =     0.812543   +/-   0.0697708   
-decay                     =    0.0363685   +/-   0.00581873  
-Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240404output_round2_QCD_13_1X_nocalib3GeVmaxTT12jetsVxy1/jetEt_Calibrations_absEta0p6_to_1p0.png has been created
+Edm                       =  5.80385e-07
+NCalls                    =          289
+y rise                    =      1.45775   +/-   0.0394812   
+linear                    = -0.000601725   +/-   0.000145992 
+scale                     =     0.644821   +/-   0.0633691   
+decay                     =    0.0299456   +/-   0.00720794  
+Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240626output_round2_QCD_13_1X_nocalibnoMinSeedSTVxy1/jetEt_Calibrations_absEta0p6_to_1p0.png has been created
 ****************************************
 Minimizer is Minuit2 / Migrad
-Chi2                      =    0.0518871
+Chi2                      =    0.0858344
 NDf                       =           30
-Edm                       =  7.49702e-07
-NCalls                    =          379
-y rise                    =      1.76335   +/-   0.0317154   
-linear                    =  -0.00107564   +/-   0.000126652 
-scale                     =      1.39778   +/-   0.0686707   
-decay                     =    0.0325922   +/-   0.00292514  
-Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240404output_round2_QCD_13_1X_nocalib3GeVmaxTT12jetsVxy1/jetEt_Calibrations_absEta1p0_to_1p5.png has been created
+Edm                       =  5.03819e-06
+NCalls                    =          339
+y rise                    =      1.79716   +/-   0.0386352   
+linear                    =  -0.00119173   +/-   0.00015817  
+scale                     =      1.39828   +/-   0.105621    
+decay                     =    0.0371336   +/-   0.00482414  
+Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240626output_round2_QCD_13_1X_nocalibnoMinSeedSTVxy1/jetEt_Calibrations_absEta1p0_to_1p5.png has been created
 ****************************************
 Minimizer is Minuit2 / Migrad
-Chi2                      =     0.107877
+Chi2                      =    0.0500066
 NDf                       =           30
-Edm                       =  3.06282e-08
-NCalls                    =          382
-y rise                    =      1.67164   +/-   0.0257647   
-linear                    =   -0.0003569   +/-   0.000126512 
-scale                     =      1.69657   +/-   0.152185    
-decay                     =    0.0577996   +/-   0.00550961  
-Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240404output_round2_QCD_13_1X_nocalib3GeVmaxTT12jetsVxy1/jetEt_Calibrations_absEta1p5_to_1p9.png has been created
+Edm                       =  1.02945e-05
+NCalls                    =          499
+y rise                    =      1.68986   +/-   0.0158336   
+linear                    = -0.000421607   +/-   8.12626e-05 
+scale                     =      1.44977   +/-   0.152584    
+decay                     =    0.0761775   +/-   0.00771479  
+Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240626output_round2_QCD_13_1X_nocalibnoMinSeedSTVxy1/jetEt_Calibrations_absEta1p5_to_1p9.png has been created
 ****************************************
 Minimizer is Minuit2 / Migrad
-Chi2                      =     0.036261
+Chi2                      =    0.0245063
 NDf                       =           30
-Edm                       =  1.51645e-06
-NCalls                    =          318
-y rise                    =      1.18759   +/-   0.0110821   
-linear                    =  0.000337916   +/-   6.19365e-05 
-scale                     =      65.0383   +/-   7.00466     
-decay                     =     0.245671   +/-   0.0107953   
-Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240404output_round2_QCD_13_1X_nocalib3GeVmaxTT12jetsVxy1/jetEt_Calibrations_absEta1p9_to_2p4.png has been created
+Edm                       =  3.12859e-07
+NCalls                    =          237
+y rise                    =       1.1716   +/-   0.0094993   
+linear                    =  0.000404425   +/-   5.21497e-05 
+scale                     =      11.6819   +/-   0.865119    
+decay                     =     0.165367   +/-   0.00730359  
+Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240626output_round2_QCD_13_1X_nocalibnoMinSeedSTVxy1/jetEt_Calibrations_absEta1p9_to_2p4.png has been created
 ****************************************
 Minimizer is Minuit2 / Migrad
-Chi2                      =     0.738844
+Chi2                      =     0.681176
 NDf                       =           30
-Edm                       =  8.59664e-07
-NCalls                    =          179
-y rise                    =      1.04019   +/-   0.0659329   
-linear                    =  0.000720188   +/-   0.000326761 
-scale                     =      4.70856   +/-   0.410805    
-decay                     =    0.0598564   +/-   0.00542061  
-Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240404output_round2_QCD_13_1X_nocalib3GeVmaxTT12jetsVxy1/jetEt_Calibrations_absEta2p4_to_3p0.png has been created
+Edm                       =  4.94822e-08
+NCalls                    =          193
+y rise                    =      1.04393   +/-   0.0629923   
+linear                    =  0.000706807   +/-   0.000312874 
+scale                     =      4.71283   +/-   0.40282     
+decay                     =    0.0607692   +/-   0.00537219  
+Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240626output_round2_QCD_13_1X_nocalibnoMinSeedSTVxy1/jetEt_Calibrations_absEta2p4_to_3p0.png has been created
 ****************************************
 Minimizer is Minuit2 / Migrad
-Chi2                      =     0.799297
+Chi2                      =     0.734074
 NDf                       =           30
-Edm                       =  1.27473e-06
-NCalls                    =          249
-y rise                    =      1.79283   +/-   0.0876791   
-linear                    =  -0.00208909   +/-   0.000394554 
-scale                     =      4.44811   +/-   0.336649    
-decay                     =    0.0441661   +/-   0.00441937  
-Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240404output_round2_QCD_13_1X_nocalib3GeVmaxTT12jetsVxy1/jetEt_Calibrations_absEta3p0_to_3p6.png has been created
+Edm                       =   4.5105e-07
+NCalls                    =          270
+y rise                    =      1.83315   +/-   0.0775999   
+linear                    =  -0.00223126   +/-   0.000360639 
+scale                     =      5.34794   +/-   0.381226    
+decay                     =    0.0510398   +/-   0.00448428  
+Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240626output_round2_QCD_13_1X_nocalibnoMinSeedSTVxy1/jetEt_Calibrations_absEta3p0_to_3p6.png has been created
 ****************************************
 Minimizer is Minuit2 / Migrad
-Chi2                      =    0.0741413
+Chi2                      =    0.0852757
 NDf                       =           30
-Edm                       =  1.35787e-05
-NCalls                    =          313
-y rise                    =      1.17539   +/-   0.0342738   
-linear                    = -0.000500935   +/-   0.000140724 
-scale                     =      1.28711   +/-   0.0812415   
-decay                     =    0.0334463   +/-   0.00348908  
-Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240404output_round2_QCD_13_1X_nocalib3GeVmaxTT12jetsVxy1/jetEt_Calibrations_absEta3p6_to_6p0.png has been created
-Name: /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_14_0_0_pre3/20240404/output_round2_QCD_13_1X_nocalib3GeVmaxTT12jets.root Title: 
+Edm                       =  2.21318e-07
+NCalls                    =          366
+y rise                    =      1.22574   +/-   0.028918    
+linear                    = -0.000676637   +/-   0.00013027  
+scale                     =       1.8945   +/-   0.128954    
+decay                     =    0.0481398   +/-   0.00437335  
+Info in <TCanvas::Print>: png file /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab20240626output_round2_QCD_13_1X_nocalibnoMinSeedSTVxy1/jetEt_Calibrations_absEta3p6_to_6p0.png has been created
+Name: /afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_14_0_0_pre3/20240626/output_round2_QCD_13_1X_nocalibnoMinSeedST.root Title: 
 Quantile List:
 [0, 1.0]
 abs(jetEta)>=0.0 && abs(jetEta)<=0.3
@@ -136,7 +136,7 @@ abs(jetEta)>=3.6 && abs(jetEta)<=6.0
 Hello1
 helloJet
 Name: 0_absEta_3p6_to_6p0 Title: 0_absEta_3p6_to_6p0
-Calibrating with file: jet_em_calibrations_nocalib3GeVmaxTT12jets.root
+Calibrating with file: jet_em_calibrations_nocalibnoMinSeedST.root
 
 
 
@@ -170,24 +170,3 @@ Adding Phase-2 calibration branch to ttree. UseBinnedPt = True
 230000
 240000
 250000
-Calibrating with file: jet_em_calibrations_nocalib3GeVmaxTT12jets.root
-
-
-
-FIXME - what happened to ROOT in 10_5_X
-Why are these errors here?
-The code appears to work with my fix
-
-0_absEta_0p0_to_0p3_fit [0.0, 0.3, <cppyy.gbl.TF1 object at 0x7b4b0d0>]
-0_absEta_0p3_to_0p6_fit [0.3, 0.6, <cppyy.gbl.TF1 object at 0x956f1d0>]
-0_absEta_0p6_to_1p0_fit [0.6, 1.0, <cppyy.gbl.TF1 object at 0x7b65660>]
-0_absEta_1p0_to_1p5_fit [1.0, 1.5, <cppyy.gbl.TF1 object at 0x7b3fa80>]
-0_absEta_1p5_to_1p9_fit [1.5, 1.9, <cppyy.gbl.TF1 object at 0x7b6d1f0>]
-0_absEta_1p9_to_2p4_fit [1.9, 2.4, <cppyy.gbl.TF1 object at 0x7b33d90>]
-0_absEta_2p4_to_3p0_fit [2.4, 3.0, <cppyy.gbl.TF1 object at 0x7b69f00>]
-0_absEta_3p0_to_3p6_fit [3.0, 3.6, <cppyy.gbl.TF1 object at 0x7f2c160>]
-0_absEta_3p6_to_6p0_fit [3.6, 6.0, <cppyy.gbl.TF1 object at 0x7f161b0>]
-[20.0, 25.0, 30.0, 35.0, 40.0, 45.0, 50.0, 55.0, 60.0, 65.0, 70.0, 75.0, 80.0, 85.0, 90.0, 95.0, 100.0, 110.0, 120.0, 130.0, 140.0, 150.0, 160.0, 170.0, 180.0, 190.0, 200.0, 225.0, 250.0, 275.0, 300.0, 325.0, 400.0, 500.0]
-[0.0, 0.3, 0.6, 1.0, 1.5]
-[1.5, 1.9, 2.4, 3.0]
-[3.0, 3.6, 6.0]

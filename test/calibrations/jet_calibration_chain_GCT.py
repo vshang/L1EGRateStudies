@@ -490,17 +490,17 @@ if '__main__' in __name__ :
     #plot_calibrated_results = True
 
     if doTaus:
-        base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_14_0_0_pre3/20240404/'
+        base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_14_0_0_pre3/20240626/'
     else:
-        base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_14_0_0_pre3/20240404/'
+        base = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_14_0_0_pre3/20240626/'
 
     shapes = [
         # R2
-        #'output_round2_QCD_13_1X_nocalib3GeVmaxTT12jets',
-        #'output_round2_VBFHiggsTauTau_13_1X_nocalib3GeVmaxTT12jets',
+        #'output_round2_QCD_13_1X_nocalibnoMinSeedST',
+        #'output_round2_VBFHiggsTauTau_13_1X_nocalibnoMinSeedST',
         #'output_round2_TTbar'
         #'output_round2_HiggsTauTau_Pallabi',
-        'output_round2_minBias_13_1X_nocalib3GeVmaxTT12jets',
+        'output_round2_minBias_13_1X_nocalibnoMinSeedST',
     ]
 
     for shape in shapes :
@@ -538,11 +538,11 @@ if '__main__' in __name__ :
         if apply_phase2_calibrations :
             version = shape.split('_')[-1]
             if doJets :
-                version = 'nocalib3GeVmaxTT12jets'
+                version = 'nocalibnoMinSeedST'
                 quantile_map = get_quantile_map( 'jet_em_calibrations_'+version+'.root' )
                 add_jet_calibration( base+jetsF0, quantile_map )
             if doTaus :
-                version = 'nocalib3GeVmaxTT12jets'
+                version = 'nocalibnoMinSeedST'
                 quantile_map = get_quantile_map( 'tau_pt_calibrations_'+version+'.root ')
                 add_tau_calibration( base+jetsF0, quantile_map )
         """ Prepare cfg calibration code snippet """
@@ -550,10 +550,10 @@ if '__main__' in __name__ :
             version = shape.split('_')[-1]
             ###version = 'v7'
             if doJets :
-                version = 'nocalib3GeVmaxTT12jets'
+                version = 'nocalibnoMinSeedST'
                 quantile_map = get_quantile_map( 'jet_em_calibrations_'+version+'.root' )
             if doTaus :
-                version = 'nocalib3GeVmaxTT12jets'
+                version = 'nocalibnoMinSeedST'
                 quantile_map = get_quantile_map( 'tau_pt_calibrations_'+version+'.root ')
             ####check_calibration_py_cfg( quantile_map )
             prepare_calibration_py_cfg( quantile_map, doTaus )

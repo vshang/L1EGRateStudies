@@ -29,9 +29,9 @@ process.source = cms.Source("PoolSource",
     dropDescendantsOfDroppedBranches=cms.untracked.bool(False),
 )
 
-out_path = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_14_0_0_pre3/20240404/'
-name = "QCD_13_1X_calib3GeVmaxTT12jets"
-#name = "minBias_13_1X_calib3GeVmaxTT12jets"
+out_path = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_14_0_0_pre3/20240626/'
+#name = "QCD_13_1X_nocalibnoMinSeedST"
+name = "minBias_13_1X_nocalibnoMinSeedST"
 #name = 'TTbar'
 # Load samples from external files here:
 from L1Trigger.L1EGRateStudies.loadRound2Files import getSampleFiles

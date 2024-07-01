@@ -2,23 +2,31 @@ from L1Trigger.L1EGRateStudies.trigHelpers import checkDir
 from ROOT import *
 gROOT.SetBatch(True)
 
+#Define CMS Colors (see https://cms-analysis.docs.cern.ch/guidelines/plotting/colors/)
+ColorA = TColor.GetColor("#5790fc")
+ColorB = TColor.GetColor("#f89c20")
+ColorC = TColor.GetColor("#e42536")
+ColorD = TColor.GetColor("#964a8b")
+ColorE = TColor.GetColor("#9c9ca1")
+ColorF = TColor.GetColor("#7a21dd")
+
 #Select and load root files here
 #doTau = False
 doTau = True
 if doTau:
-    file = 'output_round2_VBFHiggsTauTau_13_1X_calib3GeVmaxTT12jets'
-    genObj = 'Gen #tau'
+    file = 'output_round2_VBFHiggsTauTau_13_1X_nocalibnoMinSeedST'
+    genObj = 'GEN #tau'
     GCTObj = 'GCTTau'
 else:
-    file = 'output_round2_QCD_13_1X_calib3GeVmaxTT12jets'
-    genObj = 'GenJet'
+    file = 'output_round2_QCD_13_1X_nocalibnoMinSeedST'
+    genObj = 'GEN Jet'
     GCTObj = 'GCTJet'
-date = '04_04_2024'
+date = '06_26_2024'
 print('Opening Tfile...')
 if doTau:
-    f1 = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_14_0_0_pre3/20240404/' + file + '.root')
+    f1 = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloTaus_r2_CMSSW_14_0_0_pre3/20240626/' + file + '.root')
 else:
-    f1 = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_14_0_0_pre3/20240404/' + file + '.root')
+    f1 = TFile.Open('/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/crab/l1CaloJets_r2_CMSSW_14_0_0_pre3/20240626/' + file + '.root')
 
 #Set save directory here
 saveDirectory = '/afs/hep.wisc.edu/home/vshang/public/Phase2L1CaloTaus/CMSSW_14_0_0_pre3/src/L1Trigger/L1EGRateStudies/test/resolutions/CMSSW_14_0_0_pre3/' + date + '/' + file + '/'
@@ -56,7 +64,7 @@ else:
     #var = '(calibPtHH - genJet_pt)/genJet_pt'
 cut_barrel = 'abs(genJet_eta)<1.5 && genJet_pt>20'
 cut_endcap = 'abs(genJet_eta)>1.5 && abs(genJet_eta)<3.0 && genJet_pt>20'
-cut_HF = 'abs(genJet_eta)>3.0 && abs(genJet_eta)<6.0 && genJet_pt>20'
+cut_HF = 'abs(genJet_eta)>3.0 && abs(genJet_eta)<5.0 && genJet_pt>20'
 # cut_barrel = 'abs(genJet_eta)<1.5 && genJet_pt>30 && genJet_pt<50'
 # cut_endcap = 'abs(genJet_eta)>1.5 && abs(genJet_eta)<3.0 && genJet_pt>30 && genJet_pt<50'
 # cut_HF = 'abs(genJet_eta)>3.0 && abs(genJet_eta)<6.0 && genJet_pt>30 && genJet_pt<50'
@@ -90,23 +98,36 @@ p = TPad('p','p', 0, 0, 1, 1)
 p.Draw()
 p.cd()
 p.SetGrid()
-hist_barrel.Draw('hist e') 
+hist_barrel.Draw('hist e')
 hist_endcap.Draw('hist e same')
 if not doTau:
     hist_HF.Draw('hist e same')
-#hist_endcap.Draw('hist e')
+#hist_endcap.Draw('pe same')
 
 #Set histogram settings
 hist_barrel.SetMinimum(0)
 hist_endcap.SetMinimum(0)
-hist_HF.SetMinimum(0)
+#hist_HF.SetMinimum(0)
 hist_barrel.SetMaximum(yMax)
 hist_endcap.SetMaximum(yMax)
 hist_HF.SetMaximum(yMax)
 
-hist_barrel.SetLineColor(kRed)
-hist_endcap.SetLineColor(kBlue)
-hist_HF.SetLineColor(kGreen)
+hist_barrel.SetLineColor(ColorA)
+hist_endcap.SetLineColor(ColorB)
+hist_HF.SetLineColor(ColorC)
+hist_barrel.SetLineWidth(2)
+hist_endcap.SetLineWidth(2)
+hist_HF.SetLineWidth(2)
+
+hist_barrel.SetMarkerStyle(20)
+hist_endcap.SetMarkerStyle(21)
+hist_HF.SetMarkerStyle(22)
+hist_barrel.SetMarkerSize(2)
+hist_endcap.SetMarkerSize(2)
+hist_HF.SetMarkerSize(2)
+hist_barrel.SetMarkerColor(ColorA)
+hist_endcap.SetMarkerColor(ColorB)
+hist_HF.SetMarkerColor(ColorC)
 
 hist_barrel.GetXaxis().SetTitleOffset(1.3)
 hist_endcap.GetXaxis().SetTitleOffset(1.3)
@@ -120,7 +141,7 @@ legend = TLegend(0.57, 0.7, 0.87, 0.9)
 legend.AddEntry(hist_barrel, '|#eta^{'+genObj+'}| < 1.5', 'lpe')
 legend.AddEntry(hist_endcap, '1.5 < |#eta^{'+genObj+'}| < 3.0', 'lpe')
 if not doTau:
-    legend.AddEntry(hist_HF, '3.0 < |#eta^{'+genObj+'}| < 6.0', 'lpe')
+    legend.AddEntry(hist_HF, '3.0 < |#eta^{'+genObj+'}| < 5.0', 'lpe')
 legend.Draw('same')
 legend.SetBorderSize(0)
 legend.SetFillStyle(0)
@@ -142,7 +163,7 @@ txt.DrawLatexNDC(.12, .83,  "%s" % denom_cut_label)
 #Save histograms
 print('Saving plots...')
 #canvas.SaveAs(saveDirectory + file + '_jet_pt_calibration.png')
-#canvas.SaveAs(saveDirectory + file + '_jetEt.pdf')
+#canvas.SaveAs(saveDirectory + file + '_jetEt.png')
 canvas.SaveAs(saveDirectory + file + '_tauEt.png')
 #canvas.SaveAs(saveDirectory + file + '_calibPtHH.png')
 #canvas.SaveAs(file + '_test.png')
